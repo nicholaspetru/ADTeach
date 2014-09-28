@@ -1,3 +1,85 @@
 Sarah, Emily, Colby- INTERPRETER! (or Context Free Grammar)
 
 Brady, Nick, Liz- JavaScript stuff, Storyboards, etc... 
+
+Context Free Grammar:
+S
+  = epsilon / assignment ";" / conditional / for_loop / while_loop / return ";" / S S
+
+assignment
+  = a "=" b / a / b
+
+a
+  = variable / object variable / type variable
+
+b
+  = int / string / float / "new" object "(" type ")" / M / boolean / command
+
+object
+  = "Graph" / "Tree" / "Queue" / "List" / "Stack" / "Priority_Queue"
+
+type
+  = "int" / "string" / "float" / "node" / "boolean" / epsilon
+
+variable
+  = ([a-z]+[A-Z]*)+[0-9]*([a-z]*[A-Z]*[0-9]*)* / ([a-z]*[A-Z]+)+[0-9]*([a-z]*[A-Z]*[0-9]*)*
+
+boolean
+  = "true" / "false"
+
+int
+  = [0-9]+
+
+string
+  = '"' ([a-z]*[A-Z]*[0-9]*)+ '"'
+
+float
+  = int* "." int / int "."
+
+conditional
+  = "if" "(" predicate ")" "{" S "}" next_conditional
+
+predicate
+  = b / comparison / "(" predicate logic predicate ")"
+
+comparison
+  = value compare value
+
+compare
+  = "==" / "<=" / ">=" / "<" / ">" / "!="
+
+value
+  = a / b
+
+next_conditional
+  = "elif" "(" predicate ")" "{" S "}" next_conditional / "else" "{" S "}" / epsilon
+
+logic
+  = "and" / "or"
+
+for_loop
+  = "for" "(" assignment ";" predicate ";" step ")" "{" S "}"
+
+step
+  = variable operand / assignment
+
+operand
+  = "++" / "--"
+
+while_loop
+  = "while" "(" predicate ")" "{" S "}"
+
+return
+  = "return" value
+
+command
+  = variable "." variable "(" parameter ")"
+
+parameter
+  = value / epsilon
+
+epsilon
+  =
+
+M
+  = variable / M "+" M / M "-" M / M "*" M / M "/" M / M "%" M / M "**" M / int / float / "log" "(" M ")" / "sqrt" "(" M ")" / "(" M ")" 
