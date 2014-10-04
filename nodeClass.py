@@ -9,6 +9,7 @@ class Node:
         self.Next = Node
     def setType(self):
         '''
+        Racket
         0 = error
         1 = symbol
         2 = integer
@@ -18,6 +19,18 @@ class Node:
         6 = close paren
         7 = true
         8 = false
+        
+        Vava
+        0 = error
+        1 = symbol
+        2 = integer
+        3 = float
+        4 = string
+        5 = open paren
+        6 = close paren
+        7 = open brace
+        8 = close brace
+        9 = boolean
         '''
         period = 0
         index = 0
@@ -27,23 +40,20 @@ class Node:
             return 5
         elif (self.Token[0]  == ')'):
             return 6
-        elif (self.Token[0] == '#'):
-            if (self.Token[1] == 't'):
-                return 7
-            elif (self.Token[1]  == 'f'):
-                return 8
-            else:
-                return 0
-        elif (self.Token[0]  == '\''):
-            return 1
-        if (self.Token[0]  == '-'):
+        elif (self.Token[0] == '{'):
+            return 7
+        elif (self.Token[0]  == '}'):
+            return 8
+        elif ((self.Token == 'true') or (self.Token == 'false')):
+            return 9
+        elif (self.Token[0]  == '-'):
             if (len(self.Token) == 1):
                 return 1
             else:
                 index = 1
         for i in range(index, len(self.Token)):
             # If it is a digit, using ASCII values
-            if( ord(self.Token[i]) >= 48 and ord(self.Token[i]) <= 57):
+            if(ord(self.Token[i]) >= 48 and ord(self.Token[i]) <= 57):
                 continue
             # if it is a period
             elif(self.Token[i] == '.'):
@@ -61,7 +71,7 @@ class Node:
         if (period == 0):
             return 2
         else:
-            return 3 
+            return 3
     def getToken(self):
         return self.Token
     def getType(self):
@@ -71,9 +81,33 @@ class Node:
     
     
 if __name__ == '__main__':
-    node1 = Node('"hello"')
+    node1 = Node('hello12')
     print node1.getToken()
     print node1.getType()
-    node2 = Node('"goodbye"')
-    node1.setNext(node2)
-    print node1.getNext()
+    node1 = Node('2453')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('124.39')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('"string"')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('(')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node(')')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('{')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('}')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('true')
+    print node1.getToken()
+    print node1.getType()
+    node1 = Node('false')
+    print node1.getToken()
+    print node1.getType()
