@@ -3,8 +3,11 @@ This is a tokenizer in python for the language Racket
 We will make this accept our language later...
 '''
 from linkedlist import checkType
+from nodeClass import *
+
 
 def tokenize(expression):
+    head = None
     expression += " "
     tokenList = []
     temp = ""
@@ -28,8 +31,11 @@ def tokenize(expression):
         elif expression[i] == "\"":
             if stringFlag:
                 stringFlag = False
+                temp = "\"" + temp + "\""
+                tokenList.append(temp)
             else:
                 stringFlag =True
+                
             
         elif expression[i] == ' ':
             if stringFlag:
@@ -57,10 +63,29 @@ def tokenize(expression):
         else:
             temp += expression[i]
             
+    #Turn the list of tokens into a linked list of nodes        
     for i in tokenList:
-        print i, checkType(i)
+        curNode = Node(i)
+        curNode.setNext(head)
+        head = curNode
     
-tokenize(raw_input("enter a line to tokenize: "))
-
+	#Reverse our linked list of nodes to be in the correct order
+    previous = None;
+    while head != None:
+        temp = head.getNext()
+        head.setNext(previous)
+        previous = head
+        head = temp
+    head = previous
+    
+    #print out the list of tokens in order to check! 
+    printHead = head
+    while printHead != None:
+        print printHead.getToken(), printHead.getType()
+        printHead = printHead.getNext()
+    
+#tokenize(raw_input("enter a line to tokenize: "))
+tokenize('"hello world" "goodbye"')
+tokenize('one 2 3.0 "4" (){}true false')
 inputt = "String myString = new Stack(String).push(\"hello\").push(\"world!\").pop()"
                 
