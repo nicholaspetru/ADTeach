@@ -1,25 +1,23 @@
 class Node:
     Token = None
     Type = None
+    Prev = None
     Next = None
+    Parent = None
+    Child = None
     def __init__(self, token):
         self.Token = token
         self.Type = self.setType()
+    def setPrev(self, Node):
+        self.Prev = Node
     def setNext(self, Node):
         self.Next = Node
+    def setParent(self, Node):
+        self.Parent = Node
+    def setChild(self, Node):
+        self.Child = Node
     def setType(self):
-        '''
-        Racket
-        0 = error
-        1 = symbol
-        2 = integer
-        3 = double
-        4 = string
-        5 = open paren
-        6 = close paren
-        7 = true
-        8 = false
-        
+        '''       
         Vava
         0 = error
         1 = symbol
@@ -31,6 +29,7 @@ class Node:
         7 = open brace
         8 = close brace
         9 = boolean
+        10 = semicolon
         '''
         period = 0
         index = 0
@@ -46,6 +45,8 @@ class Node:
             return 8
         elif ((self.Token == 'true') or (self.Token == 'false')):
             return 9
+        elif (self.Token[0] == ';'):
+            return 10
         elif (self.Token[0]  == '-'):
             if (len(self.Token) == 1):
                 return 1
@@ -76,8 +77,14 @@ class Node:
         return self.Token
     def getType(self):
         return self.Type
+    def getPrev(self):
+        return self.Prev
     def getNext(self):
         return self.Next
+    def getParent(self):
+        return self.Parent
+    def getChild(self):
+        return self.Child
     
     
 if __name__ == '__main__':

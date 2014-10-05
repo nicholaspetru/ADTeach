@@ -60,7 +60,12 @@ def tokenize(expression):
                 temp = ""
         
         elif expression[i] == ';':
-            return
+            if stringFlag:
+                temp += ';'
+            elif len(temp) > 0:
+                tokenList.append(temp)
+                tokenList.append(';')
+                temp = ""
         else:
             temp += expression[i]
             
@@ -78,15 +83,18 @@ def tokenize(expression):
         previous = head
         head = temp
     head = previous
-    
+    return head
+    '''
     #print out the list of tokens in order to check! 
     printHead = head
     while printHead != None:
         print printHead.getToken(), printHead.getType()
         printHead = printHead.getNext()
+    '''
     
-tokenize(raw_input("enter a line to tokenize: "))
-#tokenize('"hello world" "goodbye"')
-#tokenize('one 2 3.0 "4" (){}true false')
-tokenize("String myString = new Stack(String).push(\"hello\").push(\"world!\").pop()")
+if __name__ == "__main__":
+    tokenize(raw_input("enter a line to tokenize: "))
+    #tokenize('"hello world" "goodbye"')
+    #tokenize('one 2 3.0 "4" (){}true false')
+    #tokenize("String myString = new Stack(String).push(\"hello\").push(\"world!\").pop()")
                 
