@@ -33,6 +33,7 @@ def tokenize(expression):
                 stringFlag = False
                 temp = "\"" + temp + "\""
                 tokenList.append(temp)
+                temp = ""
             else:
                 stringFlag =True
                 
@@ -84,8 +85,8 @@ def tokenize(expression):
         print printHead.getToken(), printHead.getType()
         printHead = printHead.getNext()
     
-#tokenize(raw_input("enter a line to tokenize: "))
-tokenize('"hello world" "goodbye"')
-tokenize('one 2 3.0 "4" (){}true false')
-inputt = "String myString = new Stack(String).push(\"hello\").push(\"world!\").pop()"
+tokenize(raw_input("enter a line to tokenize: "))
+#tokenize('"hello world" "goodbye"')
+#tokenize('one 2 3.0 "4" (){}true false')
+tokenize("String myString = new Stack(String).push(\"hello\").push(\"world!\").pop()")
                 
