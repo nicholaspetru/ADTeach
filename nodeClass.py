@@ -16,6 +16,9 @@ class Node:
         self.Parent = Node
     def setChild(self, Node):
         self.Child = Node
+    def setToken(self, Node):
+        self.Token = Node
+        
     def setType(self):
         '''       
         Vava
@@ -30,9 +33,12 @@ class Node:
         8 = close brace
         9 = boolean
         10 = semicolon
+        11 = newLevel
         '''
         period = 0
         index = 0
+        if self.Token == "NewLevel":
+            return 11
         if(self.Token[0] == '\"' and self.Token[len(self.Token)-1] == '\"'):
             return 4
         elif (self.Token[0] == '('):
