@@ -69,7 +69,7 @@ def printParseTree(tree):
 def popFromFront(tree):
     if tree == None:
         return None, None
-    token = Node(tree.getToken())
+    token = tree
     tree = tree.getNext()
     return token, tree
     
