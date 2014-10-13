@@ -1,14 +1,8 @@
 from tokenizer2 import *
 
 def addToParseTree(tree, token):
-    # If the token is not an open or close type, just push it onto the tree
-    if token.getType() not in [5,6,7,8]:
-        token.setNext(tree)
-        return token
-    
-    # If the token is an open type, push it onto the tree
-    # This will be a marker to see where the new level ends (or starts)
-    elif token.getType() in [5,7]:
+    # If the token is not a close type, just push it onto the tree
+    if token.getType() not in [6, 8]:
         token.setNext(tree)
         return token
     

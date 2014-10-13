@@ -7,7 +7,8 @@ from nodeClass import *
 
 
 def tokenize(expression):
-    depth = 0
+    parenDepth = 0
+    braceDepth = 0
     head = None
     expression += " "
     tokenList = []
@@ -17,9 +18,13 @@ def tokenize(expression):
     
     for i in range(len(expression)):
         if expression[i] == '(':
-            depth += 1
+            parenDepth += 1
         elif expression[i] == ')':
-            depth -= 1
+            parenDepth -= 1
+        if expression[i] == '{':
+            braceDepth += 1
+        elif expression[i] == '}':
+            braceDepth -= 1
         if expression[i] in tokenSeparators:
             if stringFlag:
                 temp += ' '
@@ -89,8 +94,11 @@ def tokenize(expression):
         head = temp
     head = previous
     
-    if depth != 0:
+    if parenDepth != 0:
         print "Unmatched parentheses"
+        exit(1)
+    if braceDepth != 0:
+        print "Unmatched curly braces"
         exit(1)
     return head
     '''

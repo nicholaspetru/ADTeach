@@ -76,6 +76,7 @@ class Node:
                 else:
                     return 0
         if (period == 0):
+            self.Token = int(self.Token)
             return 2
         else:
             return 3
