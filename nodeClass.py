@@ -37,6 +37,7 @@ class Node:
         '''
         period = 0
         index = 0
+        
         if self.Token == "NewLevel":
             return 11
         if(self.Token[0] == '\"' and self.Token[len(self.Token)-1] == '\"'):

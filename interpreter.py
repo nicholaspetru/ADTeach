@@ -1,10 +1,17 @@
+from nodeClass import *
+
 def eval(expr, env):
    
     
     if expr == None:
         return None
     if expr.getType() == 11:
-        return eval(expr.getToken())
+        return eval(expr.getToken(), env)
+    
+    if (expr.getNext() != None):
+        print expr.getToken(), expr.getNext().getToken(), "expr and expr.next"
+        if (expr.getNext().getType() == 1) and (expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**"]):
+            return evalMaths(expr, expr.getNext(), expr.getNext().getNext(), env)
     
     # Type is a symbol (type, variable, equal sign)
     if (expr.getNext() != None and expr.getNext().getNext() != None and expr.getNext().getNext().getNext() != None):
@@ -13,20 +20,42 @@ def eval(expr, env):
                 if expr.getNext().getNext().getType() == 1:
                     value = eval(expr.getNext().getNext().getNext(), env)
                     evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
+                    
                 
     # Type is a symbol (variable, equal sign)
     elif (expr.getNext() != None and expr.getNext().getNext() != None):
+        print expr.getNext().getToken(), "Token, plus?"
         if expr.getType() == 1:
-            if expr.getNext().getType() == 1:  
+            if expr.getNext().getType() == 1 and expr.getNext().getToken() == "=" :
                 value = eval(expr.getNext().getNext(), env)
                 evalEquals(expr.getToken(), [None, value], env)
-        
+                
+    
+                                    
+                                    
     else:
         return expr.getToken()
     
             
-
-        
+def evalMaths(first, op, second, env):
+    firstNode = Node(str(first.getToken()))
+    secondNode = Node(str(second.getToken()))
+    
+    first = eval(firstNode, env)
+    second = eval(secondNode, env)
+    
+    if op.getToken() == '+':
+        return first + second
+    if op.getToken() == '-':
+        return first - second
+    if op.getToken() == '*':
+        return first * second
+    if op.getToken() == '/':
+        return first / second
+    if op.getToken() == '%':
+        return first % second
+    if op.getToken() == '**':
+        return first ** second
     
     
 def evalEquals(name, value, env):

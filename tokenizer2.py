@@ -47,13 +47,21 @@ def tokenize(expression):
             else:
                 stringFlag =True
                 
-            
         elif expression[i] == ' ':
             if stringFlag:
                 temp += ' '
             elif len(temp) > 0:
                 tokenList.append(temp)
                 temp = ""
+                
+        elif expression[i] == '.':
+            if stringFlag:
+                temp += '.'
+            elif len(temp) > 0:
+                tokenList.append(temp)
+                temp = "." 
+            else:
+                temp = "."
         
         elif expression[i] == '\t':
             if stringFlag:

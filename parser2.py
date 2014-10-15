@@ -57,7 +57,7 @@ def printParseTree(tree):
         printParseTree(tree.getToken())
         print ")"
     else:
-        print tree.getToken()
+        print tree.getToken(), tree.getType()
     printParseTree(tree.getNext())
     
 def popFromFront(tree):
@@ -71,6 +71,6 @@ def popFromFront(tree):
     
 if __name__ == "__main__":
     tokenList = tokenize('x = (5 + 3) + 4')
-    tokenList = tokenize("Stack s = new Stack(int)")
+    tokenList = tokenize("x.pop().push().push()")
     parsedList = parse(tokenList)
     printParseTree(parsedList)
