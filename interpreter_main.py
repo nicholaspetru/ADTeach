@@ -6,14 +6,17 @@ from interpreter import *
 
 if __name__ == '__main__':
     e = Environment()
-    e.addVariable(Node("x").getToken(), [str, 'hello'])
+    #e.addVariable(Node("x").getToken(), [str, 'hello'])
     
     expression = raw_input()
-    tokenList = tokenize(expression)
-    tree = parse(tokenList)
+    expressionList = expression.split(";")
+    for ex in expressionList:
+        tokenList = tokenize(ex)
+        tree = parse(tokenList)
     
     
-    printParseTree(tree)
+        printParseTree(tree)
     
-    eval(tree, e)
+        eval(tree, e)
+        
     e.printVariables()

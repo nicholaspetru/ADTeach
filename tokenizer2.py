@@ -27,7 +27,7 @@ def tokenize(expression):
             braceDepth -= 1
         if expression[i] in tokenSeparators:
             if stringFlag:
-                temp += ' '
+                temp += expression[i]
             elif len(temp) == 0:
                 temp = expression[i]
                 tokenList.append(temp)

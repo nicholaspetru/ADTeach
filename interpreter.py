@@ -54,7 +54,7 @@ def evalEquals(name, value, env):
     # Else creating variable in dictionary
     else:
         if name in dictionary:
-            if dictionary[name][0] != value[0]:
+            if dictionary[name][0] != type(value[1]):
                 print "Incompatible types"
                 exit(1)
             else:
