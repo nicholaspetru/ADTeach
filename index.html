@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+  <link rel="stylesheet" href="codemirror-4.6/lib/codemirror.css">
+  <script src="codemirror-4.6/lib/codemirror.js" type="text/javascript"></script>
+  <script src="codemirror-4.6/mode/python/python.js" type="text/javascript"></script>
+  <title> Testing </title>
+</head>
+<body style="padding: 20px;">
+  <!--- <div id="nav"> </div> -->
+<article>
+  <h1> Source Code Editor </h1>
+  <form>
+    <!-- <div style="max-width: 50e,; margin-bottom: 1em"> Edit your code: <br> -->
+    <div>
+      <textarea id="code" name="code" cols="120" rows="30">
+        def test
+      </textarea>
+    </div>
+  </form>
+  <script type="text/javascript">
+  var textarea= document.getElementById('code');
+  var editor = CodeMirror.fromTextArea(textarea);
+  </script>
+</article>
+
+
+</body>
+</html>
