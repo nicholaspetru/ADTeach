@@ -1,38 +1,35 @@
 from nodeClass import *
 
 def eval(expr, env):
-   
-    
+    #check for empty expression
     if expr == None:
         return None
+    #all checks on expr
+    #evaluating newLevel
+    else:
+        print expr.getToken()
     if expr.getType() == 11:
         return eval(expr.getToken(), env)
-    
-    if (expr.getNext() != None):
-        print expr.getToken(), expr.getNext().getToken(), "expr and expr.next"
-        if (expr.getNext().getType() == 1) and (expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**"]):
+    #evaluating assignment statements which declare type
+    elif expr.getToken() in ['int','string','float','node','boolean']:  
+        #no value assigned
+        if expr.getNext().getNext() == None:
+            pass #uncomment out next line and remove pass when evalDeclare is written
+            #evalDeclare(expr.getNext().getToken(), [expr.getType(), None], env)   
+        #value assigned
+        else:
+            value = eval(expr.getNext().getNext().getNext(), env)
+            evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
+    elif expr.getNext() != None:
+        #all checks on expr.next()
+        #evaluating assignment statements which don't declare type
+        if expr.getNext().getToken() == "=":
+            value = eval(expr.getNext().getNext(), env)
+            evalEquals(expr.getToken(), [None, value], env)
+        #evaluating algebra
+        elif expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**"]:
             return evalMaths(expr, expr.getNext(), expr.getNext().getNext(), env)
-    
-    # Type is a symbol (type, variable, equal sign)
-    if (expr.getNext() != None and expr.getNext().getNext() != None and expr.getNext().getNext().getNext() != None):
-        if expr.getType() == 1:
-            if expr.getNext().getType() == 1:
-                if expr.getNext().getNext().getType() == 1:
-                    value = eval(expr.getNext().getNext().getNext(), env)
-                    evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
-                    
-                
-    # Type is a symbol (variable, equal sign)
-    elif (expr.getNext() != None and expr.getNext().getNext() != None):
-        print expr.getNext().getToken(), "Token, plus?"
-        if expr.getType() == 1:
-            if expr.getNext().getType() == 1 and expr.getNext().getToken() == "=" :
-                value = eval(expr.getNext().getNext(), env)
-                evalEquals(expr.getToken(), [None, value], env)
-                
-    
-                                    
-                                    
+    #can't be evaluated
     else:
         return expr.getToken()
     
@@ -87,7 +84,7 @@ def evalEquals(name, value, env):
                 print "Incompatible types"
                 exit(1)
             else:
-                print name, " has already been initialized"
+                print name, "has already been initialized"
                 exit(1)
         else:
             dictionary[name] = [0, 0]
