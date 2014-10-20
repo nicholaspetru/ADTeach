@@ -11,8 +11,11 @@ def eval(expr, env):
     if expr.getType() == 11:
         return eval(expr.getToken(), env)
     #evaluating assignment statements which declare type
-    elif expr.getToken() in ['int','string','float','node','boolean']:  
+    elif expr.getToken() in ['int','string','float','node','boolean']: 
         #no value assigned
+        if expr.getNext() == None or expr.getNext().getType() != 1:
+            print "Error! expected symbol after declaring type:", expr.getToken()
+            exit(1)
         if expr.getNext().getNext() == None:
             evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)  
         #value assigned
@@ -23,6 +26,9 @@ def eval(expr, env):
         #all checks on expr.next()
         #evaluating assignment statements which don't declare type
         if expr.getNext().getToken() == "=":
+            if expr.getType() != 1:
+                print "Error! Expected Symbol on left side of assignment"
+                exit(1)
             value = eval(expr.getNext().getNext(), env)
             evalEquals(expr.getToken(), [None, value], env)
         #evaluating algebra
