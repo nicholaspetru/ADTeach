@@ -1,4 +1,7 @@
 from nodeClass import *
+from parser2 import *
+from tokenizer2 import *
+from environment import *
 
 def eval(expr, env):
     #check for empty expression
@@ -46,14 +49,23 @@ def eval(expr, env):
     
 
 def evalPred(args, env):
+    print "go!"
     #if it is an empty ()
     if args == None:
         print "No predicate in the condition spot"
         exit(1)
     
-    #If it goes to a new leve, evaluate the new level
+    #If it goes to a new level, evaluate the new level
+    
+    #***This does not work... yet...***
+    #***This does not work... yet...***
+    #***This does not work... yet...***
     if args.getType() == 11:
-        return evalPred(args.getToken())
+        return evalPred(args.getToken(), env)
+    #***This does not work... yet...***
+    #***This does not work... yet...***
+    #***This does not work... yet...***
+    
     
     #If it is a sinlge token, return Either True or False
     #False is False, everything else is true
@@ -63,17 +75,61 @@ def evalPred(args, env):
         else:
             return True
     
-    if
+    else:
+        first, op, second = findOperator(args, env)
+        if op == None:
+            print "Error! The predicate does not make sense"
+            exit(1)
+        a = eval(first, env)
+        b = eval(second, env)
+        if op.getToken() == '>':
+            if a > b:
+                print "A is > B"
+            else:
+                print "a is < b"
+        if op.getToken() == '<':
+            if a < b:
+                print "a is < b"
+            else:
+                print "a is > b"
+        if op.getToken() == '==':
+            if a == b:
+                print "a == b"
+            else:
+                print "a != b"
+        if op.getToken() == '!=':
+            if a != b:
+                print "a != b"
+            else:
+                print "a == b"
+        if op.getToken() == '>=':
+            if a >= b:
+                print "a is >= b"
+            else:
+                print "a is <= b"
+        if op.getToken() == '<=':
+            if a <= b:
+                print "a is <= b"
+            else:
+                print "a is >= b"
     
+
 def findOperator(head, env):
     op = head
     while op.getToken() not in ["==", "!=", ">", "<", ">=", "<="]:
+        temp = op
         op = op.getNext()
         if op == None:
-            return
+            return None, None, None
+    if op.getNext() == None:
+        return None, None, None
+    temp.setNext(None)
+    print head.getToken(), op.getToken(), op.getNext().getToken()
+    return head, op, op.getNext()
     
     
-def evalInequality(arg1, op, arg2, env):
+    
+#def evalInequality(arg1, op, arg2, env):
         
 def resolveVariable(var, env):
     variables = env.getVariables()
@@ -82,7 +138,7 @@ def resolveVariable(var, env):
     else:
         print "Error! ", var.getToken(), "has not been instantiated!"
         exit(1)
-    
+
 def evalMaths(first, op, second, env):
     print "Starting evalMaths: First, Second:", first.getToken(), second.getToken()
     if second == None:
@@ -194,6 +250,9 @@ def evalEquals(name, value, env):
     
     return env
 
+if __name__ == '__main__':
+    e = Environment()
+    tokenList = tokenize(raw_input())
+    tree = parse(tokenList)
 
-    
-        
+    evalPred(tree, e)
