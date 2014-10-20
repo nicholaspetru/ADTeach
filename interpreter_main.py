@@ -16,7 +16,7 @@ if __name__ == '__main__':
         tree = parse(tokenList)
     
     
-        printParseTree(tree)
+        #printParseTree(tree)
     
         eval(tree, e)
         

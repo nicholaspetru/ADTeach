@@ -6,10 +6,13 @@ def eval(expr, env):
         return None
     #all checks on expr
     #evaluating newLevel
-    else:
-        print expr.getToken()
+    #else:
+        
+        #print expr.getToken()
     if expr.getType() == 11:
-        return eval(expr.getToken(), env)
+        newNode = Node(str(eval(expr.getToken(), env)))
+        newNode.setNext(expr.getNext())
+        return eval( newNode, env)
     #evaluating assignment statements which declare type
     elif expr.getToken() in ['int','string','float','node','boolean']: 
         #no value assigned
@@ -34,11 +37,14 @@ def eval(expr, env):
         #evaluating algebra
         elif expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**"]:
             return evalMaths(expr, expr.getNext(), expr.getNext().getNext(), env)
+    #Check our environment for the variable
+    elif expr.getType() == 1:
+        return resolveVariable(expr, env)
     #can't be evaluated
     else:
         return expr.getToken()
     
-'''
+
 def evalPred(args, env):
     #if it is an empty ()
     if args == None:
@@ -68,9 +74,17 @@ def findOperator(head, env):
     
     
 def evalInequality(arg1, op, arg2, env):
-        '''
-
+        
+def resolveVariable(var, env):
+    variables = env.getVariables()
+    if var.getToken() in variables:
+        return variables[var.getToken()][1]
+    else:
+        print "Error! ", var.getToken(), "has not been instantiated!"
+        exit(1)
+    
 def evalMaths(first, op, second, env):
+    print "Starting evalMaths: First, Second:", first.getToken(), second.getToken()
     if second == None:
         print "Error in your Arithmatic111"
         exit(1)
@@ -86,10 +100,15 @@ def evalMaths(first, op, second, env):
             exit(1)
     
     firstNode = Node(str(first.getToken()))
-    secondNode = Node(str(second.getToken()))
+    if second.getType()==11:
+        secondNode = Node(str(eval(second.getToken(), env)))
+    else:
+        secondNode = Node(str(second.getToken()))
     
     first = eval(firstNode, env)
     second = eval(secondNode, env)
+    print "THIS IS THE SECOND VAL AND TYPE!:", secondNode.getToken(), secondNode.getType()
+    
     
     if op.getToken() == '+':
         sum1 = first + second
