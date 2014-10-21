@@ -1,0 +1,44 @@
+#mainheader {
+    background-color: #888888;
+    color: #FFFFFF;
+    padding: 5px;
+}
+
+#next, #pause, #end {
+    background-color: darkgray;
+    padding: 2px;
+    margin: 4px;
+}
+
+#next:hover, #pause:hover, #end {
+    cursor: pointer;
+}
+
+#code_env {
+    line-height:30px;
+    height:300px;
+    width:47%;
+    float:left;
+    border-style: solid;
+    border-width: thin;
+    background-color:#eeeeee;
+}
+
+textarea#user_textbox:hover {
+    cursor:text;
+}
+
+textarea#user_textbox{
+    height: 80%;
+    margin-left: 5%;
+    width: 87%;
+    resize:none;
+}
+
+#visual_env {
+    height:300px;
+    width:47%;
+    float:right;
+    border-style: solid;
+    border-width: thin;
+}
