@@ -2,6 +2,7 @@ from nodeClass import *
 from parser2 import *
 from tokenizer2 import *
 from environment import *
+import operator
 
 def eval(expr, env):
     #check for empty expression
@@ -49,7 +50,6 @@ def eval(expr, env):
     
 
 def evalPred(args, env):
-    print "go!"
     #if it is an empty ()
     if args == None:
         print "No predicate in the condition spot"
@@ -82,36 +82,9 @@ def evalPred(args, env):
             exit(1)
         a = eval(first, env)
         b = eval(second, env)
-        if op.getToken() == '>':
-            if a > b:
-                print "A is > B"
-            else:
-                print "a is < b"
-        if op.getToken() == '<':
-            if a < b:
-                print "a is < b"
-            else:
-                print "a is > b"
-        if op.getToken() == '==':
-            if a == b:
-                print "a == b"
-            else:
-                print "a != b"
-        if op.getToken() == '!=':
-            if a != b:
-                print "a != b"
-            else:
-                print "a == b"
-        if op.getToken() == '>=':
-            if a >= b:
-                print "a is >= b"
-            else:
-                print "a is <= b"
-        if op.getToken() == '<=':
-            if a <= b:
-                print "a is <= b"
-            else:
-                print "a is >= b"
+        ops = { ">": operator.gt, "<": operator.lt, ">=": operator.ge, "<=": operator.le, "==": operator.eq, "!=": operator.ne} 
+        if op.getToken() in ["==", "!=", ">", "<", ">=", "<="]:
+            return ops[op.getToken()](a,b)
     
 
 def findOperator(head, env):
@@ -138,6 +111,18 @@ def resolveVariable(var, env):
     else:
         print "Error! ", var.getToken(), "has not been instantiated!"
         exit(1)
+        
+        
+def evalWhile(pred):
+    #make sure there is a predicate and est of code to execute
+    if pred == None or pred.getType() != 11 or pred.getNext() == None or pred.getNext().getType() != 11:
+        print "Error with while loop"
+        exit(1)
+    while evalPred(pred, env):
+        eval(pred.getNext().getToken())
+    
+    
+    
 
 def evalMaths(first, op, second, env):
     print "Starting evalMaths: First, Second:", first.getToken(), second.getToken()
@@ -255,4 +240,4 @@ if __name__ == '__main__':
     tokenList = tokenize(raw_input())
     tree = parse(tokenList)
 
-    evalPred(tree, e)
+    print evalPred(tree, e)
