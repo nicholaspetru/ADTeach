@@ -214,6 +214,8 @@ def evalEquals(name, value, env):
             else:
                 raise AlreadyInitialized(name)
         else:
+            print "*** Need to check for incompatible types ***"
+            print "inputted type:", value[0], "...", "actual type:", type(value[1]), "...", "Are they compatible???:", value[0] == type(value[1])
             dictionary[name] = [0, 0]
             dictionary[name][0] = type(value[1])
             dictionary[name][1] = value[1]

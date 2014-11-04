@@ -50,7 +50,11 @@ class Node:
             return 7
         elif (self.Token[0]  == '}'):
             return 8
-        elif ((self.Token == 'true') or (self.Token == 'false')):
+        elif (self.Token == 'true' or self.Token == 'True'):
+            self.Token = True
+            return 9
+        elif (self.Token == 'false' or self.Token == 'False'):
+            self.Token = False
             return 9
         elif (self.Token[0] == ';'):
             return 10
