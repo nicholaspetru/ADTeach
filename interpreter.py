@@ -19,12 +19,12 @@ def eval(expr, env):
         newNode.setNext(expr.getNext())
         return eval( newNode, env)
     #evaluating assignment statements which declare type
-    elif expr.getToken() in ['int','string','float','node','boolean']: 
+    elif expr.getToken() in ['int','String','float','node','boolean']: 
         #no value assigned
         if expr.getNext() == None or expr.getNext().getType() != 1:
             raise DeclarationError('Expected symbol after declaring type: ', expr.getToken())
-        
-			if expr.getNext().getNext() == None:
+
+        if expr.getNext().getNext() == None:
             evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)  
         #value assigned
         else:
@@ -41,6 +41,8 @@ def eval(expr, env):
         #evaluating algebra
         elif expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**"]:
             return evalMaths(expr, expr.getNext(), expr.getNext().getNext(), env)
+        elif expr.getNext().getToken() in ["==", "!=", ">", "<", ">=", "<="]:
+            return evalPred(expr, env)
     #Check our environment for the variable
     elif expr.getType() == 1:
         return resolveVariable(expr, env)
