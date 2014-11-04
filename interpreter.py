@@ -55,15 +55,9 @@ def evalPred(args, env):
         raise PredicateMissingException()
     
     #If it goes to a new level, evaluate the new level
-    
-    #***This does not work... yet...***
-    #***This does not work... yet...***
-    #***This does not work... yet...***
+
     if args.getType() == 11:
         return evalPred(args.getToken(), env)
-    #***This does not work... yet...***
-    #***This does not work... yet...***
-    #***This does not work... yet...***
     
     
     #If it is a sinlge token, return Either True or False
