@@ -3,6 +3,7 @@ from parser2 import *
 from tokenizer2 import *
 from environment import *
 import operator
+from Exception import *
 
 def eval(expr, env):
     #check for empty expression
@@ -21,9 +22,9 @@ def eval(expr, env):
     elif expr.getToken() in ['int','string','float','node','boolean']: 
         #no value assigned
         if expr.getNext() == None or expr.getNext().getType() != 1:
-            print "Error! expected symbol after declaring type:", expr.getToken()
-            exit(1)
-        if expr.getNext().getNext() == None:
+            raise DeclarationError('Expected symbol after declaring type: ', expr.getToken())
+        
+			if expr.getNext().getNext() == None:
             evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)  
         #value assigned
         else:
@@ -34,8 +35,7 @@ def eval(expr, env):
         #evaluating assignment statements which don't declare type
         if expr.getNext().getToken() == "=":
             if expr.getType() != 1:
-                print "Error! Expected Symbol on left side of assignment"
-                exit(1)
+                raise DeclarationError('Expected Symbol on left side of assignment')
             value = eval(expr.getNext().getNext(), env)
             evalEquals(expr.getToken(), [None, value], env)
         #evaluating algebra
@@ -52,8 +52,7 @@ def eval(expr, env):
 def evalPred(args, env):
     #if it is an empty ()
     if args == None:
-        print "No predicate in the condition spot"
-        exit(1)
+        raise PredicateMissingException()
     
     #If it goes to a new level, evaluate the new level
     
@@ -78,8 +77,7 @@ def evalPred(args, env):
     else:
         first, op, second = findOperator(args, env)
         if op == None:
-            print "Error! The predicate does not make sense"
-            exit(1)
+            raise PredicateLogicError()
         a = eval(first, env)
         b = eval(second, env)
         ops = { ">": operator.gt, "<": operator.lt, ">=": operator.ge, "<=": operator.le, "==": operator.eq, "!=": operator.ne} 
@@ -116,8 +114,7 @@ def resolveVariable(var, env):
 def evalWhile(pred):
     #make sure there is a predicate and est of code to execute
     if pred == None or pred.getType() != 11 or pred.getNext() == None or pred.getNext().getType() != 11:
-        print "Error with while loop"
-        exit(1)
+        raise WhileLoopSyntaxError()
     while evalPred(pred, env):
         eval(pred.getNext().getToken())
     
@@ -127,8 +124,7 @@ def evalWhile(pred):
 def evalMaths(first, op, second, env):
     print "Starting evalMaths: First, Second:", first.getToken(), second.getToken()
     if second == None:
-        print "Error in your Arithmatic111"
-        exit(1)
+        raise ArithmeticError()
         
     hasThird = False
     
@@ -137,8 +133,7 @@ def evalMaths(first, op, second, env):
             op2 = second.getNext()
             hasThird = True
         else:
-            print "Error in your arithmatic222"
-            exit(1)
+            raise ArithmeticError()
     
     firstNode = Node(str(first.getToken()))
     if second.getType()==11:
@@ -188,11 +183,9 @@ def evalDeclare(name, value, env):
         dictionary[name][1] = None
     else:
         if dictionary[name][0] != convertDeclaredType(value[0]):
-            print "Incompatible types"
-            exit(1)
+            raise IncompatibleTypes()
         else:
-            print "Already initialized"
-            exit(1)
+            raise AlreadyInitialized()
     
 def evalEquals(name, value, env):
     dictionary = env.getVariables()
@@ -200,8 +193,7 @@ def evalEquals(name, value, env):
     # Error if variable is not initialized, otherwise update value
     if value[0] == None:
         if name not in dictionary:
-            print "This variable has not been initialized"
-            exit(1)
+            raise UnidentifiedVariable(name)
             
         #Check for type errors, or else update value
         else:
@@ -214,8 +206,7 @@ def evalEquals(name, value, env):
                 dictionaryType = dictionary[name][0]
             print "dictionary type is: ", dictionaryType, ' for ', dictionary[name][1]
             if inputedType != dictionaryType:
-                print "Cannot convert type ", dictionaryType, " to", inputedType
-                exit(1)
+                raise IncompatibleTypes(dictionaryType, inputedType)
             dictionary[name][1] = value[1]
     
     # Error if passing a type when already initialized 
@@ -223,11 +214,9 @@ def evalEquals(name, value, env):
     else:
         if name in dictionary:
             if dictionary[name][0] != type(value[1]):
-                print "Incompatible types"
-                exit(1)
+                raise IncompatibleTypes()
             else:
-                print name, " has already been initialized"
-                exit(1)
+                raise AlreadyInitialized(name)
         else:
             dictionary[name] = [0, 0]
             dictionary[name][0] = type(value[1])
