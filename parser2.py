@@ -15,30 +15,35 @@ def addToParseTree(tree, token):
         # Pop all the tokens and put them into the temp stack
         # Until we get to the open type
         if token.getType() == 10:
-            while curToken != None and curToken.getType() not in [7,10]:
+            while curToken != None and curToken.getType() not in [5, 7,10, 13]:
+                print "CURRRRRRTOKEN:", curToken.getToken()
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
-            newLevel = Node(";")
+            tree = curToken
+            print "Noooooowwww the tree is:", printParseTree(tree)
+            newLevel = Node("SemicolonLevel")
             newLevel.setNext(None)
             newLevel.setToken(tempStack)
                 
         elif token.getType() == 6:
-            while curToken.getType() not in [5]:
+            while curToken != None and curToken.getType() not in [5]:
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
-                if curToken == None:
-                    raise MissingParentheses("Missing open paren")
+                #if curToken == None:
+                 #   raise MissingParentheses("Missing open paren")
+            tree = curToken
             newLevel = Node("ParenLevel")
             newLevel.setNext(None)
             newLevel.setToken(tempStack)
             
             
         else:
-            while curToken.getType() not in [7]:
+            while curToken != None and curToken.getType() not in [7]:
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
-                if curToken == None:
-                    raise MissingCurlyBrace("Missing open curly brace")
+                #if curToken == None:
+                    #raise MissingCurlyBrace("Missing open curly brace")
+            tree = curToken
             newLevel = Node("CurlyBraceLevel")
             newLevel.setNext(None)
             newLevel.setToken(tempStack)
@@ -59,9 +64,14 @@ def parse(tokenList):
     #Create an empty tree and add all of the tokens to it iteratively 
     tree = None
     while tokenList != None:
+    
         token, tokenList = popFromFront(tokenList)
-        tree = addToParseTree(tree, token)
+        print "tokenizing:", token.getToken(), token.getType()
         
+        tree = addToParseTree(tree, token)
+        print "tree is:", printParseTree(tree)
+        if tree.getType() == 13:
+            print "tree points to:", tree.getToken()
     #reverse the parse tree so it is in the right order
     previous = None;
     while tree != None:
@@ -75,15 +85,34 @@ def parse(tokenList):
 
 
 def printParseTree(tree):
+    #print "TREE TREE TREE", tree
     if tree == None:
         return
     if tree.getType() == 11:
         print "("
         printParseTree(tree.getToken())
         print ")"
+    elif tree.getType() == 12:
+        print "{"
+        printParseTree(tree.getToken())
+        print "}"
+    elif tree.getType() == 13:
+        print "open ;"
+        
+        #if tree.getToken().getNext() == None:
+            #print "it is none"
+        #print "token for ; is", tree.getToken(), "next token for ; is", tree.getToken().getNext().getToken(), tree.getToken().getNext().getNext().getToken()
+        #print "****"
+        #print tree.getToken().getType()
+        printParseTree(tree.getToken())
+        print "close ;"
+        
+        
     else:
         print tree.getToken(), tree.getType()
+        
     printParseTree(tree.getNext())
+    
     
 def popFromFront(tree):
     if tree == None:

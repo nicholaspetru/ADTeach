@@ -4,6 +4,7 @@ We will make this accept our language later...
 '''
 from linkedlist import checkType
 from nodeClass import *
+from Exception import *
 
 
 def tokenize(expression):

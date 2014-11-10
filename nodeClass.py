@@ -42,6 +42,8 @@ class Node:
             return 11
         if self.Token == "CurlyBraceLevel":
             return 12
+        if self.Token == "SemicolonLevel":
+            return 13
         if(self.Token[0] == '\"' and self.Token[len(self.Token)-1] == '\"'):
             return 4
         elif (self.Token[0] == '('):
