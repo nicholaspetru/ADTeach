@@ -24,3 +24,9 @@ class AlreadyInitialized(Exception):
 
 class WhileLoopSyntaxError(Exception):
     pass
+
+class MissingParentheses(Exception):
+    pass
+
+class MissingCurlyBrace(Exception):
+    pass

@@ -14,7 +14,7 @@ def tokenize(expression):
     tokenList = []
     temp = ""
     stringFlag = False
-    tokenSeparators = ['(', ')', '+', '-', '*', '/', '{', '}']
+    tokenSeparators = ['(', ')', '+', '-', '*', '/', '{', '}', ';']
     
     for i in range(len(expression)):
         if expression[i] == '(':
@@ -103,11 +103,9 @@ def tokenize(expression):
     head = previous
     
     if parenDepth != 0:
-        print "Unmatched parentheses"
-        exit(1)
+        raise MissingParentheses("Unmatched parentheses")
     if braceDepth != 0:
-        print "Unmatched curly braces"
-        exit(1)
+        raise MissingCurlyBrace("Unmatched curly braces")
     return head
     '''
     #print out the list of tokens in order to check! 

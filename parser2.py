@@ -2,7 +2,7 @@ from tokenizer2 import *
 
 def addToParseTree(tree, token):
     # If the token is not a close type, just push it onto the tree
-    if token.getType() not in [6, 8]:
+    if token.getType() not in [6, 8, 10]:
         token.setNext(tree)
         return token
     
@@ -14,15 +14,40 @@ def addToParseTree(tree, token):
         
         # Pop all the tokens and put them into the temp stack
         # Until we get to the open type
-        while curToken.getType() not in [5,7]:
-            tempStack = addToParseTree(tempStack, curToken)
-            curToken, tree = popFromFront(tree)
+        if token.getType() == 10:
+            while curToken != None and curToken.getType() not in [7,10]:
+                tempStack = addToParseTree(tempStack, curToken)
+                curToken, tree = popFromFront(tree)
+            newLevel = Node(";")
+            newLevel.setNext(None)
+            newLevel.setToken(tempStack)
+                
+        elif token.getType() == 6:
+            while curToken.getType() not in [5]:
+                tempStack = addToParseTree(tempStack, curToken)
+                curToken, tree = popFromFront(tree)
+                if curToken == None:
+                    raise MissingParentheses("Missing open paren")
+            newLevel = Node("ParenLevel")
+            newLevel.setNext(None)
+            newLevel.setToken(tempStack)
+            
+            
+        else:
+            while curToken.getType() not in [7]:
+                tempStack = addToParseTree(tempStack, curToken)
+                curToken, tree = popFromFront(tree)
+                if curToken == None:
+                    raise MissingCurlyBrace("Missing open curly brace")
+            newLevel = Node("CurlyBraceLevel")
+            newLevel.setNext(None)
+            newLevel.setToken(tempStack)
             
         # Create a new node that marks the new level of the tree
         # Set its value to the stack of tokens that make up the new level
-        newLevel = Node("NewLevel")
-        newLevel.setNext(None)
-        newLevel.setToken(tempStack)
+        #newLevel = Node("NewLevel2")
+        #newLevel.setNext(None)
+        #newLevel.setToken(tempStack)
         
         # Push the new level onto the tree in the right spot
         tree = addToParseTree(tree, newLevel)

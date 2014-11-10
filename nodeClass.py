@@ -38,8 +38,10 @@ class Node:
         period = 0
         index = 0
         
-        if self.Token == "NewLevel":
+        if self.Token == "ParenLevel":
             return 11
+        if self.Token == "CurlyBraceLevel":
+            return 12
         if(self.Token[0] == '\"' and self.Token[len(self.Token)-1] == '\"'):
             return 4
         elif (self.Token[0] == '('):
