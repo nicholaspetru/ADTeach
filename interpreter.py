@@ -14,13 +14,18 @@ def eval(expr, env):
     #else:
         
         #print expr.getToken()
-    if expr.getType() == 11:
+    if expr.getType() == 13:
+        eval(expr.getToken(),env)
+        return eval(expr.getNext(), env)
+
+    if expr.getType() in [11,12]:
         newNode = Node(str(eval(expr.getToken(), env)))
         newNode.setNext(expr.getNext())
         return eval( newNode, env)
     #evaluating assignment statements which declare type
     elif expr.getToken() in ['int','String','float','node','boolean']: 
         #no value assigned
+        print "declaring var of type:", expr.getToken()
         if expr.getNext() == None or expr.getNext().getType() != 1:
             raise DeclarationError('Expected symbol after declaring type: ', expr.getToken())
 
@@ -52,6 +57,7 @@ def eval(expr, env):
     
 
 def evalPred(args, env):
+    "is this even called??"
     #if it is an empty ()
     if args == None:
         raise PredicateMissingException()
@@ -78,6 +84,8 @@ def evalPred(args, env):
         b = eval(second, env)
         ops = { ">": operator.gt, "<": operator.lt, ">=": operator.ge, "<=": operator.le, "==": operator.eq, "!=": operator.ne} 
         if op.getToken() in ["==", "!=", ">", "<", ">=", "<="]:
+            print "============================"
+            print  op.getToken()
             return ops[op.getToken()](a,b)
     
 
@@ -132,7 +140,8 @@ def evalMaths(first, op, second, env):
             raise ArithmeticError()
     
     firstNode = Node(str(first.getToken()))
-    if second.getType()==11:
+    print "What is Second's type?????", second.getType(), second.getToken()
+    if second.getType() > 10:
         secondNode = Node(str(eval(second.getToken(), env)))
     else:
         secondNode = Node(str(second.getToken()))

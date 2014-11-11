@@ -1,0 +1,19 @@
+Interpreter Timeline:
+6th week:
+    Declare/Assign variables: 
+        int x;
+        x = 6;
+        String y = "hello";
+    Arithmatic: 
+        x = 5+3-6*(1/3)
+    
+7th week:
+    semicolons:
+        int x = 5 -> ERROR, need semicolon on line 1
+    Predicates:
+        (5 == 5) -> True
+    iterators:
+        int x = 0;
+        while (x < 5){
+            Print(x);
+            }

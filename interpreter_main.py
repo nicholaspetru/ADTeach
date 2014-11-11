@@ -8,16 +8,18 @@ if __name__ == '__main__':
     e = Environment()
     #e.addVariable(Node("x").getToken(), [str, 'hello'])
     
-    expression = raw_input()
-    expression2 = raw_input()
-    expressionList = expression.split(";") + expression2.split(";")
-    for ex in expressionList:
-        tokenList = tokenize(ex)
-        tree = parse(tokenList)
+    f = open('code.txt', 'r')
+    expression = f.read()
     
     
-        #printParseTree(tree)
-    
-        eval(tree, e)
-        
+    tokenList = tokenize(expression)
+    print tokenList
+    tree = parse(tokenList)
+
+    eval(tree, e)
+    print "***********************************************"
+    printParseTree(tree, 0)
     e.printVariables()
+    
+    
+    f.close()

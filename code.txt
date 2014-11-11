@@ -1,0 +1,6 @@
+int x; int y; 
+x = 10; 
+y = (x + (12 - 14));
+y = y + 7;
+boolean b = ( (y + 1) == (x + 6) );
+String z = "Justice!";
