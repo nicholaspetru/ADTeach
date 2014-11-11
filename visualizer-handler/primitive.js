@@ -1,33 +1,18 @@
+//primitive.js
+//Represents primitive objects like ints, strings, etc (something that doesn't need a data structure.)
+
 $(document).ready(function () {
     
     Primitive = function(name,type,value){
-        Entity.call(this);
+	Entity.call(this,name,type,value);
+	//specific calls go here
     }
     
     Primitive.prototype = Object.create(Entity.prototype);
     Primitive.prototype.constructor = Primitive;
-    
-    /*
+
     //draw the name of the function
-    Primitive.prototype.Draw = function() {
-        DrawName();
-        console.log(value);
-    }*/
-
-/*
-    //Primitive class-- represents non-ADT variables like strings, ints, etc.
-    Primitive = function(name,type,value){
-    
-        //inherit from Entity
-        Primitive.prototype = Object.create(Entity
-
-        //draw function
-        this.Draw = function() {
-            this.DrawName();
-            console.log(value);
-        };
-
-
-    }*/
-
+    Primitive.prototype.Draw = function(){
+	console.log(this.DrawName() + " = " + this.value);
+    }
 });

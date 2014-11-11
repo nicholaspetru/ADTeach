@@ -1,30 +1,13 @@
 $(document).ready(function () {
-  
-    var enTitties = new Entity('aStack','stack','[1,2,3]');
-    enTitties.DrawName();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-    enTitties.wacky();
-
-    var x = new Primitive('x','int','[1,2,3]');
-    x.DrawName();
+ 
+    var VH = new VisualizerHandler();
+    VH.NewEntity('int','x','int',5);
+    VH.NewEntity('stack','y','int',[1,2,3,4,5]);
+    VH.Render();
+    console.log("-----updating-----");
+    VH.UpdateEntity("x",10);
+    VH.Render();
+    console.log("-----deleting-----");
+    VH.DeleteEntity("y");
+    VH.Render();
 });
