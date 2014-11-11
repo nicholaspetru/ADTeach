@@ -23,7 +23,7 @@ def eval(expr, env):
         return eval( newNode, env)
     
     if expr.getToken() == "while":
-        print "+++++++++ while-ing"
+        
         #make sure there is a predicate and rest of code to execute
         if expr.getNext() == None or expr.getNext().getType() != 11 or expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 12:
             raise WhileLoopSyntaxError()
@@ -118,9 +118,10 @@ def findOperator(head, env):
             return None, None, None
     if op.getNext() == None:
         return None, None, None
-    temp.setNext(None)
+    #temp.setNext(None)
+    one = Node(head.getToken())
     #print head.getToken(), op.getToken(), op.getNext().getToken()
-    return head, op, op.getNext()
+    return one, op, op.getNext()
     
 #look up the variable in the environment dictionary
 def resolveVariable(var, env):
