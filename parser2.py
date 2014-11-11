@@ -12,47 +12,51 @@ def addToParseTree(tree, token):
         tempStack = None
         curToken, tree = popFromFront(tree)
         
-        # Pop all the tokens and put them into the temp stack
-        # Until we get to the open type
+        #if we find a semicolon:
         if token.getType() == 10:
+            # Pop all the tokens and put them into the temp stack
+            # Until we get to the open type or previous semi colon or close curly
             while curToken != None and curToken.getType() not in [5, 7,10, 12, 13]:
-                #print "CURRRRRRTOKEN:", curToken.getToken()
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
+                
+            #The pointer to the tree is currently at curToken
+            #we need to set it back to tree
             tree = curToken
-            #print "Noooooowwww the tree is:", printParseTree(tree)
+            
+            #create a new semicolon level and set it's token to the tempStack
+            #The tempStack is the list of tokens before the semicolon
             newLevel = Node("SemicolonLevel")
-            newLevel.setNext(None)
             newLevel.setToken(tempStack)
                 
+        #If we find a close parentheses:
         elif token.getType() == 6:
+            # Pop all the tokens and put them into the temp stack
+            # Until we get to the open paren type
             while curToken != None and curToken.getType() not in [5]:
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
-                #if curToken == None:
-                 #   raise MissingParentheses("Missing open paren")
-            #tree = curToken
+                
+            #create a new Parentheses level and set it's token to the tempStack
+            #The tempStack is the list of tokens between the parantheses  
             newLevel = Node("ParenLevel")
             newLevel.setNext(None)
             newLevel.setToken(tempStack)
             
-            
+        #If we find a close curly brace:    
         else:
+            # Pop all the tokens and put them into the temp stack
+            # Until we get to the open curly type
             while curToken != None and curToken.getType() not in [7]:
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
-                #if curToken == None:
-                    #raise MissingCurlyBrace("Missing open curly brace")
-            #tree = curToken
+                
+            #create a new Curly Brace level and set it's token to the tempStack
+            #The tempStack is the list of tokens between the Curly Braces      
             newLevel = Node("CurlyBraceLevel")
             newLevel.setNext(None)
             newLevel.setToken(tempStack)
             
-        # Create a new node that marks the new level of the tree
-        # Set its value to the stack of tokens that make up the new level
-        #newLevel = Node("NewLevel2")
-        #newLevel.setNext(None)
-        #newLevel.setToken(tempStack)
         
         # Push the new level onto the tree in the right spot
         tree = addToParseTree(tree, newLevel)
@@ -84,37 +88,34 @@ def parse(tokenList):
     return tree
 
 
+#Print the parse tree with indents to help visualize different levels of the tree
 def printParseTree(tree, depth):
-    #print "TREE TREE TREE", tree
     indent = ""
     for i in range(depth):
         indent = indent + "     "
+        
     if tree == None:
         return
+    
     if tree.getType() == 11:
         print indent,"("
         depth = depth + 1
         printParseTree(tree.getToken(), depth)
         depth = depth - 1
         print indent, ")"
+        
     elif tree.getType() == 12:
         print indent, "{"
         depth = depth + 1
         printParseTree(tree.getToken(),depth)
         depth = depth - 1
         print indent, "}"
+        
     elif tree.getType() == 13:
         print indent, "open ;"
-        
-        #if tree.getToken().getNext() == None:
-            #print "it is none"
-        #print "token for ; is", tree.getToken(), "next token for ; is", tree.getToken().getNext().getToken(), tree.getToken().getNext().getNext().getToken()
-        #print "****"
-        #print tree.getToken().getType()
         printParseTree(tree.getToken(), depth)
         print indent, "close ;"
-        print 
-        
+        print
         
     else:
         print indent, tree.getToken()#, tree.getType()

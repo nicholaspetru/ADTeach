@@ -9,19 +9,30 @@ def eval(expr, env):
     #check for empty expression
     if expr == None:
         return None
-    #all checks on expr
-    #evaluating newLevel
-    #else:
         
-        #print expr.getToken()
+    #If it is a semicolon type, evaluate the semicolon line, then evaluate the next thing
     if expr.getType() == 13:
         eval(expr.getToken(),env)
         return eval(expr.getNext(), env)
 
+    #if you get to a new level: eval what is in the new level,
+    #put it in a new node, and continue eval-ing
     if expr.getType() in [11,12]:
         newNode = Node(str(eval(expr.getToken(), env)))
         newNode.setNext(expr.getNext())
         return eval( newNode, env)
+    
+    if expr.getToken() == "while":
+        print "+++++++++ while-ing"
+        #make sure there is a predicate and rest of code to execute
+        if expr.getNext() == None or expr.getNext().getType() != 11 or expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 12:
+            raise WhileLoopSyntaxError()
+        env = evalWhile(expr.getNext(), env)
+        print "WHWRHWH"
+        env.printVariables()
+        return eval(expr.getNext().getNext().getNext(), env)
+        
+    
     #evaluating assignment statements which declare type
     elif expr.getToken() in ['int','String','float','node','boolean']: 
         #no value assigned
@@ -35,6 +46,8 @@ def eval(expr, env):
         else:
             value = eval(expr.getNext().getNext().getNext(), env)
             evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
+            
+    
     elif expr.getNext() != None:
         #all checks on expr.next()
         #evaluating assignment statements which don't declare type
@@ -48,22 +61,22 @@ def eval(expr, env):
             return evalMaths(expr, expr.getNext(), expr.getNext().getNext(), env)
         elif expr.getNext().getToken() in ["==", "!=", ">", "<", ">=", "<="]:
             return evalPred(expr, env)
+        
     #Check our environment for the variable
     elif expr.getType() == 1:
         return resolveVariable(expr, env)
+    
     #can't be evaluated
     else:
         return expr.getToken()
     
-
+#return the truth value of a predicate
 def evalPred(args, env):
-    "is this even called??"
     #if it is an empty ()
     if args == None:
         raise PredicateMissingException()
     
     #If it goes to a new level, evaluate the new level
-
     if args.getType() == 11:
         return evalPred(args.getToken(), env)
     
@@ -76,36 +89,40 @@ def evalPred(args, env):
         else:
             return True
     
+    #If it has multiple arguement tokens, solve it
     else:
         first, op, second = findOperator(args, env)
         if op == None:
             raise PredicateLogicError()
         a = eval(first, env)
         b = eval(second, env)
+        
+        #Table to look up operators so we dont need to use 6 similar if/elif's 
+        #ex: operator.gt(a,b) returns (a > b)
         ops = { ">": operator.gt, "<": operator.lt, ">=": operator.ge, "<=": operator.le, "==": operator.eq, "!=": operator.ne} 
         if op.getToken() in ["==", "!=", ">", "<", ">=", "<="]:
             print "============================"
-            print  op.getToken()
+            print  ops[op.getToken()](a,b)
             return ops[op.getToken()](a,b)
     
-
+#Find the arguements of the predicate
 def findOperator(head, env):
     op = head
+    #loop through the possible operators to find out which one to use
     while op.getToken() not in ["==", "!=", ">", "<", ">=", "<="]:
         temp = op
         op = op.getNext()
+        
+        #if there is no operator in the token list, then return None, None, None
         if op == None:
             return None, None, None
     if op.getNext() == None:
         return None, None, None
     temp.setNext(None)
-    print head.getToken(), op.getToken(), op.getNext().getToken()
+    #print head.getToken(), op.getToken(), op.getNext().getToken()
     return head, op, op.getNext()
     
-    
-    
-#def evalInequality(arg1, op, arg2, env):
-        
+#look up the variable in the environment dictionary
 def resolveVariable(var, env):
     variables = env.getVariables()
     if var.getToken() in variables:
@@ -115,12 +132,11 @@ def resolveVariable(var, env):
         exit(1)
         
         
-def evalWhile(pred):
-    #make sure there is a predicate and est of code to execute
-    if pred == None or pred.getType() != 11 or pred.getNext() == None or pred.getNext().getType() != 11:
-        raise WhileLoopSyntaxError()
+def evalWhile(pred, env):
     while evalPred(pred, env):
-        eval(pred.getNext().getToken())
+        eval(pred.getNext().getToken(), env)
+        env.printVariables()
+    return env
     
     
     

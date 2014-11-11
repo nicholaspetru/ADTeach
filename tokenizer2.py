@@ -15,7 +15,7 @@ def tokenize(expression):
     tokenList = []
     temp = ""
     stringFlag = False
-    tokenSeparators = ['(', ')', '+', '-', '*', '/', '{', '}', ';', '>', '<']
+    tokenSeparators = ['(', ')', '+', '-', '*', '/', '{', '}', ';']
     
     for i in range(len(expression)):
         if expression[i] == '(':
