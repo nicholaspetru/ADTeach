@@ -14,7 +14,7 @@ def eval(expr, env):
     #else:
         
         #print expr.getToken()
-    if expr.getType() == 11:
+    if expr.getType() > 10:
         newNode = Node(str(eval(expr.getToken(), env)))
         newNode.setNext(expr.getNext())
         return eval( newNode, env)

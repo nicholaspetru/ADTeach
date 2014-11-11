@@ -15,22 +15,11 @@ if __name__ == '__main__':
     tokenList = tokenize(expression)
     print tokenList
     tree = parse(tokenList)
-    print tree.getToken(), tree.getType()
+
+    #eval(tree, e)
     print "***********************************************"
-    printParseTree(tree)
-    '''
-    expressionList = expression.split(";") + expression2.split(";")
-    for ex in expressionList:
-        tokenList = tokenize(ex)
-        tree = parse(tokenList)
-    
-    
-        #printParseTree(tree)
-    
-        eval(tree, e)
-        
-        
+    printParseTree(tree, 0)
     e.printVariables()
-    '''
+    
     
     f.close()
