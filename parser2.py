@@ -16,7 +16,7 @@ def addToParseTree(tree, token):
         # Until we get to the open type
         if token.getType() == 10:
             while curToken != None and curToken.getType() not in [5, 7,10, 12, 13]:
-                print "CURRRRRRTOKEN:", curToken.getToken()
+                #print "CURRRRRRTOKEN:", curToken.getToken()
                 tempStack = addToParseTree(tempStack, curToken)
                 curToken, tree = popFromFront(tree)
             tree = curToken
