@@ -205,7 +205,7 @@ def evalMaths(first, op, second, env):
                 env.addVariable(first.getToken(), [type(1), resolveVariable(first, env) + 1])
                 print env.getVariables()
             if op.getToken() == '--':
-                env.addVariable(first.getToken(), [type(1), resolveVariable(first, env) 1 1])
+                env.addVariable(first.getToken(), [type(1), resolveVariable(first, env) -1])
             env.printVariables()
             return env
                 
