@@ -101,12 +101,40 @@ class Node:
         return self.Parent
     def getChild(self):
         return self.Child
+
+    def cloneNode(self):
+        if self.getType() not in [11, 13]:
+            clone = Node(str(self.Token))
+            if self.Next != None:
+                clone.Next = self.Next.cloneNode()
+            else:
+                clone.Next = self.Next
+            return clone
+        elif self.getType() == 11:
+            clone = Node("ParenLevel")
+            clone.setToken(self.Token.cloneNode())
+            clone.Next = self.Next
+            return clone
+        else:
+            clone = Node("SemiColonLevel")
+            clone.setToken(self.Token.cloneNode())
+            clone.Next = self.Next
+            return clone
+            
+        #print 'CLONE NODE TYPE:', clone.getType()
+        
+        
+     
+        
     
     
 if __name__ == '__main__':
-    node1 = Node('hello12')
+    node1 = Node("12")
     print node1.getToken()
     print node1.getType()
+    node1Clone = node1.cloneNode()
+    print node1Clone.getToken()
+    print node1Clone.getType()
     node1 = Node('2453')
     print node1.getToken()
     print node1.getType()

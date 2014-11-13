@@ -15,7 +15,7 @@ def tokenize(expression):
     tokenList = []
     temp = ""
     stringFlag = False
-    tokenSeparators = ['(', ')', '+', '-', '*', '/', '{', '}', ';']
+    tokenSeparators = ['(', ')', '/', '{', '}', ';']
     
     for i in range(len(expression)):
         if expression[i] == '(':
@@ -77,6 +77,28 @@ def tokenize(expression):
             elif len(temp) > 0:
                 tokenList.append(temp)
                 temp = ""
+                
+        elif expression[i] == '+' and expression[i+1] == '+':
+            if stringFlag:
+                temp += '++'
+            elif len(temp) > 0:
+                tokenList.append(temp)
+                temp = ''
+                tokenList.append("++")
+                
+        elif expression[i] == '+' and expression[i-1] == '+':
+            continue
+            
+        elif expression[i] == '-' and expression[i+1] == '-':
+            if stringFlag:
+                temp += '--'
+            elif len(temp) > 0:
+                tokenList.append(temp)
+                temp = ''
+                tokenList.append("--")
+                
+        elif expression[i] == '-' and expression[i-1] == '-':
+            continue
         
         elif expression[i] == ';':
             if stringFlag:
@@ -107,14 +129,15 @@ def tokenize(expression):
         raise MissingParentheses("Unmatched parentheses")
     if braceDepth != 0:
         raise MissingCurlyBrace("Unmatched curly braces")
-    return head
-    '''
+    
+    
     #print out the list of tokens in order to check! 
     printHead = head
     while printHead != None:
         print printHead.getToken(), printHead.getType()
         printHead = printHead.getNext()
-    '''
+    
+    return head
     
 if __name__ == "__main__":
     tokenize(raw_input("enter a line to tokenize: "))

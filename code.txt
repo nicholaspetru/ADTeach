@@ -1,5 +1,4 @@
-int x = 0;
-while (x < 5) {
-    x = x + 1;
+int m = 1;
+for (int w = 0; w < 3; w++) {
+    m = m * 2;
     }
-int y = 3;

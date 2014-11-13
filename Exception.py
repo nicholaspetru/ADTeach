@@ -30,3 +30,12 @@ class MissingParentheses(Exception):
 
 class MissingCurlyBrace(Exception):
     pass
+
+class NotBeenInitialized(Exception):
+    pass
+
+class IfSyntaxError(Exception):
+    pass
+
+class ForLoopSyntaxError(Exception):
+    pass

@@ -22,16 +22,36 @@ def eval(expr, env):
         newNode.setNext(expr.getNext())
         return eval( newNode, env)
     
+    if expr.getToken() == "for":
+        
+        #make sure there is a predicate and rest of code to execute
+        if expr.getNext() == None or expr.getNext().getType() != 11 or expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 12:
+            raise ForLoopSyntaxError()
+            
+        if expr.getNext().getToken() == None or expr.getNext().getToken().getNext() == None or expr.getNext().getToken().getType() != 13 or expr.getNext().getToken().getNext().getType() != 13 or expr.getNext().getToken().getNext().getNext() == None:
+            raise ForLoopSyntaxError()
+            
+        env = evalFor(expr.getNext(), env)
+        env.printVariables()
+        return eval(expr.getNext().getNext().getNext(), env)
+    
     if expr.getToken() == "while":
         
         #make sure there is a predicate and rest of code to execute
         if expr.getNext() == None or expr.getNext().getType() != 11 or expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 12:
             raise WhileLoopSyntaxError()
         env = evalWhile(expr.getNext(), env)
-        print "WHWRHWH"
         env.printVariables()
         return eval(expr.getNext().getNext().getNext(), env)
         
+    elif expr.getToken() == "if":
+        
+        #make sure there is a predicate and rest of code to execute
+        if expr.getNext() == None or expr.getNext().getType() != 11 or expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 12:
+            raise IfSyntaxError()
+        env = evalIf(expr.getNext(), env)
+        env.printVariables()
+        return eval(expr.getNext().getNext().getNext(), env)
     
     #evaluating assignment statements which declare type
     elif expr.getToken() in ['int','String','float','node','boolean']: 
@@ -57,13 +77,15 @@ def eval(expr, env):
             value = eval(expr.getNext().getNext(), env)
             evalEquals(expr.getToken(), [None, value], env)
         #evaluating algebra
-        elif expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**"]:
+        elif expr.getNext().getToken() in ['+', "-", "*", "/", "%", "**", "++", "--"]:
             return evalMaths(expr, expr.getNext(), expr.getNext().getNext(), env)
         elif expr.getNext().getToken() in ["==", "!=", ">", "<", ">=", "<="]:
             return evalPred(expr, env)
         
     #Check our environment for the variable
     elif expr.getType() == 1:
+        print "getting in here", expr.getToken()
+        print expr.getType()
         return resolveVariable(expr, env)
     
     #can't be evaluated
@@ -72,6 +94,12 @@ def eval(expr, env):
     
 #return the truth value of a predicate
 def evalPred(args, env):
+    
+    print "args is:", args, type(args)
+    
+   
+        
+    
     #if it is an empty ()
     if args == None:
         raise PredicateMissingException()
@@ -91,10 +119,12 @@ def evalPred(args, env):
     
     #If it has multiple arguement tokens, solve it
     else:
-        first, op, second = findOperator(args, env)
+        cloneArgs = args.cloneNode()
+        first, op, second = findOperator(cloneArgs, env)
         if op == None:
             raise PredicateLogicError()
         a = eval(first, env)
+        print "second is:", second.getToken()
         b = eval(second, env)
         
         #Table to look up operators so we dont need to use 6 similar if/elif's 
@@ -119,7 +149,7 @@ def findOperator(head, env):
     if op.getNext() == None:
         return None, None, None
     #temp.setNext(None)
-    one = Node(head.getToken())
+    one = Node(str(head.getToken()))
     #print head.getToken(), op.getToken(), op.getNext().getToken()
     return one, op, op.getNext()
     
@@ -129,8 +159,8 @@ def resolveVariable(var, env):
     if var.getToken() in variables:
         return variables[var.getToken()][1]
     else:
-        print "Error! ", var.getToken(), "has not been instantiated!"
-        exit(1)
+        raise NotBeenInitialized(var.getToken())
+
         
         
 def evalWhile(pred, env):
@@ -139,14 +169,46 @@ def evalWhile(pred, env):
         env.printVariables()
     return env
     
+def evalIf(pred, env):
+    if evalPred(pred, env):
+        eval(pred.getNext().getToken(), env)
+        env.printVariables()
+    return env
+
+def evalFor(args, env):
+    initial = args.getToken().getToken().cloneNode()
+    
+    condition = args.getToken().getNext().getToken().cloneNode()
+    
+    step = args.getToken().getNext().getNext().cloneNode()
+    print "initial:", initial.getNext().getToken()
+    eval(initial, env)
+
+    while evalPred(condition, env):
+        print 'IN THE WHILE'
+        eval(args.getNext().getToken(), env)
+        env = eval(step, env)
+    return env
+    
     
     
 
 def evalMaths(first, op, second, env):
-    print "Starting evalMaths: First, Second:", first.getToken(), second.getToken()
     if second == None:
-        raise ArithmeticError()
-        
+        if op.getToken() not in ["++", "--"]:
+            raise ArithmeticError()
+        else:
+            print "first is:", first
+            env.printVariables()
+            if op.getToken() == '++':
+                print "passing in:", first.getToken()
+                env.addVariable(first.getToken(), [type(1), resolveVariable(first, env) + 1])
+                print env.getVariables()
+            if op.getToken() == '--':
+                env.addVariable(first.getToken(), [type(1), resolveVariable(first, env) 1 1])
+            env.printVariables()
+            return env
+                
     hasThird = False
     
     if second.getNext() != None:
@@ -174,12 +236,14 @@ def evalMaths(first, op, second, env):
         sum1 = first - second
     if op.getToken() == '*':
         sum1 = first * second
+    elif op.getToken() == '**':
+        sum1 = first ** second
     if op.getToken() == '/':
         sum1 = first / second
     if op.getToken() == '%':
         sum1 = first % second
-    if op.getToken() == '**':
-        sum1 = first ** second
+    
+    
         
     if hasThird:
         return evalMaths(Node(str(sum1)), op2, op2.getNext(), env)
@@ -211,7 +275,7 @@ def evalDeclare(name, value, env):
     
 def evalEquals(name, value, env):
     dictionary = env.getVariables()
-    print "in eval equals with the variable, ", name, value[0]
+    #print "in eval equals with the variable, ", name, value[0]
     # Error if variable is not initialized, otherwise update value
     if value[0] == None:
         if name not in dictionary:
