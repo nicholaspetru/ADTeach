@@ -1,4 +1,11 @@
-int m = 1;
-for (int w = 0; w < 3; w++) {
-    m = m * 2;
+int a = 0;
+int b = 10;
+for (int i = 0; i<=9; i++){
+    if (i >= 5){
+        a++;
+        b--;
+    }
+}
+if (i!=9){
+    String c = "Justice?";
     }
