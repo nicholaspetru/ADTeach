@@ -173,6 +173,11 @@ def evalIf(pred, env):
     if evalPred(pred, env):
         eval(pred.getNext().getToken(), env)
         env.printVariables()
+    elif pred.getNext().getNext() != None and pred.getNext().getNext().getToken() == 'else':
+        print "10101010*****10101010101010", pred.getNext().getNext().getNext().getType()
+        eval(pred.getNext().getNext().getNext(), env)
+    else:
+        return env
     return env
 
 def evalFor(args, env):
