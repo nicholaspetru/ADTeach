@@ -1,0 +1,49 @@
+#maindiv {
+    background-color:#e5eecc;
+}
+#header {
+    background-color:#a8eecc;
+}
+
+
+#play:hover, #pause:hover, #step:hover, #stop:hover, #end {
+    cursor: pointer;
+    cursor: hand;
+}
+
+
+#mainheader {
+    background-color: #888888;
+    color: #FFFFFF;
+    padding: 5px;
+}
+
+
+#code_env {
+    line-height:30px;
+    height:500px;
+    width:47%;
+    float:left;
+    border-style: solid;
+    border-width: thin;
+    background-color:#eeeeee;
+}
+
+textarea#user_textbox:hover {
+    cursor:text;
+}
+
+textarea#user_textbox{
+    height: 80%;
+    margin-left: 5%;
+    width: 87%;
+    resize:none;
+}
+
+#visual_env {
+    height:500px;
+    width:47%;
+    float:right;
+    border-style: solid;
+    border-width: thin;
+}

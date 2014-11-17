@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8"> 
+        
+    	<!-- Include Jquery -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+        <!-- Visualizer Handler Includes. -->
+        <script src="visualizer-handler/entity.js"></script>
+		<script src="visualizer-handler/primitive.js"></script>
+		<script src="visualizer-handler/stack.js"></script>
+		<script src="visualizer-handler/visualizer-handler.js"></script>
+        
+        <!-- Code DB Includes -->
+        <script src="code-db/code-database.js"></script>
+        
+        <!-- Event Handler Includes -->
+        <script src="event-handler/event-handler.js"></script>
+        
+        <!-- Codebox Includes -->
+        <script src="codebox/codebox.js"></script>
+        
+        <!-- Symbol Table Includes -->
+        <script src="symbol-table/symbol-table.js"></script>
+        
+        <!-- Interpreter Includes -->
+        <script src="interpreter/interpreter.js"></script>
+        
+        <!--Main -->
+        <script src="main.js"></script>
+        
+		<h2 id="mainheader"> <b> Data Tutor </b>
+		</h2>
+
+		<link rel="stylesheet" href="codeboxstyle.css">
+    </head>
+
+    <body>
+		<div id="code_env"> <b>Programming Environment </b>
+			<button type="submit" name="play" id="play">Play</button>
+			<button name="pause" id="pause">Pause</button>
+			<button name="step" id="step">Step</button>
+			<button name="stop" id="stop">Stop</button>
+            <button name="sample" id="sample">Sample Code</button>
+		    <textarea role="textbox" id="user_textbox" aria-multiline="true">Enter Code Here</textarea>
+
+		</div>
+
+		<div id="visual_env"><b> Visual Environment </b>
+		</div>
+	</body>
+<html>
+
+

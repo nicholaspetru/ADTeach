@@ -33,13 +33,14 @@ $(document).ready(function () {
     
     //Enqueue an event onto the event queue
     VisualizerHandler.prototype.enqueueEvent = function(event, classname, name, type, value) {
-        this.eventQueue[eventQueue.length].push([event, className, name, type, value]);
-    }
+        console.log("visualizer handler: enqueue of new event.");
+        this.eventQueue[this.eventQueue.length].push([event, className, name, type, value]);
+    };
 
     //Pushes a new Entity onto the list
     VisualizerHandler.prototype.NewEntity = function(className, name, type, value) {
 	   this.entities.push(this.getNewEntity(className,name,type,value));
-    }
+    };
 
     //Updates the value of an Entity
     VisualizerHandler.prototype.UpdateEntity = function(name, value) {
