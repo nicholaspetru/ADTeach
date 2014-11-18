@@ -5,16 +5,17 @@ $(document).ready(function () {
         //constructor is here
         
         // from liz/colby's EventHandler code
-        this.CODE = "";
-        this.PLAYING = false;
-        this.LINENUMBER = 0;
-        this.INTERPRETED = false;
+        this.code = "";
+        this.playing = false;
+        this.lineNumber = 0;
+        this.interpreted = false;
 
 	return this;
     }
     
     //highlight current line of the function
     CodeBox.prototype.highlightLine = function(line) {
+        console.log("Code Box: highlightLine(" + line + ")");
         // traverse lines of code in text box
         // if line in text box == line
         // draw a marker/highlight current line
@@ -22,10 +23,23 @@ $(document).ready(function () {
 
     // called when playing/stepping of code begins. prevents user from editing code
     CodeBox.prototype.freezeCode = function(){
+        console.log("Code Box: freezeCode()");
         // freezecdoe() called if onClick(play/step) called
         // if (this.PLAYING == true) {
         //     grey out the box and prevent user from making changes
         // }
+    };
+    
+    // called when playing/stepping of code ends. allows user to edit code
+    CodeBox.prototype.unfreezeCode = function(){
+        console.log("Code Box: unfreezeCode()");
+    };
+    
+    CodeBox.prototype.setCode = function(code){
+        console.log("Code Box: setCode(" + code + ")");
+        this.code = code;
+        var textbox = document.getElementById("user_textbox");
+        textbox.value = code;
     };
 
     // aggregate code from code box
@@ -36,7 +50,7 @@ $(document).ready(function () {
 
     // from liz/colby's code...
     $("#Play").click(function() {
-        console.log('set PLAYING=false')
+        console.log('set playing=false')
     });
 
 });

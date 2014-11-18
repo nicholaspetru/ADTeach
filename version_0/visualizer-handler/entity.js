@@ -6,13 +6,13 @@ $(document).ready(function () {
         this.name = name;
         this.type = type;
         this.value = value;
-
-	return this;
+        
+	   return this;
     }
     
     //draw the name of the function
     Entity.prototype.DrawName = function() {
-	return this.type + " " + this.name;
+	   return this.type + " " + this.name;
     };
-
+    
 });

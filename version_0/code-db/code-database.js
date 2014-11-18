@@ -10,7 +10,8 @@ $(document).ready(function () {
         //if we want database to be a hash table: 
         //(write our own) http://www.mojavelinux.com/articles/javascript_hashes.html
         //(use a library) http://www.timdown.co.uk/jshashtable/
-        console.log('code gotten!');
+        console.log('Code Database: getCode(' + key + ')');
+        return 'this is sample code'
     };
     
 });

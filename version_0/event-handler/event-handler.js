@@ -2,19 +2,49 @@ $(document).ready(function() {
     
     //Constructor
     EventHandler = function() {
-        this.CODE = "";
-        this.PLAYING = false;
-        this.LINENUMBER = 0;
-        this.INTERPRETED = false;
+        this.code = "";
+        this.playing = false;
+        this.lineNumber = 0;
+        this.interpreted = false;
         this.interpreter = null;
         this.codeBox = null;
         this.codeDatabase = null;
+        this.visualizerHandler = null;
+        
+        //for now, put this code here
+        $("#play").hide();
+        $("#pause").hide();
+        $("#step").hide();
+        $("#stop").hide();
+        $("#sample").show();
+        $("#build").show();
+        
         return this;
     }
     
-    //$("#play").click(function() {
+    //build
+    EventHandler.prototype.onBuild = function() {
+        console.log('Event Handler: onBuild()');
+        this.codeBox.freezeCode();
+        evaluated = this.interpreter.eval($("#user_textbox").text());
+        $("#play").show();
+        $("#pause").show();
+        $("#step").show();
+        $("#stop").show();
+        $("#build").hide();
+        $("#sample").hide();
+    };
+    
+    EventHandler.prototype.takeStep = function() {
+        //wrapper for what happens at the same time when going forth
+        console.log('Event Handler: takeStep()');
+        this.codeBox.highlightLine(this.lineNumber);
+        this.visualizerHandler.goForth();
+    };
+    
     EventHandler.prototype.onPlay = function() {
-        this.interpreter.eval($("#user_textbox").text());
+        console.log('Event Handler: onPlay()');
+        this.takeStep();
         // if PLAYING = false
         // CODE = (get the code from the textarea)
         //this.CODE = $('code_env#code').val();
@@ -34,23 +64,31 @@ $(document).ready(function() {
 
     // hidden until INTERPRETED = true
     EventHandler.prototype.onPause = function() {
-        console.log('set PLAYING=false');
+        console.log('Event Handler: onPause()');
     };
 
     // hidden until INTERPRETED = true
     EventHandler.prototype.onStep = function() {
-	   console.log('VisHandler.goForth()');
+       console.log("Event Handler: onStep()");
+       this.takeStep();
     };
     
     // hidden until INTERPRETED = true
     EventHandler.prototype.onStop = function() {
-	   console.log('freeze the visualizer screen, unfreeze the textbox, set PLAYING=false and INTERPRETED=false');
+       console.log("Event Handler: onStop()");
+       this.codeBox.unfreezeCode();
+        //show the needed buttonz
+        $("#play").hide();
+        $("#pause").hide();
+        $("#step").hide();
+        $("#stop").hide();
+        $("#sample").show();
+        $("#build").show();
     };
     
-    // if we design the side nav like the mockup, there will likely be multiple of these (ie $("#listExample").click , $("#stackExample").click etc.)
     EventHandler.prototype.onSample = function() {
-	   console.log('CODE = CodeDB.getCode(key); textbox.writeCode(CODE);');
+       console.log('Event Handler: onSample()');
+       code = this.codeDatabase.getCode('this-will-be-a-key') 
+       this.codeBox.setCode(code);
     };
-
-    // handle animantion?
 });

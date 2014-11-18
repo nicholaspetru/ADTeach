@@ -1,6 +1,10 @@
-#maindiv {
-    background-color:#e5eecc;
+#grayout_text{
+    background-color:#666;
+    opacity: .7;
+    z-index: -10;
 }
-#header {
-    background-color:#a8eecc;
+#grayout_vis{
+    background-color:#666;
+    opacity = .7;
+    z-index: -10;
 }

@@ -6,14 +6,19 @@ $(document).ready(function () {
     var CB = new CodeBox();
     var ST = new SymbolTable();
     var INT = new Interpreter();
+    VH.symbolTable = ST;
     EVH.interpreter = INT;
     EVH.codeDatabase = CD;
+    EVH.codeBox = CB;
+    EVH.visualizerHandler = VH;
     ST.visualizerHandler = VH;
     INT.symbolTable = ST;
     
-    console.log("boop boop compu-talk.");
-    
     //Listen to buttonz
+    $("#build").click(function() {
+        EVH.onBuild();
+    });
+    
     $("#play").click(function() {
         EVH.onPlay();
     });

@@ -10,7 +10,7 @@ $(document).ready(function () {
     
     Interpreter.prototype.eval = function(code) {
         //While interpreting, call the method in symbol table for updates
-        console.log("Eval on: " + code);
+        console.log("Interpreter: eval(" + code + ")");
         this.symbolTable.newVariable('int', 'x', 5, 'new');
         this.symbolTable.newVariable('stack','y',[1,2,3,4,5], 'new');
         this.symbolTable.updateVariable('int', "x",10, 'update');
