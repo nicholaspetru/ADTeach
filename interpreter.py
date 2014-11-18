@@ -175,9 +175,13 @@ def evalIf(pred, env):
         env.printVariables()
     elif pred.getNext().getNext() != None and pred.getNext().getNext().getToken() == 'else':
         print "10101010*****10101010101010", pred.getNext().getNext().getNext().getType()
+        printParseTree(pred.getNext().getNext().getNext(), 0)
         eval(pred.getNext().getNext().getNext(), env)
+        print "Got  here????"
     else:
         return env
+    print "Got  here????"
+    env.printVariables()
     return env
 
 def evalFor(args, env):
@@ -192,7 +196,7 @@ def evalFor(args, env):
     while evalPred(condition, env):
         print 'IN THE WHILE'
         eval(args.getNext().getToken(), env)
-        env = eval(step, env)
+        eval(step, env)
     return env
     
     
@@ -315,6 +319,7 @@ def evalEquals(name, value, env):
             dictionary[name][0] = type(value[1])
             dictionary[name][1] = value[1]
     
+    env.printVariables()
     return env
 
 if __name__ == '__main__':

@@ -8,6 +8,8 @@ class Node:
     def __init__(self, token):
         self.Token = token
         self.Type = self.setType()
+        if self.Type == 0:
+            return None
     def setPrev(self, Node):
         self.Prev = Node
     def setNext(self, Node):
@@ -44,6 +46,8 @@ class Node:
             return 12
         if self.Token == "SemicolonLevel":
             return 13
+        if self.Token == "None":
+            return 0
         if(self.Token[0] == '\"' and self.Token[len(self.Token)-1] == '\"'):
             return 4
         elif (self.Token[0] == '('):
