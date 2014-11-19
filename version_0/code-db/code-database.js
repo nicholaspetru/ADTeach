@@ -11,7 +11,8 @@ $(document).ready(function () {
         //(write our own) http://www.mojavelinux.com/articles/javascript_hashes.html
         //(use a library) http://www.timdown.co.uk/jshashtable/
         console.log('Code Database: getCode(' + key + ')');
-        return 'this is sample code'
+        var code = 'int x = 5;\nStack<Integer> s = new Stack<Integer>();\ns.push(x);\ns.pop();'
+        return code;
     };
     
 });

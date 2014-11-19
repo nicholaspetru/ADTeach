@@ -26,7 +26,7 @@ $(document).ready(function() {
     EventHandler.prototype.onBuild = function() {
         console.log('Event Handler: onBuild()');
         this.codeBox.freezeCode();
-        evaluated = this.interpreter.eval($("#user_textbox").text());
+        evaluated = this.interpreter.eval($("#user_textbox").val());
         $("#play").show();
         $("#pause").show();
         $("#step").show();
