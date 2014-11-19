@@ -92,6 +92,7 @@ class Node:
             self.Token = int(self.Token)
             return 2
         else:
+            self.Token = float(self.Token)
             return 3
     def getToken(self):
         return self.Token

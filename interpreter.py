@@ -6,6 +6,10 @@ import operator
 from Exception import *
 
 def eval(expr, env):
+    #adts = []
+    #for adt in library:
+    #   adts.append(adt)
+    
     #check for empty expression
     if expr == None:
         return None
@@ -54,7 +58,17 @@ def eval(expr, env):
         return eval(expr.getNext().getNext().getNext(), env)
     
     #evaluating assignment statements which declare type
-    elif expr.getToken() in ['int','String','float','node','boolean']: 
+    elif expr.getToken() in ['int','String','float','node','boolean', 'Stack']: 
+        if expr.getToken() in ['Stack', 'Queue']:
+            if expr.getNext().getToken() != None and expr.getNext().getToken() != '<':
+                raise SyntaxError("Missing <")
+            if expr.getNext().getNext() == None:
+                raise SyntaxError("Missing type")
+            if expr.getNext().getNext().getNext().getToken() != None and expr.getNext().getNext().getNext().getToken() != ">":
+                raise SyntaxError("Missing >")
+            
+                
+            print "n"
         #no value assigned
         print "declaring var of type:", expr.getToken()
         if expr.getNext() == None or expr.getNext().getType() != 1:

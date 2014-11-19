@@ -39,3 +39,6 @@ class IfSyntaxError(Exception):
 
 class ForLoopSyntaxError(Exception):
     pass
+
+class SyntaxError(Exception):
+    pass

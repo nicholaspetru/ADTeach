@@ -60,8 +60,11 @@ def tokenize(expression):
             if stringFlag:
                 temp += '.'
             elif len(temp) > 0:
-                tokenList.append(temp)
-                temp = "." 
+                if temp[0] in ['1', '2','3','4','5','6','7','8','9','0','-']:
+                    temp += '.'
+                else:
+                    tokenList.append(temp)
+                    temp = "." 
             else:
                 temp = "."
         
@@ -78,6 +81,19 @@ def tokenize(expression):
             elif len(temp) > 0:
                 tokenList.append(temp)
                 temp = ""
+        
+        
+        elif (expression[i] == '<') and (expression[i+1] != None) and (expression[i+1] != "="):
+            if (temp != ""):
+                tokenList.append(temp)
+                temp = ""
+            tokenList.append('<')    
+        
+        elif (expression[i] == '>') and (expression[i+1] != None) and (expression[i+1] != "="):
+            if (temp != ""):
+                tokenList.append(temp)
+                temp = ""
+            tokenList.append('>') 
                 
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '='):
             print "*************************", temp
@@ -183,16 +199,7 @@ def tokenize(expression):
                 temp = ''
                 tokenList.append("--")
                 
-        #elif expression[i] == '-' and expression[i+1] == '-':
-        #    if stringFlag:
-        #        temp += '--'
-        #    elif len(temp) > 0:
-        #        tokenList.append(temp)
-        #        temp = ''
-        #        tokenList.append("--")
-        #        
-        #elif expression[i] == '-' and expression[i-1] == '-':
-        #    continue
+        
             
         elif expression[i] == ';':
             if stringFlag:
