@@ -11,14 +11,13 @@ if __name__ == '__main__':
     f = open('code.txt', 'r')
     expression = f.read()
     
-    
     tokenList = tokenize(expression)
     print tokenList
     tree = parse(tokenList)
 
     eval(tree, e)
     print "***********************************************"
-    printParseTree(tree, 0)
+    #printParseTree(tree, 0)
     e.printVariables()
     
     

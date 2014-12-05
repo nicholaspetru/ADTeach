@@ -4,6 +4,7 @@ from tokenizer2 import *
 from environment import *
 import operator
 from Exception import *
+from ADTs import *
 
 def eval(expr, env):
     #adts = []
@@ -13,7 +14,7 @@ def eval(expr, env):
     #check for empty expression
     if expr == None:
         return None
-        
+    print type(expr)
     #If it is a semicolon type, evaluate the semicolon line, then evaluate the next thing
     if expr.getType() == 13:
         eval(expr.getToken(),env)
@@ -56,9 +57,13 @@ def eval(expr, env):
         env = evalIf(expr.getNext(), env)
         env.printVariables()
         return eval(expr.getNext().getNext().getNext(), env)
+
+    elif expr.getToken() == "new":
+        print "new"
+
     
     #evaluating assignment statements which declare type
-    elif expr.getToken() in ['int','String','float','node','boolean', 'Stack']: 
+    elif expr.getToken() in ['int','String','float', 'long', 'node','boolean', 'Stack']: 
         if expr.getToken() in ['Stack', 'Queue']:
             if expr.getNext().getToken() != None and expr.getNext().getToken() != '<':
                 raise SyntaxError("Missing <")
@@ -69,6 +74,15 @@ def eval(expr, env):
             
                 
             print "n"
+            if expr.getNext().getNext() == None:
+                evalDeclare(expr.getNext().getNext().getNext().getNext().getToken(), [expr.getToken(), None], env)  
+            #value assigned
+            else:
+                print expr.getNext().getNext().getNext().getNext().getNext().getNext().getToken(), "HHHHH"
+                value = eval(expr.getNext().getNext().getNext().getNext().getNext().getNext(), env)
+                evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
+                return
+            
         #no value assigned
         print "declaring var of type:", expr.getToken()
         if expr.getNext() == None or expr.getNext().getType() != 1:
@@ -78,9 +92,10 @@ def eval(expr, env):
             evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)  
         #value assigned
         else:
+            print expr.getNext().getNext().getNext().getToken(), "HHHHH", expr.getNext().getNext().getNext().getNext().getToken()
             value = eval(expr.getNext().getNext().getNext(), env)
-            evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
-            
+            evalEquals(expr.getNext().getNext().getNext().getNext().getToken(), [expr.getNext().getNext().getNext().getToken(), value], env)
+            return
     
     elif expr.getNext() != None:
         #all checks on expr.next()

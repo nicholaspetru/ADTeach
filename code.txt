@@ -1,1 +1,1 @@
-Stack<Integer> s = new Stack<Integer>();
+Stack<int> i = new Stack()<int>;

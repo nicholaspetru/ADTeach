@@ -133,7 +133,7 @@ def popFromFront(tree):
     
     
 if __name__ == "__main__":
-    tokenList = tokenize('x = (5 + 3) + 4')
-    tokenList = tokenize("x.pop().push().push()")
+    #tokenList = tokenize('x = (5 + 3) + 4')
+    tokenList = tokenize(raw_input("Enter line to tokenize: "))
     parsedList = parse(tokenList)
-    printParseTree(parsedList)
+    printParseTree(parsedList, 0)
