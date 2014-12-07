@@ -28,5 +28,238 @@ $(document).ready(function () {
         //var testVar = this.symbolTable.getValue(newName1);
         //console.log("testing getValue: " + testVar);
     };
+
+    Interpreter.prototype.tokenize = function(expression) {
+        //split an expression and return a list of all the tokens
+        var parenDepth = 0;
+        var braceDepth = 0;
+        var head = null;
+        expression += ' ';
+        var tokenList = [];
+        var temp = "";
+        var stringFlag = false;
+        var TokenSeparators = ['(', ')', '/', '{', '}', ';'];
+
+        for (var i = 0; i<expression.length; i++){
+
+            switch(expression.charAt(i)){
+
+                case '(':
+                    parenDepth++;
+                    if (stringFlag) temp += expression.charAt(i);
+                    else if (temp.length > 0) tokenList.push(temp);
+                    tokenList.push(expression.charAt(i));
+                    temp = "";
+                    break;
+
+                case ')':
+                    parenDepth--;
+                    if (stringFlag) temp += expression.charAt(i);
+                    else if (temp.length > 0) tokenList.push(temp);
+                    tokenList.push(expression.charAt(i));
+                    temp = "";
+                    break;
+
+                case '{':
+                    if (stringFlag) temp += expression.charAt(i);
+                    else if (temp.length > 0) tokenList.push(temp);
+                    tokenList.push(expression.charAt(i));
+                    temp = "";
+                    break;
+
+                case '}':
+                    braceDepth--;
+                    if (stringFlag) temp += expression.charAt(i);
+                    else if (temp.length > 0) tokenList.push(temp);
+                    tokenList.push(expression.charAt(i));
+                    temp = "";
+                    break;
+
+                case '\"':
+                    if (stringFlag){
+                        stringFlag = false;
+                        temp = "\"" + temp + "\"";
+                        tokenList.push(temp);
+                        temp = "";
+                    }
+                    else{
+                        stringFlag =True;
+                    }
+                    break;
+
+                case ' ':
+                    if (stringFlag) temp += ' ';
+                    else if (temp.length > 0){
+                        tokenList.push(temp);
+                        temp= "";
+                    }
+                    break;
+
+                case '.':
+                    if (stringFlag) temp += ' ';
+                    else if (temp.length > 0){
+                        if (['1', '2','3','4','5','6','7','8','9','0','-'].indexOf(temp.charAt(0)) != -1) temp += '.';
+                        else{
+                            tokenList.push(temp);
+                            temp = "";
+                        }
+                    }
+                    else temp = '.';
+                    break;
+
+                case '\t':
+                    if (stringFlag) temp += '\t';
+                    else if (temp.length > 0){
+                        tokenList.push(temp);
+                        temp = '';
+                    }
+                    break;
+
+                case '\n':
+                    if (stringFlag) temp += '\n';
+                    else if (temp.length > 0){
+                        tokenList.push(temp);
+                        temp = '';
+                    }
+                    break;
+
+                case ';':
+                    if (stringFlag) temp += ';';
+                    else if (temp.length > 0){
+                        tokenList.push(temp);
+                        tokenList.push(';');
+                        temp = '';
+                    }
+                    break;
+
+                case '/':
+                    if (stringFlag) temp += ';';
+                    else if (temp.length > 0){
+                        tokenList.push(temp);
+                        tokenList.push('/');
+                        temp = '';
+                    }
+                    break;
+
+                case '+':
+                    if (stringFlag) temp += '+';
+                    else if ((expression.length > i+1) && (['+', '='].indexOf(expression.charAt(i+1)) != -1)){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('+'+expression.charAt(i+1));
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('+');
+                        temp = "";
+
+                    }
+                    break;
+
+                case '-':
+                    if (stringFlag) temp += '-';
+                    else if ((expression.length > i+1) && (['-', '='].indexOf(expression.charAt(i+1)) != -1)){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('-'+expression.charAt(i+1));
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('-');
+                        temp = "";
+
+                    }
+                    break;
+
+                case '*':
+                    if (stringFlag) temp += '*';
+                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '*')){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('**');
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('*');
+                        temp = "";
+
+                    }
+                    break;
+
+                case '=':
+                    if (stringFlag) temp += '=';
+                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('==');
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('=');
+                        temp = "";
+
+                    }
+                    break;
+
+                case '!':
+                    if (stringFlag) temp += '!';
+                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('!=');
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('!');
+                        temp = "";
+
+                    }
+                    break;
+
+                case '>':
+                    if (stringFlag) temp += '>';
+                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('>=');
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('>');
+                        temp = "";
+
+                    }
+                    break;
+
+                case '<':
+                    if (stringFlag) temp += '<';
+                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('<=');
+                        temp = '';
+                        i++;
+                    }
+                    else{
+                        if (temp.length > 0) tokenList.push(temp);
+                        tokenList.push('<');
+                        temp = "";
+
+                    }
+                    break;
+                
+                default:
+                    temp += expression.charAt(i);
+                    break;
+            }
+        }
+
+
+    };
     
 });

@@ -205,6 +205,12 @@ $(document).ready(function () {
 		var x3 = lx + lw/2;
 		var y3 = ly + lh/2;
 
+		var boxeList = [];
+		boxeList.append([x1, y1]);
+		boxeList.append([x2, y2]);
+		boxeList.append([x3, y3]);
+
+
 		var anim1 = Raphael.animation({x:x2,y:y2},1000); // move the primitive element's box to list position 0 in 1000ms
 		var anim2 = Raphael.animation({x:x3,y:y3},1000); // move the primitive element's text to position 0 in 1000ms
 		var anim3 = Raphael.animation({"fill": "#D4F1FF"}); // make the element blue once it's in the right spot
