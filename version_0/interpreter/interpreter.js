@@ -61,6 +61,7 @@ $(document).ready(function () {
                     break;
 
                 case '{':
+                    braceDepth--;
                     if (stringFlag) temp += expression.charAt(i);
                     else if (temp.length > 0) tokenList.push(temp);
                     tokenList.push(expression.charAt(i));
@@ -258,6 +259,28 @@ $(document).ready(function () {
                     break;
             }
         }
+
+        for (var i = 0; i<tokenList.length; i++){
+            curNode = {Token:tokenList[i], Type:1, Next:head};
+            head = curNode;
+        }
+        var prev = null;
+        var temp = null;
+        while (head != null){
+            temp = head.Next;
+            head.Next = prev;
+            prev = head;
+            head = temp;
+        }
+        head = prev;
+
+        while (head != null){
+            console.log(head.Token);
+            head=head.Next;
+        }
+
+        if (parenDepth != 0) console.log("Unmatched Parentheses");
+        if (braceDepth != 0) console.log("Unmatched Curly Brace");
 
 
     };
