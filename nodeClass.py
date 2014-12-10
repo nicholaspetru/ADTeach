@@ -35,7 +35,9 @@ class Node:
         8 = close brace
         9 = boolean
         10 = semicolon
-        11 = newLevel
+        11 = newParenLevel
+        12 = newCurlyLevel
+        13 = newSemicolonLevel
         '''
         period = 0
         index = 0
