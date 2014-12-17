@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8"> 
+        <title>Raphael Demo</title>
+        <script src="jquery-1.11.1.js"></script>
+        <script src="raphael.js"></script>
+
+        <script src="Entity.js"></script>
+        <script src="VH-Helper.js"></script>
+        <script src="Primitive.js"></script>
+        <script src="List.js"></script>
+        <script src="Visualizer-Handler.js"></script>
+        <script src="main.js"></script>
+
+        <h2 class="center"><b>Raphael Demo</b></h2>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+    	<div class="title1">List ADT</div>
+    	<div class="buttons">
+    		<button name="play" id="play">PLAY</button>
+            <button name="pause" id="pause">PAUSE</button>
+            <button name="step" id="step">STEP</button>
+
+            <label for="speed">Animation Speed</label>
+            <input type="range" id="speed" min=100 value=100 max=2000 step=50>
+    	</div><br>
+    	<div class="vis" id="vis_env"></div>
+    </body>
+</html>
