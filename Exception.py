@@ -42,3 +42,6 @@ class ForLoopSyntaxError(Exception):
 
 class SyntaxError(Exception):
     pass
+
+class MissingSemiColon(Exception):
+    pass
