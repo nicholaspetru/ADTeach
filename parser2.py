@@ -79,11 +79,14 @@ def parse(tokenList):
     #reverse the parse tree so it is in the right order
     previous = None;
     while tree != None:
+        if tree.getType() != 13:
+            raise MissingSemiColon()
         temp = tree.getNext()
         tree.setNext(previous)
         previous = tree
         tree = temp
     tree = previous
+    
     
     return tree
 
