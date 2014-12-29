@@ -80,19 +80,11 @@ def eval(expr, env):
         #THROW SYNTAX ERROR
         #Make sure if there is an equal sign that there is 
         #something to the right of it
-        if expr.getNext().getNext() != None and expr.getNext().getNext().getNext() == None:
-            raise SyntaxError("Need something after equal sign")
+        #if expr.getNext().getNext() != None and expr.getNext().getNext().getNext() == None:
+        #    raise SyntaxError("Need something after equal sign")
             
-        
-        #ADD TO ENVIRONMENT
-        #Initialization but not assignment (e.g. "int x;")
-        #Add the variable to the environment with value None
-        if expr.getNext().getNext() == None:
-            print "In here"
-            print expr.getToken()
-            print expr.getNext().getType()
-            evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)
-            
+
+          
         
         #  ******************************************************************
         #  **** STRINGS **** #
@@ -100,63 +92,80 @@ def eval(expr, env):
         #  ******************************************************************
         
         elif expr.getToken() == 'String':
+            print expr.getNext().getNext()
+            
+            #ADD TO ENVIRONMENT
+            #Initialization but not assignment (e.g. "int x;")
+            #Add the variable to the environment with value None
+            if expr.getNext().getNext() == None:
+                evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)
         
-            #CHECK COMPATIBILITY
-            #Make sure that whatever is on right side of equal sign is a string
-            if type(expr.getNext().getNext().getNext().getToken()) != type(""):
-                raise IncompatibleTypes(str(expr.getNext().getToken()) + " should be a string")
-            
-            
-            #ADD SINGLE STRING TO DICTIONARY
-            #If there is only one string being assigned
-            #(e.g. "String y = "hello";)
-            if expr.getNext().getNext().getNext().getNext() == None:
-                evalDeclare(expr.getNext().getToken(), [expr.getToken(), expr.getNext().getNext().getNext().getToken()], env)
-            
-            
-            #CONCATENATE STRINGS
-            #If there is more than one thing on the right side of the equal sign
-            #make sure that it is only a + or another string
+        
+            #ASSIGNMENT
             else:
-                temp = expr.getNext().getNext().getNext().getToken()
-                curr = expr.getNext().getNext().getNext().getNext()
                 
                 #THROW SYNTAX ERROR
-                #if something besides + follows first string
-                if curr.getToken() != "+":
-                    raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
-                    
-                #THROW SYNTAX ERROR...
-                while curr != None:
-                    
-                    #If there is anything besides string or +
-                    if curr.getToken() != "+" and type(curr.getToken()) != type(""):
+                #Make sure if there is an equal sign that there is 
+                #something to the right of it
+                if expr.getNext().getNext() != None and expr.getNext().getNext().getNext() == None:
+                    raise SyntaxError("Need something after equal sign")
+                
+                #CHECK COMPATIBILITY
+                #Make sure that whatever is on right side of equal sign is a string
+                if type(expr.getNext().getNext().getNext().getToken()) != type(""):
+                    raise IncompatibleTypes(str(expr.getNext().getToken()) + " should be a string")
+            
+            
+                #ADD SINGLE STRING TO DICTIONARY
+                #If there is only one string being assigned
+                #(e.g. "String y = "hello";)
+                if expr.getNext().getNext().getNext().getNext() == None:
+                    evalDeclare(expr.getNext().getToken(), [expr.getToken(), expr.getNext().getNext().getNext().getToken()], env)
+            
+            
+                #CONCATENATE STRINGS
+                #If there is more than one thing on the right side of the equal sign
+                #make sure that it is only a + or another string
+                else:
+                    temp = expr.getNext().getNext().getNext().getToken()
+                    curr = expr.getNext().getNext().getNext().getNext()
+                
+                    #THROW SYNTAX ERROR
+                    #if something besides + follows first string
+                    if curr.getToken() != "+":
                         raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
+                    
+                    #THROW SYNTAX ERROR...
+                    while curr != None:
+                    
+                        #If there is anything besides string or +
+                        if curr.getToken() != "+" and type(curr.getToken()) != type(""):
+                            raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
                         
-                    #If there are two strings in a row without a + inbetween
-                    elif curr.getToken() != "+" and type(curr.getToken()) == type("") and curr.getNext() != None and curr.getNext().getToken() != "+":
-                        raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
+                        #If there are two strings in a row without a + inbetween
+                        elif curr.getToken() != "+" and type(curr.getToken()) == type("") and curr.getNext() != None and curr.getNext().getToken() != "+":
+                            raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
                     
-                    #If there are two + in a row with no string inbetween
-                    elif curr.getToken() == "+" and curr.getNext().getToken() == "+":
-                        raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
+                        #If there are two + in a row with no string inbetween
+                        elif curr.getToken() == "+" and curr.getNext().getToken() == "+":
+                            raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
                         
-                    #If there is a + with no string after it
-                    elif curr.getToken() == "+" and curr.getNext() == None:
-                        raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
+                        #If there is a + with no string after it
+                        elif curr.getToken() == "+" and curr.getNext() == None:
+                            raise SyntaxError((str(expr.getNext().getToken()) + " has an improper string format"))
                     
-                    #CONCATENATE STRING
-                    elif curr.getToken() != "+":
-                        temp += curr.getToken()
+                        #CONCATENATE STRING
+                        elif curr.getToken() != "+":
+                            temp += curr.getToken()
                         
-                    #Continue the while loop
-                    if curr.getNext() != None:   
-                        curr = curr.getNext()
-                    else:
-                        curr = None
+                        #Continue the while loop
+                        if curr.getNext() != None:   
+                            curr = curr.getNext()
+                        else:
+                            curr = None
                    
-                #ADD CONCATENATED STRING TO ENVIRONMENT
-                evalDeclare(expr.getNext().getToken(), [expr.getToken(), temp], env)
+                    #ADD CONCATENATED STRING TO ENVIRONMENT
+                    evalDeclare(expr.getNext().getToken(), [expr.getToken(), temp], env)
                 
                 
                 
@@ -173,54 +182,71 @@ def eval(expr, env):
             
         elif expr.getToken() == 'int':
             
-            #CHECK COMPATIBILITY
-            #Check to make sure right side of equal sign is an integer
-            if type(expr.getNext().getNext().getNext().getToken()) != type(0):
-                raise IncompatibleTypes(str(expr.getNext().getToken()) + " should be an integer")
-                
-                
-            #ADD SINGLE INTEGER TO ENVIRONMENT
-            #If there is no arithmetic needed on the right side of equal sign
-            if expr.getNext().getNext().getNext().getNext() == None:
-                evalDeclare(expr.getNext().getToken(), [expr.getToken(), expr.getNext().getNext().getNext().getToken()], env)
+            #INITIALIZATION
+            #ADD TO ENVIRONMENT
+            #Initialization but not assignment (e.g. "int x;")
+            #Add the variable to the environment with value None
+            if expr.getNext().getNext() == None:
+                evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)
             
             
-            #CALCULATE INTEGER AND ADD TO ENVIRONMENT
-            #Check to make sure arithmetic does not contain any invalid symbols
-            #and evaluate right side of the equal sign
+            #ASSIGNMENT
             else:
-                operations = ["+", "-", "*", "/", "**"]
-                temp = expr.getNext().getNext().getNext()
                 
-                #THROW SYNTAX ERROR...
-                while temp != None:
-                    
-                    #If it is not an integer or an operator
-                    if (type(temp.getToken()) != type(0)) and (temp.getToken() not in operations):
-                        raise SyntaxError("Not a valid string of operations")
-                        
-                    #If there are two operators next to each other without a number inbetween 
-                    elif temp.getToken() in operations and temp.getNext() != None and temp.getNext().getToken() in operations:
-                        raise SyntaxError("Not a valid string of operations")
-                        
-                    #If there are two integers without an operator inbetween
-                    elif type(temp.getToken()) == type(0) and temp.getNext() != None and type(temp.getNext().getToken()) == type(0):
-                        raise SyntaxError("Not a valid string of operations")
-                        
-                    #Continue with while loop
-                    temp = temp.getNext()
+                #THROW SYNTAX ERROR
+                #Make sure if there is an equal sign that there is 
+                #something to the right of it
+                if expr.getNext().getNext() != None and expr.getNext().getNext().getNext() == None:
+                    raise SyntaxError("Need something after equal sign")
                 
-                
-                #Calculate the outcome of operations of right side
-                firstNumber = expr.getNext().getNext().getNext()
-                operation = expr.getNext().getNext().getNext().getNext()
-                secondNumber = expr.getNext().getNext().getNext().getNext().getNext()
-                
-                value = evalMaths(firstNumber, operation, secondNumber, env)
-                print value
-                
-                #Add value to the environment
-                evalDeclare(expr.getNext().getToken(), [expr.getToken(), value], env)
+                #CHECK COMPATIBILITY
+                #Check to make sure right side of equal sign is an integer
+                if type(expr.getNext().getNext().getNext().getToken()) != type(0):
+                    raise IncompatibleTypes(str(expr.getNext().getToken()) + " should be an integer")
+
+
+                #ADD SINGLE INTEGER TO ENVIRONMENT
+                #If there is no arithmetic needed on the right side of equal sign
+                if expr.getNext().getNext().getNext().getNext() == None:
+                    evalDeclare(expr.getNext().getToken(), [expr.getToken(), expr.getNext().getNext().getNext().getToken()], env)
+
+
+                #CALCULATE INTEGER AND ADD TO ENVIRONMENT
+                #Check to make sure arithmetic does not contain any invalid symbols
+                #and evaluate right side of the equal sign
+                else:
+                    operations = ["+", "-", "*", "/", "**"]
+                    temp = expr.getNext().getNext().getNext()
+
+                    #THROW SYNTAX ERROR...
+                    while temp != None:
+
+                        #If it is not an integer or an operator
+                        if (type(temp.getToken()) != type(0)) and (temp.getToken() not in operations):
+                            raise SyntaxError("Not a valid string of operations")
+
+                        #If there are two operators next to each other without a number inbetween 
+                        elif temp.getToken() in operations and temp.getNext() != None and temp.getNext().getToken() in operations:
+                            raise SyntaxError("Not a valid string of operations")
+
+                        #If there are two integers without an operator inbetween
+                        elif type(temp.getToken()) == type(0) and temp.getNext() != None and type(temp.getNext().getToken()) == type(0):
+                            raise SyntaxError("Not a valid string of operations")
+
+                        #Continue with while loop
+                        temp = temp.getNext()
+
+
+                    #Calculate the outcome of operations of right side
+                    firstNumber = expr.getNext().getNext().getNext()
+                    operation = expr.getNext().getNext().getNext().getNext()
+                    secondNumber = expr.getNext().getNext().getNext().getNext().getNext()
+
+                    value = evalMaths(firstNumber, operation, secondNumber, env)
+                    print value
+
+                    #Add value to the environment
+                    evalDeclare(expr.getNext().getToken(), [expr.getToken(), value], env)
                 
                 
         #  ******************************************************************
@@ -229,6 +255,13 @@ def eval(expr, env):
         #  ******************************************************************
             
         elif expr.getToken() == 'float':
+            
+            #ADD TO ENVIRONMENT
+            #Initialization but not assignment (e.g. "int x;")
+            #Add the variable to the environment with value None
+            if expr.getNext().getNext() == None:
+                evalDeclare(expr.getNext().getToken(), [expr.getToken(), None], env)
+            
             
             #CHECK COMPATIBILITY
             #Check to make sure right side of equal sign is an integer
@@ -284,9 +317,91 @@ def eval(expr, env):
                 
                 #Add value to the environment
                 evalDeclare(expr.getNext().getToken(), [expr.getToken(), value], env)
+             
+            
+            
+        #  ******************************************************************
+        #  **** STACK **** #
+        #  **** ASSIGNMENT **** #
+        #  ******************************************************************   
+            
+        elif expr.getToken() in ['Stack', 'Queue']:
+
+            #THROW SYNTAX ERROR...
+            
+            #if Stack initialization is missing <
+            #(e.g. StackInteger> y;)
+            if expr.getNext() != None and expr.getNext().getToken() != '<':
+                raise SyntaxError("Missing <")
                 
                 
+            #if Stack is not intialized with content type
+            #(e.g. Stack<> y;)
+            if expr.getNext().getNext() == None:
+                raise SyntaxError("Missing type")
                 
+                
+            #if Stack initialization is missing >
+            #(e.g. Stack<Integer y;)
+            if expr.getNext().getNext().getNext() == None or (expr.getNext().getNext().getNext() != None and expr.getNext().getNext().getNext().getToken() != ">"):
+                raise SyntaxError("Missing >")
+                
+            
+            #if the stack does not have a variable
+            if expr.getNext().getNext().getNext().getNext() == None:
+                raise SyntaxError("Need a variable")
+                
+            
+            #has an equal sign but no value on right
+            if expr.getNext().getNext().getNext().getNext().getNext() != None and expr.getNext().getNext().getNext().getNext().getNext().getNext() == None:
+                raise SyntaxError("Need something on right side of equal sign")
+                
+                
+            #INITIALIZE
+            #ADD TO ENVIRONMENT
+            #If the stack is initialized but not assigned a value
+            if expr.getNext().getNext().getNext().getNext().getNext() == None:
+                variable = expr.getNext().getNext().getNext().getNext().getToken()
+                stackType = expr.getNext().getNext().getToken()
+                stack = VStack(stackType)
+                evalDeclare(variable, [stack, None], env)
+                
+            #QUESTION:
+            #QUESTION:
+            #QUESTION:
+            #How can they initialize the Stack?
+            #They can do Stack<String> y = new Stack<String>(), but can they
+            #initialize it with anything inside?
+            if expr.getNext().getNext().getNext().getNext().getNext() != None:
+                stackValue = expr.getNext().getNext().getNext().getNext().getNext().getNext()
+                variable = expr.getNext().getNext().getNext().getNext().getToken()
+                stackType = expr.getNext().getNext().getToken()
+
+                stack = VStack(stackType)
+                if stackValue.getToken() != "new":
+                    if stackValue.getNext() != None:
+                        raise SyntaxError("Improper Stack assignment")
+                    evalDeclare(variable, [stack, stackValue.getToken()], env)
+                    
+                else:
+                    if stackValue.getNext() == None or stackValue.getNext().getToken() != "Stack":
+                        raise SyntaxError("Must be a new Stack")
+                    elif stackValue.getNext().getNext() == None or stackValue.getNext().getNext().getToken() != "<":
+                        raise SyntaxError("Missing <")
+                    elif stackValue.getNext().getNext().getNext() == None or stackValue.getNext().getNext().getNext().getToken() != stackType:
+                        raise IncompatibleTypes("Must initialize Stack of type: " + str(stackType))
+                    elif stackValue.getNext().getNext().getNext().getNext() == None or stackValue.getNext().getNext().getNext().getNext().getToken() != ">":
+                        raise SyntaxError("Missing >")
+                    elif stackValue.getNext().getNext().getNext().getNext().getNext() == None or stackValue.getNext().getNext().getNext().getNext().getNext().getType() != 11:
+                        raise SyntaxError("Missing ()")
+                    elif stackValue.getNext().getNext().getNext().getNext().getNext().getToken() != None:
+                        raise DeclarationError("Stack must be declared with ()")
+                    else:
+                        evalDeclare(variable, [stack, stack.getValue()], env)
+                
+                
+            
+            
             '''
         if expr.getToken() in ['Stack', 'Queue']:
             if expr.getNext().getToken() != None and expr.getNext().getToken() != '<':
@@ -523,28 +638,28 @@ def evalMaths(first, op, second, env):
         return sum1
     
 def convertDeclaredType(declaredType):
+    stringStack = VStack(type(0))
     if declaredType == 'int':
         return int
     if declaredType == 'float':
         return float
     if declaredType == 'String':
         return str
-    if declaredType == 'Stack':
-        return declaredType
+    return declaredType
     
     
 def evalDeclare(name, value, env):
     print 'in eval declare'
     dictionary = env.getVariables()
-    print dictionary
+    #print dictionary
     if name not in dictionary:
         print "name not in dictionary"
         dictionary[name] = [0,0]
-        print "value is: ", value[0]
+        #print "value is: ", value[0]
         dictionary[name][0] = convertDeclaredType(value[0])
-        print "*&*&*&", value[1]
+        #print "*&*&*&", value[1]
         dictionary[name][1] = value[1]
-        print dictionary[name][1]
+        #print dictionary[name][1]
     else:
         if dictionary[name][0] != convertDeclaredType(value[0]):
             raise IncompatibleTypes()

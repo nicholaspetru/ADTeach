@@ -1,24 +1,35 @@
+from Exception import *
+
 class VStack:
-	top = None
-	storeType = None
-	def __intit__(self, t):
-		top = []
-		storeType = t
+    top = None
+    storeType = None
+    
+    def __init__(self, t):
+        self.top = []
+        if t == "String":
+            self.storeType = type("")
+        elif t == "int":
+            self.storeType = type(0)
 
-	def pop(self):
-		return self.top.pop()
+    def pop(self):
+        return self.top.pop()
 
-	def push(self, value):
-		#check the type first?
-		return self.top.append(value)
+    def push(self, value):
+        if type(value) != self.storeType:
+            raise IncompatibleTypes("Incorrect type being pushed into Stack")
+        else:
+            return self.top.append(value)
 
 	def isEmpty(self):
 		return len(self.top) == 0
+    
+    def getValue(self):
+        return self.top
 
 class VQueue:
 	front = None
 	storeType = None
-	def __intit__(self, t):
+	def __init__(self, t):
 		front = []
 		storeType = t
 

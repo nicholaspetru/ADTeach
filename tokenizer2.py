@@ -96,11 +96,11 @@ def tokenize(expression):
             tokenList.append('>') 
                 
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '='):
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '='
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("==")
                 temp = ''
@@ -109,11 +109,11 @@ def tokenize(expression):
                 tokenList.append("==")
         
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '<'):
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '='
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("<=")
                 temp = ''
@@ -122,11 +122,11 @@ def tokenize(expression):
                 tokenList.append("<=")
                 
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '>'):
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '='
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append(">=")
                 temp = ''
@@ -135,11 +135,11 @@ def tokenize(expression):
                 tokenList.append(">=")
                 
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '!'):
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '='
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("!=")
                 temp = ''
@@ -148,11 +148,11 @@ def tokenize(expression):
                 tokenList.append("!=")
                 
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '+'):
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '='
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("+=")
                 temp = ''
@@ -161,11 +161,11 @@ def tokenize(expression):
                 tokenList.append("+=")
                 
         elif (i > 0) and (expression[i] == '=') and (expression[i-1] == '-'):
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '='
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("-=")
                 temp = ''
@@ -174,11 +174,11 @@ def tokenize(expression):
                 tokenList.append("-=")
             
         elif (i > 0) and expression[i] == '+' and expression[i-1] == '+':
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '+'
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("++")
                 temp = ''
@@ -187,11 +187,11 @@ def tokenize(expression):
                 tokenList.append("++")
                 
         elif (i > 0) and expression[i] == '-' and expression[i-1] == '-':
-            print "*************************", temp
+            #print "*************************", temp
             if stringFlag:
                 temp += '-'
             elif len(temp) > 1:
-                print "*************************", temp
+                #print "*************************", temp
                 tokenList.append(temp[:-1])
                 tokenList.append("--")
                 temp = ''
@@ -233,10 +233,10 @@ def tokenize(expression):
     
     
     #print out the list of tokens in order to check! 
-    printHead = head
-    while printHead != None:
-        print printHead.getToken(), printHead.getType()
-        printHead = printHead.getNext()
+    #printHead = head
+    #while printHead != None:
+    #    print printHead.getToken(), printHead.getType()
+    #    printHead = printHead.getNext()
     
     return head
     
