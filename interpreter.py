@@ -7,9 +7,6 @@ from Exception import *
 from ADTs import *
 
 def eval(expr, env):
-    #adts = []
-    #for adt in library:
-    #   adts.append(adt)
     
     #check for empty expression
     if expr == None:
@@ -39,6 +36,7 @@ def eval(expr, env):
         env = evalFor(expr.getNext(), env)
         env.printVariables()
         return eval(expr.getNext().getNext().getNext(), env)
+
     
     if expr.getToken() == "while":
         
@@ -68,7 +66,7 @@ def eval(expr, env):
     #
     # *****
     
-    elif expr.getToken() in ['int','String','float', 'long', 'node','boolean', 'Stack']: 
+    elif expr.getToken() in ['int','String','float', 'long', 'node','boolean', 'Stack', 'Queue']: 
         
         #THROW SYNTAX ERROR
         #Missing variable for assignment (e.g. "int;") or 
@@ -321,12 +319,13 @@ def eval(expr, env):
             
             
         #  ******************************************************************
-        #  **** STACK **** #
+        #  **** STACK AND QUEUE**** #
         #  **** ASSIGNMENT **** #
         #  ******************************************************************   
-            
+        
         elif expr.getToken() in ['Stack', 'Queue']:
-
+            print "good good"
+            print expr.getToken()
             #THROW SYNTAX ERROR...
             
             #if Stack initialization is missing <
@@ -362,9 +361,13 @@ def eval(expr, env):
             #If the stack is initialized but not assigned a value
             if expr.getNext().getNext().getNext().getNext().getNext() == None:
                 variable = expr.getNext().getNext().getNext().getNext().getToken()
-                stackType = expr.getNext().getNext().getToken()
-                stack = VStack(stackType)
-                evalDeclare(variable, [stack, None], env)
+                adtContain = expr.getNext().getNext().getToken()
+                if expr.getToken() == "Stack":
+                    adt = VStack(adtContain)
+                else:
+                    adt = VQueue(adtContain)
+                    
+                evalDeclare(variable, [adt, None], env)
                 
             #QUESTION:
             #QUESTION:
@@ -373,31 +376,39 @@ def eval(expr, env):
             #They can do Stack<String> y = new Stack<String>(), but can they
             #initialize it with anything inside?
             if expr.getNext().getNext().getNext().getNext().getNext() != None:
-                stackValue = expr.getNext().getNext().getNext().getNext().getNext().getNext()
+                adtValue = expr.getNext().getNext().getNext().getNext().getNext().getNext()
                 variable = expr.getNext().getNext().getNext().getNext().getToken()
-                stackType = expr.getNext().getNext().getToken()
-
-                stack = VStack(stackType)
-                if stackValue.getToken() != "new":
-                    if stackValue.getNext() != None:
-                        raise SyntaxError("Improper Stack assignment")
-                    evalDeclare(variable, [stack, stackValue.getToken()], env)
+                adtContains = expr.getNext().getNext().getToken()
+                adtType = expr.getToken()
+                if expr.getToken() == "Stack":
+                    adt = VStack(adtContains)
+                else:
+                    adt = VQueue(adtContains)
+                    
+                if adtValue.getToken() != "new":
+                    if adtValue.getType() != 1:
+                        raise IncompatibleTypes("Improper " + adtType + " assignment")
+                    if type(adtValue.getToken()) == type(""):
+                        raise IncompatibleTypes("Improper " + adtType + " assignment")
+                    if adtValue.getNext() != None:
+                        raise SyntaxError("Improper " + adtType + " assignment")
+                    evalDeclare(variable, [adt, adtValue.getToken()], env)
                     
                 else:
-                    if stackValue.getNext() == None or stackValue.getNext().getToken() != "Stack":
-                        raise SyntaxError("Must be a new Stack")
-                    elif stackValue.getNext().getNext() == None or stackValue.getNext().getNext().getToken() != "<":
+                    if adtValue.getNext() == None or adtValue.getNext().getToken() != adtType:
+                        raise SyntaxError("Must be a new " + adtType)
+                    elif adtValue.getNext().getNext() == None or adtValue.getNext().getNext().getToken() != "<":
                         raise SyntaxError("Missing <")
-                    elif stackValue.getNext().getNext().getNext() == None or stackValue.getNext().getNext().getNext().getToken() != stackType:
-                        raise IncompatibleTypes("Must initialize Stack of type: " + str(stackType))
-                    elif stackValue.getNext().getNext().getNext().getNext() == None or stackValue.getNext().getNext().getNext().getNext().getToken() != ">":
+                    elif adtValue.getNext().getNext().getNext() == None or adtValue.getNext().getNext().getNext().getToken() != adtContains:
+                        raise IncompatibleTypes("Must initialize " + adtType + " of type: " + str(adtContains))
+                    elif adtValue.getNext().getNext().getNext().getNext() == None or adtValue.getNext().getNext().getNext().getNext().getToken() != ">":
                         raise SyntaxError("Missing >")
-                    elif stackValue.getNext().getNext().getNext().getNext().getNext() == None or stackValue.getNext().getNext().getNext().getNext().getNext().getType() != 11:
+                    elif adtValue.getNext().getNext().getNext().getNext().getNext() == None or adtValue.getNext().getNext().getNext().getNext().getNext().getType() != 11:
                         raise SyntaxError("Missing ()")
-                    elif stackValue.getNext().getNext().getNext().getNext().getNext().getToken() != None:
-                        raise DeclarationError("Stack must be declared with ()")
+                    elif adtValue.getNext().getNext().getNext().getNext().getNext().getToken() != None:
+                        raise DeclarationError(adtType + " must be declared with ()")
                     else:
-                        evalDeclare(variable, [stack, stack.getValue()], env)
+                        evalDeclare(variable, [adt, adt.getValue()], env)
                 
                 
             
@@ -447,6 +458,62 @@ def eval(expr, env):
             '''
     
     elif expr.getNext() != None:
+        print "This is also a problem"
+        print expr.getNext().getToken()
+        
+        #Check to see if it is a method being called
+        if expr.getNext().getToken()[0] == ".":
+            
+            #Check to make sure 0 or more parameters being passed
+            if expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 11:
+                raise IncorrectParameters("Need parameters when calling a method")
+            
+            #Check to make sure method is a valid method for the ADT
+            adt = expr.getToken()
+            print "121212121212", adt
+            adtType = env.getVariables()[adt][0]
+            print adtType
+            method = expr.getNext().getToken()[1:]
+            if method not in adtType.listMethods():
+                raise InvalidMethod("Not a valid method for a " + adtType.getType())
+                
+                
+            #Check to make sure parameters are correct
+            listOfParameters = []
+            seenComma = False
+            evalParameter = expr.getNext().getNext().getToken()
+            #print "///////////", currentparameter.getToken()
+            while evalParameter != None:
+                finalParameter = evalParameter.copy()
+                currentParameter = evalParameter
+                firstParameter = finalParameter
+                while currentParameter != None and currentParameter.getToken() != ",":
+                    if currentParameter.getNext() != None:
+                        if currentParameter.getNext().getToken() != ",":
+                            finalParameter.setNext(currentParameter.getNext().copy())
+                            finalParameter = finalParameter.getNext()
+                        currentParameter = currentParameter.getNext()
+                    else:
+                        currentParameter = None
+                listOfParameters.append(eval(firstParameter, env))
+                if currentParameter != None:
+                    evalParameter = currentParameter.getNext()
+                else:
+                    evalParameter = None
+                
+                
+
+            if adtType.checkParameters(method, listOfParameters) != True:
+                raise IncorrectParameters("Incorrect parameters for " + method)
+            else:
+                adtType.performMethod(method, listOfParameters)
+                print "ADT VARIABLE IS: ", adt
+                print "ADT VALUE IS: ", adtType.getValue()
+                #evalEquals(expr.getToken(), adtType.getValue(), env)
+            print listOfParameters
+            print method
+        
+        
         #all checks on expr.next()
         #evaluating assignment statements which don't declare type
         if expr.getNext().getToken() == "=":
@@ -462,12 +529,14 @@ def eval(expr, env):
         
     #Check our environment for the variable
     elif expr.getType() == 1:
+        
         print "getting in here", expr.getToken()
         print expr.getType()
         return resolveVariable(expr, env)
     
     #can't be evaluated
     else:
+        print "This is a problem"
         return expr.getToken()
     
 #return the truth value of a predicate
@@ -638,6 +707,7 @@ def evalMaths(first, op, second, env):
         return sum1
     
 def convertDeclaredType(declaredType):
+    
     stringStack = VStack(type(0))
     if declaredType == 'int':
         return int
@@ -668,7 +738,7 @@ def evalDeclare(name, value, env):
     
 def evalEquals(name, value, env):
     dictionary = env.getVariables()
-    #print "in eval equals with the variable, ", name, value[0]
+    print "in eval equals with the variable, ", name, value
     # Error if variable is not initialized, otherwise update value
     if value[0] == None:
         if name not in dictionary:
@@ -692,7 +762,9 @@ def evalEquals(name, value, env):
     # Else creating variable in dictionary
     else:
         if name in dictionary:
-            if dictionary[name][0] != type(value[1]):
+            print "HERE: ", dictionary[name][0]
+            print "AND HERE: ", type(value)
+            if dictionary[name][0] != type(value):
                 raise IncompatibleTypes()
             else:
                 raise AlreadyInitialized(name)

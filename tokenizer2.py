@@ -82,6 +82,13 @@ def tokenize(expression):
                 tokenList.append(temp)
                 temp = ""
         
+        elif (expression[i] == ','):
+            if stringFlag:
+                temp += ","
+            elif (temp != ""):
+                tokenList.append(temp)
+                temp = ""
+            tokenList.append(",")
         
         elif (expression[i] == '<') and (expression[i+1] != None) and (expression[i+1] != "="):
             if (temp != ""):

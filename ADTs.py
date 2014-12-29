@@ -15,33 +15,68 @@ class VStack:
         return self.top.pop()
 
     def push(self, value):
+        print type(value)
+        print self.storeType
         if type(value) != self.storeType:
             raise IncompatibleTypes("Incorrect type being pushed into Stack")
         else:
-            return self.top.append(value)
+            self.top.append(value)
 
-	def isEmpty(self):
-		return len(self.top) == 0
+    def isEmpty(self):
+        return len(self.top) == 0
     
     def getValue(self):
         return self.top
+    
+    def getType(self):
+        return "Stack"
+    
+    def listMethods(self):
+        return ['getValue', 'isEmpty', 'push', 'pop']
+    
+    def checkParameters(self, method, parameters):
+        if method in ["pop", "getValue", "isEmpty"]:
+            if len(parameters) != 0:
+                raise IncorrectParameters("pop does not take any parameters")
+        if method == "push":
+            if len(parameters) != 1:
+                raise IncorrectParameters("push only takes one parameter")
+        return True
+    
+    def performMethod(self, method, listOfParameters):
+        if method == "pop":
+            self.pop()
+        if method == "push":
+            self.push(listOfParameters[0])
+        if method == "isEmpty":
+            self.isEmpty()
+        if method == "getValue":
+            self.getValue()
+        if method == "getType":
+            self.getType()
 
 class VQueue:
-	front = None
-	storeType = None
-	def __init__(self, t):
-		front = []
-		storeType = t
+    front = None
+    storeType = None
 
-	def dequeue(self):
-		return self.front.pop(0)
+    def __init__(self, t):
+        self.front = []
+        self.storeType = t
 
-	def push(self, value):
-		#check the type first?
-		return self.front.append(value)
+    def dequeue(self):
+        return self.front.pop(0)
+    
+    def push(self, value):
+        return self.front.append(value)
+    
+    def isEmpty(self):
+        return len(self.front) == 0
 
-	def isEmpty(self):
-		return len(self.front) == 0
+    def getValue(self):
+        return self.front
+    
+    def getType(self):
+        return "Queue"
 
 class VList:
 	def __init__(self, t):

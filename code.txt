@@ -1,1 +1,5 @@
-Stack <int> y = new Stack<int>();
+Stack<int> y = new Stack<int>();
+y.push(3 + 2);
+y.push(2);
+y.pop();
+y.push(1);

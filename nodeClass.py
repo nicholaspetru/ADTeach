@@ -21,6 +21,10 @@ class Node:
     def setToken(self, Node):
         self.Token = Node
         
+    def copy(self):
+        print "copying node: ", self.Token
+        return Node(str(self.Token))
+        
     def setType(self):
         '''       
         Vava

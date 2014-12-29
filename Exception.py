@@ -45,3 +45,9 @@ class SyntaxError(Exception):
 
 class MissingSemiColon(Exception):
     pass
+
+class IncorrectParameters(Exception):
+    pass
+
+class InvalidMethod(Exception):
+    pass
