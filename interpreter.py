@@ -154,7 +154,7 @@ def eval(expr, env):
                     
                         #CONCATENATE STRING
                         elif curr.getToken() != "+":
-                            temp += curr.getToken()
+                            temp = temp[:-1] + curr.getToken()[1:]
                         
                         #Continue the while loop
                         if curr.getNext() != None:   

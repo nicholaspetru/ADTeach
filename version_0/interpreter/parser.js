@@ -57,7 +57,7 @@ Interpreter.prototype.addToParseTree = function(tree, token) {
             newLevel.Token = tempStack;
         }
 
-        tree = addToParseTree(tree, newLevel);
+        tree = addToParseTree(tree, newLevel); 
 
     }
 };
