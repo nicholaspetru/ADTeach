@@ -1,10 +1,11 @@
 $(document).ready(function () {
   
-    VisualizerHandler = function(){
+    VisualizerHandler = function(paper){
         //the list of entities
         this.entities = [];
         this.eventQueue = [];
         this.symbolTable = null;
+        this.paper = paper;
         return this;
     }
     
@@ -15,7 +16,7 @@ $(document).ready(function () {
         
         //Fake new entity calls from the eventQueue
         this.NewEntity('int','x','int',5);
-        this.NewEntity('stack','y','int',[1,2,3,4,5]);
+        //this.NewEntity('stack','y','int',[1,2,3,4,5]);
         /*
         //dequeue everything from the event queue
         //Go through while dequeing and call the appropriate method below
@@ -75,15 +76,15 @@ $(document).ready(function () {
     VisualizerHandler.prototype.getNewEntity = function(className, name, type, value) {
         switch(className){
         case "int":
-            return new Primitive(name,type,value);
+            return new Primitive(this.paper,name,type,value);
         case "string":
-            return new Primitive(name,type,value);
+            return new Primitive(this.paper,name,type,value);
         case "float":
-            return new Primitive(name,type,value);
+            return new Primitive(this.paper,name,type,value);
         case "bool":
-            return new Primitive(name,type,value);
+            return new Primitive(this.paper,name,type,value);
         case "stack":
-            return new Stack(name,type,value);
+            return new Stack(this.paper,name,type,value);
         //and more cases....
         default:
             console.log("Unknown type for newEntity.");

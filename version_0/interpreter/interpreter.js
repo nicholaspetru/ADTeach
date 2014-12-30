@@ -12,7 +12,7 @@ $(document).ready(function () {
         return this;
     }
     
-    /*
+    //uncommented this to work on visualizer handler stuff
     Interpreter.prototype.eval = function(expression) {
         //While interpreting, call the method in symbol table for updates
         console.log("Interpreter: eval(" + expression + ")");
@@ -33,7 +33,7 @@ $(document).ready(function () {
         //var testVar = this.symbolTable.getValue(newName1);
         //console.log("testing getValue: " + testVar);
     };
-    */
+    
 
     Interpreter.prototype.tokenize = function() {
         //split an expression and return a list of all the tokens

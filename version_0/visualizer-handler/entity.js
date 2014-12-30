@@ -12,6 +12,7 @@ $(document).ready(function () {
     
     //draw the name of the function
     Entity.prototype.DrawName = function() {
+       //paper.text(300, 200, this.name);
 	   return this.type + " " + this.name;
     };
     

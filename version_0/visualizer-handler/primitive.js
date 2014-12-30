@@ -3,8 +3,8 @@
 
 $(document).ready(function () {
     
-    Primitive = function(name,type,value){
-	Entity.call(this,name,type,value);
+    Primitive = function(paper,name,type,value){
+	   Entity.call(this,paper,name,type,value);
 	//specific calls go here
     }
     
@@ -13,6 +13,7 @@ $(document).ready(function () {
 
     //draw the name of the function
     Primitive.prototype.Draw = function(){
-	console.log(this.DrawName() + " = " + this.value);
+       paper.text(300, 200, this.name);
+	   console.log(this.DrawName() + " = " + this.value);
     }
 });

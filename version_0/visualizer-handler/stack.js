@@ -3,8 +3,8 @@
 
 $(document).ready(function () {
     
-    Stack = function(name,type,value){
-	Entity.call(this,name,type,value);
+    Stack = function(paper,name,type,value){
+	Entity.call(this,paper,name,type,value);
 	//specific calls go here
 	this.type = "stack<" + type + ">"; 
     }
