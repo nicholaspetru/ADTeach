@@ -1,16 +1,21 @@
 $(document).ready(function () {
     
-    Interpreter = function(){
+    Interpreter = function(code){
         //the list of entities
         //this.entities = [];
         //this.eventQueue = [];
         this.symbolTable = null;
+        this.code = code;
+        this.TokenList = null;
+        this.NodeList = null;
+        this.ParseTree = null;
         return this;
     }
     
-    Interpreter.prototype.eval = function(code) {
+    /*
+    Interpreter.prototype.eval = function(expression) {
         //While interpreting, call the method in symbol table for updates
-        console.log("Interpreter: eval(" + code + ")");
+        console.log("Interpreter: eval(" + expression + ")");
         var newName1 = this.symbolTable.newVariable('int','.', 5, 'new'); //will return .1 as name
         var newName2 = this.symbolTable.newVariable('int', 'x', null, 'new');
         var updateBool1 = this.symbolTable.updateVariable('int', newName2, 5, newName1);
@@ -28,261 +33,86 @@ $(document).ready(function () {
         //var testVar = this.symbolTable.getValue(newName1);
         //console.log("testing getValue: " + testVar);
     };
+    */
 
-    Interpreter.prototype.tokenize = function(expression) {
+    Interpreter.prototype.tokenize = function() {
         //split an expression and return a list of all the tokens
-        var parenDepth = 0;
-        var braceDepth = 0;
-        var head = null;
-        expression += ' ';
-        var tokenList = [];
-        var temp = "";
-        var stringFlag = false;
-        var TokenSeparators = ['(', ')', '/', '{', '}', ';'];
+        this.TokenList = this.makeTokenList();
+        this.NodeList = this.makeNodeList();
+    };
 
-        for (var i = 0; i<expression.length; i++){
+    Interpreter.prototype.makeTokenList = function() {
+        var t = new Tokenizer();
+        var tokens = [];
+        var parenLevel = 0;
+        var braceLevel = 0;
 
-            switch(expression.charAt(i)){
+        t.input(this.code);
 
-                case '(':
-                    parenDepth++;
-                    if (stringFlag) temp += expression.charAt(i);
-                    else if (temp.length > 0) tokenList.push(temp);
-                    tokenList.push(expression.charAt(i));
-                    temp = "";
+        var currentToken = t.token();
+        while (currentToken.type !== 'NULL_TYPE') {
+            switch (currentToken.type) {
+                case 'OPEN_PAREN':
+                    parenLevel++;
                     break;
-
-                case ')':
-                    parenDepth--;
-                    if (stringFlag) temp += expression.charAt(i);
-                    else if (temp.length > 0) tokenList.push(temp);
-                    tokenList.push(expression.charAt(i));
-                    temp = "";
+                case 'CLOSE_PAREN':
+                    parenLevel--;
                     break;
-
-                case '{':
-                    braceDepth--;
-                    if (stringFlag) temp += expression.charAt(i);
-                    else if (temp.length > 0) tokenList.push(temp);
-                    tokenList.push(expression.charAt(i));
-                    temp = "";
+                case 'OPEN_BRACE':
+                    braceLevel++;
                     break;
-
-                case '}':
-                    braceDepth--;
-                    if (stringFlag) temp += expression.charAt(i);
-                    else if (temp.length > 0) tokenList.push(temp);
-                    tokenList.push(expression.charAt(i));
-                    temp = "";
+                case 'CLOSE_BRACE':
+                    braceLevel--;
                     break;
-
-                case '\"':
-                    if (stringFlag){
-                        stringFlag = false;
-                        temp = "\"" + temp + "\"";
-                        tokenList.push(temp);
-                        temp = "";
-                    }
-                    else{
-                        stringFlag =True;
-                    }
-                    break;
-
-                case ' ':
-                    if (stringFlag) temp += ' ';
-                    else if (temp.length > 0){
-                        tokenList.push(temp);
-                        temp= "";
-                    }
-                    break;
-
-                case '.':
-                    if (stringFlag) temp += ' ';
-                    else if (temp.length > 0){
-                        if (['1', '2','3','4','5','6','7','8','9','0','-'].indexOf(temp.charAt(0)) != -1) temp += '.';
-                        else{
-                            tokenList.push(temp);
-                            temp = "";
-                        }
-                    }
-                    else temp = '.';
-                    break;
-
-                case '\t':
-                    if (stringFlag) temp += '\t';
-                    else if (temp.length > 0){
-                        tokenList.push(temp);
-                        temp = '';
-                    }
-                    break;
-
-                case '\n':
-                    if (stringFlag) temp += '\n';
-                    else if (temp.length > 0){
-                        tokenList.push(temp);
-                        temp = '';
-                    }
-                    break;
-
-                case ';':
-                    if (stringFlag) temp += ';';
-                    else if (temp.length > 0){
-                        tokenList.push(temp);
-                        tokenList.push(';');
-                        temp = '';
-                    }
-                    break;
-
-                case '/':
-                    if (stringFlag) temp += ';';
-                    else if (temp.length > 0){
-                        tokenList.push(temp);
-                        tokenList.push('/');
-                        temp = '';
-                    }
-                    break;
-
-                case '+':
-                    if (stringFlag) temp += '+';
-                    else if ((expression.length > i+1) && (['+', '='].indexOf(expression.charAt(i+1)) != -1)){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('+'+expression.charAt(i+1));
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('+');
-                        temp = "";
-
-                    }
-                    break;
-
-                case '-':
-                    if (stringFlag) temp += '-';
-                    else if ((expression.length > i+1) && (['-', '='].indexOf(expression.charAt(i+1)) != -1)){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('-'+expression.charAt(i+1));
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('-');
-                        temp = "";
-
-                    }
-                    break;
-
-                case '*':
-                    if (stringFlag) temp += '*';
-                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '*')){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('**');
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('*');
-                        temp = "";
-
-                    }
-                    break;
-
-                case '=':
-                    if (stringFlag) temp += '=';
-                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('==');
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('=');
-                        temp = "";
-
-                    }
-                    break;
-
-                case '!':
-                    if (stringFlag) temp += '!';
-                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('!=');
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('!');
-                        temp = "";
-
-                    }
-                    break;
-
-                case '>':
-                    if (stringFlag) temp += '>';
-                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('>=');
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('>');
-                        temp = "";
-
-                    }
-                    break;
-
-                case '<':
-                    if (stringFlag) temp += '<';
-                    else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('<=');
-                        temp = '';
-                        i++;
-                    }
-                    else{
-                        if (temp.length > 0) tokenList.push(temp);
-                        tokenList.push('<');
-                        temp = "";
-
-                    }
-                    break;
-                
                 default:
-                    temp += expression.charAt(i);
                     break;
             }
+
+            tokens.push(currentToken);
+            currentToken = t.token();
         }
 
-        for (var i = 0; i<tokenList.length; i++){
-            curNode = {Token:tokenList[i], Type:1, Next:head};
-            head = curNode;
+        if (parenLevel > 0) {
+            return "Syntax error: Missing close parenthesis";
         }
-        var prev = null;
-        var temp = null;
-        while (head != null){
-            temp = head.Next;
-            head.Next = prev;
-            prev = head;
-            head = temp;
+        else if (parenLevel < 0) {
+            return "Syntax error: Missing open parenthesis";
         }
-        head = prev;
-
-        while (head != null){
-            console.log(head.Token);
-            head=head.Next;
+        else if (braceLevel > 0) {
+            return "Syntax error: Missing close brace";
+        }
+        else if (braceLevel < 0) {
+            return "Syntax error: Missing open brace";
         }
 
-        if (parenDepth != 0) console.log("Unmatched Parentheses");
-        if (braceDepth != 0) console.log("Unmatched Curly Brace");
-
+        return tokens;
 
     };
-    
+
+    Interpreter.prototype.makeNodeList = function() {
+        var t = this.TokenList;
+        if (typeof t == 'string') {
+            return t; // syntax error
+        }
+        var temp = [];
+        for (var i=t.length-1; i>=0; i--) {
+            if (t[i].type === 'SYMBOL_TYPE') {
+                if (t[i].value === 'true' || t[i].value === 'false') {
+                    t[i].type = 'BOOL_TYPE';
+                } 
+            }
+            temp.push(t[i]);
+        }
+
+        var head = null;
+        var curNode = null;
+
+        for (var i=0; i<temp.length; i++) {
+            curNode = new Node(temp[i].value, temp[i].type, temp[i].linenum, temp[i].pos);
+            curNode.Next = head;
+            head = curNode;
+        }
+
+        return head;
+    }
 });
