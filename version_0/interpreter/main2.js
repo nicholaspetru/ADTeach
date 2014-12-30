@@ -6,12 +6,36 @@
 
 $(document).ready(function () {
     $("#output_box").hide();
+    
     $("#tokens").click(function() {
         onTokens();
     });
+    
     $("#nodes").click(function() {
         onNodes();
     });
+
+    $("#tree").click(function() {
+        onTree();
+    });
+
+    onTree = function() {
+        console.log("--------------onTree-------------");
+        $("#output_box").show();
+
+        var code = $("#test_code").val();
+        console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
+        
+        var i = new Interpreter(code);
+        i.tokenize();
+        // i.parse();
+
+        var result = "";
+        // result = displayParseTree(i.ParseTree) or i.displayParseTree()
+        result = "we need to get parser.js running and implement displayParseTree to see anything here. \n\n after that we can update onTree() in main2.js to see the parse tree";
+        $("#test_output").val(result);
+    }
+
 
     onTokens = function() {
         console.log("--------------onTokens-------------");

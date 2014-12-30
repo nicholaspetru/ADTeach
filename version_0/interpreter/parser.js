@@ -1,4 +1,4 @@
-Interpreter.prototype.addToParseTree = function(tree, token) {
+Parser.prototype.addToParseTree = function(tree, token) {
     if ([6,8,10].indexOf(token.Type) >= 0){
         token.Next = tree;
         return token;
