@@ -10,6 +10,11 @@ $(document).ready(function() {
         this.codeBox = null;
         this.codeDatabase = null;
         this.visualizerHandler = null;
+        //1000 is in ms, corresponds to 1 second, default time for now
+        this.timeBetweenSteps = 1000;
+        //Placeholder for when we have actual indication to stop playing
+        this.i = 5;
+        this.intID = 0;
         
         //for now, put this code here
         $("#play").hide();
@@ -21,7 +26,14 @@ $(document).ready(function() {
         
         return this;
     }
-    
+
+    EventHandler.prototype.changeTime = function() {
+        console.log('Event Handler: changeTime()');
+        //TO-DO: Allow user to set this number by some user interface
+        this.timeBetweenSteps = 2000;
+    }
+
+
     //build
     EventHandler.prototype.onBuild = function() {
         console.log('Event Handler: onBuild()');
@@ -44,23 +56,22 @@ $(document).ready(function() {
     
     EventHandler.prototype.onPlay = function() {
         console.log('Event Handler: onPlay()');
-        this.takeStep();
-        // if PLAYING = false
-        // CODE = (get the code from the textarea)
-        //this.CODE = $('code_env#code').val();
-        //console.log('this.Code = ' + this.CODE);
-        // make an instance of the VisualizerHandler
-        // var vizHandler = new VisualizerHandler();
-        // make an instance of the symbol table with the vizHandler as a param
-        // var symbols= new SymbolTable(vizHandler);
-        // make an instance of the interpreter with the symbol table as a param
-        // var interp = new Interpreter(symbols)
-        // interp.eval(CODE)
-        // if the interpreter successfully interprets the code
-        // INTERPRETED = true;
-        // if PLAYING = true
-        // ? animate starting from the current step
+        //the bind function may have some browser incompatibility issues according to 
+        //stack overflow, may want to test this
+        this.intID = setInterval(this.playHelper.bind(this), this.timeBetweenSteps);
     };
+
+    EventHandler.prototype.playHelper = function() {
+        this.takeStep();
+        console.log(this.i);
+        if (this.i <= 0) {
+            clearInterval(this.intID);
+        }
+        else {
+            this.i--;
+        }
+    };
+
 
     // hidden until INTERPRETED = true
     EventHandler.prototype.onPause = function() {
