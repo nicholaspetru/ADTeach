@@ -13,7 +13,7 @@ Parser = function(nodeList) {
 }
 Parser.prototype.addToParseTree = function(tree, token) {
     // if the token is not a close type, just push it onto the tree
-    if (['CLOSE_PAREN','CLOSE_BRACE','SEMI'].indexOf(token.Type) <= 0){
+    if (['CLOSE_PAREN','CLOSE_BRACE','SEMI'].indexOf(token.Type) < 0){
         token.Next = tree;
         return token;
     }
@@ -30,7 +30,7 @@ Parser.prototype.addToParseTree = function(tree, token) {
         if (token.Type == 'SEMI'){
             // pop all the tokens and put them into the temp stack,
             // until we get to the open type or previous semi colon or close curly
-            while (curToken != null && ['OPEN_PAREN', 'OPEN_BRACE','SEMI', 'CurlyBraceLevel', 'SemicolonLevel'].indexOf(curToken.Type) <= 0){
+            while (curToken != null && ['OPEN_PAREN', 'OPEN_BRACE','SEMI', 'CurlyBraceLevel', 'SemicolonLevel'].indexOf(curToken.Type) < 0){
 
                 tempStack = this.addToParseTree(tempStack, curToken);
                 nodes = this.popFromFront(tree);
@@ -48,7 +48,7 @@ Parser.prototype.addToParseTree = function(tree, token) {
         // if we find a close parentheses
         else if (token.Type == 'CLOSE_PAREN'){
             // pop all the tokens and put them on the temp stack untel we get to the open paren type
-            while (curToken != null && ['OPEN_PAREN'].indexOf(curToken.Type) <= 0){
+            while (curToken != null && ['OPEN_PAREN'].indexOf(curToken.Type) < 0){
 
                 tempStack = this.addToParseTree(tempStack, curToken);
                 nodes = this.popFromFront(tree);
@@ -63,7 +63,7 @@ Parser.prototype.addToParseTree = function(tree, token) {
         // if we find a close curly brace
         else{
             // pop all the tokens and put them into the temp stack until we get to the open curly type
-            while (curToken != null && ['OPEN_BRACE'].indexOf(curToken.Type) <= 0){
+            while (curToken != null && ['OPEN_BRACE'].indexOf(curToken.Type) < 0){
 
                 tempStack = this.addToParseTree(tempStack, curToken);
                 nodes = this.popFromFront(tree);
