@@ -13,20 +13,22 @@ $(document).ready(function () {
     //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForth = function() {
         console.log("Visualizer Handler: goForth()");
-        
-        //Fake new entity calls from the eventQueue
-        this.NewEntity('int','x','int',5);
-        //this.NewEntity('stack','y','int',[1,2,3,4,5]);
-        /*
-        //dequeue everything from the event queue
-        //Go through while dequeing and call the appropriate method below
-        //Then render errything
-        while(eventQueue.length > 0){
-            //switch around the first item
-            switch(eventQueue[0][0])
-                case("new")
-                        newE
-        }*/
+        while (this.eventQueue.length > 0) {
+            curEvent = this.eventQueue.shift();
+            //console.log('curEvent: ' + curEvent)
+            if (curEvent[0] == 'new') {
+                this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4]);
+            }
+            else if (curEvent[0] == 'update') {
+                this.UpdateEntity(curEvent[2], curEvent[4]);
+            }
+            else if (curEvent[0] == 'delete') {
+                this.DeleteEntity(curEvent[2]);
+            }
+            else {
+                console.log('unrecognized event: ' + curEvent[0]);
+            }
+        }
         this.Render();
     };
     
@@ -35,8 +37,10 @@ $(document).ready(function () {
         console.log("Visualizer Handler: render()");
         //for each item in entities, draw
         for (var i = 0; i < this.entities.length; i++){
-            this.entities[i].value = this.symbolTable.getValue(this.entities[i].name);
-            this.entities[i].Draw();
+            if (this.entities[i] != null) {
+                this.entities[i].value = this.symbolTable.getValue(this.entities[i].name);
+                this.entities[i].Draw();
+            }
         }
     };
     
@@ -56,7 +60,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.UpdateEntity = function(name, value) {
         console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ')');
         for (var i = 0; i < this.entities.length; i++){
-            if (this.entities[i].name == name){
+            if (this.entities[i] != null && this.entities[i].name == name){
             this.entities[i].value = value;
             }
         }
@@ -66,7 +70,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.DeleteEntity = function(name) {
         console.log("Visualizer Handler: deleteEntity(" + name + ")");
         for (var i = 0; i < this.entities.length; i++){
-            if (this.entities[i].name == name){
+            if (this.entities[i] != null && this.entities[i].name == name){
             this.entities.splice(i,1);
             }
         }
