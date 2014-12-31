@@ -27,12 +27,11 @@ $(document).ready(function () {
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
         
         var i = new Interpreter(code);
-        i.tokenize();
-        // i.parse();
+        i.parse();
 
         var result = "";
         // result = displayParseTree(i.ParseTree) or i.displayParseTree()
-        result = "we need to get parser.js running and implement displayParseTree to see anything here. \n\n after that we can update onTree() in main2.js to see the parse tree";
+        result = "hi!\n\n the parse tree is in the javascript console (in chrome, threelinething > more tools > javascript console). \n\n it looks good to me except i'm not sure if paren/bracelevels are getting added to the tree";
         $("#test_output").val(result);
     }
 

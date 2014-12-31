@@ -9,6 +9,7 @@ $(document).ready(function () {
         this.TokenList = null;
         this.NodeList = null;
         this.ParseTree = null;
+        this.Error = null;
         return this;
     }
     
@@ -40,6 +41,17 @@ $(document).ready(function () {
         this.TokenList = this.makeTokenList();
         this.NodeList = this.makeNodeList();
     };
+
+    Interpreter.prototype.parse = function() {
+        this.tokenize();
+        this.ParseTree = this.makeParseTree();
+    }
+
+    Interpreter.prototype.makeParseTree = function() {
+        var p = new Parser(this.NodeList);
+        p.parseTokens();
+        p.showParseTree();
+    }
 
     Interpreter.prototype.makeTokenList = function() {
         var t = new Tokenizer();
