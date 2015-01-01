@@ -13,7 +13,7 @@ $(document).ready(function () {
     Stack.prototype.constructor = Stack;
 
     //draw the name of the function
-    Stack.prototype.Draw = function(){
-	console.log(this.DrawName() + " = " + this.value);
+    Stack.prototype.Draw = function(x, y){
+	   console.log(this.DrawName() + " = " + this.value);
     }
 });

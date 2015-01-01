@@ -35,11 +35,15 @@ $(document).ready(function () {
     //Call the draw function of each entity
     VisualizerHandler.prototype.Render = function() {
         console.log("Visualizer Handler: render()");
+        var x = 100;
+        var y = 100;
         //for each item in entities, draw
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null) {
                 this.entities[i].value = this.symbolTable.getValue(this.entities[i].name);
-                this.entities[i].Draw();
+                this.entities[i].Draw(x,y);
+                //increment y
+                y += 16;
             }
         }
     };
@@ -91,7 +95,7 @@ $(document).ready(function () {
             return new Stack(this.paper,name,type,value);
         //and more cases....
         default:
-            console.log("Unknown type for newEntity.");
+            console.log("Unknown type for newEntity: " + className);
             return;
         }
     };

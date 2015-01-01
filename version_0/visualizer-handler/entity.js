@@ -1,3 +1,6 @@
+/*I'm mostly going to get rid of entities-- the inheritance in JavaScript is such crap that
+I don't think it's worth it.*/
+
 $(document).ready(function () {
 
     //Entity class-- the 
