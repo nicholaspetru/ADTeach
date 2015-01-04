@@ -1,11 +1,31 @@
 $(document).ready(function () {
   
-    VisualizerHandler = function(paper){
+    VisualizerHandler = function(){
+        //Create the paper
+
         //the list of entities
         this.entities = [];
         this.eventQueue = [];
         this.symbolTable = null;
-        this.paper = paper;
+
+        //define constants
+        this.PRIMITIVE_COLUMNWIDTH = 120;
+        this.PRIMITIVE_SECTION_HEIGHT = 100;
+        this.HBORDER = 8;
+        this.VBORDER = 12;
+        this.FONT_HEIGHT = 12;
+        this.FONT_SIZE = 18;
+        this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
+        this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
+
+        //drawing basic stuff on the paper: the sections
+        this.paper = Raphael("vis_paper", 500,1000);
+        this.paper.text(this.HBORDER, this.VBORDER, "primitives:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.VBORDER + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.VBORDER + this.FONT_HEIGHT));
+
+        this.paper.text(this.HBORDER, this.ADT_SECTION_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_Y + this.FONT_HEIGHT));
+
         return this;
     }
     
@@ -15,7 +35,6 @@ $(document).ready(function () {
         console.log("Visualizer Handler: goForth()");
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
-            //console.log('curEvent: ' + curEvent)
             if (curEvent[0] == 'new') {
                 this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4]);
             }
@@ -37,11 +56,15 @@ $(document).ready(function () {
         console.log("Visualizer Handler: render()");
         var x = 100;
         var y = 100;
+        //at some point, we'll delete and assign here
+        //sort the entities
+        this.arrangePrimitives();
+
         //for each item in entities, draw
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null) {
                 this.entities[i].value = this.symbolTable.getValue(this.entities[i].name);
-                this.entities[i].Draw(x,y);
+                this.entities[i].Draw();
                 //increment y
                 y += 16;
             }
@@ -65,7 +88,7 @@ $(document).ready(function () {
         console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ')');
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
-            this.entities[i].value = value;
+                this.entities[i].value = value;
             }
         }
     }
@@ -75,7 +98,7 @@ $(document).ready(function () {
         console.log("Visualizer Handler: deleteEntity(" + name + ")");
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
-            this.entities.splice(i,1);
+                this.entities = this.entities.splice(i,1);
             }
         }
     }
@@ -100,4 +123,24 @@ $(document).ready(function () {
         }
     };
 
+    //Arranges primitives (now all entities)
+    VisualizerHandler.prototype.arrangePrimitives = function() {
+        var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y, t = 500;
+
+        for (var i = 0; i < this.entities.length; i++){
+            if (this.entities[i].x != curX || this.entities[i].y != curY) {
+                var anim = Raphael.animation({x:curX,y:curY},500);
+                this.entities[i].vis.animate(anim.delay(t));
+                t += 500;
+            }
+            //traverse down
+            curY += this.FONT_HEIGHT + 6;
+            //move to the next column
+            if (curY > this.PRIMITIVE_SECTION_HEIGHT){
+                curY = this.PRIMITIVE_SECTION_Y;
+                curX +=  this.PRIMITIVE_COLUMNWIDTH;
+            }
+       }
+
+    }
 });

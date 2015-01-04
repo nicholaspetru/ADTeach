@@ -31,7 +31,14 @@ $(document).ready(function () {
         var removeBool3 = this.symbolTable.removeVariable('int', newName5, 5, 'remove');
 
         //here's a new variable I'm making to test entity drawing
-        var newName2 = this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'p', null, 'new');
 
         //console.log("updateBools: " + updateBool1 + updateBool2 + updateBool3 + updateBool4);
         //console.log("removeBools: " + removeBool1 + removeBool2 + removeBool3);
