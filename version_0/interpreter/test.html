@@ -1,286 +1,40 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
 <html>
 <head>
+    <meta charset="utf-8">
+    <title>Data Tutor v0 Interpreter Testing</title>
 
+    <script src="jquery-1.11.1.js"></script>
+    <script src="tokenizer2.js"></script>
+    <script src="node2.js"></script>
+    <script src="parser.js"></script>
+    <script src="interpreter.js"></script>
 
-    <title>Data Tutor v0 Event Handler</title>
+    <script src="main2.js"></script>
+    <link rel="stylesheet" href="test.css">
+    <h1 class="main_header">Interpreter Testing</h1>
 </head>
+
 <body>
-    <div id="code_box">
-        <form>
-        <div id="code_env">
-        <textarea id="code" name="code" cols="120" rows="5">
-            def test
-        </textarea>
-        </div>
-        </form>
-        
+    <div id="container">
+    <div id="output_box">
+    <p><label>Output: <br><br>
+                <textarea id="test_output" name="test_output" cols="50" rows="50"></textarea> </label></p>
     </div>
 
+    <div id="code_box">
+            <p><label>Enter test code here: <br><br>
+                <textarea id="test_code" name="test_code" cols="50" rows="10">
+int x;
+int y, z;
+y = 5 + (3 * 4);
+z = 7;
+x = y-z;
+String h = "hello world!";</textarea> </label></p>
+    </div>
+    </div>
+    <button name="tokens" id="tokens">Tokens</button>
+    <button name="nodes" id="nodes">Nodes</button>
+    <button name="tree" id="tree">Parse Tree</button>
 </body>
-
-
-<script type="text/javascript">
-console.log("starting test");
-var parenDepth = 0;
-var braceDepth = 0;
-var head = null;
-var curNode = null;
-var expression = 'Stack<int> i = new Stack()<int>;1+2-3*4/5**6=7; 1.4.6';
-var tokenList = [];
-var temp = "";
-var stringFlag = false;
-var TokenSeparators = ['(', ')', '/', '{', '}', ';'];
-
-for (var i = 0; i<expression.length; i++){
-
-    switch(expression.charAt(i)){
-
-        case '(':
-            parenDepth++;
-            if (stringFlag) temp += expression.charAt(i);
-            else if (temp.length > 0) tokenList.push(temp);
-            tokenList.push(expression.charAt(i));
-            temp = "";
-            break;
-
-        case ')':
-            parenDepth--;
-            if (stringFlag) temp += expression.charAt(i);
-            else if (temp.length > 0) tokenList.push(temp);
-            tokenList.push(expression.charAt(i));
-            temp = "";
-            break;
-
-        case '{':
-            if (stringFlag) temp += expression.charAt(i);
-            else if (temp.length > 0) tokenList.push(temp);
-            tokenList.push(expression.charAt(i));
-            temp = "";
-            break;
-
-        case '}':
-            braceDepth--;
-            if (stringFlag) temp += expression.charAt(i);
-            else if (temp.length > 0) tokenList.push(temp);
-            tokenList.push(expression.charAt(i));
-            temp = "";
-            break;
-
-        case '\"':
-            if (stringFlag){
-                stringFlag = false;
-                temp = "\"" + temp + "\"";
-                tokenList.push(temp);
-                temp = "";
-            }
-            else{
-                stringFlag =True;
-            }
-            break;
-
-        case ' ':
-            if (stringFlag) temp += ' ';
-            else if (temp.length > 0){
-                tokenList.push(temp);
-                temp= "";
-            }
-            break;
-
-        case '.':
-            if (stringFlag) temp += ' ';
-            else if (temp.length > 0){
-                if (['1', '2','3','4','5','6','7','8','9','0','-'].indexOf(temp.charAt(0)) != -1) temp += '.';
-                else{
-                    tokenList.push(temp);
-                    temp = "";
-                }
-            }
-            else temp = '.';
-            break;
-
-        case '\t':
-            if (stringFlag) temp += '\t';
-            else if (temp.length > 0){
-                tokenList.push(temp);
-                temp = '';
-            }
-            break;
-
-        case '\n':
-            if (stringFlag) temp += '\n';
-            else if (temp.length > 0){
-                tokenList.push(temp);
-                temp = '';
-            }
-            break;
-
-        case ';':
-            if (stringFlag) temp += ';';
-            else if (temp.length > 0){
-                tokenList.push(temp);
-                tokenList.push(';');
-                temp = '';
-            }
-            else tokenList.push(';');
-            break;
-
-        case '/':
-            if (stringFlag) temp += ';';
-            else if (temp.length > 0){
-                tokenList.push(temp);
-                tokenList.push('/');
-                temp = '';
-            }
-            else tokenList.push('/');
-            break;
-
-        case '+':
-            if (stringFlag) temp += '+';
-            else if ((expression.length > i+1) && (['+', '='].indexOf(expression.charAt(i+1)) != -1)){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('+'+expression.charAt(i+1));
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('+');
-                temp = "";
-
-            }
-            break;
-
-        case '-':
-            if (stringFlag) temp += '-';
-            else if ((expression.length > i+1) && (['-', '='].indexOf(expression.charAt(i+1)) != -1)){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('-'+expression.charAt(i+1));
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('-');
-                temp = "";
-
-            }
-            break;
-
-        case '*':
-            if (stringFlag) temp += '*';
-            else if ((expression.length > i+1) && (expression.charAt(i+1) == '*')){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('**');
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('*');
-                temp = "";
-
-            }
-            break;
-
-        case '=':
-            if (stringFlag) temp += '=';
-            else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('==');
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('=');
-                temp = "";
-
-            }
-            break;
-
-        case '!':
-            if (stringFlag) temp += '!';
-            else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('!=');
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('!');
-                temp = "";
-
-            }
-            break;
-
-        case '>':
-            if (stringFlag) temp += '>';
-            else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('>=');
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('>');
-                temp = "";
-
-            }
-            break;
-
-        case '<':
-            if (stringFlag) temp += '<';
-            else if ((expression.length > i+1) && (expression.charAt(i+1) == '=')){
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('<=');
-                temp = '';
-                i++;
-            }
-            else{
-                if (temp.length > 0) tokenList.push(temp);
-                tokenList.push('<');
-                temp = "";
-
-            }
-            break;
-        
-        default:
-            temp += expression.charAt(i);
-            break;
-    }
-}
-
-document.getElementById("code").value = tokenList;
-
-
-for (var i = 0; i<tokenList.length; i++){
-    curNode = new Node(tokenList[i]);
-    head = curNode;
-}
-var prev = null;
-var temp = null;
-while (head != null){
-    temp = head.Next;
-    head.Next = prev;
-    prev = head;
-    head = temp;
-}
-head = prev;
-
-while (head != null){
-    console.log(head.Token);
-    head=head.Next;
-}
-
-if (parenDepth != 0) console.log("Unmatched Parentheses");
-if (braceDepth != 0) console.log("Unmatched Curly Brace");
-
-
-
-</script>
-
 </html>

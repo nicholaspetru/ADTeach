@@ -3,8 +3,8 @@
 
 $(document).ready(function () {
     
-    Stack = function(name,type,value){
-	Entity.call(this,name,type,value);
+    Stack = function(paper,name,type,value){
+	Entity.call(this,paper,name,type,value);
 	//specific calls go here
 	this.type = "stack<" + type + ">"; 
     }
@@ -13,7 +13,7 @@ $(document).ready(function () {
     Stack.prototype.constructor = Stack;
 
     //draw the name of the function
-    Stack.prototype.Draw = function(){
-	console.log(this.DrawName() + " = " + this.value);
+    Stack.prototype.Draw = function(x, y){
+	   console.log(this.DrawName() + " = " + this.value);
     }
 });

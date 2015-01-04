@@ -3,16 +3,17 @@
 
 $(document).ready(function () {
     
-    Primitive = function(name,type,value){
-	Entity.call(this,name,type,value);
-	//specific calls go here
+    Primitive = function(paper,name,type,value){
+        this.paper = paper;
+        this.name = name;
+        this.type = type;
+        this.value = value;
     }
     
-    Primitive.prototype = Object.create(Entity.prototype);
-    Primitive.prototype.constructor = Primitive;
-
     //draw the name of the function
-    Primitive.prototype.Draw = function(){
-	console.log(this.DrawName() + " = " + this.value);
+    Primitive.prototype.Draw = function(x, y){
+        var text = paper.text(x, y, this.type + " " + this.name + " = " + this.value);
+        text.attr({"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
+	     console.log(this.type + " " + this.name + " = " + this.value);
     }
 });

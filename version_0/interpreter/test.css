@@ -1,0 +1,20 @@
+.main_header {
+    text-align: center;
+    font-weight: bold;
+    font-size: 200%;
+}
+
+#code_box{
+	overflow:auto;
+	border:1px;
+}
+
+#output_box {
+	float:right;
+	border:1px;
+}
+
+#node_box {
+	overflow:auto;
+	border:1px;
+}
