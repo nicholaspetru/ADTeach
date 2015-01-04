@@ -368,121 +368,119 @@ def eval(expr, env):
                     adt = VQueue(adtContain)
                     
                 evalDeclare(variable, [adt, None], env)
-                
-            #QUESTION:
-            #QUESTION:
-            #QUESTION:
-            #How can they initialize the Stack?
-            #They can do Stack<String> y = new Stack<String>(), but can they
-            #initialize it with anything inside?
+               
+            
+            #INITIALIZE AND ASSIGN
+            #ADD TO ENVIRONMENT
+            #All Stacks and Queues must be initialized as empty:
+            #Stack<int> y = new Stack<int>();
+            #Queue<String> x = new Queue<String>();
             if expr.getNext().getNext().getNext().getNext().getNext() != None:
+                
+                #adtValue is the first node after the equal sign, either 'new' or a variable
+                #variable being assigned the stack/queue
+                #adtContains is the primitive type that stack or queue stores
+                #adtType is either stack or queue
                 adtValue = expr.getNext().getNext().getNext().getNext().getNext().getNext()
                 variable = expr.getNext().getNext().getNext().getNext().getToken()
                 adtContains = expr.getNext().getNext().getToken()
                 adtType = expr.getToken()
+                
+                #Create a new Stack or Queue depending on type of adt being initialized
+                #Initialize stack or queue depending on adtContains
                 if expr.getToken() == "Stack":
                     adt = VStack(adtContains)
                 else:
                     adt = VQueue(adtContains)
                     
+                    
+                #If 'new' does not come after equal sign, check for syntax errors,
+                #or else it is being assigned an existing variable.
                 if adtValue.getToken() != "new":
+                    
+                    #THROW SYNTAX ERROR...
+                    
+                    #if it is being assigned to something that isn't a symbol
                     if adtValue.getType() != 1:
                         raise IncompatibleTypes("Improper " + adtType + " assignment")
+                        
+                    #if it is being assigned to a string
                     if type(adtValue.getToken()) == type(""):
                         raise IncompatibleTypes("Improper " + adtType + " assignment")
+                        
+                    #if there are multiple variables after the equal sign
                     if adtValue.getNext() != None:
                         raise SyntaxError("Improper " + adtType + " assignment")
-                    evalDeclare(variable, [adt, adtValue.getToken()], env)
+                        
+                    #Assign the stack or queue to the value of the variable
+                    #TODO:
+                    #Check to make sure that the variable is the correct
+                    #type
+                    evalDeclare(variable, [adt, eval(adtValue.getToken())], env)
                     
+                    
+                #THROW SYNTAX ERROR...
                 else:
+                    
+                    #if a stack is being assigned to a queue, etc.
                     if adtValue.getNext() == None or adtValue.getNext().getToken() != adtType:
                         raise SyntaxError("Must be a new " + adtType)
+                        
+                    #if missing <
                     elif adtValue.getNext().getNext() == None or adtValue.getNext().getNext().getToken() != "<":
                         raise SyntaxError("Missing <")
+                        
+                    #if the adt does not contain the correct type as being initialized
                     elif adtValue.getNext().getNext().getNext() == None or adtValue.getNext().getNext().getNext().getToken() != adtContains:
                         raise IncompatibleTypes("Must initialize " + adtType + " of type: " + str(adtContains))
+                        
+                    #if missing >
                     elif adtValue.getNext().getNext().getNext().getNext() == None or adtValue.getNext().getNext().getNext().getNext().getToken() != ">":
                         raise SyntaxError("Missing >")
+                        
+                    #if not initialized with a ()
                     elif adtValue.getNext().getNext().getNext().getNext().getNext() == None or adtValue.getNext().getNext().getNext().getNext().getNext().getType() != 11:
                         raise SyntaxError("Missing ()")
+                        
+                    #if there is something inside the param node
                     elif adtValue.getNext().getNext().getNext().getNext().getNext().getToken() != None:
                         raise DeclarationError(adtType + " must be declared with ()")
+                        
+                        
+                    #declare an empty stack or queue to the variable
                     else:
                         evalDeclare(variable, [adt, adt.getValue()], env)
                 
-                
-            
-            
-            '''
-        if expr.getToken() in ['Stack', 'Queue']:
-            if expr.getNext().getToken() != None and expr.getNext().getToken() != '<':
-                raise SyntaxError("Missing <")
-            if expr.getNext().getNext() == None:
-                raise SyntaxError("Missing type")
-            if expr.getNext().getNext().getNext().getToken() != None and expr.getNext().getNext().getNext().getToken() != ">":
-                raise SyntaxError("Missing >")
-            
-                
-            print "n"
-            if expr.getNext().getNext() == None:
-                evalDeclare(expr.getNext().getNext().getNext().getNext().getToken(), [expr.getToken(), None], env)  
-            #value assigned
-            else:
-                print expr.getNext().getNext().getNext().getNext().getNext().getNext().getToken(), "HHHHH"
-                value = eval(expr.getNext().getNext().getNext().getNext().getNext().getNext(), env)
-                evalEquals(expr.getNext().getToken(), [expr.getToken(), value], env)
-                return
-            
-        #no value assigned
-        print "declaring var of type:", expr.getToken()
-        '''
-        
-    
-          
-        '''    
-        #If a value is assigned, do a few things:
-        #   Make sure types are compatible 
-        #   If it is an int:
-        #       check for arithmetic on right side
-        else:
-            if expr.getNext().getNext().getNext().getNext() == None:
-                
-                evalDeclare(expr.getNext().getToken(), [expr.getToken(), expr.getNext().getNext().getNext().getToken()], env)
 
-
-        print expr.getNext().getNext().getNext().getToken(), "HHHHH", expr.getNext().getNext().getNext().getNext().getToken()
-            value = eval(expr.getNext().getNext().getNext(), env)
-            evalEquals(expr.getNext().getNext().getNext().getNext().getToken(), [expr.getNext().getNext().getNext().getToken(), value], env)
-
-        return
-            '''
-    
+    #Check to see if there are multiple nodes in the line
     elif expr.getNext() != None:
-        print "This is also a problem"
-        print expr.getNext().getToken()
         
-        #Check to see if it is a method being called
+        #METHOD BEING CALLED
+        #Can tell if the second node starts with a '.'
         if expr.getNext().getToken()[0] == ".":
             
-            #Check to make sure 0 or more parameters being passed
+            #Check to make sure 0 or more parameters are being passed
             if expr.getNext().getNext() == None or expr.getNext().getNext().getType() != 11:
                 raise IncorrectParameters("Need parameters when calling a method")
             
-            #Check to make sure method is a valid method for the ADT
+            
+            #Check to make sure method being called is a valid method for the ADT
             adt = expr.getToken()
-            print "121212121212", adt
             adtType = env.getVariables()[adt][0]
-            print adtType
             method = expr.getNext().getToken()[1:]
+            
+            #each adt has a method to list out the methods,
+            #check to see if method being called is inside list of methods
             if method not in adtType.listMethods():
                 raise InvalidMethod("Not a valid method for a " + adtType.getType())
                 
-                
-            #Check to make sure parameters are correct
+  
+            #Check to make sure number of parameters are correct
+            #Accumulate a list of the nodes of the parameters, separating
+            #parameters by ',', so the parameters (3 + 2, 4, 6 * 2) will be entered
+            #into a list of nodes as ((Node(3) -> Node(+) -> Node(2)), Node(4), (Node(6) -> Node(*) -> ...))
             listOfParameters = []
-            seenComma = False
             evalParameter = expr.getNext().getNext().getToken()
-            #print "///////////", currentparameter.getToken()
             while evalParameter != None:
                 finalParameter = evalParameter.copy()
                 currentParameter = evalParameter
@@ -502,16 +500,15 @@ def eval(expr, env):
                     evalParameter = None
                 
                 
-
+            #Check the number of parameters needed for method against
+            #number of parameters in the list
             if adtType.checkParameters(method, listOfParameters) != True:
                 raise IncorrectParameters("Incorrect parameters for " + method)
+                
+            #Calling perform method will automatically update the variable in the env
             else:
                 adtType.performMethod(method, listOfParameters)
-                print "ADT VARIABLE IS: ", adt
-                print "ADT VALUE IS: ", adtType.getValue()
-                #evalEquals(expr.getToken(), adtType.getValue(), env)
-            print listOfParameters
-            print method
+
         
         
         #all checks on expr.next()
