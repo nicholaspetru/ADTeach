@@ -11,7 +11,7 @@ $(document).ready(function () {
         //define constants
         this.PRIMITIVE_COLUMNWIDTH = 120;
         this.PRIMITIVE_SECTION_HEIGHT = 100;
-        this.HBORDER = 8;
+        this.HBORDER = 10;
         this.VBORDER = 12;
         this.FONT_HEIGHT = 12;
         this.FONT_SIZE = 18;
@@ -33,6 +33,7 @@ $(document).ready(function () {
     //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForth = function() {
         console.log("Visualizer Handler: goForth()");
+
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
             if (curEvent[0] == 'new') {
@@ -59,6 +60,10 @@ $(document).ready(function () {
         //at some point, we'll delete and assign here
         //sort the entities
         this.arrangePrimitives();
+        var xstack = new Stack(this.paper, "test stack", "Integer", ["test", "a", "is", "this"], this.HBORDER, (this.ADT_SECTION_Y + this.FONT_HEIGHT + 10), 40, 200);
+        xstack.Draw();
+        xstack.Populate();
+
 
         //for each item in entities, draw
         for (var i = 0; i < this.entities.length; i++){
