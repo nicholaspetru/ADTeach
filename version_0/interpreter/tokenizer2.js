@@ -104,19 +104,28 @@ Tokenizer.prototype._isalphanum = function(c) {
 
 Tokenizer.prototype._process_number = function() {
 	var endpos = this.pos + 1;
-
+	console.log(endpos);
 	while (endpos < this.buflen && this._isdigit(this.buf.charAt(endpos))) {
 		endpos++;
 	}
-
-	if (this.buf.charAt(endpos) === '.' && this._isdigit(this.buf.charAt(endpos + 1))) {
-		while (endpos < this.buflen && this._isdigit(this.buf.charAt(endpos))) {
+	console.log(this.buf.charAt(endpos));
+	console.log(this.buf.charAt(endpos+1));
+	var x = this.buf.charAt(endpos);
+	var y = this.buf.charAt(endpos + 1);
+	//console.log(x);
+	//console.log(y);
+	if (x === '.' && this._isdigit(y)) {
+		while (endpos < this.buflen && this._isdigit(y)) {
 			endpos++;
+			y = this.buf.charAt(endpos);
 		}
+		//console.log(endpos);
+
 		var tok = {
 			type: 'FLOAT_TYPE',
 			value: this.buf.substring(this.pos, endpos),
-			pos: this.pos
+			pos: this.pos,
+			linenum: this.linenum
 		};
 		this.pos = endpos;
 		return tok;
@@ -144,7 +153,7 @@ Tokenizer.prototype._process_symbol = function() {
 		if (op2 !== -1) {
 			endpos++;
 			var tok = {
-				type: 'SYMBOL_TYPE',
+				type: 'OPERATOR_TYPE',
 				value: this.buf.substring(this.pos,endpos),
 				pos: this.pos,
 				linenum: this.linenum
@@ -153,7 +162,7 @@ Tokenizer.prototype._process_symbol = function() {
 			return tok;
 		}
 		var tok = {
-			type: 'SYMBOL_TYPE',
+			type: 'OPERATOR_TYPE',
 			value: this.buf[this.pos],
 			pos: this.pos,
 			linenum: this.linenum
