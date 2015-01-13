@@ -81,7 +81,7 @@ def evalForBlock(block, env):
     evalAssignment(initialization, env)
     isTrue = evalCondition(condition, env)
     while isTrue:
-        eval(body)
+        eval(body, env)
         if stepType == "Assignment":
             evalAssignment(step, env)
         else:
@@ -136,8 +136,91 @@ def evalWhileBlock(block, env):
 '''
 
 def evalAssignment(root, env):
+    #right side
+    valueRoot = root.RChild
+    
+    if valueRoot.Value == ".":
+        value = evalMethod(valueRoot, env)
+        
+    if valueRoot.LChild == None and valueRoot.RChild == None:
+        if valueRoot.MChild == None:
+            value = evalValue(valueRoot, env)
+        else:
+            value = evalStep(valueRoot, env)
+            
+    elif valueRoot.LChild != None and valueRoot.RChild != None:
+        if valueRoot.Value in ['%', '+', '-', '*', '/', '**']:
+            value = evalMaths(valueRoot, env)
+            
+        if valueRoot.Value == "new":
+            #Create the new ADT
+    
+    #LEFT SIDE!! STRONG SIIIIIIIIDE!
+    variables = env.getVariables()
+    if root.LChild.Value == "init":
+        if root.LChild.RChild.Value in variables:
+            raise AlreadyInitialized(root.LChild.RChild.Value + " is already initialized")
+        else:
+            variables[root.LChild.RChild.Value]=[root.LChild.LChild.Value, value]
+    
+    else:
+        if root.LChild.Value in variables:
+            if variables[root.LChild.Value][0] == checkType(value):
+                variables[root.LChild.Value][1] = value
+            else:
+                raise IncompatibleTypes(root.LChild.Value + "expected type: " + variables[root.LChild.Value][0] + ". Recieved type: " +checkType(value)) 
+            
+        else:
+            raise AlreadyInitialized(root.LChild.RChild.Value + " is already initialized")
+        
     return None
 
+def checkType(value):
+    if type(value) == type(1):
+        return "int"
+    elif type(value) == type(1.0):
+        return "float"
+    elif type(value) == type("1"):
+        return "String"
+    elif type(value) == type(True):
+        return "Boolean"
+    elif type(value) == type(VStack("int")):
+        return "Stack<int>"
+    elif type(value) == type(VStack("float")):
+        return "Stack<float>"
+    elif type(value) == type(VStack("String")):
+        return "Stack<String>"
+    elif type(value) == type(VQueue("int")):
+        return "Queue<int>"
+    elif type(value) == type(VQueue("float")):
+        return "Queue<float>"
+    elif type(value) == type(VQueue("String")):
+        return "Queue<String>"
+    else:
+        return None
+    
+
+def evalMaths(root, env):
+    if root.Value not in ['%', '+', '-', '*', '/', '**']:
+        return evalValue(root, env)
+    else:
+        if root.Value == "+":
+            return evalMaths(root.LChild, env) + evalMaths(root.RChild, env)
+        else:
+            leftValue = evalMaths(root.LChild, env)
+            rightValue = evalMaths(root.RChild, env)
+            if leftValue.Type == "String" or rightValue.Type == "String":
+                raise IncompatibleTypes()
+            elif root.Value == "%":
+                return leftValue % rightValue
+            elif root.Value == "-":
+                return leftValue - rightValue
+            elif root.Value == "*":
+                return leftValue * rightValue
+            elif root.Value == "/":
+                return leftValue / rightValue
+            elif root.Value == "**":
+                return leftValue ** rightValue
 
 
 '''
