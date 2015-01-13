@@ -19,6 +19,11 @@ $(document).ready(function () {
         // traverse lines of code in text box
         // if line in text box == line
         // draw a marker/highlight current line
+        var code = $("#user_textbox").val();                                 
+        var lines = code.replace(/\r\n/g, "\n").split("\n");
+        var lineToHighlight = lines[line];
+        console.log(lineToHighlight);
+        //figure out this plugin: http://mistic100.github.io/jquery-highlighttextarea/
     };
 
     // called when playing/stepping of code begins. prevents user from editing code
