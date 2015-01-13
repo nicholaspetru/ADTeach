@@ -99,7 +99,7 @@ $(document).ready(function() {
     
     EventHandler.prototype.onSample = function() {
        console.log('Event Handler: onSample()');
-       code = this.codeDatabase.getCode('this-will-be-a-key') 
+       code = this.codeDatabase.getCode('stack') 
        this.codeBox.setCode(code);
     };
 });
