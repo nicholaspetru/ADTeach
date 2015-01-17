@@ -8,8 +8,12 @@ $(document).ready(function () {
         this.eventQueue = [];
         this.symbolTable = null;
 
+        //used to delay animations
+        this.date = new Date();
+        this.delay = this.date.getTime();
+
         //define constants
-        this.PRIMITIVE_COLUMNWIDTH = 120;
+        this.PRIMITIVE_COLUMNWIDTH = 140;
         this.PRIMITIVE_SECTION_HEIGHT = 100;
         this.HBORDER = 10;
         this.VBORDER = 12;
@@ -29,7 +33,16 @@ $(document).ready(function () {
         return this;
     }
     
-    
+    //Thanks to BeNdErR from StackOverFlow for showing us how to make this
+    VisualizerHandler.prototype.sleep = function(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds){
+                break;
+            }
+        }
+    };   
+
     //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForth = function() {
         console.log("Visualizer Handler: goForth()");
@@ -52,19 +65,26 @@ $(document).ready(function () {
         this.Render();
     };
     
-    //Call the draw function of each entity
+    //Render is just going to chill out and let the change variables hit themselves
     VisualizerHandler.prototype.Render = function() {
         console.log("Visualizer Handler: render()");
-        var x = 100;
-        var y = 100;
+
+/*
+        render has an array with values like this
+        entity index
+        delay time
+*/
+        
         //at some point, we'll delete and assign here
         //sort the entities
-        this.arrangePrimitives();
+        //this.arrangePrimitives();
+
+        /*
         var xstack = new Stack(this.paper, "test stack", "Integer", ["test", "a", "is", "this"], this.HBORDER, (this.ADT_SECTION_Y + this.FONT_HEIGHT + 10), 40, 200);
         xstack.Draw();
         xstack.Populate();
 
-
+        /*
         //for each item in entities, draw
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null) {
@@ -73,7 +93,7 @@ $(document).ready(function () {
                 //increment y
                 y += 16;
             }
-        }
+        }*/
     };
     
     //Enqueue an event onto the event queue
@@ -86,6 +106,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.NewEntity = function(className, name, type, value) {
 	    console.log("Visualizer Handler: newEntity(" + className + ',' + name + ',' + type + ',' + value + ')');
         this.entities.push(this.getNewEntity(className,name,type,value));
+        this.arrangePrimitives();
     };
 
     //Updates the value of an Entity
@@ -94,31 +115,34 @@ $(document).ready(function () {
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
                 this.entities[i].value = value;
+                this.entities[i].update();
             }
         }
-    }
+    };
 
     //Deletes the named Entity
     VisualizerHandler.prototype.DeleteEntity = function(name) {
         console.log("Visualizer Handler: deleteEntity(" + name + ")");
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
-                this.entities = this.entities.splice(i,1);
+                this.entities[i].destroy();
+                this.entities.splice(i,1);
             }
         }
-    }
+        this.arrangePrimitives();
+    };
     
     //Returns a new Entity of the given type
     VisualizerHandler.prototype.getNewEntity = function(className, name, type, value) {
         switch(className){
         case "int":
-            return new Primitive(this.paper,name,type,value);
+            return new Primitive(this.paper,name,type,value,this);
         case "string":
-            return new Primitive(this.paper,name,type,value);
+            return new Primitive(this.paper,name,type,value,this);
         case "float":
-            return new Primitive(this.paper,name,type,value);
+            return new Primitive(this.paper,name,type,value,this);
         case "bool":
-            return new Primitive(this.paper,name,type,value);
+            return new Primitive(this.paper,name,type,value,this);
         case "stack":
             return new Stack(this.paper,name,type,value);
         //and more cases....
@@ -130,13 +154,30 @@ $(document).ready(function () {
 
     //Arranges primitives (now all entities)
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y, t = 500;
+        var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y;
 
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                var anim = Raphael.animation({x:curX,y:curY},500);
-                this.entities[i].vis.animate(anim.delay(t));
-                t += 500;
+                //check and see if this is a new entity. if so, fade it in. if not, move it
+                if (this.entities[i].x == 0){
+                    this.entities[i].x = curX;
+                    this.entities[i].y = curY;
+                    //move them to the new area
+                    this.entities[i].vis.transform("t" + (curX) + "," + (curY));
+                    //fade it in
+                    var anim = Raphael.animation({opacity:1},1000);
+                    this.entities[i].vis.animate(anim.delay(this.setDelay(1000)));
+
+                }else{
+                    var difX, difY;
+                    difX = curX - this.entities[i].x;
+                    difY = curY - this.entities[i].y;
+                    this.entities[i].x = curX;
+                    this.entities[i].y = curY;
+                    var anim = Raphael.animation({x:difX,y:difY},500);
+                    this.entities[i].vis.animate(anim.delay(this.setDelay(500)));
+
+                }
             }
             //traverse down
             curY += this.FONT_HEIGHT + 6;
@@ -148,4 +189,21 @@ $(document).ready(function () {
        }
 
     }
+
+
+    //Finds the delay
+    VisualizerHandler.prototype.getDelay = function() {
+        if (this.date.getTime() > this.delay){
+            this.delay = this.date.getTime();
+        }
+        return this.delay;
+    }
+
+    //Sets the delay
+    VisualizerHandler.prototype.setDelay = function(t) {
+        this.getDelay();
+        this.delay += t;
+        return (this.delay - this.date.getTime());
+    }
+
 });

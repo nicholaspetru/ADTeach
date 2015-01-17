@@ -19,26 +19,28 @@ $(document).ready(function () {
         console.log("Interpreter: eval(" + expression + ")");
         var newName1 = this.symbolTable.newVariable('int','.', 5, 'new'); //will return .1 as name
         var newName2 = this.symbolTable.newVariable('int', 'x', null, 'new');
-        var updateBool1 = this.symbolTable.updateVariable('int', newName2, 5, newName1);
         var removeBool1 = this.symbolTable.removeVariable('int', newName1, 5, 'remove');
-        var newName3 = this.symbolTable.newVariable('Stack<Integer>','.', [], 'new'); //will return .2 as name
+        /*var newName3 = this.symbolTable.newVariable('Stack<Integer>','.', [], 'new'); //will return .2 as name
         var newName4 = this.symbolTable.newVariable('Stack<Integer>', 's', null, 'new');
         var updateBool2 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [], newName3);
         var removeBool2 = this.symbolTable.removeVariable('Stack<Integer>', newName3, [], 'remove');
         var updateBool3 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [5], newName2);
         var updateBool4 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [], newName4 + '.pop()');
         var newName5 = this.symbolTable.newVariable('int', '.', 5, newName4 + '.pop()'); //will return .3 as name
-        var removeBool3 = this.symbolTable.removeVariable('int', newName5, 5, 'remove');
+        var removeBool3 = this.symbolTable.removeVariable('int', newName5, 5, 'remove');*/
 
         //here's a new variable I'm making to test entity drawing
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
-        this.symbolTable.newVariable('bool', 'p', null, 'new');
+        this.symbolTable.newVariable('bool', 'pp', null, 'new');
+        this.symbolTable.newVariable('bool', 'ps', null, 'new');
+        this.symbolTable.removeVariable('int', 'ps', 5, 'remove');
+        this.symbolTable.newVariable('bool', 'ap', null, 'new');
+        var updateBool1 = this.symbolTable.updateVariable('int', newName2, 5, newName1);
+        this.symbolTable.newVariable('bool', 'boo', null, 'new');
+        this.symbolTable.newVariable('bool', 'p1', null, 'new');
+        this.symbolTable.newVariable('bool', 'p2', null, 'new');
+        this.symbolTable.removeVariable('int', 'boo', 5, 'remove');
+        this.symbolTable.newVariable('bool', 'p3', null, 'new');
+        this.symbolTable.newVariable('bool', 'p4', null, 'new');
 
         //console.log("updateBools: " + updateBool1 + updateBool2 + updateBool3 + updateBool4);
         //console.log("removeBools: " + removeBool1 + removeBool2 + removeBool3);
