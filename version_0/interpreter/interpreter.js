@@ -32,9 +32,9 @@ $(document).ready(function () {
         //here's a new variable I'm making to test entity drawing
         this.symbolTable.newVariable('bool', 'pp', null, 'new');
         this.symbolTable.newVariable('bool', 'ps', null, 'new');
+        var updateBool1 = this.symbolTable.updateVariable('int', newName2, 5, newName1);
         this.symbolTable.removeVariable('int', 'ps', 5, 'remove');
         this.symbolTable.newVariable('bool', 'ap', null, 'new');
-        var updateBool1 = this.symbolTable.updateVariable('int', newName2, 5, newName1);
         this.symbolTable.newVariable('bool', 'boo', null, 'new');
         this.symbolTable.newVariable('bool', 'p1', null, 'new');
         this.symbolTable.newVariable('bool', 'p2', null, 'new');

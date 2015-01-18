@@ -27,24 +27,27 @@ $(document).ready(function () {
     
     //Remove visual primitives
     Primitive.prototype.update = function() {
+        
         // shake it off
         var anim = Raphael.animation({x:-4},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
 
-        for (var i = 0; i < 20; i++){
+        for (var i = 0; i < 21; i++){
             var anim = Raphael.animation({x:8*(-1^i)},25);
             this.vis.animate(anim.delay(this.VH.setDelay(25)));
         }
+        var _t = this
+        setTimeout(function(){
+            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _t.value)});
+        },(this.VH.delay - this.VH.date.getTime()));
 
-        var anim = Raphael.animation({x:4},12);
+        var anim = Raphael.animation({x:0},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
-
-        this.vis.animate(
-        {
-            duration: 1000,
-            step: function(now) { this.vis.attr("text", "hello"); }
-        });
     };
+
+    Primitive.prototype.copyTo = function() {
+
+    }
 
     //draw the name of the function
     Primitive.prototype.Draw = function(){

@@ -32,16 +32,6 @@ $(document).ready(function () {
 
         return this;
     }
-    
-    //Thanks to BeNdErR from StackOverFlow for showing us how to make this
-    VisualizerHandler.prototype.sleep = function(milliseconds) {
-        var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) {
-            if ((new Date().getTime() - start) > milliseconds){
-                break;
-            }
-        }
-    };   
 
     //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForth = function() {
@@ -68,32 +58,6 @@ $(document).ready(function () {
     //Render is just going to chill out and let the change variables hit themselves
     VisualizerHandler.prototype.Render = function() {
         console.log("Visualizer Handler: render()");
-
-/*
-        render has an array with values like this
-        entity index
-        delay time
-*/
-        
-        //at some point, we'll delete and assign here
-        //sort the entities
-        //this.arrangePrimitives();
-
-        /*
-        var xstack = new Stack(this.paper, "test stack", "Integer", ["test", "a", "is", "this"], this.HBORDER, (this.ADT_SECTION_Y + this.FONT_HEIGHT + 10), 40, 200);
-        xstack.Draw();
-        xstack.Populate();
-
-        /*
-        //for each item in entities, draw
-        for (var i = 0; i < this.entities.length; i++){
-            if (this.entities[i] != null) {
-                this.entities[i].value = this.symbolTable.getValue(this.entities[i].name);
-                this.entities[i].Draw();
-                //increment y
-                y += 16;
-            }
-        }*/
     };
     
     //Enqueue an event onto the event queue
@@ -187,7 +151,6 @@ $(document).ready(function () {
                 curX +=  this.PRIMITIVE_COLUMNWIDTH;
             }
        }
-
     }
 
 
