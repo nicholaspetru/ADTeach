@@ -121,36 +121,54 @@ $(document).ready(function () {
         var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y;
 
         for (var i = 0; i < this.entities.length; i++){
-            if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                //check and see if this is a new entity. if so, fade it in. if not, move it
-                if (this.entities[i].x == 0){
-                    this.entities[i].x = curX;
-                    this.entities[i].y = curY;
-                    //move them to the new area
-                    this.entities[i].vis.transform("t" + (curX) + "," + (curY));
-                    //fade it in
-                    var anim = Raphael.animation({opacity:1},1000);
-                    this.entities[i].vis.animate(anim.delay(this.setDelay(1000)));
+            if (this.isPrimitive(this.entities[i])){
+                if (this.entities[i].x != curX || this.entities[i].y != curY) {
+                    //check and see if this is a new entity. if so, fade it in. if not, move it
+                    if (this.entities[i].x == 0){
+                        this.entities[i].x = curX;
+                        this.entities[i].y = curY;
+                        //move them to the new area
+                        this.entities[i].vis.transform("t" + (curX) + "," + (curY));
+                        //fade it in
+                        var anim = Raphael.animation({opacity:1},1000);
+                        this.entities[i].vis.animate(anim.delay(this.setDelay(1000)));
 
-                }else{
-                    var difX, difY;
-                    difX = curX - this.entities[i].x;
-                    difY = curY - this.entities[i].y;
-                    this.entities[i].x = curX;
-                    this.entities[i].y = curY;
-                    var anim = Raphael.animation({x:difX,y:difY},500);
-                    this.entities[i].vis.animate(anim.delay(this.setDelay(500)));
+                    }else{
+                        var difX, difY;
+                        difX = curX - this.entities[i].x;
+                        difY = curY - this.entities[i].y;
+                        this.entities[i].x = curX;
+                        this.entities[i].y = curY;
+                        var anim = Raphael.animation({x:difX,y:difY},500);
+                        this.entities[i].vis.animate(anim.delay(this.setDelay(500)));
 
+                    }
+                }
+                //traverse down
+                curY += this.FONT_HEIGHT + 6;
+                //move to the next column
+                if (curY > this.PRIMITIVE_SECTION_HEIGHT){
+                    curY = this.PRIMITIVE_SECTION_Y;
+                    curX +=  this.PRIMITIVE_COLUMNWIDTH;
                 }
             }
-            //traverse down
-            curY += this.FONT_HEIGHT + 6;
-            //move to the next column
-            if (curY > this.PRIMITIVE_SECTION_HEIGHT){
-                curY = this.PRIMITIVE_SECTION_Y;
-                curX +=  this.PRIMITIVE_COLUMNWIDTH;
-            }
-       }
+        }
+    }
+
+    //Returns whether or not the Entity is a primitive
+    VisualizerHandler.prototype.isPrimitive = function(entity) {
+        switch(entity.type){
+            case "int":
+                return true;
+            case "string":
+                return true;
+            case "float":
+                return true;
+            case "bool":
+                return true;
+            default:
+                return false;
+        }
     }
 
 

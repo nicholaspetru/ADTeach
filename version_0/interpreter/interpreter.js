@@ -20,7 +20,8 @@ $(document).ready(function () {
         var newName1 = this.symbolTable.newVariable('int','.', 5, 'new'); //will return .1 as name
         var newName2 = this.symbolTable.newVariable('int', 'x', null, 'new');
         var removeBool1 = this.symbolTable.removeVariable('int', newName1, 5, 'remove');
-        /*var newName3 = this.symbolTable.newVariable('Stack<Integer>','.', [], 'new'); //will return .2 as name
+        var newName3 = this.symbolTable.newVariable('stack','.', [], 'new'); //will return .2 as name
+        /*
         var newName4 = this.symbolTable.newVariable('Stack<Integer>', 's', null, 'new');
         var updateBool2 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [], newName3);
         var removeBool2 = this.symbolTable.removeVariable('Stack<Integer>', newName3, [], 'remove');
