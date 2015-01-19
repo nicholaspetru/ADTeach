@@ -22,13 +22,15 @@ $(document).ready(function () {
         var code = $("#user_textbox").val();                                 
         var lines = code.replace(/\r\n/g, "\n").split("\n");
         var lineToHighlight = lines[line];
-        console.log(lineToHighlight);
+        //console.log(lineToHighlight);
         //figure out this plugin: http://mistic100.github.io/jquery-highlighttextarea/
     };
 
     // called when playing/stepping of code begins. prevents user from editing code
     CodeBox.prototype.freezeCode = function(){
         console.log("Code Box: freezeCode()");
+        $("#user_textbox").prop('disabled', true);
+        $("#user_textbox").css({"background-color": "#E0E0E0"});
         // freezecdoe() called if onClick(play/step) called
         // if (this.PLAYING == true) {
         //     grey out the box and prevent user from making changes
@@ -38,6 +40,8 @@ $(document).ready(function () {
     // called when playing/stepping of code ends. allows user to edit code
     CodeBox.prototype.unfreezeCode = function(){
         console.log("Code Box: unfreezeCode()");
+        $("#user_textbox").prop('disabled', false);
+        $("#user_textbox").css({"background-color": "white"});
     };
     
     CodeBox.prototype.setCode = function(code){
