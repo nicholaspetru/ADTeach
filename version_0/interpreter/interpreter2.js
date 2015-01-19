@@ -19,100 +19,100 @@ $(document).ready(function () {
         return this;
     }
     
+    
+    
     //uncommented this to work on visualizer handler stuff
-    Interpreter.prototype.eval = function(block, env) {
-        while (block != None) {
-            var blockType = block.Type;
+    Interpreter.prototype.eval = function(arrayOfBlocks, env) {
+        var count = 0;
+        while (arrayOfBlocks) {
+            var block = arrayOfBlocks.get(count);
+            var blockType = block.arity;
             
             switch (blockType) {
-                case "Semicolon":
-                    this.evalSemiColonBlock(block, env);
-                    break;
-                case "For":
+                case "FOR_BLOCK":
                     this.evalForBlock(block, env);
                     break;
-                case "If":
+                case "IF_BLOCK":
                     this.evalIfBlock(block, env);
                     break;
-                case "While":
+                case "WHILE_BLOCK":
                     this.evalWhileBlock(block, env);
                     break;
+                default:
+                    this.evalSemiColonBlock(block, env);
             }
             
-            block = block.Next;
+            count += 1;
         }
     }
     
     Interpreter.prototype.evalValue = function(root, env) {
-        if (root.Type != "symbol") {
-            return root.Value;
+        if (root.arity != "name") {
+            return root.value;
         } else {
-            if (root.Value not in env.getVariables()) {
-                new UnidentifiedVariable();
+            if (env.getVariables().indexOf(root.value) < 0) {
+                console.log("not in env");
+                //new UnidentifiedVariable();
             } else {
-                return env.getVariables().get(root.Value).get(1);
+                return env.getVariables().get(root.value).get(1);
             }
         }
     }
     
     Interpreter.prototype.evalSemiColonBlock = function(block, env) {
-        var root = block.Value;
-        var rootType = block.rootType;
+        var root = block.value;
+        var rootType = block.arity;
         
-        switch (rootType) {
-            case "Assignment":
-                this.evalAssignment(root, env);
-                break;
-            case "Method":
-                this.evalMethod(root, env);
-                break;
-            case "++":
-                this.evalPlusPlus(root, env);
-                break;
-            case "--":
-                this.evalMinusMinus(root, env);
-                break;
+        if (rootType == "binary" && root == "=") {
+            this.evalAssignment(root, env);
+        } else if (rootType == "unary" && root == "++") {
+            this.evalPlusPlus(root, env);
+        } else if (rootType == "unary" && root == "--") {
+            this.evalMinusMinus(root, env);
+        } else if (rootType == "Initialization") {
+            this.evalAssignment(root, env);
+        } else if (rootType == "FunCall") {
+            this.evalMethod(root, env);
         }
+        
+        
+        
     }
     
     Interpreter.prototype.evalForBlock = function(block, env) {
         var initialization = block.Initialization;
-        var condition = block.Condition;
-        var step = block.Step;
+        var condition = block.Test;
+        var step = block.Increment;
         var body = block.Body;
         var stepType;
-        if (step.Value == "=") {
-            stepType = "Assignment";
-        } else {
-            stepType = "Step";
-        }
+        
+        
         
         this.evalAssignment(initialization, env);
         var isTrue = this.evalCondition(condition, env);
         while (isTrue == true) {
             this.eval(body, env);
-            if (stepType == "Assignment") {
-                this.evalAssignment(step, env);
-            } else {
-                this.evalStep(step, env);
-            }
+            this.evalSemiColonBlock(step, env);
             isTrue = this.evalCondition(condition, env);
         }
     }
     
     Interpreter.prototype.evalIfBlock = function(block, env) {
-        var condition = block.Condition;
-        var body = block.Body;
+        var condition = block.Test;
+        var body = block.IfBody;
+        var elseBody = block.ElseBody;
         
         var isTrue = this.evalCondition(condition, env);
         
         if (isTrue == true) {
             this.eval(body, env);
+        } else {
+            this.eval(elseBody, env);
         }
     }
     
     Interpreter.prototype.evalWhileBlock = function(block, env) {
-        var condition = block.Condition;
+        var condition = block.Test;
         var body = block.Body;
         
         var isTrue = this.evalCondition(condition, env);
@@ -124,42 +124,48 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalAssignment = function(root, env) {
-        var valueRoot = root.RChild;
+        var valueRoot = root.second;
         var value;
-        if (valueRoot.Value == ".") {
+        if (valueRoot.arity == "FunCall") {
             value = this.evalMethod(valueRoot, env);
         }
         
-        if (valueRoot.LChild == null && valueRoot.RChild == null) {
-            if (valueRoot.MChild == null) {
-                value = this.evalValue(valueRoot, env);
-            } else {
-                value = this.evalStep(valueRoot, env);
-            }
-        } else if (valueRoot.LChild != null && valueRoot.RChild != null) {
-            if (valueRoot.Value in ['%', '+', '-', '*', '/', '**']) {
+        //Literals, ints, floats
+        if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
+            value = this.evalValue(valueRoot, env);
+        }
+        else if (valueRoot.value == "++" || valueRoot.value == "--") {
+            value = this.evalStep(valueRoot, env);
+        }
+        
+        
+        } else if (['%', '+', '-', '*', '/', '**'].indexOf(valueRoot.value) >= 0) {
                 value = this.evalMaths(valueRoot, env);
-            } else if (valueRoot.Value == "new") {
+        } else if (valueRoot.value == "new") {
                 //Create the new ADT
             }
         }
         
         var variables = env.getVariables();
-        if (root.LChild.Value == "init") {
-            if (root.LChild.RChild.Value in variables) {
-                new AlreadyInitialized(root.LChild.RChild.Value);
+        if (root.first.value == "init") {
+            if (variables.indexOf(root.first.second.value) >= 0) {
+                console.log("Already initialized");
+                //AlreadyInitialized(root.first.right.value);
             } else {
-                variables.get(root.LChild.RChild.Value) = [root.LChild.LChild.Value, value];
+                //Check dictionaries in JS
+                variables.get(root.first.second.value) = [root.first.first.value, value];
             }
         } else {
-            if (root.LChild.Value in variables) {
-                if (variables.get(root.LChild.Value).get(0) == this.checkType(value)) {
-                    variables.get(root.LChild.Value).get(1) = value;
+            if (variables.indexOf(root.first.value) >= 0) {
+                if (variables.get(root.first.value).get(0) == this.checkType(value)) {
+                    variables.get(root.first.value).get(1) = value;
                 } else {
-                    new IncompatibleTypes();
+                    console.log("Incompatible Types");
+                    //new IncompatibleTypes();
                 }
             } else {
-                new AlreadyInitialized();
+                console.log("Not been initialized");
+                //new AlreadyInitialized();
             }
         }
     }
@@ -192,18 +198,19 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalMaths(root, env) {
-        if (root.Value not in ['%', '+', '-', '*', '/', '**']) {
+        if (['%', '+', '-', '*', '/', '**'].indexOf(root.value) < 0) {
             return this.evalValue(root, env);
         } else {
             if (root.value == "+") {
-                return this.evalMaths(root.LChild, env) + this.evalMaths(root.RChild, env);
+                return this.evalMaths(root.first, env) + this.evalMaths(root.second, env);
             } else {
-                var leftValue = this.evalMaths(root.LChild, env);
-                var rightValue = this.evalMaths(root.RChild, env);
-                if (leftValue.Type == "String" or rightValue.Type == "String") {
-                    new IncompatibleTypes();
+                var leftValue = this.evalMaths(root.first, env);
+                var rightValue = this.evalMaths(root.second, env);
+                if (typeof leftValue === "String" || typeof rightValue === "String") {
+                    console.log("Incompatible types");
+                    //new IncompatibleTypes();
                 } else {
-                    switch (root.Value) {
+                    switch (root.value) {
                         case "%":
                             return leftValue % rightValue;
                         case "-":
@@ -221,45 +228,55 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalMethod(root, env) {
-        var adt = root.LChild;
+        var adt = root.Caller;
         var adtType = env.getVariables().get(adt).get(0);
-        var method = root.MChild;
+        var method = root.MethodName;
+        var parameters = root.Arguments;
         
-        if (method not in adtType.listMethods()) {
-            new InvalidMethod();
+        if (adtType.listMethods().indexOf(method) < 0) {
+            console.log("Invalid Method");
+            //new InvalidMethod();
         }
         
-        //Check parameters
-        //TODO
-        //get listOfParameters
-        //TODO
+      
         
-        if (adtType.checkParameters(method, listOfParameters) != true) {
-            new IncorrectParameters();
+        if (adtType.checkParameters(method, parameters) != true) {
+            console.log("incorrect parameters");
+            //new IncorrectParameters();
         } else {
-            adtType.performMethod(method, listOfParameters);
+            adtType.performMethod(method, parameters);
         }
     }
     
     Interpreter.prototype.evalStep(root, env) {
-        if (root.Value == "++") {
+        if (root.value == "++") {
             this.evalPlusPlus(root, env);
-        } else if (root.Value == "--") {
+        } else if (root.value == "--") {
             this.evalMinusMinus(root, env);
         }
     }
     
     Interpreter.prototype.evalCondition(root, env) {
-        if (root.Value == "true") {
+        
+        if (root.value == true) {
             return true;
-        } else if (root.Value == "false") {
+        } else if (root.value == false) {
             return false;
+        } else if (root.arity == "literal") {
+            console.log("Can't do literals");
+        } else if (root.arity == "name") {
+            var variable = this.evalValue(root.value);
+            if (typeof variable != typeof true) {
+                console.log("No literals");
+            } else {
+                return variable;
+            }
         }
         
-        var leftValue = this.evalValue(root.LChild);
-        var rightValue = this.evalValue(root.RChild);
+        var leftValue = this.evalValue(root.first);
+        var rightValue = this.evalValue(root.second);
         
-        switch (root.Value) {
+        switch (root.value) {
             case "<":
                 return (leftValue < rightValue);
             case ">":
