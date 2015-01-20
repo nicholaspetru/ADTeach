@@ -21,20 +21,20 @@ $(document).ready(function () {
         var source = this.TokenList;
         var parse = make_parse();
         var tree = parse(source);
-        //var f = new Environment(null);
-        //this.env = f;
         var f = new SymbolTable();
-        this.eval(tree,f);
+        this.symbolTable = f;
+        this.eval(tree, 1);
     }
 
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
-        var count = 0;
         console.log(arrayOfBlocks);
-        while (arrayOfBlocks !== undefined) {
+        while (arrayOfBlocks != undefined) {
             var block = arrayOfBlocks.shift();
-            console.log("block: " + block);
+            //console.log("block: " + block);
+
+            if (typeof block !== "undefined") {
             var blockType = block.arity;
-            console.log(blockType);
+            console.log("blockType: " + blockType);
             
             switch (blockType) {
                 case "FOR_BLOCK":
@@ -49,9 +49,8 @@ $(document).ready(function () {
                 default:
                     this.evalSemiColonBlock(block, env);
             }
-            
-            count += 1;
         }
+    }
     }
     
     Interpreter.prototype.evalSemiColonBlock = function(block, env) {
@@ -79,7 +78,7 @@ $(document).ready(function () {
             console.log(parseInt(root.value));
             return parseInt(root.value);
         } else {
-            var val = env.getValue(root.value);
+            var val = this.symbolTable.getValue(root.value);
             console.log(val);
             if (val === "no value") {
                 console.log("not in env");
@@ -93,17 +92,19 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalWhileBlock = function(block, env) {
         console.log("========= evalWhileBlock =======");
-        env = this.env;
         var condition = block.Test;
         var body = block.Body;
         
         var isTrue = this.evalCondition(condition, env);
         console.log(isTrue);
         
-        while (isTrue == true) {
+        while (isTrue) {
+
             this.eval(body, env);
             isTrue = this.evalCondition(condition, env);
         }
+        console.log(this.symbolTable.getValue("x"));
+        console.log(this.symbolTable.getValue("y"));
     }
     
     Interpreter.prototype.evalAssignment = function(root, env) {
@@ -171,19 +172,20 @@ $(document).ready(function () {
         */
         
         if (root.arity === "Initialization") {
-            env.newVariable(root.first, root.second.value, value);
-            this.env = env;
+            this.symbolTable.newVariable(root.first, root.second.value, value);
+            this.symbolTable.getValue(root.second.value);
         }
         else {
             //var type = checkType(value);
 
-            env.updateVariable("int", root.first.value, value);
-            this.env = env;
+            var s = this.symbolTable.updateVariable("int", root.first.value, value);
+            this.symbolTable = this.symbolTable.table;
+            console.log(this.symbolTable.getValue(root.first.value));
         }
     }
     Interpreter.prototype.evalCondition = function(root, env) {
         console.log(root);
-        /*
+        
         if (root.value == true) {
             return true;
         } else if (root.value == false) {
@@ -198,12 +200,12 @@ $(document).ready(function () {
                 return variable;
             }
         }
-        */
+        
         if (root.arity === "binary") {
 
         
-            var leftValue = this.evalValue(root.first, this.env);
-            var rightValue = this.evalValue(root.second, this.env);
+            var leftValue = this.evalValue(root.first, env);
+            var rightValue = this.evalValue(root.second, env);
         
             console.log(root.first);
             console.log("condition: " + leftValue + " " + root.value + " " + rightValue);
