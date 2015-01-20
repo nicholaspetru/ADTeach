@@ -48,13 +48,13 @@ Tokenizer.prototype.input = function(buf) {
 // If there are not more tokens in the buffer, returns null. In case of error throws error.
 Tokenizer.prototype.token = function() {
 	this._skipnontokens();
-	if (this.pos >= this.buflen) return {type: 'NULL_TYPE', value: null, pos: this.pos, linenum: this.linenum};
+	if (this.pos >= this.buflen) return null;
 
 	// The char at this.pos is part of a real token. Figure out which.
 	var c = this.buf.charAt(this.pos);
 	var sep = this.separators[c];
 	if (sep !== undefined) {
-		return {type: sep, value: c, pos: this.pos++, linenum: this.linenum};
+		return {type: "operator", jtype: sep, value: c, pos: this.pos++, linenum: this.linenum};
 	}
 	else {
 		if (this._isdigit(c)) {
@@ -104,25 +104,20 @@ Tokenizer.prototype._isalphanum = function(c) {
 
 Tokenizer.prototype._process_number = function() {
 	var endpos = this.pos + 1;
-	console.log(endpos);
 	while (endpos < this.buflen && this._isdigit(this.buf.charAt(endpos))) {
 		endpos++;
 	}
-	console.log(this.buf.charAt(endpos));
-	console.log(this.buf.charAt(endpos+1));
 	var x = this.buf.charAt(endpos);
 	var y = this.buf.charAt(endpos + 1);
-	//console.log(x);
-	//console.log(y);
 	if (x === '.' && this._isdigit(y)) {
 		while (endpos < this.buflen && this._isdigit(y)) {
 			endpos++;
 			y = this.buf.charAt(endpos);
 		}
-		//console.log(endpos);
 
 		var tok = {
-			type: 'FLOAT_TYPE',
+			type: "number",
+			jtype: 'FLOAT_TYPE',
 			value: this.buf.substring(this.pos, endpos),
 			pos: this.pos,
 			linenum: this.linenum
@@ -133,7 +128,8 @@ Tokenizer.prototype._process_number = function() {
 
 	else {
 		var tok = {
-			type: 'INT_TYPE',
+			type: "number",
+			jtype: 'INT_TYPE',
 			value: this.buf.substring(this.pos, endpos),
 			pos: this.pos,
 			linenum: this.linenum
@@ -153,7 +149,8 @@ Tokenizer.prototype._process_symbol = function() {
 		if (op2 !== -1) {
 			endpos++;
 			var tok = {
-				type: 'OPERATOR_TYPE',
+				type: "operator",
+				jtype: 'OPERATOR_TYPE',
 				value: this.buf.substring(this.pos,endpos),
 				pos: this.pos,
 				linenum: this.linenum
@@ -162,7 +159,8 @@ Tokenizer.prototype._process_symbol = function() {
 			return tok;
 		}
 		var tok = {
-			type: 'OPERATOR_TYPE',
+			type: "operator",
+			jtype: 'OPERATOR_TYPE',
 			value: this.buf[this.pos],
 			pos: this.pos,
 			linenum: this.linenum
@@ -175,9 +173,57 @@ Tokenizer.prototype._process_symbol = function() {
 		endpos++;
 	}
 
+	var temp = this.buf.substring(this.pos, endpos);
+
+	// BOOLEAN 
+	if (temp === 'true' || temp === 'false') {
+		var tok = {
+			type: "name",
+			jtype: 'BOOL_TYPE',
+			value: temp,
+			pos: this.pos,
+			linenum: this.linenum
+		};
+		this.pos = endpos;
+		return tok;
+	}
+/*
+	else if (temp === 'new') {
+		var tok = {
+			type: "operator",
+			jtype: 'OPERATOR_TYPE',
+			value: temp,
+			pos: this.pos,
+			linenum: this.linenum
+		};
+		this.pos = endpos;
+		return tok;
+	}
+*/
+	else if (temp === 'Stack' || temp === 'Queue' || temp === 'List') {
+		if (this.buf.charAt(endpos) !== '<') {
+			throw Error('Syntax error: expected type specifier for ADT');
+		}
+		var close_angle = this.buf.indexOf('>', endpos+1); // find the closing bracket >
+		if (close_angle === -1) {
+			throw Error("Syntax error: missing closing bracket >");
+		} else {
+			var tok = {
+				type: "name",
+				jtype: 'SYMBOL_TYPE',
+				value: this.buf.substring(this.pos, close_angle + 1),
+				pos: this.pos,
+				linenum: this.linenum
+			};
+		this.pos = close_angle + 1;
+		return tok;
+		}	
+	}
+	// regular old symbol
 	var tok = {
-		type: 'SYMBOL_TYPE',
-		value: this.buf.substring(this.pos, endpos),
+		type: "name",
+		jtype: 'SYMBOL_TYPE',
+		value: temp,
 		pos: this.pos,
 		linenum: this.linenum
 	};
@@ -193,7 +239,8 @@ Tokenizer.prototype._process_string = function() {
 		throw Error('Unterminated quote');
 	} else {
 		var tok = {
-			type: 'STR_TYPE',
+			type: "string",
+			jtype: 'STR_TYPE',
 			value: this.buf.substring(this.pos, end_index + 1),
 			pos: this.pos,
 			linenum: this.linenum

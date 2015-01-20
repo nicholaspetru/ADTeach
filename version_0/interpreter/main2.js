@@ -5,99 +5,142 @@
 */
 
 $(document).ready(function () {
-    $("#output_box").hide();
-    
+    $("#token_box").hide();
+    $("#tree_box").hide();
+    $("#interpreter_box").hide();
+
     $("#tokens").click(function() {
         onTokens();
-    });
-    
-    $("#nodes").click(function() {
-        onNodes();
     });
 
     $("#tree").click(function() {
         onTree();
     });
 
-    onTree = function() {
-        console.log("--------------onTree-------------");
-        $("#output_box").show();
+    $("#interpret").click(function() {
+        onInterpret();
+    });
 
+    onInterpret = function() {
+        console.log("--------------onTree-------------");
+        // Show output boxes
+        $("#token_box").show();
+        $("#tree_box").show();
+        $("#interpreter_box").show();
+
+        // Get the test code
         var code = $("#test_code").val();
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
-        
         var i = new Interpreter(code);
-        i.parse();
+        i.interpret();
 
-        var result = "";
-        // result = displayParseTree(i.ParseTree) or i.displayParseTree()
-        result = "hi!\n\n the parse tree is in the javascript console (in chrome, threelinething > more tools > javascript console). \n\n it looks good to me except i'm not sure if paren/bracelevels are getting added to the tree";
-        $("#test_output").val(result);
+        // Tokenize the test code and display the array of tokens
+        //i.makeParseTree();
+        var token_result = "";
+        token_result += i.displayTokens();
+        $("#token_output").val(token_result);
+
+        // Transform a token object into an exception object and throw it
+        /*
+        Object.prototype.error = function (message, t) {
+            t = t || this;
+            t.name = "SyntaxError";
+            t.message = message;
+            throw t;
+        };
+
+        // Generate the parse tree and represent it as a string
+        var string;
+
+        try {
+            i.makeParseTree();
+
+            string = JSON.stringify(i.ParseTree, ['key', 'name', 'message',
+                'value', 'arity', 'first', 'second', 'third', 'fourth', 'Initialization', 'Test', 'Increment','Body', 'IfBody', 'ElseBody', 'WhileBody', 'MethodName', 'Caller', 'Arguments'], 4);
+            //console.log(i.ParseTree[0]);
+            //console.log(i.ParseTree[1]);
+        } 
+
+
+        catch (e) {
+            string = JSON.stringify(e, ['name', 'message', 'from', 'to', 'key',
+                    'value', 'arity', 'first', 'second', 'third', 'fourth', 'Initialization', 'Test', 'Increment','Body', 'IfBody', 'ElseBody', 'WhileBody', 'MethodName', 'Caller', 'Arguments'], 4);
+        }
+        
+
+        //parse_result += string;
+        $("#tree_output").val(string);
+        */
+    }
+
+    onTree = function() {
+        console.log("--------------onTree-------------");
+        // Show output boxes
+        $("#token_box").show();
+        $("#tree_box").show();
+
+        // Get the test code
+        var code = $("#test_code").val();
+        console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
+        var i = new Interpreter(code);
+        i.makeTokenList();
+        var source = i.TokenList;
+
+        var token_result = "";
+        token_result = i.displayTokens();
+        $("#token_output").val(token_result);
+
+        // Transform a token object into an exception object and throw it
+        Object.prototype.error = function (message, t) {
+            t = t || this;
+            t.name = "SyntaxError";
+            t.message = message;
+            throw t;
+        };
+
+        // Generate the parse tree and represent it as a string
+        var parse = make_parse();
+        var string, tree;
+
+        try {
+            tree = parse(source);
+
+            string = JSON.stringify(tree, ['key', 'name', 'message',
+                'value', 'arity', 'first', 'second', 'third', 'fourth', 'Initialization', 'Test', 'Increment','Body', 'IfBody', 'ElseBody', 'WhileBody', 'MethodName', 'Caller', 'Arguments'], 4);
+        } catch (e) {
+            string = JSON.stringify(e, ['name', 'message', 'from', 'to', 'key',
+                    'value', 'arity', 'first', 'second', 'third', 'fourth', 'Initialization', 'Test', 'Increment','Body', 'IfBody', 'ElseBody', 'WhileBody', 'MethodName', 'Caller', 'Arguments'], 4);
+        }
+
+        // Display the parse tree
+        var parse_result = "";
+        /*
+        if (!tree) {
+            parse_result += "no tree :(\n\n";
+        }
+        else {
+            parse_result += string;
+        }
+        */
+
+        parse_result += string;
+        $("#tree_output").val(parse_result);
     }
 
 
     onTokens = function() {
         console.log("--------------onTokens-------------");
-        $("#output_box").show();
+        $("#token_box").show();
 
         var code = $("#test_code").val();
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
         
-        var i = new Interpreter(code);
-        i.tokenize();
+        var tokens = makeTokenList(code);
 
         var result = "";
-        result = displayTokens(i.TokenList);
-        $("#test_output").val(result);
+        result = displayTokens(tokens);
+        $("#token_output").val(result);
     };
 
-
-    onNodes = function() {
-        console.log("--------------onNodes-------------");
-        $("#output_box").show();
-
-        var code = $("#test_code").val();
-        console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
-        
-        var i = new Interpreter(code);
-        i.tokenize();
-
-        var result = "";
-        result = displayNodes(i.NodeList);
-
-        $("#test_output").val(result);
-    };
-
-
-    var displayTokens = function(t) {
-        var result = "";
-        for (var i=0; i<t.length; i++) {
-            console.log("\t" + t[i].type + ':' + t[i].value + "\t\tline: " + t[i].linenum);
-            result += t[i].type;
-            result += ":";
-            result += t[i].value;
-            result += "\t\tline: ";
-            result += t[i].linenum;
-            result += "\n";
-        }
-        return result;
-    };
-
-    var displayNodes = function(head) {
-        // display error messages
-        if (typeof head == 'string') {
-            console.log(head);
-            return head;
-        }
-
-        var result = "";
-        while (head != null) {
-            console.log(head.Token + "\t type: " + head.Type);
-            result += head.Token;
-            result += " \t\t " + head.Type + "\n";
-            head = head.Next;
-        }
-        return result;
-    };
 
 });

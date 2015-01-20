@@ -5,36 +5,65 @@
     <title>Data Tutor v0 Interpreter Testing</title>
 
     <script src="jquery-1.11.1.js"></script>
-    <script src="tokenizer2.js"></script>
-    <script src="node2.js"></script>
-    <script src="parser.js"></script>
-    <script src="interpreter.js"></script>
 
+    <script src="tokenizer2.js"></script>
+    <script src="parser2.js"></script>
+    <script src="environment.js"></script>
+    <script src="symbol-table.js"></script>
+
+    <script src="interpreter2.js"></script>
     <script src="main2.js"></script>
+
     <link rel="stylesheet" href="test.css">
     <h1 class="main_header">Interpreter Testing</h1>
 </head>
 
 <body>
     <div id="container">
-    <div id="output_box">
-    <p><label>Output: <br><br>
-                <textarea id="test_output" name="test_output" cols="50" rows="50"></textarea> </label></p>
+
+    <div id="right_container">
+    <div id="token_box">
+    <p><label>Tokens: <br><br>
+                <textarea id="token_output" name="token_output" cols="50" rows="50"></textarea> </label></p>
     </div>
 
+    </div>
+
+    <div id="left_container">
+    
     <div id="code_box">
-            <p><label>Enter test code here: <br><br>
-                <textarea id="test_code" name="test_code" cols="50" rows="10">
-int x;
-int y, z;
-y = 5 + (3 * 4);
-z = 7;
-x = y-z;
-String h = "hello world!";</textarea> </label></p>
+        <div id="top_div">
+        <p><label>Enter test code here: <br><br>
+        <textarea id="test_code" name="test_code" cols="50" rows="10">
+int x = 11;
+int y = 15;
+while (x > 5) {
+y = y - 1;
+x = x - 1;
+}</textarea> </label></p>
+        <button name="tokens" id="tokens">Tokens</button>
+        <button name="tree" id="tree">Parse Tree</button>
+        <button name="interpret" id="interpret">Interpret</button>
+
+        </div>
+        
+        <div id="interpreter_box">
+        <p><label>Interpreter: <br>
+        <textarea id="interpreter_output" name="interpreter_output" cols="50" rows="10"></textarea> 
+        </label></p>
+        </div>
     </div>
+    <div id="tree_box">
+        <p><label>Parse Tree: <br><br>
+            <textarea id="tree_output" name="tree_output" cols="50" rows="50"></textarea> </label></p>
     </div>
-    <button name="tokens" id="tokens">Tokens</button>
-    <button name="nodes" id="nodes">Nodes</button>
-    <button name="tree" id="tree">Parse Tree</button>
+
+
+
+    </div>
+
+    </div>
+
+
 </body>
 </html>

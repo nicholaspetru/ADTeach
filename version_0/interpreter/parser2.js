@@ -400,6 +400,7 @@ var make_parse = function () {
     prefix("--");
     prefix("-");
     prefix("!");
+    prefix("int");
 
     prefix("(", function () {
         var e = expression(0);
@@ -416,9 +417,9 @@ var make_parse = function () {
         this.arity = "NEW_ADT";
         advance();
         return this;
-
-
     });
+
+
     // block statement wraps a pair of curly braces around a list of statements, giving them a new scope
     stmt("{", function () {
         new_scope();
@@ -432,38 +433,36 @@ var make_parse = function () {
     // each name can optionally be followed by = and an initializing expression
     stmt("int", function () {
         var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "=";
-                advance("=");
-                t.first = n;
-                t.second = expression(0);
-                t.arity = "binary";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "int";
-                t.first = n;
-                t.second = null;
-                t.arity = "initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
+        n = token;
+        if (n.arity !== "name") {
+            n.error("Expected a new variable name.");
         }
+        scope.define(n);
+        advance();
+        if (token.id === "=") {
+            t = token;
+            t.value = "init";
+            t.first = "int";
+            t.second = n;
+            t.arity = "Initialization";
+            advance("=");
+            t.third = expression(0);
+            a.push(t);
+        }
+        else {
+            t = token;
+            t.value = "init";
+            t.first = "int";
+            t.second = n;
+            t.third = undefined;
+            t.arity = "Initialization";
+            a.push(t);
+        }
+        
         advance(";");
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
+
 
     stmt("float", function () {
         var a = [], n, t;
