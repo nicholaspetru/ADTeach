@@ -21,15 +21,16 @@ $(document).ready(function () {
         var source = this.TokenList;
         var parse = make_parse();
         var tree = parse(source);
-        var f = new SymbolTable();
-        this.symbolTable = f;
-        this.eval(tree, 1);
+        var f = new Environment(null);
+        //this.symbolTable = f;
+        this.eval(tree, f);
     }
 
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
         console.log(arrayOfBlocks);
-        while (arrayOfBlocks != undefined) {
-            var block = arrayOfBlocks.shift();
+        var count = 0;
+        while (typeof arrayOfBlocks[count] !== "undefined") {
+            var block = arrayOfBlocks[count];
             //console.log("block: " + block);
 
             if (typeof block !== "undefined") {
@@ -44,11 +45,15 @@ $(document).ready(function () {
                     this.evalIfBlock(block, env);
                     break;
                 case "WHILE_BLOCK":
-                    this.evalWhileBlock(block, this.env);
+                    this.evalWhileBlock(block, env);
                     break;
                 default:
                     this.evalSemiColonBlock(block, env);
+                    break;
             }
+
+            count += 1;
+            console.log(count);
         }
     }
     }
@@ -70,6 +75,9 @@ $(document).ready(function () {
         } else if (rootType == "FunCall") {
             this.evalMethod(block, env);
         }
+        else {
+            console.log("is this called?");
+        }
     }
 
     Interpreter.prototype.evalValue = function(root, env) {
@@ -78,7 +86,8 @@ $(document).ready(function () {
             console.log(parseInt(root.value));
             return parseInt(root.value);
         } else {
-            var val = this.symbolTable.getValue(root.value);
+            //var val = this.symbolTable.getValue(root.value);
+            var val = env.getValue(root.value);
             console.log(val);
             if (val === "no value") {
                 console.log("not in env");
@@ -93,18 +102,22 @@ $(document).ready(function () {
     Interpreter.prototype.evalWhileBlock = function(block, env) {
         console.log("========= evalWhileBlock =======");
         var condition = block.Test;
-        var body = block.Body;
         
         var isTrue = this.evalCondition(condition, env);
         console.log(isTrue);
-        
-        while (isTrue) {
+        while (isTrue == true) {
+            var body = block.Body;
+            var condition2 = block.Test;
+            console.log("start while");
 
+            console.log(isTrue);
             this.eval(body, env);
-            isTrue = this.evalCondition(condition, env);
+            console.log("PAST EVAL");
+            isTrue = this.evalCondition(condition2, env);
+            console.log("end while");
         }
-        console.log(this.symbolTable.getValue("x"));
-        console.log(this.symbolTable.getValue("y"));
+        //console.log(this.symbolTable.getValue("x"));
+        //console.log(this.symbolTable.getValue("y"));
     }
     
     Interpreter.prototype.evalAssignment = function(root, env) {
@@ -172,19 +185,22 @@ $(document).ready(function () {
         */
         
         if (root.arity === "Initialization") {
-            this.symbolTable.newVariable(root.first, root.second.value, value);
-            this.symbolTable.getValue(root.second.value);
+            //this.symbolTable.newVariable(root.first, root.second.value, value);
+            //this.symbolTable.getValue(root.second.value);
+            env.createVariable(root.first, root.second.value, value);
         }
         else {
             //var type = checkType(value);
 
-            var s = this.symbolTable.updateVariable("int", root.first.value, value);
-            this.symbolTable = this.symbolTable.table;
-            console.log(this.symbolTable.getValue(root.first.value));
+            //var s = this.symbolTable.updateVariable("int", root.first.value, value);
+            //this.symbolTable = this.symbolTable.table;
+            //console.log(this.symbolTable.getValue(root.first.value));
+            env.updateVariable(root.first.value, value);
         }
     }
     Interpreter.prototype.evalCondition = function(root, env) {
-        console.log(root);
+        console.log("========evalCondition========");
+        console.log(root.value);
         
         if (root.value == true) {
             return true;

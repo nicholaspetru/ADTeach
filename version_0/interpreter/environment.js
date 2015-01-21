@@ -13,6 +13,7 @@ $(document).ready(function () {
 		return this.names;
 	}
 	Environment.prototype.getValue = function(name) {
+		console.log("getValue");
 		var index = this.names.indexOf(name);
 		console.log("index " + index);
 		if (index >= 0) {
@@ -39,7 +40,8 @@ $(document).ready(function () {
 		//console.log(this.variables);
 	}
 
-	Environment.prototype.updateValue = function(name,newVal) {
+	Environment.prototype.updateVariable = function(name,newVal) {
+		console.log("-------updateVariable( " + name + " , " + newVal);
 		var index = this.names.indexOf(name);
 		this.variables[index].value = newVal;
 	}
