@@ -1,5 +1,6 @@
 $(document).ready(function () {
 	Environment = function(parent) {
+		this.symbolTable = new SymbolTable();
 		this.parent = parent;
 		this.variables = [];
 		this.names = [];
@@ -35,14 +36,16 @@ $(document).ready(function () {
 		console.log(n.type);
 		console.log(n.value);
 		*/
-		this.variables.push(n)
+		this.variables.push(n);
 		this.names.push(variable);
+		this.symbolTable.createVariable(type, variable, value);
 		//console.log(this.variables);
 	}
 
 	Environment.prototype.updateVariable = function(name,newVal) {
-		console.log("-------updateVariable( " + name + " , " + newVal);
+		console.log("-------updateVariable( " + name + " , " + newVal + ")");
 		var index = this.names.indexOf(name);
 		this.variables[index].value = newVal;
+		//this.symbolTable.updateVariable();
 	}
 });
