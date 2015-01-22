@@ -6,9 +6,9 @@
 
 $(document).ready(function () {
     
-    Interpreter = function(code){
+    Interpreter = function(){
         this.symbolTable = null;
-        this.code = code;
+        this.code = "";
         this.TokenList = undefined;
         this.NodeList = null;
         this.ParseTree = undefined;
@@ -16,20 +16,24 @@ $(document).ready(function () {
         this.env = undefined;
         return this;
     }
-    Interpreter.prototype.interpret = function() {
+    Interpreter.prototype.interpret = function(code, vh) {
+        this.code = code;
         this.makeTokenList();
         var source = this.TokenList;
         var parse = make_parse();
         var tree = parse(source);
-        var f = new Environment(null);
+        var f = new Environment(null, vh);
         //this.symbolTable = f;
         this.eval(tree, f);
     }
-
+    
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
         console.log(arrayOfBlocks);
+        console.log(arrayOfBlocks.length);
+        console.log(arrayOfBlocks[0]);
         var count = 0;
-        while (typeof arrayOfBlocks[count] !== "undefined") {
+        console.log(typeof arrayOfBlocks[count]);
+        while (typeof arrayOfBlocks[count] != "undefined") {
             var block = arrayOfBlocks[count];
             //console.log("block: " + block);
 
@@ -420,7 +424,7 @@ $(document).ready(function () {
         }
 
         this.TokenList = tokens;
-        console.log(this.TokenList.length);
+        //console.log(this.TokenList.length);
 
     }
 

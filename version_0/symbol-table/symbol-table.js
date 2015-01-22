@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    SymbolTable = function() {
+    SymbolTable = function(vh) {
         //the list of entities
         this.table = [[]];
         this.nextAnonVar = 1;
-        this.visualizerHandler = null;
+        this.visualizerHandler = vh;
         return this;
     }
     

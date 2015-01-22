@@ -6,10 +6,10 @@ $(document).ready(function() {
         this.playing = false;
         this.lineNumber = 0;
         this.interpreted = false;
-        this.interpreter = null;
-        this.codeBox = null;
-        this.codeDatabase = null;
-        this.visualizerHandler = null;
+        this.interpreter = new Interpreter();
+        this.codeBox = new CodeBox();
+        this.codeDatabase = new CodeDatabase();
+        this.visualizerHandler = new VisualizerHandler();
         //1000 is in ms, corresponds to 1 second, default time for now
         this.timeBetweenSteps = 1000;
         //Placeholder for when we have actual indication to stop playing
@@ -26,6 +26,8 @@ $(document).ready(function() {
         
         return this;
     }
+    
+    
 
     EventHandler.prototype.changeTime = function() {
         console.log('Event Handler: changeTime()');
@@ -38,7 +40,9 @@ $(document).ready(function() {
     EventHandler.prototype.onBuild = function() {
         console.log('Event Handler: onBuild()');
         this.codeBox.freezeCode();
-        evaluated = this.interpreter.eval($("#user_textbox").val());
+        this.code = this.codeBox.getCode();
+        this.interpreter.interpret(this.code, this.visualizerHandler);
+        //evaluated = this.interpreter.eval($("#user_textbox").val());
         $("#play").show();
         $("#pause").show();
         $("#step").show();

@@ -50,6 +50,12 @@ $(document).ready(function () {
         var textbox = document.getElementById("user_textbox");
         textbox.value = code;
     };
+    
+    CodeBox.prototype.getCode = function() {
+        this.code = $("#user_textbox").val();
+        console.log("code: " + this.code);
+        return this.code;
+    };
 
     // aggregate code from code box
     $("#CodeBox").text = function(){

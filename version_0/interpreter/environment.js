@@ -1,6 +1,6 @@
 $(document).ready(function () {
-	Environment = function(parent) {
-		this.symbolTable = new SymbolTable();
+	Environment = function(parent, vh) {
+		this.symbolTable = new SymbolTable(vh);
 		this.parent = parent;
 		this.variables = [];
 		this.names = [];
@@ -46,7 +46,7 @@ $(document).ready(function () {
 		console.log("-------updateVariable( " + name + " , " + newVal + ")");
 		var index = this.names.indexOf(name);
 		this.variables[index].value = newVal;
-        this.symbolTable.newVariable(type, variable, value, origin);
+        this.symbolTable.updateVariable(type, variable, value, origin);
 		//this.symbolTable.updateVariable();
 	}
 });
