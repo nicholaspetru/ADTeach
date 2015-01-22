@@ -125,6 +125,7 @@ $(document).ready(function () {
         console.log("root.arity: " + root.arity);
         console.log(root);
         var valueRoot, value;
+        var origin = "new";
 
         if (root.arity === "Initialization") {
             valueRoot = root.third;
@@ -139,6 +140,7 @@ $(document).ready(function () {
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
             value = this.evalMethod(valueRoot, env);
+            //ADD ORIGIN
         }
         
         //Literals: ints, floats, strings, etc.
@@ -147,10 +149,12 @@ $(document).ready(function () {
         }
         else if (valueRoot.value == "++" || valueRoot.value == "--") {
             value = this.evalStep(valueRoot, env);
+        
         }
         
         else if (['%', '+', '-', '*', '/', '**'].indexOf(valueRoot.value) >= 0) {
                 value = this.evalMaths(valueRoot, env);
+                
         } 
 
         else if (valueRoot.value == "new") {
@@ -187,7 +191,7 @@ $(document).ready(function () {
         if (root.arity === "Initialization") {
             //this.symbolTable.newVariable(root.first, root.second.value, value);
             //this.symbolTable.getValue(root.second.value);
-            env.createVariable(root.first, root.second.value, value);
+            env.createVariable(root.first, root.second.value, value, origin);
         }
         else {
             //var type = checkType(value);
@@ -195,7 +199,7 @@ $(document).ready(function () {
             //var s = this.symbolTable.updateVariable("int", root.first.value, value);
             //this.symbolTable = this.symbolTable.table;
             //console.log(this.symbolTable.getValue(root.first.value));
-            env.updateVariable(root.first.value, value);
+            env.updateVariable(root.first.value, value, origin);
         }
     }
     Interpreter.prototype.evalCondition = function(root, env) {

@@ -29,8 +29,8 @@ $(document).ready(function () {
     
     //returns false if variable was not in the table, else returns true
     //if false, removeVariable does not create a new symbolTable, nor does it call enqueueEvent.
-    SymbolTable.prototype.removeVariable = function(type, name, value, action) {
-        console.log('Symbol Table: removeVariable(' + type + ',' + name + ',' + value + ',' + action + ')');
+    SymbolTable.prototype.removeVariable = function(type, name, value) {
+        console.log('Symbol Table: removeVariable(' + type + ',' + name + ',' + value + ')');
         var curTable = this.table[this.table.length-1];
         var newTable = curTable.slice(0);
         var varIndex = null;

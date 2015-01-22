@@ -27,7 +27,7 @@ $(document).ready(function () {
 		}
 	}
 
-	Environment.prototype.createVariable = function(type,variable,value) {
+	Environment.prototype.createVariable = function(type, variable, value, origin) {
 		var n = {type: type, 
 			name: variable, 
 			value: value};
@@ -38,14 +38,15 @@ $(document).ready(function () {
 		*/
 		this.variables.push(n);
 		this.names.push(variable);
-		this.symbolTable.createVariable(type, variable, value);
+		this.symbolTable.newVariable(type, variable, value, origin);
 		//console.log(this.variables);
 	}
 
-	Environment.prototype.updateVariable = function(name,newVal) {
+	Environment.prototype.updateVariable = function(name, newVal, origin) {
 		console.log("-------updateVariable( " + name + " , " + newVal + ")");
 		var index = this.names.indexOf(name);
 		this.variables[index].value = newVal;
+        this.symbolTable.newVariable(type, variable, value, origin);
 		//this.symbolTable.updateVariable();
 	}
 });
