@@ -14,21 +14,23 @@ $(document).ready(function () {
 
         //define constants
         this.PRIMITIVE_COLUMNWIDTH = 140;
+        this.ADT_COLUMNWIDTH = 140;
         this.PRIMITIVE_SECTION_HEIGHT = 100;
         this.HBORDER = 10;
         this.VBORDER = 12;
         this.FONT_HEIGHT = 12;
         this.FONT_SIZE = 18;
         this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
-        this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
+        this.ADT_SECTION_TEXT_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
+        this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12;
 
         //drawing basic stuff on the paper: the sections
         this.paper = Raphael("vis_paper", 500,1000);
         this.paper.text(this.HBORDER, this.VBORDER, "primitives:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.paper.path("M " + this.HBORDER + "," + (this.VBORDER + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.VBORDER + this.FONT_HEIGHT));
 
-        this.paper.text(this.HBORDER, this.ADT_SECTION_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
-        this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_Y + this.FONT_HEIGHT));
+        this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         return this;
     }
@@ -70,7 +72,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.NewEntity = function(className, name, type, value) {
 	    console.log("Visualizer Handler: newEntity(" + className + ',' + name + ',' + type + ',' + value + ')');
         this.entities.push(this.getNewEntity(className,name,type,value));
-        this.arrangePrimitives();
+        this.arrangeEntities();
     };
 
     //Updates the value of an Entity
@@ -93,7 +95,7 @@ $(document).ready(function () {
                 this.entities.splice(i,1);
             }
         }
-        this.arrangePrimitives();
+        this.arrangeEntities();
     };
     
     //Returns a new Entity of the given type
@@ -108,7 +110,7 @@ $(document).ready(function () {
         case "bool":
             return new Primitive(this.paper,name,type,value,this);
         case "stack":
-            return new Stack(this.paper,name,type,value);
+            return new Stack(this.paper,name,type,value, this);
         //and more cases....
         default:
             console.log("Unknown type for newEntity: " + className);
@@ -116,7 +118,15 @@ $(document).ready(function () {
         }
     };
 
-    //Arranges primitives (now all entities)
+    
+    //Arranges entities
+    VisualizerHandler.prototype.arrangeEntities = function() {
+        this.arrangePrimitives();
+        this.arrangeADTs();
+        return;
+    }
+
+    //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
         var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y;
 
@@ -125,23 +135,9 @@ $(document).ready(function () {
                 if (this.entities[i].x != curX || this.entities[i].y != curY) {
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
-                        this.entities[i].x = curX;
-                        this.entities[i].y = curY;
-                        //move them to the new area
-                        this.entities[i].vis.transform("t" + (curX) + "," + (curY));
-                        //fade it in
-                        var anim = Raphael.animation({opacity:1},1000);
-                        this.entities[i].vis.animate(anim.delay(this.setDelay(1000)));
-
+                        this.entities[i].create(curX, curY);
                     }else{
-                        var difX, difY;
-                        difX = curX - this.entities[i].x;
-                        difY = curY - this.entities[i].y;
-                        this.entities[i].x = curX;
-                        this.entities[i].y = curY;
-                        var anim = Raphael.animation({x:difX,y:difY},500);
-                        this.entities[i].vis.animate(anim.delay(this.setDelay(500)));
-
+                        this.entities[i].move(curX, curY);
                     }
                 }
                 //traverse down
@@ -150,6 +146,31 @@ $(document).ready(function () {
                 if (curY > this.PRIMITIVE_SECTION_HEIGHT){
                     curY = this.PRIMITIVE_SECTION_Y;
                     curX +=  this.PRIMITIVE_COLUMNWIDTH;
+                }
+            }
+        }
+    }
+
+    //Arranges primitives
+    VisualizerHandler.prototype.arrangeADTs = function() {
+        var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+
+        for (var i = 0; i < this.entities.length; i++){
+            if (!this.isPrimitive(this.entities[i])){
+                if (this.entities[i].x != curX || this.entities[i].y != curY) {
+                    //check and see if this is a new entity. if so, fade it in. if not, move it
+                    if (this.entities[i].x == 0){
+                        this.entities[i].create(curX, curY);
+                    }else{
+                        this.entities[i].move(curX, curY);
+                    }
+                }
+                //traverse down
+                curY += this.FONT_HEIGHT + 6;
+                //move to the next column
+                if (curY > this.ADT_SECTION_HEIGHT){
+                    curY = this.ADT_SECTION_Y;
+                    curX +=  this.ADT_COLUMNWIDTH;
                 }
             }
         }

@@ -19,6 +19,28 @@ $(document).ready(function () {
         this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
     }
 
+   //Create visual primitve in the specific position
+    Primitive.prototype.create = function(newX, newY) {
+        this.x = newX;
+        this.y = newY;
+        //move them to the new area
+        this.vis.transform("t" + (newX) + "," + (newY));
+        //fade it in
+        var anim = Raphael.animation({opacity:1},1000);
+        this.vis.animate(anim.delay(this.VH.setDelay(1000)));
+    };
+
+    //Moves the visual primitve to the specific positon
+    Primitive.prototype.move = function(newX, newY) {
+        var difX, difY;
+        difX = newX - this.x;
+        difY = newY - this.y;
+        this.x = newX;
+        this.y = newY;
+        var anim = Raphael.animation({x:difX,y:difY},500);
+        this.vis.animate(anim.delay(this.VH.setDelay(500)));
+    };
+
     //Remove visual primitives
     Primitive.prototype.destroy = function() {
         var anim = Raphael.animation({opacity:0},1000);
@@ -27,7 +49,6 @@ $(document).ready(function () {
     
     //Remove visual primitives
     Primitive.prototype.update = function() {
-        
         // shake it off
         var anim = Raphael.animation({x:-4},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
@@ -36,31 +57,18 @@ $(document).ready(function () {
             var anim = Raphael.animation({x:8*(-1^i)},25);
             this.vis.animate(anim.delay(this.VH.setDelay(25)));
         }
-        var _t = this
+        var _t = this, _val = this.value;
         setTimeout(function(){
-            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _t.value)});
+            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _val)});
         },(this.VH.delay - this.VH.date.getTime()));
 
         var anim = Raphael.animation({x:0},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
+        
+        this.VH.setDelay(50);
     };
 
     Primitive.prototype.copyTo = function() {
 
-    }
-
-    //draw the name of the function
-    Primitive.prototype.Draw = function(){
-        /*
-	   //if the primitive is undefined, create a new vis element
-       if (this.vis == null){
-            //draw your text
-            this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " = " + this.value);
-            this.vis.attr({"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
-       }
-
-*/
-       //log it in the console
-       console.log(this.type + " " + this.name + " = " + this.value);
     }
 });

@@ -20,10 +20,15 @@ $(document).ready(function () {
         var newName1 = this.symbolTable.newVariable('int','.', 5, 'new'); //will return .1 as name
         var newName2 = this.symbolTable.newVariable('int', 'x', null, 'new');
         var removeBool1 = this.symbolTable.removeVariable('int', newName1, 5, 'remove');
-        var newName3 = this.symbolTable.newVariable('stack','.', [], 'new'); //will return .2 as name
-        /*
-        var newName4 = this.symbolTable.newVariable('Stack<Integer>', 's', null, 'new');
-        var updateBool2 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [], newName3);
+        var newName3 = this.symbolTable.newVariable('stack','stack1', [], 'new'); //will return .2 as name
+        this.symbolTable.newVariable('stack','stack2', [], 'new'); //will return .2 as name
+        this.symbolTable.updateVariable('Stack<Integer>', 'stack2', [5], newName2);
+        this.symbolTable.removeVariable('stack', "stack1", 5, 'remove');
+        this.symbolTable.updateVariable('Stack<Integer>', 'stack2', [5,3], newName2);
+        this.symbolTable.newVariable('stack','stack3', [], 'new'); //will return .2 as name
+        
+        //var newName4 = this.symbolTable.newVariable('Stack<Integer>', 's', null, 'new');
+        /*var updateBool2 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [], newName3);
         var removeBool2 = this.symbolTable.removeVariable('Stack<Integer>', newName3, [], 'remove');
         var updateBool3 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [5], newName2);
         var updateBool4 = this.symbolTable.updateVariable('Stack<Integer>', newName4, [], newName4 + '.pop()');
@@ -34,14 +39,15 @@ $(document).ready(function () {
         this.symbolTable.newVariable('bool', 'pp', null, 'new');
         this.symbolTable.newVariable('bool', 'ps', null, 'new');
         var updateBool1 = this.symbolTable.updateVariable('int', newName2, 5, newName1);
+        var updateBool1 = this.symbolTable.updateVariable('int', newName2, 2, newName1);
         this.symbolTable.removeVariable('int', 'ps', 5, 'remove');
-        this.symbolTable.newVariable('bool', 'ap', null, 'new');
+        /*this.symbolTable.newVariable('bool', 'ap', null, 'new');
         this.symbolTable.newVariable('bool', 'boo', null, 'new');
         this.symbolTable.newVariable('bool', 'p1', null, 'new');
-        this.symbolTable.newVariable('bool', 'p2', null, 'new');
+        this.symbolTable.newVariable('bool', 'p2', null, 'new');*/
         this.symbolTable.removeVariable('int', 'boo', 5, 'remove');
         this.symbolTable.newVariable('bool', 'p3', null, 'new');
-        this.symbolTable.newVariable('bool', 'p4', null, 'new');
+        //this.symbolTable.newVariable('bool', 'p4', null, 'new');
 
         //console.log("updateBools: " + updateBool1 + updateBool2 + updateBool3 + updateBool4);
         //console.log("removeBools: " + removeBool1 + removeBool2 + removeBool3);

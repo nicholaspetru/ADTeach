@@ -1,5 +1,5 @@
-//primitive.js
-//Represents primitive objects like ints, strings, etc (something that doesn't need a data structure.)
+//stack.js
+//Represents a stack
 
 $(document).ready(function () {
     
@@ -8,7 +8,7 @@ $(document).ready(function () {
         this.VH = vishandler;
         this.name = name;
         this.type = type;
-        this.value = value;
+        this.value = [];
 
         //assign the position
         this.x = 0;
@@ -20,24 +20,47 @@ $(document).ready(function () {
         this.buildVisual();
     }
 
-
     Stack.prototype.buildVisual = function(){
+        this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " ! " + this.value);
+        this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
+        /*
         this.vis = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.STACK_HEIGHT) + " H " + (this.x + this.STACK_WIDTH) + " V " + this.y);
         //this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " = " + this.value);
         this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
+        */
     }
 
+   //Create visual primitve in the specific position
+    Stack.prototype.create = function(newX, newY) {
+        this.x = newX;
+        this.y = newY;
+        //move them to the new area
+        this.vis.transform("t" + (newX) + "," + (newY));
+        //fade it in
+        var anim = Raphael.animation({opacity:1},1000);
+        this.vis.animate(anim.delay(this.VH.setDelay(1000)));
+    };
+
+    //Moves the visual primitve to the specific positon
+    Stack.prototype.move = function(newX, newY) {
+        var difX, difY;
+        difX = newX - this.x;
+        difY = newY - this.y;
+        this.x = newX;
+        this.y = newY;
+        var anim = Raphael.animation({x:difX,y:difY},500);
+        this.vis.animate(anim.delay(this.VH.setDelay(500)));
+    };
 
     //Remove visual primitives
     Stack.prototype.destroy = function() {
-        /*var anim = Raphael.animation({opacity:0},1000);
-        this.vis.animate(anim.delay(this.VH.setDelay(1000)));*/
+        var anim = Raphael.animation({opacity:0},1000);
+        this.vis.animate(anim.delay(this.VH.setDelay(1000)));
     };
     
     //Remove visual primitives
     Stack.prototype.update = function() {
-        /*
-        // shake it off
+        //animate changing the value
         var anim = Raphael.animation({x:-4},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
 
@@ -45,30 +68,20 @@ $(document).ready(function () {
             var anim = Raphael.animation({x:8*(-1^i)},25);
             this.vis.animate(anim.delay(this.VH.setDelay(25)));
         }
-        var _t = this
+        var _t = this, _val = this.value;
         setTimeout(function(){
-            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _t.value)});
+            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _val)});
         },(this.VH.delay - this.VH.date.getTime()));
 
         var anim = Raphael.animation({x:0},12);
-        this.vis.animate(anim.delay(this.VH.setDelay(12)));*/
+        this.vis.animate(anim.delay(this.VH.setDelay(12)));
+
+        this.VH.setDelay(50);
     };
 
-    Primitive.prototype.copyTo = function() {
+    //TODO
+    Stack.prototype.copyTo = function() {
 
-    }
-
-    //draw the name of the function
-    Primitive.prototype.Draw = function(){
-        /*
-       //if the primitive is undefined, create a new vis element
-       if (this.vis == null){
-            //draw your text
-            this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " = " + this.value);
-            this.vis.attr({"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
-       }
-
-*/
     }
 });
 
