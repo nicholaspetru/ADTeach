@@ -45,8 +45,18 @@ $(document).ready(function () {
 	Environment.prototype.updateVariable = function(name, newVal, origin) {
 		console.log("-------updateVariable( " + name + " , " + newVal + ")");
 		var index = this.names.indexOf(name);
+        var type = this.variables[index].type;
+        //if (type != typeof newVal) {
+         
+        //CHECK TYPE
+        if (type != "int") {
+            console.log(type);
+            console.log(typeof newVal);
+            console.log("Incompatible types");
+            //new IncompatibleTypes();
+        }
 		this.variables[index].value = newVal;
-        this.symbolTable.updateVariable(type, variable, value, origin);
+        this.symbolTable.updateVariable(type, variable, newVal, origin);
 		//this.symbolTable.updateVariable();
 	}
 });
