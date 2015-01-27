@@ -13,7 +13,7 @@ $(document).ready(function () {
         this.delay = this.date.getTime();
 
         //Testing a stack here
-        this.enqueueEvent("new","stack","stack1","stack",[]);
+        //this.enqueueEvent("new","stack","stack1","stack",[]);
         //this.enqueueEvent("new","stack","stack2","stack",[1,2]);
         //this.enqueueEvent("update","stack","stack1","stack",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
@@ -106,6 +106,7 @@ $(document).ready(function () {
     
     //Returns a new Entity of the given type
     VisualizerHandler.prototype.getNewEntity = function(className, name, type, value) {
+        console.log(className);
         switch(className){
         case "int":
             return new Primitive(this.paper,name,type,value,this);
@@ -115,7 +116,7 @@ $(document).ready(function () {
             return new Primitive(this.paper,name,type,value,this);
         case "bool":
             return new Primitive(this.paper,name,type,value,this);
-        case "stack":
+        case "Stack<Integer>":
             return new Stack(this.paper,name,type,value, this);
         //and more cases....
         default:
@@ -194,7 +195,7 @@ $(document).ready(function () {
             case "bool":
                 return true;
             case "Stack<Integer>":
-                return true;
+                return false;
             default:
                 return false;
         }

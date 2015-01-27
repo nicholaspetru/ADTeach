@@ -582,10 +582,16 @@ var make_parse = function () {
             advance();
             if (token.id === "=") {
                 t = token;
-                t.value = "Stack<Integer>";
+                t.value = "init";
                 advance("=");
-                t.first = n;
-                t.second = expression(0);
+                t.first = "Stack<Integer>";
+                //t.value = "Stack<Integer>";
+                //advance("=");
+                //t.first = n;
+                console.log("Second ISSSSSSS: ", expression(0));
+                t.second = n;
+                t.third = [];
+                //t.second = expression(0);
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -594,7 +600,7 @@ var make_parse = function () {
                 t.value = "Stack<Integer>";
                 t.first = n;
                 t.second = null;
-                t.arity = "initialization";
+                t.arity = "Initialization";
                 a.push(t);
             }
             if (token.id !== ",") {

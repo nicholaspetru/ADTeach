@@ -360,16 +360,28 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalMethod = function(root, env) {
-        var adt = root.Caller;
-        var adtType = env.getVariables().get(adt).get(0);
-        var method = root.MethodName;
+        var adt = root.Caller.value;
+        var adtIndex = env.getIndex(adt);
+        var adtType = env.getVariables()[adtIndex].type;
+        var method = root.MethodName.value;
         var parameters = root.Arguments;
+
+        console.log("***");
+        console.log(adt);
+        console.log(typeof adtType);
+        console.log(method);
+        console.log(parameters);
         
+        if (adtType == "String<Integer>") {
+            adtType = typeof VStack;
+        }
+        
+        console.log(adtType);
+        console.log(adtType.listMethods());
         if (adtType.listMethods().indexOf(method) < 0) {
             console.log("Invalid Method");
             //new InvalidMethod();
         }
-        
         if (adtType.checkParameters(method, parameters) != true) {
             console.log("incorrect parameters");
             //new IncorrectParameters();

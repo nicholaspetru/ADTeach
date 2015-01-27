@@ -13,6 +13,11 @@ $(document).ready(function () {
 	Environment.prototype.getNames = function() {
 		return this.names;
 	}
+    
+    Environment.prototype.getIndex = function(name) {
+        var index = this.names.indexOf(name);
+        return index;
+    }
 	Environment.prototype.getValue = function(name) {
 		console.log("getValue");
 		var index = this.names.indexOf(name);
