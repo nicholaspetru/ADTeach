@@ -42,8 +42,8 @@ $(document).ready(function () {
     }
 
     //Dequeue all the events from the event queue, execute them, and render
-    VisualizerHandler.prototype.goForth = function() {
-        console.log("Visualizer Handler: goForth()");
+    VisualizerHandler.prototype.goForthAll = function() {
+        console.log("Visualizer Handler: goForthAll()");
 
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
@@ -61,6 +61,26 @@ $(document).ready(function () {
             }
         }
         this.Render();
+    };
+    
+    VisualizerHandler.prototype.goForthOnce = function() {
+        console.log("Visualizer Handler: goForthOnce()");
+        if (this.eventQueue.length > 0) {
+            curEvent = this.eventQueue.shift();
+            if (curEvent[0] == 'new') {
+                this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4]);
+            }
+            else if (curEvent[0] == 'update') {
+                this.UpdateEntity(curEvent[2], curEvent[4]);
+            }
+            else if (curEvent[0] == 'delete') {
+                this.DeleteEntity(curEvent[2]);
+            }
+            else {
+                console.log('unrecognized event: ' + curEvent[0]);
+            }
+            this.Render();
+        }
     };
     
     //Render is just going to chill out and let the change variables hit themselves
