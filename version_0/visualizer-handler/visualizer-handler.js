@@ -187,6 +187,8 @@ $(document).ready(function () {
                 return true;
             case "bool":
                 return true;
+            case "Stack<Integer>":
+                return true;
             default:
                 return false;
         }

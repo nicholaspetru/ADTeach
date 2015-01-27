@@ -359,12 +359,16 @@ var make_parse = function () {
 
     infix("(", 150, function (left) {
         var a = [];
+        console.log(left.id);
         if (left.id === "." || left.id === "[") {
             this.arity = "FunCall";
             this.Caller = left.first;
             this.MethodName = left.second;
             this.Arguments = a;
-        } else {
+        } else if (left.id == "new") {
+            this.arity = "Initialization";
+            //this.first = left
+        }else {
             this.arity = "binary";
             this.first = left;
             this.second = a;
@@ -582,7 +586,7 @@ var make_parse = function () {
                 advance("=");
                 t.first = n;
                 t.second = expression(0);
-                t.arity = "initialization";
+                t.arity = "Initialization";
                 a.push(t);
             }
             else {

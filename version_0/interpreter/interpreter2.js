@@ -130,15 +130,21 @@ $(document).ready(function () {
         console.log(root);
         var valueRoot, value;
         var origin = "new";
-
+        console.log("Here here here", root);
         if (root.arity === "Initialization") {
-            valueRoot = root.third;
+            if (root.value == "Stack<Integer>") {
+                valueRoot = root.second
+                value = root.first
+            } else {
+                valueRoot = root.third;
+            }
         }
         else {
             variable = root.first.value;
             valueRoot = root.second;
         }
-        console.log(valueRoot);
+        
+        console.log("now here: ", valueRoot);
         
 
         // Get the value of the righthand side of the equals sign
@@ -193,6 +199,9 @@ $(document).ready(function () {
         */
         
         if (root.arity === "Initialization") {
+            if (root.value == "Stack<Integer>") {
+                env.createVariable("Stack<Integer>", value, [], "new"); 
+            }
             //this.symbolTable.newVariable(root.first, root.second.value, value);
             //this.symbolTable.getValue(root.second.value);
             env.createVariable(root.first, root.second.value, value, origin);
