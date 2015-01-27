@@ -10,11 +10,7 @@ $(document).ready(function() {
         this.codeBox = new CodeBox();
         this.codeDatabase = new CodeDatabase();
         this.visualizerHandler = new VisualizerHandler();
-        //1000 is in ms, corresponds to 1 second, default time for now
-        this.timeBetweenSteps = 1000;
-        //Placeholder for when we have actual indication to stop playing
-        this.i = 5;
-        this.intID = 0;
+
         
         //for now, put this code here
         $("#play").hide();
@@ -51,31 +47,24 @@ $(document).ready(function() {
         $("#sample").hide();
     };
     
-    EventHandler.prototype.takeStep = function() {
+    EventHandler.prototype.playStep = function() {
         //wrapper for what happens at the same time when going forth
+        console.log('Event Handler: playStep()');
+        this.codeBox.highlightLine(this.lineNumber);
+        this.visualizerHandler.goForthAll();
+    };
+    
+    EventHandler.prototype.takeStep = function() {
         console.log('Event Handler: takeStep()');
         this.codeBox.highlightLine(this.lineNumber);
-        this.visualizerHandler.goForth();
+        this.visualizerHandler.goForthOnce();
     };
     
     EventHandler.prototype.onPlay = function() {
         console.log('Event Handler: onPlay()');
-        //the bind function may have some browser incompatibility issues according to 
-        //stack overflow, may want to test this
-        this.intID = setInterval(this.playHelper.bind(this), this.timeBetweenSteps);
+        this.playStep();
     };
-
-    EventHandler.prototype.playHelper = function() {
-        this.takeStep();
-        console.log(this.i);
-        if (this.i <= 0) {
-            clearInterval(this.intID);
-        }
-        else {
-            this.i--;
-        }
-    };
-
+    
 
     // hidden until INTERPRETED = true
     EventHandler.prototype.onPause = function() {
