@@ -12,6 +12,12 @@ $(document).ready(function () {
         this.date = new Date();
         this.delay = this.date.getTime();
 
+        //Testing a stack here
+        this.enqueueEvent("new","stack","stack1","stack",[]);
+        //this.enqueueEvent("new","stack","stack2","stack",[1,2]);
+        //this.enqueueEvent("update","stack","stack1","stack",[3,4]);
+        //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
+
         //define constants
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;

@@ -8,37 +8,55 @@ $(document).ready(function () {
         this.VH = vishandler;
         this.name = name;
         this.type = type;
-        this.value = [];
+        //HARDCODED VALUE OF STACK RIGHT HERE FOR TESTING
+        this.value = [2,3];
 
         //assign the position
         this.x = 0;
         this.y = 0;
-        this.STACK_WIDTH = 30;
-        this.STACK_HEIGHT = 60;
+        this.STACK_WIDTH = 60;
+        this.STACK_HEIGHT = 240;
+        this.vis = [];
 
         //visual component
         this.buildVisual();
     }
 
+    //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
+    //that is then animated piecewise
     Stack.prototype.buildVisual = function(){
-        this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " ! " + this.value);
-        this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
-        /*
-        this.vis = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.STACK_HEIGHT) + " H " + (this.x + this.STACK_WIDTH) + " V " + this.y);
-        //this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " = " + this.value);
-        this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
-        */
+        var myLabel, frame;
+        myLabel = this.paper.text(this.x, this.y + this.STACK_HEIGHT + 13, this.type + " " + this.name);
+        myLabel.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
+
+        frame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.STACK_HEIGHT) + " H " + (this.x + this.STACK_WIDTH) + " V " + this.y);
+        frame.attr({"opacity": 0,"stroke": "#000000"});
+
+        //here's the visual component's representation of the content of the stack. the "data units"
+        //that we'd talked about, nick
+        for (var i = this.value.length - 1; i >= 0; i--){
+            var dataUnit =  this.paper.text(this.x + this.STACK_WIDTH/2, this.y + this.STACK_HEIGHT - 24*i - 18, this.value[i]);
+            dataUnit.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'center'});
+            this.vis.push(dataUnit);
+        }
+
+        this.vis.push(myLabel);
+        this.vis.push(frame);
     }
 
    //Create visual primitve in the specific position
     Stack.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
-        //move them to the new area
-        this.vis.transform("t" + (newX) + "," + (newY));
-        //fade it in
-        var anim = Raphael.animation({opacity:1},1000);
-        this.vis.animate(anim.delay(this.VH.setDelay(1000)));
+        //get the delay for outside the loop
+        var delay = this.VH.setDelay(1000);
+        //!!!Here! follow this procedure for animating or moving all the elements of a stack.
+        //move all the visual elements into a new area
+        for (var i = 0; i < this.vis.length; i++){
+            this.vis[i].transform("t" + (newX) + "," + (newY));
+            var anim = Raphael.animation({opacity:1},1000);
+            this.vis[i].animate(anim.delay(delay));
+        }
     };
 
     //Moves the visual primitve to the specific positon
@@ -60,6 +78,8 @@ $(document).ready(function () {
     
     //Remove visual primitives
     Stack.prototype.update = function() {
+        //I hhave disabled this for the time being so it wont cause crashes
+        /*
         //animate changing the value
         var anim = Raphael.animation({x:-4},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
@@ -76,7 +96,7 @@ $(document).ready(function () {
         var anim = Raphael.animation({x:0},12);
         this.vis.animate(anim.delay(this.VH.setDelay(12)));
 
-        this.VH.setDelay(50);
+        this.VH.setDelay(50);*/
     };
 
     //TODO
