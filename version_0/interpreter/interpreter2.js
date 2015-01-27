@@ -27,20 +27,15 @@ $(document).ready(function () {
         this.eval(tree, f);
     }
     
+    // Evaluates an array of statements or a single statement
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
-        console.log(arrayOfBlocks);
-        console.log(arrayOfBlocks.length);
-        console.log(arrayOfBlocks[0]);
+        console.log(typeof arrayOfBlocks);
         var count = 0;
-        console.log(typeof arrayOfBlocks[count]);
-        while (typeof arrayOfBlocks[count] != "undefined") {
-            var block = arrayOfBlocks[count];
-            //console.log("block: " + block);
-
-            if (typeof block !== "undefined") {
+        if (typeof arrayOfBlocks[count] === "undefined") {
+            console.log("single statement");
+            var block = arrayOfBlocks;
             var blockType = block.arity;
             console.log("blockType: " + blockType);
-            
             switch (blockType) {
                 case "FOR_BLOCK":
                     this.evalForBlock(block, env);
@@ -55,11 +50,32 @@ $(document).ready(function () {
                     this.evalSemiColonBlock(block, env);
                     break;
             }
-
-            count += 1;
-            console.log(count);
         }
-    }
+        else {
+            console.log(typeof arrayOfBlocks[count]);
+            while (typeof arrayOfBlocks[count] != "undefined") {
+                var block = arrayOfBlocks[count];
+                var blockType = block.arity;
+                console.log("blockType: " + blockType);
+            
+                switch (blockType) {
+                    case "FOR_BLOCK":
+                        this.evalForBlock(block, env);
+                        break;
+                    case "IF_BLOCK":
+                        this.evalIfBlock(block, env);
+                        break;
+                    case "WHILE_BLOCK":
+                        this.evalWhileBlock(block, env);
+                        break;
+                    default:
+                        this.evalSemiColonBlock(block, env);
+                        break;
+                }
+                count += 1;
+                //console.log("count: " + count);
+            }
+        }
     }
     
     Interpreter.prototype.evalSemiColonBlock = function(block, env) {
@@ -87,18 +103,61 @@ $(document).ready(function () {
     Interpreter.prototype.evalValue = function(root, env) {
         console.log("----- evalValue " + root.value + " -----");
         if (root.arity != "name") {
-            console.log(parseInt(root.value));
-            return parseInt(root.value);
+            console.log("jtype: " + root.jtype);
+            switch(root.jtype) {
+                case 'INT_TYPE':
+                    return parseInt(root.value);
+                    break;
+                case 'FLOAT_TYPE':
+                    return parseFloat(root.value);
+                    break;
+                case 'STR_TYPE':
+                    return root.value;
+                    break;
+                case 'CHAR_TYPE':
+                    return root.value;
+                    break;
+                case 'BOOL_TYPE':
+                    return root.value;
+                    break;
+            }
         } else {
-            //var val = this.symbolTable.getValue(root.value);
             var val = env.getValue(root.value);
+            var valType = env.getType(root.value);
             console.log(val);
             if (val === "no value") {
                 console.log("not in env");
                 //new UnidentifiedVariable();
-            } else {
-                // SPECIFIC
-                return parseInt(val);
+            } 
+
+            else if (valType === "no type") {
+                console.log("variable " + root.value + " is in env, but does not have a type associated with it");
+            }
+
+            else {
+                switch(valType) {
+                    case "int":
+                        return parseInt(val);
+                        break;
+                    case "float":
+                        return parseFloat(val);
+                        break;
+                    case "double":
+                        return parseFloat(val);
+                        break;
+                    case "String":
+                        return val;
+                        break;
+                    case "char":
+                        return val;
+                        break;
+                    case "boolean":
+                        return val;
+                        break;
+                    default:
+                        console.log("variable " + root.value + " was initialized with an invalid type...or alternatively, it references an ADT and we haven't implemented that here yet.");
+                        break;
+                }
             }
         }
     }

@@ -63,6 +63,9 @@ Tokenizer.prototype.token = function() {
 		else if (c === '"') {
 			return this._process_string();
 		}
+		else if (c === "'") {
+			return this._process_char();
+		}
 		else {
 			return this._process_symbol();
 		}
@@ -241,6 +244,25 @@ Tokenizer.prototype._process_string = function() {
 		var tok = {
 			type: "string",
 			jtype: 'STR_TYPE',
+			value: this.buf.substring(this.pos, end_index + 1),
+			pos: this.pos,
+			linenum: this.linenum
+		};
+		this.pos = end_index + 1;
+		return tok;
+	}
+}
+
+Tokenizer.prototype._process_char = function() {
+	// this.pos points at the opening quote
+	var end_index = this.buf.indexOf("'", this.pos+1); // find the ending quote
+
+	if (end_index === -1) {
+		throw Error('Unterminated quote');
+	} else {
+		var tok = {
+			type: "string",
+			jtype: 'CHAR_TYPE',
 			value: this.buf.substring(this.pos, end_index + 1),
 			pos: this.pos,
 			linenum: this.linenum

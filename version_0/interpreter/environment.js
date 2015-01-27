@@ -32,8 +32,22 @@ $(document).ready(function () {
 		}
 	}
 
+	Environment.prototype.getType = function(name) {
+		console.log("getType");
+		var index = this.names.indexOf(name);
+		console.log("index " + index);
+		if (index >= 0) {
+			var v = this.variables.index
+			console.log(this.variables[index].value);
+			return this.variables[index].type;
+		}
+		else {
+			return "no type";
+		}
+	}
+
 	Environment.prototype.createVariable = function(type, variable, value, origin) {
-		var n = {type: type, 
+		var n = {type: type,
 			name: variable, 
 			value: value};
 		/*

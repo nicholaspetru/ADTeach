@@ -113,6 +113,9 @@ var make_parse = function () {
         token.to    = t.to;
         token.value = v;
         token.arity = a;
+        token.linenum = t.linenum;
+        token.pos = t.pos;
+        token.jtype = t.jtype; // tracks the vava-specific tokens like INT_TYPE, FLOAT_TYPE, etc. (a little heavy-handed)
         return token;
     };
 
@@ -433,144 +436,49 @@ var make_parse = function () {
         return a;
     });
 
-    // declares one or more variables of the given type in the current block
+     // declares one or more variables of the given type in the current block
     // each name can optionally be followed by = and an initializing expression
-    stmt("int", function () {
-        var a = [], n, t;
-        n = token;
-        if (n.arity !== "name") {
-            n.error("Expected a new variable name.");
-        }
-        scope.define(n);
-        advance();
-        if (token.id === "=") {
-            t = token;
-            t.value = "init";
-            t.first = "int";
-            t.second = n;
-            t.arity = "Initialization";
-            advance("=");
-            t.third = expression(0);
-            a.push(t);
-        }
-        else {
-            t = token;
-            t.value = "init";
-            t.first = "int";
-            t.second = n;
-            t.third = undefined;
-            t.arity = "Initialization";
-            a.push(t);
-        }
+    var primitiveInit = function(type) {
+        stmt(type, function() {
+            var a = [], n, t;
+            n = token;
+            if (n.arity !== "name") {
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                t.first = type;
+                t.second = n;
+                t.arity = "Initialization";
+                advance("=");
+                t.third = expression(0);
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "init";
+                t.first = type;
+                t.second = n;
+                t.third = undefined;
+                t.arity = "Initialization";
+                a.push(t);
+            }
         
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
+            advance(";");
+            return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+        });
+    }
 
+    primitiveInit("int");
+    primitiveInit("float");
+    primitiveInit("double");
+    primitiveInit("char");
+    primitiveInit("boolean");
+    primitiveInit("String");
 
-    stmt("float", function () {
-        var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "float";
-                advance("=");
-                t.first = n;
-                t.second = expression(0);
-                t.arity = "initialization";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "float";
-                t.first = n;
-                t.second = null;
-                t.arity = "initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
-        }
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
-
-    stmt("boolean", function () {
-        var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "boolean";
-                advance("=");
-                t.first = n;
-                t.second = expression(0);
-                t.arity = "initialization";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "boolean";
-                t.first = n;
-                t.second = null;
-                t.arity = "initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
-        }
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
-    stmt("String", function () {
-        var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "String";
-                advance("=");
-                t.first = n;
-                t.second = expression(0);
-                t.arity = "initialization";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "String";
-                t.first = n;
-                t.second = null;
-                t.arity = "initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
-        }
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
     stmt("Stack<Integer>", function () {
         var a = [], n, t;
         while (true) {

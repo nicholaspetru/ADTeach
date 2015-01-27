@@ -31,8 +31,9 @@ $(document).ready(function () {
         // Get the test code
         var code = $("#test_code").val();
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
-        var i = new Interpreter(code);
-        i.interpret();
+        var vh = 1;
+        var i = new Interpreter();
+        i.interpret(code,vh);
 
         // Tokenize the test code and display the array of tokens
         //i.makeParseTree();
@@ -82,8 +83,9 @@ $(document).ready(function () {
         // Get the test code
         var code = $("#test_code").val();
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
-        var i = new Interpreter(code);
-        i.makeTokenList();
+        var vh = 1;
+        var i = new Interpreter();
+        i.interpret(code,vh);
         var source = i.TokenList;
 
         var token_result = "";
@@ -134,12 +136,13 @@ $(document).ready(function () {
 
         var code = $("#test_code").val();
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
-        
-        var tokens = makeTokenList(code);
+        var vh = 1;
+        var i = new Interpreter();
+        i.interpret(code,vh);
 
-        var result = "";
-        result = displayTokens(tokens);
-        $("#token_output").val(result);
+        // Tokenize the test code and display the array of tokens
+        var token_result = i.displayTokens();
+        $("#token_output").val(token_result);
     };
 
 
