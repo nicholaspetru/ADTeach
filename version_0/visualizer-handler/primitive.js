@@ -47,7 +47,7 @@ $(document).ready(function () {
         this.vis.animate(anim.delay(this.VH.setDelay(1000)));
     };
     
-    //Remove visual primitives
+    //Modifiy visual primitives
     Primitive.prototype.update = function() {
         // shake it off
         var anim = Raphael.animation({x:-4},12);

@@ -14,6 +14,7 @@ $(document).ready(function () {
         //assign the position
         this.x = 0;
         this.y = 0;
+        this.FONT_SIZE = 18;
         this.STACK_WIDTH = 60;
         this.STACK_HEIGHT = 240;
         this.vis = [];
@@ -27,7 +28,7 @@ $(document).ready(function () {
     Stack.prototype.buildVisual = function(){
         var myLabel, frame;
         myLabel = this.paper.text(this.x, this.y + this.STACK_HEIGHT + 13, this.type + " " + this.name);
-        myLabel.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
+        myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         frame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.STACK_HEIGHT) + " H " + (this.x + this.STACK_WIDTH) + " V " + this.y);
         frame.attr({"opacity": 0,"stroke": "#000000"});
@@ -35,8 +36,8 @@ $(document).ready(function () {
         //here's the visual component's representation of the content of the stack. the "data units"
         //that we'd talked about, nick
         for (var i = this.value.length - 1; i >= 0; i--){
-            var dataUnit =  this.paper.text(this.x + this.STACK_WIDTH/2, this.y + this.STACK_HEIGHT - 24*i - 18, this.value[i]);
-            dataUnit.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'center'});
+            var dataUnit =  this.paper.text(this.x + this.STACK_WIDTH/2, this.y + this.STACK_HEIGHT - (this.FONT_SIZE*1.5)*i - this.FONT_SIZE, this.value[i]);
+            dataUnit.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'center'});
             this.vis.push(dataUnit);
         }
 

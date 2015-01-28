@@ -13,9 +13,9 @@ $(document).ready(function () {
         this.delay = this.date.getTime();
 
         //Testing a stack here
-        //this.enqueueEvent("new","stack","stack1","stack",[]);
-        //this.enqueueEvent("new","stack","stack2","stack",[1,2]);
-        //this.enqueueEvent("update","stack","stack1","stack",[3,4]);
+        this.enqueueEvent("new","Stack<Integer>","stack1","Stack<Integer>",[]);
+        this.enqueueEvent("new","Stack<Integer>","stack2","Stack<Integer>",[1,2]);
+        this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
         //define constants
