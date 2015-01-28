@@ -22,7 +22,7 @@
 #code_env {
     line-height:30px;
     height:500px;
-    width:47%;
+    width:40%;
     float:left;
     border-style: solid;
     border-width: thin;
@@ -42,7 +42,7 @@ textarea#user_textbox{
 
 #vis_paper {
     height:500px;
-    width:47%;
+    width:57%;
     float:right;
     border-style: solid;
     border-width: thin;

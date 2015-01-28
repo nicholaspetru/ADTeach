@@ -36,6 +36,7 @@ $(document).ready(function () {
         //here's the visual component's representation of the content of the stack. the "data units"
         //that we'd talked about, nick
         for (var i = this.value.length - 1; i >= 0; i--){
+
             var dataUnit =  this.paper.text(this.x + this.STACK_WIDTH/2, this.y + this.STACK_HEIGHT - (this.FONT_SIZE*1.5)*i - this.FONT_SIZE, this.value[i]);
             dataUnit.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'center'});
             this.vis.push(dataUnit);
@@ -58,6 +59,16 @@ $(document).ready(function () {
             var anim = Raphael.animation({opacity:1},1000);
             this.vis[i].animate(anim.delay(delay));
         }
+
+        // DATAUNIT CLASS TESTING
+        var dUnit = new DataUnit(this.paper,"int","iUnit",this.VH,250,250,60,0);
+        var gUnit = new DataUnit(this.paper,"boolean","clique",this.VH,350,250,60,1);
+        dUnit.contain();
+        dUnit.create();
+        gUnit.contain();
+        gUnit.create();
+        this.VH.setDelay(1000);
+        gUnit.highlight();
     };
 
     //Moves the visual primitve to the specific positon

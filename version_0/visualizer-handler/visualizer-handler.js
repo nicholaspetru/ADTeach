@@ -14,9 +14,10 @@ $(document).ready(function () {
 
         //Testing a stack here
         this.enqueueEvent("new","Stack<Integer>","stack1","Stack<Integer>",[]);
-        this.enqueueEvent("new","Stack<Integer>","stack2","Stack<Integer>",[1,2]);
-        this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
+        //this.enqueueEvent("new","Stack<Integer>","stack2","Stack<Integer>",[1,2]);
+        //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
+
 
         //define constants
         this.PRIMITIVE_COLUMNWIDTH = 140;
@@ -37,6 +38,8 @@ $(document).ready(function () {
 
         this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
+
+
 
         return this;
     }
