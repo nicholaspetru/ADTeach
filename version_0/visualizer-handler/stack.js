@@ -9,66 +9,57 @@ $(document).ready(function () {
         this.name = name;
         this.type = type;
         //HARDCODED VALUE OF STACK RIGHT HERE FOR TESTING
-        this.value = [2,3];
+        this.value = [2,3, 5,"brady"];
 
         //assign the position
         this.x = 0;
         this.y = 0;
-        this.FONT_SIZE = 18;
-        this.STACK_WIDTH = 60;
-        this.STACK_HEIGHT = 240;
+        this.FONT_SIZE = 11;
+        this.WIDTH = 95;
+        this.HEIGHT = 280;
+        this.DUNIT_WIDTH = this.WIDTH*.85;
+        this.DUNIT_HEIGHT = this.DUNIT_WIDTH*.3;
         this.vis = [];
 
         //visual component
-        this.buildVisual();
+        this.myLabel = null;
+        this.myFrame = null;
     }
 
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     Stack.prototype.buildVisual = function(){
-        var myLabel, frame;
-        myLabel = this.paper.text(this.x, this.y + this.STACK_HEIGHT + 13, this.type + " " + this.name);
-        myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+        this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
-        frame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.STACK_HEIGHT) + " H " + (this.x + this.STACK_WIDTH) + " V " + this.y);
-        frame.attr({"opacity": 0,"stroke": "#000000"});
+        this.myFrame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH) + " V " + this.y);
+        this.myFrame.attr({"opacity": 0,"stroke": "black", "stroke-width": 2.25});
 
         //here's the visual component's representation of the content of the stack. the "data units"
         //that we'd talked about, nick
         for (var i = this.value.length - 1; i >= 0; i--){
-
-            var dataUnit =  this.paper.text(this.x + this.STACK_WIDTH/2, this.y + this.STACK_HEIGHT - (this.FONT_SIZE*1.5)*i - this.FONT_SIZE, this.value[i]);
-            dataUnit.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'center'});
-            this.vis.push(dataUnit);
+            this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
+                                        this.y + this.HEIGHT - (this.DUNIT_HEIGHT*1.2)*(i + 1), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
+            //paper,type,value,vishandler,x,y, width, height, shape
         }
-
-        this.vis.push(myLabel);
-        this.vis.push(frame);
     }
 
    //Create visual primitve in the specific position
     Stack.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
-        //get the delay for outside the loop
-        var delay = this.VH.setDelay(1000);
-        //!!!Here! follow this procedure for animating or moving all the elements of a stack.
-        //move all the visual elements into a new area
-        for (var i = 0; i < this.vis.length; i++){
-            this.vis[i].transform("t" + (newX) + "," + (newY));
-            var anim = Raphael.animation({opacity:1},1000);
-            this.vis[i].animate(anim.delay(delay));
-        }
+        this.buildVisual();
 
-        // DATAUNIT CLASS TESTING
-        var dUnit = new DataUnit(this.paper,"int","iUnit",this.VH,250,250,60,0);
-        var gUnit = new DataUnit(this.paper,"boolean","clique",this.VH,350,250,60,1);
-        dUnit.contain();
-        dUnit.create();
-        gUnit.contain();
-        gUnit.create();
-        this.VH.setDelay(1000);
-        gUnit.highlight();
+        //get the delay for outside the loop
+        var delay = this.VH.setDelay(500);
+
+        //Fade in the label and frame
+        var anim = Raphael.animation({opacity:1},500);
+        this.myLabel.animate(anim.delay(delay));
+        this.myFrame.animate(anim.delay(delay));
+        for (var i = this.vis.length-1; i >= 0; i--){
+            this.vis[i].create();
+        }
     };
 
     //Moves the visual primitve to the specific positon
@@ -78,8 +69,17 @@ $(document).ready(function () {
         difY = newY - this.y;
         this.x = newX;
         this.y = newY;
-        var anim = Raphael.animation({x:difX,y:difY},500);
-        this.vis.animate(anim.delay(this.VH.setDelay(500)));
+
+        //Move the labels
+        var delay = this.VH.setDelay(500);
+        var anim = Raphael.animation({"transform": "t" + difX + "," + difY},500);
+        this.myLabel.animate(anim.delay(delay));  
+        this.myFrame.animate(anim.delay(delay));
+          
+        //move the dataunits
+        for (var i =0; i < this.vis.length; i++){
+            this.vis[i].move(newX,newY,delay)
+        }
     };
 
     //Remove visual primitives

@@ -14,7 +14,7 @@ $(document).ready(function () {
 
         //Testing a stack here
         this.enqueueEvent("new","Stack<Integer>","stack1","Stack<Integer>",[]);
-        //this.enqueueEvent("new","Stack<Integer>","stack2","Stack<Integer>",[1,2]);
+        this.enqueueEvent("new","Stack<Integer>","stack2","Stack<Integer>",[1,2]);
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
@@ -29,7 +29,7 @@ $(document).ready(function () {
         this.FONT_SIZE = 18;
         this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
         this.ADT_SECTION_TEXT_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
-        this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12;
+        this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
 
         //drawing basic stuff on the paper: the sections
         this.paper = Raphael("vis_paper", 500,1000);
@@ -187,7 +187,7 @@ $(document).ready(function () {
 
         for (var i = 0; i < this.entities.length; i++){
             if (!this.isPrimitive(this.entities[i])){
-                if (this.entities[i].x != curX || this.entities[i].y != curY) {
+                if (this.entities[i].x != curX) {
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
                         this.entities[i].create(curX, curY);
@@ -195,13 +195,7 @@ $(document).ready(function () {
                         this.entities[i].move(curX, curY);
                     }
                 }
-                //traverse down
-                curY += this.FONT_HEIGHT + 6;
-                //move to the next column
-                if (curY > this.ADT_SECTION_HEIGHT){
-                    curY = this.ADT_SECTION_Y;
-                    curX +=  this.ADT_COLUMNWIDTH;
-                }
+                curX +=  this.entities[i].WIDTH*1.2;
             }
         }
     }
