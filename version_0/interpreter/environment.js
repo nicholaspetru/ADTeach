@@ -75,7 +75,7 @@ $(document).ready(function () {
             //new IncompatibleTypes();
         }
 		this.variables[index].value = newVal;
-        this.symbolTable.updateVariable(type, variable, newVal, origin);
+        this.symbolTable.updateVariable(type, name, newVal, origin);
 		//this.symbolTable.updateVariable();
 	}
 });

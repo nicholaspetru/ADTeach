@@ -418,6 +418,30 @@ $(document).ready(function () {
         }
     }
     
+    Interpreter.prototype.evalPlusPlus = function(root, env) {
+        console.log("============= evalPlusPlus ==========");
+        var name = root.first.value;
+        var index = env.getIndex(root.first.value);
+        if (index >= 0){
+            var value = env.getValue(name);
+            console.log(name + value + "new");
+            env.updateVariable(name, value+1, "new");
+        }
+    
+    }
+    
+    Interpreter.prototype.evalMinusMinus = function(root, env) {
+        console.log("============= evalPlusPlus ==========");
+        var name = root.first.value;
+        var index = env.getIndex(root.first.value);
+        if (index >= 0){
+            var value = env.getValue(name);
+            console.log(name + value + "new");
+            env.updateVariable(name, value-1, "new");
+        }
+    
+    }
+    
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
         var adtIndex = env.getIndex(adt);
