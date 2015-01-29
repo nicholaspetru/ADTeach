@@ -480,32 +480,39 @@ $(document).ready(function () {
             //new IncorrectParameters();
         } else {
             newValue = this.doMethod(adtType, adtCurValue, method, parameters);
-            env.updateVariable(adt, newValue, method);
             console.log("Method returns: ", newValue);
+
+            env.updateVariable(adt, newValue, method);
         }
     }
     
     Interpreter.prototype.findMethods = function(type) {
-        var y = new VStack();
+        var y;
         switch(type) {
             case "Stack<Integer>":
+                y = new VStack("int");
                 return y.listMethods();
         }
     }
     
     Interpreter.prototype.checkParameters = function(type, method, parameters) {
-        var y = new VStack();
+        var y;
         switch(type) {
             case "Stack<Integer>":
+                y = new VStack("int");
                 return y.checkParameters(method, parameters);
         }
     }
     
     Interpreter.prototype.doMethod = function(type, origValue, method, parameters) {
-        var y = new VStack();
+        var y;
         switch(type) {
             case "Stack<Integer>":
-                return y.performMethod(origValue, method, parameters);
+                y = new VStack("int");
+                console.log("JAH JAH JAH", origValue);
+                var newV = y.performMethod(origValue, method, parameters);
+                console.log("Wo Wo Wo", newV);
+                return newV;
         }
     }
     

@@ -66,6 +66,7 @@ $(document).ready(function () {
 
 	Environment.prototype.updateVariable = function(name, newVal, origin) {
 		console.log("-------updateVariable( " + name + " , " + newVal + ")");
+        console.log(newVal);
 		var index = this.names.indexOf(name);
         var type = this.variables[index].type;
         //if (type != typeof newVal) {

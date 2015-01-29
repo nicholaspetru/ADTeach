@@ -11,6 +11,7 @@ $(document).ready(function () {
         if (t == "String") {
             this.storeType = typeof string;
         } else if (t == "int") {
+            console.log(t);
             this.storeType = typeof number;
         }
     }
@@ -19,12 +20,15 @@ $(document).ready(function () {
         return this.top.pop();
     }
     
-    VStack.prototype.push = function(value) {
+    VStack.prototype.push = function(orig, value) {
+        console.log("HERE HERE HEREEEEEEEE");
+        console.log(value, typeof value);
+        console.log(this.storeType);
         if (typeof value != this.storeType) {
             console.log("Incompatible types");
             //new IncompatibleTypes();
         } else {
-            this.top.push(value);
+            orig.push(value);
         }
     }
     
@@ -63,10 +67,15 @@ $(document).ready(function () {
     }
     
     VStack.prototype.performMethod = function(origValue, method, parameters) {
+        console.log("PERFORMING METHOD: ", method);
         if (method == "pop") {
             return origValue.pop();
         } if (method == "push") {
+            console.log("Whhhaaaa?: ", parameters[0]);
             origValue.push(parameters[0]);
+            console.log(origValue);
+            console.log("AFTER");
+            return origValue;
         } if (method == "isEmpty") {
             return origValue.isEmpty();
         } if (method == "getValue") {
@@ -74,8 +83,7 @@ $(document).ready(function () {
         } if (method == "getType") {
             return origValue.getType();
         }
-
-        return origValue;
+        
     }
     
     
