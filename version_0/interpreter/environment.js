@@ -47,6 +47,7 @@ $(document).ready(function () {
 	}
 
 	Environment.prototype.createVariable = function(type, variable, value, origin) {
+        console.log("&&&&&&&&&");
 		var n = {type: type,
 			name: variable, 
 			value: value};
@@ -55,6 +56,8 @@ $(document).ready(function () {
 		console.log(n.type);
 		console.log(n.value);
 		*/
+        console.log(n);
+        
 		this.variables.push(n);
 		this.names.push(variable);
 		this.symbolTable.newVariable(type, variable, value, origin);

@@ -192,6 +192,7 @@ $(document).ready(function () {
         console.log("Here here here", root);
         if (root.arity === "Initialization") {
             if (root.value == "Stack<Integer>") {
+                console.log("ABCDEFG");
                 valueRoot = root.second
                 value = root.first
             } else {
@@ -258,12 +259,14 @@ $(document).ready(function () {
         */
         
         if (root.arity === "Initialization") {
-            if (root.value == "Stack<Integer>") {
-                env.createVariable("Stack<Integer>", value, [], "new"); 
-            }
+            if (root.first == "Stack<Integer>") {
+                //console.log("!!!!!!!!!!");
+                env.createVariable("Stack<Integer>", root.second.value, [], "new"); 
+            } else {
             //this.symbolTable.newVariable(root.first, root.second.value, value);
             //this.symbolTable.getValue(root.second.value);
-            env.createVariable(root.first, root.second.value, value, origin);
+                env.createVariable(root.first, root.second.value, value, origin);
+            }
         }
         else {
             //var type = checkType(value);
@@ -362,6 +365,7 @@ $(document).ready(function () {
         }
     }
     Interpreter.prototype.checkType = function(value) {
+        console.log("BBBBBBBB", value);
         switch (type(value)) {
             case type(1):
                 return "int";
@@ -387,6 +391,8 @@ $(document).ready(function () {
                 return null
         }
     }
+    
+    
     
     Interpreter.prototype.evalMaths = function(root, env) {
         console.log("============= evalMaths ==========");
@@ -452,30 +458,54 @@ $(document).ready(function () {
         var adt = root.Caller.value;
         var adtIndex = env.getIndex(adt);
         var adtType = env.getVariables()[adtIndex].type;
+        var adtCurValue = env.getVariables()[adtIndex].value;
         var method = root.MethodName.value;
         var parameters = root.Arguments;
 
-        console.log("***");
-        console.log(adt);
-        console.log(typeof adtType);
-        console.log(method);
-        console.log(parameters);
+        console.log("adt is: ", adt);
+        console.log("adtType is: ", adtType);
+        console.log("cur value is: ", adtCurValue);
+        console.log("method is: ", method);
+        console.log("parameters are: ", parameters);
         
-        if (adtType == "String<Integer>") {
-            adtType = typeof VStack;
-        }
-        
-        console.log(adtType);
-        console.log(adtType.listMethods());
-        if (adtType.listMethods().indexOf(method) < 0) {
+        var adtMethods = this.findMethods(adtType);
+        var paramCheck = this.checkParameters(adtType, method, parameters);
+        var newValue;
+        if (adtMethods.indexOf(method) < 0) {
             console.log("Invalid Method");
             //new InvalidMethod();
         }
-        if (adtType.checkParameters(method, parameters) != true) {
+        if (paramCheck != true) {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
-            adtType.performMethod(method, parameters);
+            newValue = this.doMethod(adtType, adtCurValue, method, parameters);
+            env.updateVariable(adt, newValue, method);
+            console.log("Method returns: ", newValue);
+        }
+    }
+    
+    Interpreter.prototype.findMethods = function(type) {
+        var y = new VStack();
+        switch(type) {
+            case "Stack<Integer>":
+                return y.listMethods();
+        }
+    }
+    
+    Interpreter.prototype.checkParameters = function(type, method, parameters) {
+        var y = new VStack();
+        switch(type) {
+            case "Stack<Integer>":
+                return y.checkParameters(method, parameters);
+        }
+    }
+    
+    Interpreter.prototype.doMethod = function(type, origValue, method, parameters) {
+        var y = new VStack();
+        switch(type) {
+            case "Stack<Integer>":
+                return y.performMethod(origValue, method, parameters);
         }
     }
     

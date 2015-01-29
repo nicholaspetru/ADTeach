@@ -42,11 +42,12 @@ $(document).ready(function () {
     
     VStack.prototype.listMethods = function() {
         var methods = ['getValue', 'isEmpty', 'push', 'pop'];
+        return methods;
     }
     
     VStack.prototype.checkParameters = function(method, parameters) {
         var noParam = ['pop', 'getValue', 'isEmpty'];
-        if (noParam.indexOf(method) < 0) {
+        if (noParam.indexOf(method) > 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
                 //new IncorrectParameters();
@@ -54,25 +55,27 @@ $(document).ready(function () {
         }
         if (method == "push") {
             if (parameters.length != 1) {
-                console.log("no parameters");
+                console.log("need parameters");
                 //new IncorrectParameters();
             }
         }
         return true;
     }
     
-    VStack.prototype.performMethod = function(method, parameters) {
+    VStack.prototype.performMethod = function(origValue, method, parameters) {
         if (method == "pop") {
-            this.pop();
+            return origValue.pop();
         } if (method == "push") {
-            this.push(parameters);
+            origValue.push(parameters[0]);
         } if (method == "isEmpty") {
-            this.isEmpty();
+            return origValue.isEmpty();
         } if (method == "getValue") {
-            this.getValue();
+            return origValue.getValue();
         } if (method == "getType") {
-            this.getType();
+            return origValue.getType();
         }
+
+        return origValue;
     }
     
     

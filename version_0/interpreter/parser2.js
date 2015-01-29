@@ -367,6 +367,7 @@ var make_parse = function () {
             this.arity = "FunCall";
             this.Caller = left.first;
             this.MethodName = left.second;
+            console.log(a);
             this.Arguments = a;
         } else if (left.id == "new") {
             this.arity = "Initialization";
