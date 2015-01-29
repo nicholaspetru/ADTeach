@@ -188,7 +188,8 @@ $(document).ready(function () {
         console.log("root.arity: " + root.arity);
         console.log(root);
         var valueRoot, value;
-        var origin = "new";
+        var originMethod = "new";
+        var originADT = "";
         console.log("Here here here", root);
         if (root.arity === "Initialization") {
             if (root.value == "Stack<Integer>") {
@@ -210,6 +211,8 @@ $(document).ready(function () {
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
             value = this.evalMethod(valueRoot, env);
+            originMethod = valueRoot.MethodName.value;
+            originADT = valueRoot.Caller.value;
             //ADD ORIGIN
         }
         
@@ -232,31 +235,7 @@ $(document).ready(function () {
         }
         
         console.log("value: " + value);
-        /*
-        var variables = env.getVariables();
-        if (root.first.value == "init") {
-            if (variables.indexOf(root.first.second.value) >= 0) {
-                console.log("Already initialized");
-                //AlreadyInitialized(root.first.right.value);
-            } else {
-                //Check dictionaries in JS
-                variables.get(root.first.second.value) = [root.first.first.value, value];
-            }
-        } else {
-            if (variables.indexOf(root.first.value) >= 0) {
-                if (variables.get(root.first.value).get(0) == this.checkType(value)) {
-                    variables.get(root.first.value).get(1) = value;
-                } else {
-                    console.log("Incompatible Types");
-                    //new IncompatibleTypes();
-                }
-            } else {
-                console.log("Not been initialized");
-                //new AlreadyInitialized();
-            }
-        }
-
-        */
+        
         
         if (root.arity === "Initialization") {
             if (root.first == "Stack<Integer>") {
@@ -265,7 +244,7 @@ $(document).ready(function () {
             } else {
             //this.symbolTable.newVariable(root.first, root.second.value, value);
             //this.symbolTable.getValue(root.second.value);
-                env.createVariable(root.first, root.second.value, value, origin);
+                env.createVariable(root.first, root.second.value, value, originMethod);
             }
         }
         else {
@@ -274,9 +253,10 @@ $(document).ready(function () {
             //var s = this.symbolTable.updateVariable("int", root.first.value, value);
             //this.symbolTable = this.symbolTable.table;
             //console.log(this.symbolTable.getValue(root.first.value));
-            env.updateVariable(root.first.value, value, origin);
+            env.updateVariable(root.first.value, value, originMethod);
         }
     }
+    
     Interpreter.prototype.evalCondition = function(root, env) {
         console.log("========evalCondition========");
         console.log(root.value);
