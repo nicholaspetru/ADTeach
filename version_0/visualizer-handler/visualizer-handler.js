@@ -133,7 +133,7 @@ $(document).ready(function () {
         switch(className){
         case "int":
             return new Primitive(this.paper,name,type,value,this);
-        case "string":
+        case "String":
             return new Primitive(this.paper,name,type,value,this);
         case "float":
             return new Primitive(this.paper,name,type,value,this);
@@ -205,7 +205,7 @@ $(document).ready(function () {
         switch(entity.type){
             case "int":
                 return true;
-            case "string":
+            case "String":
                 return true;
             case "float":
                 return true;
