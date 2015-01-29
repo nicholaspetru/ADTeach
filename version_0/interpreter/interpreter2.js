@@ -302,6 +302,7 @@ $(document).ready(function () {
             console.log(root.first);
             console.log("condition: " + leftValue + " " + root.value + " " + rightValue);
 
+            console.log(root.value);
             switch (root.value) {
                 case "<":
                     return (leftValue < rightValue);
@@ -310,6 +311,9 @@ $(document).ready(function () {
                     return (leftValue > rightValue);
                     break;
                 case "==":
+                    console.log("DID IT EVEN GET HERE THO?????????????????");
+                    console.log(leftValue === rightValue);
+                    console.log("......");
                     return (leftValue == rightValue);
                     break;
                 case "!=":
@@ -352,7 +356,9 @@ $(document).ready(function () {
         if (isTrue == true) {
             this.eval(body, env);
         } else {
-            this.eval(elseBody, env);
+            if (elseBody != null){
+                this.eval(elseBody, env);
+            }
         }
     }
     Interpreter.prototype.checkType = function(value) {
