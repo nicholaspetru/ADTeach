@@ -68,7 +68,7 @@ $(document).ready(function () {
                 }
             }
             //TODO: Check types
-            origValue.push(parameters[0]);
+            origValue.push(parameters[0].value);
             return [returnValue, origValue];
         } if (method == "isEmpty") {
             return origValue.isEmpty();

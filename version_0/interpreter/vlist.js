@@ -9,6 +9,38 @@ $(document).ready(function () {
         this.storeType = t;
     }
     
+    VList.prototype.listMethods = function() {
+        var methods = ["add", "contains", "get", "indexOf", "isEmpty", "remove", "set", "size"];
+        return methods;
+    }
+    
+    VList.prototype.checkParameters = function(method, parameters) {
+        var oneParam = ['add', 'get', 'contains', 'indexOf', 'remove'];
+        var zeroParam = ['isEmpty', 'size'];
+        if (oneParam.indexOf(method) > 0) {
+            if (parameters[1] != null) {
+                console.log("Only one parameter");
+            }
+        } else if (zeroParam.indexOf(method) > 0) {
+            if (parameters[0] != null) {
+                console.log("No parameters");
+            }
+        } else {
+            if (parameters[0] == null && parameters[1] == null && parameters[3] != null) {
+                console.log("Two parameters needed");
+            }
+        }
+        return true;
+    }
+    
+    VList.prototype.performMethod = function(type, origValue, method, parameters) {
+        var returnValue = null;
+        if (method == 'add') {
+            origValue.push(parameters[0]);
+            return [returnValue, origValue];
+        }
+    }
+    
     VList.prototype.add = function(e) {
         this.vals.push(e);
     }
