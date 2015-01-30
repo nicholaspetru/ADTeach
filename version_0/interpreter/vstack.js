@@ -41,7 +41,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        if (method == "push") {
+        if (method == "push" || method == "populate") {
             if (parameters.length != 1) {
                 console.log("need one parameter");
                 //new IncorrectParameters();
@@ -53,27 +53,36 @@ $(document).ready(function () {
     VStack.prototype.performMethod = function(type, origValue, method, parameters) {
         var returnValue = null;
         if (method == "pop") {
+            console.log("Going to pop from: ", origValue);
             returnValue = origValue.pop();
-            return returnValue, origValue;
+            console.log("Gives us: ", returnValue, origValue);
+            return [returnValue, origValue];
         } if (method == "push") {
             if (type == "Stack<Integer>") {
                 if (parameters[0].jtype != "INT_TYPE") {
                     console.log('INCOMPATIBLE TYPES, want ints');
                 }
-            } elif (type == "Stack<String>") {
+            } else if (type == "Stack<String>") {
                 if (parameters[0].jtype != "STRING_TYPE") {
                     console.log('INCOMPATIBLE TYPES, want strings');
                 }
             }
             //TODO: Check types
             origValue.push(parameters[0]);
-            return returnValue, origValue;
+            return [returnValue, origValue];
         } if (method == "isEmpty") {
             return origValue.isEmpty();
         } if (method == "getValue") {
             return origValue.getValue();
         } if (method == "getType") {
             return origValue.getType();
+        } if (method == "populate") {
+            var value = [];
+            for (i = 0; i < parameters[0].value; i++) {
+                var toPush = Math.floor((Math.random()*100) + 1);
+                value.push(toPush);
+            }
+            return [returnValue, value];    
         }
         
     }

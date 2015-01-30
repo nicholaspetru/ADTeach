@@ -210,7 +210,9 @@ $(document).ready(function () {
 
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
-            returnedValue, value = this.evalMethod(valueRoot, env);
+            var methodValue = this.evalMethod(valueRoot, env);
+            returnedValue = methodValue[1];
+            value = methodValue[0];
             console.log("Returned value: ", returnedValue, "value is: ", value);
             originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
@@ -462,12 +464,14 @@ $(document).ready(function () {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
-            returnValue, newValue = this.doMethod(adtType, adtCurValue, method, parameters);
-            console.log("Method returns: ", newValue);
+            methodValue = this.doMethod(adtType, adtCurValue, method, parameters);
+            returnValue = methodValue[0];
+            newValue = methodValue[1];
+            console.log("Method returns: ", returnValue, newValue);
 
             env.updateVariable(adt, newValue, method);
         }
-        return returnValue, newValue;
+        return [returnValue, newValue];
     }
     
     Interpreter.prototype.findMethods = function(type) {
@@ -494,12 +498,14 @@ $(document).ready(function () {
     
     Interpreter.prototype.doMethod = function(type, origValue, method, parameters) {
         var y;
-        var newV;
+        var newV, returnV, value;
         switch(type) {
             case "Stack<Integer>":
                 y = new VStack("int");
-                newV = y.performMethod(type, origValue, method, parameters);
-                return newV;
+                value = y.performMethod(type, origValue, method, parameters);
+                console.log("*&*&*&*&", returnV, newV);
+                //return returnV, newV;
+                return value;
             case "Stack<String>":
                 y = new VStack("String");
                 newV = y.performMethod(type, origValue, method, parameters);
