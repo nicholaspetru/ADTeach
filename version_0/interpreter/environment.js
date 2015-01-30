@@ -46,7 +46,8 @@ $(document).ready(function () {
 		}
 	}
 
-	Environment.prototype.createVariable = function(type, variable, value, origin) {
+	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT) {
+        console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
         console.log("&&&&&&&&&");
 		var n = {type: type,
 			name: variable, 
@@ -60,12 +61,12 @@ $(document).ready(function () {
         
 		this.variables.push(n);
 		this.names.push(variable);
-		this.symbolTable.newVariable(type, variable, value, origin);
+		this.symbolTable.newVariable(type, variable, value, originMethod);
 		//console.log(this.variables);
 	}
 
-	Environment.prototype.updateVariable = function(name, newVal, origin) {
-		console.log("-------updateVariable( " + name + " , " + newVal + ")");
+	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT) {
+		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
         console.log(newVal);
 		var index = this.names.indexOf(name);
         var type = this.variables[index].type;
@@ -79,7 +80,7 @@ $(document).ready(function () {
             //new IncompatibleTypes();
         }
 		this.variables[index].value = newVal;
-        this.symbolTable.updateVariable(type, name, newVal, origin);
+        this.symbolTable.updateVariable(type, name, newVal, originMethod);
 		//this.symbolTable.updateVariable();
 	}
 });

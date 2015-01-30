@@ -16,22 +16,6 @@ $(document).ready(function () {
         }
     }
     
-    VStack.prototype.pop = function() {
-        return this.top.pop();
-    }
-    
-    VStack.prototype.push = function(orig, value) {
-        console.log("HERE HERE HEREEEEEEEE");
-        console.log(value, typeof value);
-        console.log(this.storeType);
-        if (typeof value != this.storeType) {
-            console.log("Incompatible types");
-            //new IncompatibleTypes();
-        } else {
-            orig.push(value);
-        }
-    }
-    
     VStack.prototype.isEmpty = function() {
         return (this.top.length == 0);
     }
@@ -59,23 +43,31 @@ $(document).ready(function () {
         }
         if (method == "push") {
             if (parameters.length != 1) {
-                console.log("need parameters");
+                console.log("need one parameter");
                 //new IncorrectParameters();
             }
         }
         return true;
     }
     
-    VStack.prototype.performMethod = function(origValue, method, parameters) {
-        console.log("PERFORMING METHOD: ", method);
+    VStack.prototype.performMethod = function(type, origValue, method, parameters) {
+        var returnValue = null;
         if (method == "pop") {
-            return origValue.pop();
+            returnValue = origValue.pop();
+            return returnValue, origValue;
         } if (method == "push") {
-            console.log("Whhhaaaa?: ", parameters[0]);
+            if (type == "Stack<Integer>") {
+                if (parameters[0].jtype != "INT_TYPE") {
+                    console.log('INCOMPATIBLE TYPES, want ints');
+                }
+            } elif (type == "Stack<String>") {
+                if (parameters[0].jtype != "STRING_TYPE") {
+                    console.log('INCOMPATIBLE TYPES, want strings');
+                }
+            }
+            //TODO: Check types
             origValue.push(parameters[0]);
-            console.log(origValue);
-            console.log("AFTER");
-            return origValue;
+            return returnValue, origValue;
         } if (method == "isEmpty") {
             return origValue.isEmpty();
         } if (method == "getValue") {

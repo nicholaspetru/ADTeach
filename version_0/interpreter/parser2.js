@@ -481,6 +481,7 @@ var make_parse = function () {
     primitiveInit("String");
 
     stmt("Stack<Integer>", function () {
+        console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
@@ -494,19 +495,53 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
-                //t.value = "Stack<Integer>";
-                //advance("=");
-                //t.first = n;
                 console.log("Second ISSSSSSS: ", expression(0));
                 t.second = n;
                 t.third = [];
-                //t.second = expression(0);
                 t.arity = "Initialization";
                 a.push(t);
             }
             else {
                 t = token;
                 t.value = "Stack<Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Stack<String>", function () {
+        console.log("IN HERE IN HEREI N HERE");
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Stack<String>";
+                console.log("Second ISSSSSSS: ", expression(0));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Stack<String>";
                 t.first = n;
                 t.second = null;
                 t.arity = "Initialization";

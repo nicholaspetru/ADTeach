@@ -187,7 +187,7 @@ $(document).ready(function () {
         console.log("========== evalAssignment ===========");
         console.log("root.arity: " + root.arity);
         console.log(root);
-        var valueRoot, value;
+        var valueRoot, value, returnedValue;
         var originMethod = "new";
         var originADT = "";
         console.log("Here here here", root);
@@ -210,7 +210,8 @@ $(document).ready(function () {
 
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
-            value = this.evalMethod(valueRoot, env);
+            returnedValue, value = this.evalMethod(valueRoot, env);
+            console.log("Returned value: ", returnedValue, "value is: ", value);
             originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
             //ADD ORIGIN
@@ -240,11 +241,13 @@ $(document).ready(function () {
         if (root.arity === "Initialization") {
             if (root.first == "Stack<Integer>") {
                 //console.log("!!!!!!!!!!");
-                env.createVariable("Stack<Integer>", root.second.value, [], "new"); 
+                env.createVariable("Stack<Integer>", root.second.value, [], "new", originADT); 
+            } else if (root.first == "Stack<String>") {
+                env.createVariable("Stack<String>", root.second.value, [], "new", originADT);
             } else {
             //this.symbolTable.newVariable(root.first, root.second.value, value);
             //this.symbolTable.getValue(root.second.value);
-                env.createVariable(root.first, root.second.value, value, originMethod);
+                env.createVariable(root.first, root.second.value, value, originMethod, originADT);
             }
         }
         else {
@@ -253,7 +256,7 @@ $(document).ready(function () {
             //var s = this.symbolTable.updateVariable("int", root.first.value, value);
             //this.symbolTable = this.symbolTable.table;
             //console.log(this.symbolTable.getValue(root.first.value));
-            env.updateVariable(root.first.value, value, originMethod);
+            env.updateVariable(root.first.value, value, originMethod, originADT);
         }
     }
     
@@ -450,7 +453,7 @@ $(document).ready(function () {
         
         var adtMethods = this.findMethods(adtType);
         var paramCheck = this.checkParameters(adtType, method, parameters);
-        var newValue;
+        var newValue, returnValue;
         if (adtMethods.indexOf(method) < 0) {
             console.log("Invalid Method");
             //new InvalidMethod();
@@ -459,18 +462,20 @@ $(document).ready(function () {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
-            newValue = this.doMethod(adtType, adtCurValue, method, parameters);
+            returnValue, newValue = this.doMethod(adtType, adtCurValue, method, parameters);
             console.log("Method returns: ", newValue);
 
             env.updateVariable(adt, newValue, method);
         }
+        return returnValue, newValue;
     }
     
     Interpreter.prototype.findMethods = function(type) {
         var y;
         switch(type) {
             case "Stack<Integer>":
-                y = new VStack("int");
+            case "Stack<String>":
+                y = new VStack("String");
                 return y.listMethods();
         }
     }
@@ -481,17 +486,23 @@ $(document).ready(function () {
             case "Stack<Integer>":
                 y = new VStack("int");
                 return y.checkParameters(method, parameters);
+            case "Stack<String>":
+                y = new VStack("String");
+                return y.checkParameters(method, parameters);
         }
     }
     
     Interpreter.prototype.doMethod = function(type, origValue, method, parameters) {
         var y;
+        var newV;
         switch(type) {
             case "Stack<Integer>":
                 y = new VStack("int");
-                console.log("JAH JAH JAH", origValue);
-                var newV = y.performMethod(origValue, method, parameters);
-                console.log("Wo Wo Wo", newV);
+                newV = y.performMethod(type, origValue, method, parameters);
+                return newV;
+            case "Stack<String>":
+                y = new VStack("String");
+                newV = y.performMethod(type, origValue, method, parameters);
                 return newV;
         }
     }
