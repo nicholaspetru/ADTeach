@@ -9,7 +9,8 @@ $(document).ready(function () {
         this.name = name;
         this.type = type;
         this.value = value;
-        
+        this.dragged = false
+
 	   return this;
     }
     

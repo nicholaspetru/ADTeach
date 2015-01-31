@@ -19,7 +19,7 @@ $(document).ready(function () {
         this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
     }
 
-   //Create visual primitve in the specific position
+    //Create visual primitve in the specific position
     Primitive.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
