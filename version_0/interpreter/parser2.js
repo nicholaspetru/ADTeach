@@ -420,6 +420,7 @@ var make_parse = function () {
         if (token.arity !== "name") {
             token.error("Expected a property name.");
         }
+        console.log('AHAHAHAHAHAHA', token);
         token.arity = "literal";
         this.first = token;
         this.arity = "NEW_ADT";
@@ -491,11 +492,21 @@ var make_parse = function () {
             scope.define(n);
             advance();
             if (token.id === "=") {
+                console.log("?>?>?>?>?>?>", token);
                 t = token;
                 t.value = "init";
                 advance("=");
+                console.log(token);
+                console.log(token.arity);
+                console.log("88", token);
+                //if (token.first.value != "Stack<Integer>") {
+                //    console.log("NEED A STACK OF INTS");
+                //}
                 t.first = "Stack<Integer>";
+                console.log("Token is: ", token);
                 console.log("Second ISSSSSSS: ", expression(0));
+                console.log("n is: ", n);
+                console.log("token is: ", token);
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -579,6 +590,43 @@ var make_parse = function () {
             else {
                 t = token;
                 t.value = "List<Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("List<String>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "List<String>";
+                console.log("Second ISSSSSSS: ", expression(0));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "List<String>";
                 t.first = n;
                 t.second = null;
                 t.arity = "Initialization";
