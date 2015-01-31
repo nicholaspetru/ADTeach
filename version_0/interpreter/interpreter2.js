@@ -378,13 +378,9 @@ $(document).ready(function () {
                 return "Stack<String>";
             case typeof VList("int"):
                 return "List<Integer>";
-<<<<<<< HEAD
             case typeof VList("String"):
                 return "List<String>";
-            case type(VQueue("int")):
-=======
             case typeof VQueue("int"):
->>>>>>> origin/master
                 return "Queue<int>";
             case typeof VQueue("float"):
                 return "Queue<float>";
@@ -464,7 +460,8 @@ $(document).ready(function () {
         var adtCurValue = env.getVariables()[adtIndex].value;
         var method = root.MethodName.value;
         var parameters = root.Arguments;
-
+        var originADT = null;
+        
         console.log("adt is: ", adt);
         console.log("adtType is: ", adtType);
         console.log("cur value is: ", adtCurValue);
@@ -482,17 +479,23 @@ $(document).ready(function () {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
-            
-            originADT = parameters[parameters.length-1].value;
-            for (var i = 0; i< parameters.length; i++){
-                parameters[i].value = env.getValue(parameters[i].value);
+            console.log("BEFORE is ", parameters[0].value);
+            if (env.getValue(parameters[parameters.length - 1].value) != null) {
+                originADT = parameters[parameters.length-1].value;
             }
-            
+            for (var i = 0; i< parameters.length; i++){
+                if (env.getValue(parameters[i].value) != null) {
+                    parameters[i].value = env.getValue(parameters[i].value);
+                }
+            }
             methodValue = this.doMethod(adtType, adtCurValue, method, parameters);
             returnValue = methodValue[0];
             newValue = methodValue[1];
             console.log("Method returns: ", returnValue, newValue);
-
+            
+            if (method == "set") {
+                method = method + "." + parameters[0].value;
+            }
             env.updateVariable(adt, newValue, method, originADT);
         }
         return [returnValue, newValue];

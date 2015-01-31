@@ -83,6 +83,8 @@ $(document).ready(function () {
         }
 		this.variables[index].value = newVal;
         this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT);
+        console.log("AFTEEEEEEEEER", this.getVariables());
+
 		//this.symbolTable.updateVariable();
 	}
 });
