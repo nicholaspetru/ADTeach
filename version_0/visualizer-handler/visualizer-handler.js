@@ -60,10 +60,10 @@ $(document).ready(function () {
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
             if (curEvent[0] == 'new') {
-                this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4]);
+                this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
             }
             else if (curEvent[0] == 'update') {
-                this.UpdateEntity(curEvent[2], curEvent[4]);
+                this.UpdateEntity(curEvent[1], curEvent[3], curEvent[4], curEvent[5]);
             }
             else if (curEvent[0] == 'delete') {
                 this.DeleteEntity(curEvent[2]);
@@ -86,7 +86,7 @@ $(document).ready(function () {
                 this.UpdateEntity(curEvent[2], curEvent[4]);
             }
             else if (curEvent[0] == 'delete') {
-                this.DeleteEntity(curEvent[2]);
+                this.DeleteEntity(curEvent[1]);
             }
             else {
                 console.log('unrecognized event: ' + curEvent[0]);
@@ -101,20 +101,20 @@ $(document).ready(function () {
     };
     
     //Enqueue an event onto the event queue
-    VisualizerHandler.prototype.enqueueEvent = function(event, className, name, type, value) {
-        console.log("Visualizer Handler: enqueueEvent(" + event + ',' + className + ',' + name + ',' + type + ',' + value + ')');
-        this.eventQueue.push([event, className, name, type, value]);
+    VisualizerHandler.prototype.enqueueEvent = function(event, type, name, value, action, originADT) {
+        console.log("Visualizer Handler: enqueueEvent(" + event + ',' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ')');
+        this.eventQueue.push([event, name, type, value, action, originADT]);
     };
 
     //Pushes a new Entity onto the list
-    VisualizerHandler.prototype.NewEntity = function(className, name, type, value) {
-	    console.log("Visualizer Handler: newEntity(" + className + ',' + name + ',' + type + ',' + value + ')');
-        this.entities.push(this.getNewEntity(className,name,type,value));
+    VisualizerHandler.prototype.NewEntity = function(name, type, value, action, originADT) {
+        console.log("Visualizer Handler: newEntity(" + name + ',' + type + ',' + value + ',' + action + ',' + originADT + ')');
+        this.entities.push(this.getNewEntity(name,type,value, action, originADT));
         this.arrangeEntities();
     };
 
     //Updates the value of an Entity
-    VisualizerHandler.prototype.UpdateEntity = function(name, value) {
+    VisualizerHandler.prototype.UpdateEntity = function(name, value, action, originADT) {
         console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ')');
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
@@ -137,9 +137,8 @@ $(document).ready(function () {
     };
     
     //Returns a new Entity of the given type
-    VisualizerHandler.prototype.getNewEntity = function(className, name, type, value) {
-        console.log(className);
-        switch(className){
+    VisualizerHandler.prototype.getNewEntity = function(name, type, value, action, originADT) {
+        switch(type){
         case "int":
             return new Primitive(this.paper,name,type,value,this);
         case "String":
@@ -150,6 +149,8 @@ $(document).ready(function () {
             return new Primitive(this.paper,name,type,value,this);
         case "Stack<Integer>":
             return new Stack(this.paper,name,type,value, this);
+        case "List<Integer>":
+            return new List(this.paper,name,type,value, this);
         //and more cases....
         default:
             console.log("Unknown type for newEntity: " + className);

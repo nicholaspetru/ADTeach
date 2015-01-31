@@ -3,9 +3,9 @@ $(document).ready(function () {
         //hash table of code samples
         this.database = new Object();
         this.database['stack'] = 
-            ['int x = 5;',
-             'Stack<Integer> s = new Stack<Integer>();',
-             's.push(x);\ns.pop();',
+            ['List<Integer> s = new List<Integer>();',
+             's.add(3);',
+             's.add(4);',
             ].join('\n');
         this.database['stack2'] = 
             ['Stack<String> s = new Stack<String>();',

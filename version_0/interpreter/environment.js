@@ -63,7 +63,7 @@ $(document).ready(function () {
         
 		this.variables.push(n);
 		this.names.push(variable);
-		this.symbolTable.newVariable(type, variable, value, originMethod);
+		this.symbolTable.newVariable(type, variable, value, originMethod, originADT);
 		//console.log(this.variables);
 	}
 
@@ -82,7 +82,9 @@ $(document).ready(function () {
             //new IncompatibleTypes();
         }
 		this.variables[index].value = newVal;
-        this.symbolTable.updateVariable(type, name, newVal, originMethod);
+        this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT);
+        console.log("AFTEEEEEEEEER", this.getVariables());
+
 		//this.symbolTable.updateVariable();
 	}
 });
