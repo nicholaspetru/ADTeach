@@ -36,7 +36,12 @@ $(document).ready(function () {
     VList.prototype.performMethod = function(type, origValue, method, parameters) {
         var returnValue = null;
         if (method == 'add') {
-            origValue.push(parameters[0]);
+            origValue.push(parameters[0].value);
+            return [returnValue, origValue];
+        }
+        if (method == 'get') {
+            console.log("Cur value is: ", origValue);
+            returnValue = origValue[parameters[0].value];
             return [returnValue, origValue];
         }
     }
