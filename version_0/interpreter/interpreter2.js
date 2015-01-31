@@ -196,6 +196,7 @@ $(document).ready(function () {
                 console.log("ABCDEFG");
                 valueRoot = root.second
                 value = root.first
+                console.log(valueRoot);
             } else {
                 valueRoot = root.third;
             }
@@ -249,17 +250,22 @@ $(document).ready(function () {
             } else if (root.first == "List<Integer>") {
                 env.createVariable("List<Integer>", root.second.value, [], "new", originADT);
             }else {
-            //this.symbolTable.newVariable(root.first, root.second.value, value);
-            //this.symbolTable.getValue(root.second.value);
+                
+                var type = this.checkType(value);
+                console.log("**************" + type + "    " + root.first);
+                if (root.first != type){
+                 console.log("INCOMPATIBLE TYPES!!");   
+                }
                 env.createVariable(root.first, root.second.value, value, originMethod, originADT);
             }
         }
         else {
-            //var type = checkType(value);
-
-            //var s = this.symbolTable.updateVariable("int", root.first.value, value);
-            //this.symbolTable = this.symbolTable.table;
-            //console.log(this.symbolTable.getValue(root.first.value));
+            var type = this.checkType(value);
+            console.log("**************" + type + "    " + root.first);
+            if (root.first != type){
+             console.log("INCOMPATIBLE TYPES!!");   
+            }
+            
             env.updateVariable(root.first.value, value, originMethod, originADT);
         }
     }
@@ -353,28 +359,28 @@ $(document).ready(function () {
     }
     Interpreter.prototype.checkType = function(value) {
         console.log("BBBBBBBB", value);
-        switch (type(value)) {
-            case type(1):
+        switch (typeof value) {
+            case typeof 1:
                 return "int";
-            case type(1.0):
+            case typeof 1.0:
                 return "float";
-            case type("1"):
+            case typeof "1":
                 return "String";
-            case type(true):
+            case typeof true:
                 return "Boolean";
-            case type(VStack("int")):
+            case typeof VStack("int"):
                 return "Stack<int>";
-            case type(VStack("float")):
+            case typeof VStack("float"):
                 return "Stack<float>";
-            case type(VStack("String")):
+            case typeof VStack("String"):
                 return "Stack<String>";
-            case type(VList("int")):
+            case typeof VList("int"):
                 return "List<Integer>";
-            case type(VQueue("int")):
+            case typeof VQueue("int"):
                 return "Queue<int>";
-            case type(VQueue("float")):
+            case typeof VQueue("float"):
                 return "Queue<float>";
-            case type(VQueue("String")):
+            case typeof VQueue("String"):
                 return "Queue<String>";
             default:
                 return null
@@ -426,7 +432,7 @@ $(document).ready(function () {
         if (index >= 0){
             var value = env.getValue(name);
             console.log(name + value + "new");
-            env.updateVariable(name, value+1, "new");
+            env.updateVariable(name, value+1, "Step", "new");
         }
     
     }
@@ -438,7 +444,7 @@ $(document).ready(function () {
         if (index >= 0){
             var value = env.getValue(name);
             console.log(name + value + "new");
-            env.updateVariable(name, value-1, "new");
+            env.updateVariable(name, value-1, "Step", "new");
         }
     
     }
@@ -468,12 +474,18 @@ $(document).ready(function () {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
+            
+            originADT = parameters[parameters.length-1].value;
+            for (var i = 0; i< parameters.length; i++){
+                parameters[i].value = env.getValue(parameters[i].value);
+            }
+            
             methodValue = this.doMethod(adtType, adtCurValue, method, parameters);
             returnValue = methodValue[0];
             newValue = methodValue[1];
             console.log("Method returns: ", returnValue, newValue);
 
-            env.updateVariable(adt, newValue, method);
+            env.updateVariable(adt, newValue, method, originADT);
         }
         return [returnValue, newValue];
     }

@@ -10,6 +10,7 @@ $(document).ready(function () {
 	Environment.prototype.getVariables = function() {
 		return this.variables;
 	}
+    
 	Environment.prototype.getNames = function() {
 		return this.names;
 	}
@@ -18,6 +19,7 @@ $(document).ready(function () {
         var index = this.names.indexOf(name);
         return index;
     }
+    
 	Environment.prototype.getValue = function(name) {
 		console.log("getValue");
 		var index = this.names.indexOf(name);
@@ -28,7 +30,7 @@ $(document).ready(function () {
 			return this.variables[index].value;
 		}
 		else {
-			return "no value";
+			return null;
 		}
 	}
 
