@@ -36,12 +36,9 @@ $(document).ready(function () {
       };
 
       //Moves to the specific positon
-      DataUnit.prototype.move = function(newX, newY, delay) {
-          var difX, difY;
-          difX = newX - this.x;
-          difY = newY - this.y;
-          this.x = newX;
-          this.y = newY;
+      DataUnit.prototype.move = function(difX, difY, delay) {
+          this.x += difX;
+          this.y += difY;
 
           var anim = Raphael.animation({"transform": "t" + difX + "," + difY},500);
           for (var i =0; i < this.vis.length; i++){
@@ -55,6 +52,15 @@ $(document).ready(function () {
           var anim = Raphael.animation({opacity:1},1000);
           this.vis.animate(anim.delay(this.VH.setDelay(1000)));
       };
+
+      //Create visual primitve in the specific position
+      DataUnit.prototype.fadeOut = function(delay) {
+          var anim = Raphael.animation({opacity:0},1000);
+          for (var i =0; i < this.vis.length; i++){
+            this.vis[i].animate(anim.delay(delay));
+          }
+      };
+
 
   	//Modifiy data unit value
       DataUnit.prototype.update = function(newValue) {
