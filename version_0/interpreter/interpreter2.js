@@ -471,6 +471,8 @@ $(document).ready(function () {
         var adtMethods = this.findMethods(adtType);
         var paramCheck = this.checkParameters(adtType, method, parameters);
         var newValue, returnValue;
+        var cloneParam = [];
+        console.log("DOes it work? ", cloneParam);
         if (adtMethods.indexOf(method) < 0) {
             console.log("Invalid Method");
             //new InvalidMethod();
@@ -483,12 +485,20 @@ $(document).ready(function () {
             if (env.getValue(parameters[parameters.length - 1].value) != null) {
                 originADT = parameters[parameters.length-1].value;
             }
-            for (var i = 0; i< parameters.length; i++){
+            for (var i = 0; i < parameters.length; i++){
+                console.log("LOOKING AT: ", parameters[i]);
                 if (env.getValue(parameters[i].value) != null) {
-                    parameters[i].value = env.getValue(parameters[i].value);
+                    var cloneVar = {value:env.getValue(parameters[i].value)};
+                    cloneParam[i] = cloneVar;
+                    console.log("Original: ", parameters[i].value);
+                    console.log("Clone: ", cloneParam[i].value);
+                } else {
+                    var cloneVar = {value:parameters[i].value};
+                    cloneParam[i] = cloneVar;
                 }
             }
-            methodValue = this.doMethod(adtType, adtCurValue, method, parameters);
+            console.log('EKRJEKLJRELKJR', cloneParam);
+            methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
             returnValue = methodValue[0];
             newValue = methodValue[1];
             console.log("Method returns: ", returnValue, newValue);
