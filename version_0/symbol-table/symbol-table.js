@@ -9,8 +9,8 @@ $(document).ready(function () {
     
     //returns false if variable was not in the table, else returns true
     //if false, updateVariable does not create a new symbolTable, nor does it call enqueueEvent.
-    SymbolTable.prototype.updateVariable = function(type, name, value, action) {
-        console.log('Symbol Table: updateVariable(' + type + ',' + name + ',' + value + ',' + action + ')');
+    SymbolTable.prototype.updateVariable = function(type, name, value, action, originADT) {
+        console.log('Symbol Table: updateVariable(' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ')');
         var curTable = this.table[this.table.length-1];
         var newTable = curTable.slice(0);
         for (var i = 0; i < newTable.length; i++) {
@@ -18,9 +18,10 @@ $(document).ready(function () {
                 var curLine = newTable[i];
                 curLine[2] = value;
                 curLine[3] = action;
+                curLine[4] = originADT;
                 this.table.push(newTable);
                 //why is type being passed in twice here?
-                this.visualizerHandler.enqueueEvent("update",type, name, type, value);
+                this.visualizerHandler.enqueueEvent("update", type, name, value, action, originADT);
                 return true;
             }
         }
@@ -29,8 +30,8 @@ $(document).ready(function () {
     
     //returns false if variable was not in the table, else returns true
     //if false, removeVariable does not create a new symbolTable, nor does it call enqueueEvent.
-    SymbolTable.prototype.removeVariable = function(type, name, value, action) {
-        console.log('Symbol Table: removeVariable(' + type + ',' + name + ',' + value + ',' + action + ')');
+    SymbolTable.prototype.removeVariable = function(type, name, value) {
+        console.log('Symbol Table: removeVariable(' + type + ',' + name + ',' + value + ')');
         var curTable = this.table[this.table.length-1];
         var newTable = curTable.slice(0);
         var varIndex = null;
@@ -40,7 +41,7 @@ $(document).ready(function () {
                 curLine[3] = 'remove';
                 this.table.push(newTable);
                 //why is type being passed in twice here?
-                this.visualizerHandler.enqueueEvent("delete",type, name, type, value);
+                this.visualizerHandler.enqueueEvent("delete", type, name, value, curLine[3], curLine[4]);
                 return true;
             }
         }
@@ -48,23 +49,24 @@ $(document).ready(function () {
     };
 
     //returns the name of the new variable, regardless of whether a new .x name was assigned
-    SymbolTable.prototype.newVariable = function(type, name, value, action) {
-        console.log('Symbol Table: newVariable(' + type + ',' + name + ',' + value + ',' + action + ')');
+    SymbolTable.prototype.newVariable = function(type, name, value, action, originADT) {
+        console.log('Symbol Table: newVariable(' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ')');
         var curTable = this.table[this.table.length-1];
         var newTable = curTable.slice(0);
         if (name == '.') {
             name = name + this.nextAnonVar.toString();
             this.nextAnonVar++;
         }
-        var newLine = new Array(4);
+        var newLine = new Array(5);
         newLine[0] = type;
         newLine[1] = name;
         newLine[2] = value;
         newLine[3] = action;
+        newLine[4] = originADT;
         newTable.push(newLine);
         this.table.push(newTable);
         //why is type being passed in twice here?
-        this.visualizerHandler.enqueueEvent("new",type, name, type, value);
+        this.visualizerHandler.enqueueEvent("new", type, name, value, action, originADT);
         return name;
     };
     
