@@ -3,6 +3,10 @@ $(document).ready(function () {
     VisualizerHandler = function(){
         //Create the paper
 
+        //Positional 2D arrays
+        this.primitiveArray = [[]];
+        this.adtArray = [[]];
+
         //the list of entities
         this.entities = [];
         this.eventQueue = [];
@@ -39,7 +43,12 @@ $(document).ready(function () {
         this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
-
+        //Testing new primitive system
+        this.enqueueEvent("new", "int", "a", "int", 1);
+        this.enqueueEvent("new", "int", "b", "int", 2);
+        this.enqueueEvent("new", "int", "c", "int", 3);
+        this.enqueueEvent("new", "int", "d", "int", 4);
+        
 
         return this;
     }
@@ -158,24 +167,33 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y;
+        //var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y;
 
-        for (var i = 0; i < this.entities.length; i++){
+        for (var i = 0; i < this.entities.length; i++){ 
+            // ensure entity is a primitive that is allowed to be [re]arranged
             if (this.isPrimitive(this.entities[i])){
-                if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                    //check and see if this is a new entity. if so, fade it in. if not, move it
-                    if (this.entities[i].x == 0){
-                        this.entities[i].create(curX, curY);
-                    }else{
-                        this.entities[i].move(curX, curY);
-                    }
-                }
-                //traverse down
-                curY += this.FONT_HEIGHT + 6;
-                //move to the next column
-                if (curY > this.PRIMITIVE_SECTION_HEIGHT){
-                    curY = this.PRIMITIVE_SECTION_Y;
-                    curX +=  this.PRIMITIVE_COLUMNWIDTH;
+                if (this.entities[i].dragged == false) { 
+                    // find an index in prim 2D array where the entity can be placed
+                    for (var j = 0; j < this.primitiveArray.length; j++) {
+                        for (var k = 0; k < this.primitiveArray[j].length; k++) {
+                            var curx = k*this.FONT_HEIGHT+this.VBORDER, curY = j*this.PRIMITIVE_COLUMNWIDTH+this.HBORDER
+                            if (this.entities[i].x != curX || this.entities[i].y != curY) {
+
+                                if (this.primitiveArray[k][j] == null) {
+                                    //check and see if this is a new entity. if so, fade it in. if not, move it
+                                    if (this.entities[i].x == 0){
+                                        this.entities[i].create(curX, curY);
+                                    }else{
+                                        // set former index to null before moving
+                                        var tempX = this.entities[i].x;
+                                        var tempY = this.entities[y].y;
+                                        this.entities[i].move(curX, curY);
+                                        this.primitiveArray[tempX][tempY];
+                                    }
+                                }
+                            }
+                        }
+                    }    
                 }
             }
         }
