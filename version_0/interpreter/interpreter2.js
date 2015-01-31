@@ -249,6 +249,8 @@ $(document).ready(function () {
                 env.createVariable("Stack<String>", root.second.value, [], "new", originADT);
             } else if (root.first == "List<Integer>") {
                 env.createVariable("List<Integer>", root.second.value, [], "new", originADT);
+            } else if (root.first == "List<String>") {
+                env.createVariable("List<String>", root.second.value, [], "new", originADT);
             }else {
                 
                 var type = this.checkType(value);
@@ -376,7 +378,13 @@ $(document).ready(function () {
                 return "Stack<String>";
             case typeof VList("int"):
                 return "List<Integer>";
+<<<<<<< HEAD
+            case typeof VList("String"):
+                return "List<String>";
+            case type(VQueue("int")):
+=======
             case typeof VQueue("int"):
+>>>>>>> origin/master
                 return "Queue<int>";
             case typeof VQueue("float"):
                 return "Queue<float>";
@@ -498,6 +506,7 @@ $(document).ready(function () {
                 y = new VStack("String");
                 return y.listMethods();
             case "List<Integer>":
+            case "List<String>":
                 y = new VList("int");
                 return y.listMethods();
         }
@@ -507,13 +516,12 @@ $(document).ready(function () {
         var y;
         switch(type) {
             case "Stack<Integer>":
-                y = new VStack("int");
-                return y.checkParameters(method, parameters);
             case "Stack<String>":
                 y = new VStack("String");
                 return y.checkParameters(method, parameters);
             case "List<Integer>":
-                y = new VList("int");
+            case "List<String>":
+                y = new VList("String");
                 return y.checkParameters(method, parameters);
         }
     }
@@ -532,6 +540,10 @@ $(document).ready(function () {
                 return value;
             case "List<Integer>":
                 y = new VList("int");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "List<String>":
+                y = new VList("String");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
         }

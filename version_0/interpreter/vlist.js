@@ -10,12 +10,12 @@ $(document).ready(function () {
     }
     
     VList.prototype.listMethods = function() {
-        var methods = ["add", "contains", "get", "indexOf", "isEmpty", "remove", "set", "size"];
+        var methods = ["add", "contains", "get", "indexOf", "isEmpty", "remove", "set", "size", "populate"];
         return methods;
     }
     
     VList.prototype.checkParameters = function(method, parameters) {
-        var oneParam = ['add', 'get', 'contains', 'indexOf', 'remove'];
+        var oneParam = ['add', 'get', 'contains', 'indexOf', 'remove', 'populate'];
         var zeroParam = ['isEmpty', 'size'];
         if (oneParam.indexOf(method) > 0) {
             if (parameters[1] != null) {
@@ -40,9 +40,64 @@ $(document).ready(function () {
             return [returnValue, origValue];
         }
         if (method == 'get') {
+            if (parameters[0].value > origValue.length) {
+                console.log("Index out of bounds");
+            }
             console.log("Cur value is: ", origValue);
             returnValue = origValue[parameters[0].value];
             return [returnValue, origValue];
+        }
+        if (method == 'contains') {
+            returnValue = (origValue.indexOf(parameters[0].value) >= 0);
+            return [returnValue, origValue];
+        }
+        if (method == 'indexOf') {
+            returnValue = origValue.indexOf(parameters[0].value);
+            return [returnValue, origValue];
+        }
+        if (method == "remove") {
+            var index = origValue.indexOf(parameters[0].value);
+            if (index > -1) {
+                origValue.splice(index, 1);
+            } else {
+                console.log("Not in list");
+            }
+            return [returnValue, origValue];
+        }
+        if (method == 'isEmpty') {
+            returnValue = (origValue.length == 0);
+            return [returnValue, origValue];
+        }
+        if (method == 'size') {
+            returnValue = (origValue.length);
+            return [returnValue, origValue];
+        }
+        if (method == 'set') {
+            if (parameters[0].value > origValue.length-1) {
+                console.log("Index out of bounds");
+            } 
+            origValue[parameters[0].value] = parameters[1].value;
+            return [returnValue, origValue];
+            
+        }
+        if (method == 'populate') {
+            if (type == "List<Integer>") {
+                var value = [];
+                for (i = 0; i < parameters[0].value; i++) {
+                    var toPush = Math.floor((Math.random()*100) + 1);
+                    value.push(toPush);
+                }
+                return [returnValue, value];  
+            }
+            if (type == "List<String>") {
+                var value = [];
+                for (i = 0; i < parameters[0].value; i++) {
+                    var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    var toPush = Math.floor((Math.random()*26) + 1);
+                    value.push(options[toPush]);
+                }
+                return [returnValue, value];
+            }
         }
     }
     
