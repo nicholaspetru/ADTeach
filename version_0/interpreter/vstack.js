@@ -53,9 +53,7 @@ $(document).ready(function () {
     VStack.prototype.performMethod = function(type, origValue, method, parameters) {
         var returnValue = null;
         if (method == "pop") {
-            console.log("Going to pop from: ", origValue);
             returnValue = origValue.pop();
-            console.log("Gives us: ", returnValue, origValue);
             return [returnValue, origValue];
         } if (method == "push") {
             if (type == "Stack<Integer>") {

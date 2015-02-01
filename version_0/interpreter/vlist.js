@@ -43,7 +43,6 @@ $(document).ready(function () {
             if (parameters[0].value > origValue.length) {
                 console.log("Index out of bounds");
             }
-            console.log("Cur value is: ", origValue);
             returnValue = origValue[parameters[0].value];
             return [returnValue, origValue];
         }

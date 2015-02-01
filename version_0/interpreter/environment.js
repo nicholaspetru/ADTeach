@@ -21,12 +21,9 @@ $(document).ready(function () {
     }
     
 	Environment.prototype.getValue = function(name) {
-		console.log("getValue");
 		var index = this.names.indexOf(name);
-		console.log("index " + index);
 		if (index >= 0) {
 			var v = this.variables.index
-			console.log(this.variables[index].value);
 			return this.variables[index].value;
 		}
 		else {
@@ -35,12 +32,9 @@ $(document).ready(function () {
 	}
 
 	Environment.prototype.getType = function(name) {
-		console.log("getType");
 		var index = this.names.indexOf(name);
-		console.log("index " + index);
 		if (index >= 0) {
 			var v = this.variables.index
-			console.log(this.variables[index].value);
 			return this.variables[index].type;
 		}
 		else {
@@ -50,41 +44,26 @@ $(document).ready(function () {
 
 	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT) {
         console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
-        console.log("&&&&&&&&&");
 		var n = {type: type,
 			name: variable, 
 			value: value};
-		/*
-		console.log(n.name);
-		console.log(n.type);
-		console.log(n.value);
-		*/
-        console.log(n);
-        
+		
 		this.variables.push(n);
 		this.names.push(variable);
 		this.symbolTable.newVariable(type, variable, value, originMethod, originADT);
-		//console.log(this.variables);
 	}
 
 	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT) {
 		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
-        console.log(newVal);
 		var index = this.names.indexOf(name);
         var type = this.variables[index].type;
-        //if (type != typeof newVal) {
          
         //CHECK TYPE
         if (type != "int") {
-            console.log(type);
-            console.log(typeof newVal);
             console.log("Incompatible types");
             //new IncompatibleTypes();
         }
 		this.variables[index].value = newVal;
         this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT);
-        console.log("AFTEEEEEEEEER", this.getVariables());
-
-		//this.symbolTable.updateVariable();
 	}
 });

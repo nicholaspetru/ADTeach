@@ -367,11 +367,9 @@ var make_parse = function () {
             this.arity = "FunCall";
             this.Caller = left.first;
             this.MethodName = left.second;
-            console.log(a);
             this.Arguments = a;
         } else if (left.id == "new") {
             this.arity = "Initialization";
-            //this.first = left
         }else {
             this.arity = "binary";
             this.first = left;
@@ -420,7 +418,6 @@ var make_parse = function () {
         if (token.arity !== "name") {
             token.error("Expected a property name.");
         }
-        console.log('AHAHAHAHAHAHA', token);
         token.arity = "literal";
         this.first = token;
         this.arity = "NEW_ADT";
@@ -492,21 +489,10 @@ var make_parse = function () {
             scope.define(n);
             advance();
             if (token.id === "=") {
-                console.log("?>?>?>?>?>?>", token);
                 t = token;
                 t.value = "init";
                 advance("=");
-                console.log(token);
-                console.log(token.arity);
-                console.log("88", token);
-                //if (token.first.value != "Stack<Integer>") {
-                //    console.log("NEED A STACK OF INTS");
-                //}
                 t.first = "Stack<Integer>";
-                console.log("Token is: ", token);
-                console.log("Second ISSSSSSS: ", expression(0));
-                console.log("n is: ", n);
-                console.log("token is: ", token);
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -530,7 +516,6 @@ var make_parse = function () {
     });
     
     stmt("Stack<String>", function () {
-        console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
@@ -544,7 +529,6 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<String>";
-                console.log("Second ISSSSSSS: ", expression(0));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";

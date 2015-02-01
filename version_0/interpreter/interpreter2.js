@@ -23,19 +23,15 @@ $(document).ready(function () {
         var parse = make_parse();
         var tree = parse(source);
         var f = new Environment(null, vh);
-        //this.symbolTable = f;
         this.eval(tree, f);
     }
     
     // Evaluates an array of statements or a single statement
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
-        console.log(typeof arrayOfBlocks);
         var count = 0;
         if (typeof arrayOfBlocks[count] === "undefined") {
-            console.log("single statement");
             var block = arrayOfBlocks;
             var blockType = block.arity;
-            console.log("blockType: " + blockType);
             switch (blockType) {
                 case "FOR_BLOCK":
                     this.evalForBlock(block, env);
@@ -52,11 +48,9 @@ $(document).ready(function () {
             }
         }
         else {
-            console.log(typeof arrayOfBlocks[count]);
             while (typeof arrayOfBlocks[count] != "undefined") {
                 var block = arrayOfBlocks[count];
                 var blockType = block.arity;
-                console.log("blockType: " + blockType);
             
                 switch (blockType) {
                     case "FOR_BLOCK":
@@ -73,14 +67,11 @@ $(document).ready(function () {
                         break;
                 }
                 count += 1;
-                //console.log("count: " + count);
             }
         }
     }
     
     Interpreter.prototype.evalSemiColonBlock = function(block, env) {
-        console.log("========= evalSemiColonBlock =======");
-
         var root = block.value;
         var rootType = block.arity;
         
@@ -95,15 +86,10 @@ $(document).ready(function () {
         } else if (rootType == "FunCall") {
             this.evalMethod(block, env);
         }
-        else {
-            console.log("is this called?");
-        }
     }
 
     Interpreter.prototype.evalValue = function(root, env) {
-        console.log("----- evalValue " + root.value + " -----");
         if (root.arity != "name") {
-            console.log("jtype: " + root.jtype);
             switch(root.jtype) {
                 case 'INT_TYPE':
                     return parseInt(root.value);
@@ -124,7 +110,6 @@ $(document).ready(function () {
         } else {
             var val = env.getValue(root.value);
             var valType = env.getType(root.value);
-            console.log(val);
             if (val === "no value") {
                 console.log("not in env");
                 //new UnidentifiedVariable();
@@ -163,40 +148,26 @@ $(document).ready(function () {
     }
 
     Interpreter.prototype.evalWhileBlock = function(block, env) {
-        console.log("========= evalWhileBlock =======");
         var condition = block.Test;
         
         var isTrue = this.evalCondition(condition, env);
-        console.log(isTrue);
         while (isTrue == true) {
             var body = block.Body;
             var condition2 = block.Test;
-            console.log("start while");
 
-            console.log(isTrue);
             this.eval(body, env);
-            console.log("PAST EVAL");
             isTrue = this.evalCondition(condition2, env);
-            console.log("end while");
         }
-        //console.log(this.symbolTable.getValue("x"));
-        //console.log(this.symbolTable.getValue("y"));
     }
     
     Interpreter.prototype.evalAssignment = function(root, env) {
-        console.log("========== evalAssignment ===========");
-        console.log("root.arity: " + root.arity);
-        console.log(root);
         var valueRoot, value, returnedValue;
         var originMethod = "new";
         var originADT = "";
-        console.log("Here here here", root);
         if (root.arity === "Initialization") {
             if (root.value == "Stack<Integer>") {
-                console.log("ABCDEFG");
                 valueRoot = root.second
                 value = root.first
-                console.log(valueRoot);
             } else {
                 valueRoot = root.third;
             }
@@ -205,16 +176,12 @@ $(document).ready(function () {
             variable = root.first.value;
             valueRoot = root.second;
         }
-        
-        console.log("now here: ", valueRoot);
-        
-
+                
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
             var methodValue = this.evalMethod(valueRoot, env);
             returnedValue = methodValue[1];
             value = methodValue[0];
-            console.log("Returned value: ", returnedValue, "value is: ", value);
             originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
             //ADD ORIGIN
@@ -234,16 +201,9 @@ $(document).ready(function () {
                 
         } 
 
-        else if (valueRoot.value == "new") {
-                //Create the new ADT
-        }
-        
-        console.log("value: " + value);
-        
         
         if (root.arity === "Initialization") {
             if (root.first == "Stack<Integer>") {
-                //console.log("!!!!!!!!!!");
                 env.createVariable("Stack<Integer>", root.second.value, [], "new", originADT); 
             } else if (root.first == "Stack<String>") {
                 env.createVariable("Stack<String>", root.second.value, [], "new", originADT);
@@ -252,9 +212,7 @@ $(document).ready(function () {
             } else if (root.first == "List<String>") {
                 env.createVariable("List<String>", root.second.value, [], "new", originADT);
             }else {
-                
                 var type = this.checkType(value);
-                console.log("**************" + type + "    " + root.first);
                 if (root.first != type){
                  console.log("INCOMPATIBLE TYPES!!");   
                 }
@@ -263,7 +221,6 @@ $(document).ready(function () {
         }
         else {
             var type = this.checkType(value);
-            console.log("**************" + type + "    " + root.first);
             if (root.first != type){
              console.log("INCOMPATIBLE TYPES!!");   
             }
@@ -272,10 +229,7 @@ $(document).ready(function () {
         }
     }
     
-    Interpreter.prototype.evalCondition = function(root, env) {
-        console.log("========evalCondition========");
-        console.log(root.value);
-        
+    Interpreter.prototype.evalCondition = function(root, env) {        
         if (root.value == true) {
             return true;
         } else if (root.value == false) {
@@ -292,15 +246,10 @@ $(document).ready(function () {
         }
         
         if (root.arity === "binary") {
-
         
             var leftValue = this.evalValue(root.first, env);
             var rightValue = this.evalValue(root.second, env);
         
-            console.log(root.first);
-            console.log("condition: " + leftValue + " " + root.value + " " + rightValue);
-
-            console.log(root.value);
             switch (root.value) {
                 case "<":
                     return (leftValue < rightValue);
@@ -309,9 +258,6 @@ $(document).ready(function () {
                     return (leftValue > rightValue);
                     break;
                 case "==":
-                    console.log("DID IT EVEN GET HERE THO?????????????????");
-                    console.log(leftValue === rightValue);
-                    console.log("......");
                     return (leftValue == rightValue);
                     break;
                 case "!=":
@@ -360,7 +306,6 @@ $(document).ready(function () {
         }
     }
     Interpreter.prototype.checkType = function(value) {
-        console.log("BBBBBBBB", value);
         switch (typeof value) {
             case typeof 1:
                 return "int";
@@ -394,23 +339,19 @@ $(document).ready(function () {
     
     
     Interpreter.prototype.evalMaths = function(root, env) {
-        console.log("============= evalMaths ==========");
         if (['%', '+', '-', '*', '/', '**'].indexOf(root.value) < 0) {
             return this.evalValue(root, env);
         } else {
             if (root.value == "+") {
-                console.log("plus");
                 return this.evalMaths(root.first, env) + this.evalMaths(root.second, env);
             } else {
                 var leftValue = this.evalMaths(root.first, env);
                 var rightValue = this.evalMaths(root.second, env);
                 if (typeof leftValue === "String" || typeof rightValue === "String") {
                     console.log("Incompatible types");
-                    //new IncompatibleTypes();
                 } else {
                     switch (root.value) {
                         case "%":
-
                             return leftValue % rightValue;
                         case "-":
                             console.log(leftValue + "-" + rightValue);
@@ -430,24 +371,20 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalPlusPlus = function(root, env) {
-        console.log("============= evalPlusPlus ==========");
         var name = root.first.value;
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            console.log(name + value + "new");
             env.updateVariable(name, value+1, "Step", "new");
         }
     
     }
     
     Interpreter.prototype.evalMinusMinus = function(root, env) {
-        console.log("============= evalPlusPlus ==========");
         var name = root.first.value;
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            console.log(name + value + "new");
             env.updateVariable(name, value-1, "Step", "new");
         }
     
@@ -462,17 +399,12 @@ $(document).ready(function () {
         var parameters = root.Arguments;
         var originADT = null;
         
-        console.log("adt is: ", adt);
-        console.log("adtType is: ", adtType);
-        console.log("cur value is: ", adtCurValue);
-        console.log("method is: ", method);
-        console.log("parameters are: ", parameters);
         
         var adtMethods = this.findMethods(adtType);
         var paramCheck = this.checkParameters(adtType, method, parameters);
         var newValue, returnValue;
         var cloneParam = [];
-        console.log("DOes it work? ", cloneParam);
+
         if (adtMethods.indexOf(method) < 0) {
             console.log("Invalid Method");
             //new InvalidMethod();
@@ -481,27 +413,21 @@ $(document).ready(function () {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
-            console.log("BEFORE is ", parameters[0].value);
             if (env.getValue(parameters[parameters.length - 1].value) != null) {
                 originADT = parameters[parameters.length-1].value;
             }
             for (var i = 0; i < parameters.length; i++){
-                console.log("LOOKING AT: ", parameters[i]);
                 if (env.getValue(parameters[i].value) != null) {
                     var cloneVar = {value:env.getValue(parameters[i].value)};
                     cloneParam[i] = cloneVar;
-                    console.log("Original: ", parameters[i].value);
-                    console.log("Clone: ", cloneParam[i].value);
                 } else {
                     var cloneVar = {value:parameters[i].value};
                     cloneParam[i] = cloneVar;
                 }
             }
-            console.log('EKRJEKLJRELKJR', cloneParam);
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
             returnValue = methodValue[0];
             newValue = methodValue[1];
-            console.log("Method returns: ", returnValue, newValue);
             
             if (method == "set") {
                 method = method + "." + parameters[0].value;
@@ -617,8 +543,6 @@ $(document).ready(function () {
         }
 
         this.TokenList = tokens;
-        //console.log(this.TokenList.length);
-
     }
 
     // Return this.TokenList as a string
