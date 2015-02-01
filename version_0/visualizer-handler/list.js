@@ -8,15 +8,14 @@ $(document).ready(function () {
         this.VH = vishandler;
         this.name = name;
         this.type = type;
-        //HARDCODED VALUE OF STACK RIGHT HERE FOR TESTING
-        this.value = [2,3, 5,"brady"];
+        this.value = value;
 
         //assign the position
         this.x = 0;
         this.y = 0;
         this.FONT_SIZE = 11;
         this.WIDTH = 280;
-        this.HEIGHT = 60;
+        this.HEIGHT = 45;
         this.DUNIT_HEIGHT = this.HEIGHT*.85;
         this.DUNIT_WIDTH = this.DUNIT_HEIGHT*.5;
         this.vis = [];
@@ -36,8 +35,7 @@ $(document).ready(function () {
         this.myFrame.attr({"opacity": 0,"stroke": "black", "stroke-width": 2.25});
 
         //here's the visual component's representation of the content of the stack. the "data units"
-        //that we'd talked about, nick
-        for (var i = this.value.length - 1; i >= 0; i--){
+        for (var i = 0; i < this.value.length; i++){
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
@@ -56,7 +54,7 @@ $(document).ready(function () {
         var anim = Raphael.animation({opacity:1},500);
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
-        for (var i = this.vis.length-1; i >= 0; i--){
+        for (var i = 0; i < this.vis.length; i++){
             this.vis[i].create();
         }
     };
@@ -95,32 +93,33 @@ $(document).ready(function () {
         }
     };
     
-    //Remove visual primitives
-    List.prototype.update = function() {
-        this.destroy();
-        //I hhave disabled this for the time being so it wont cause crashes
-        /*
-        //animate changing the value
-        var anim = Raphael.animation({x:-4},12);
-        this.vis.animate(anim.delay(this.VH.setDelay(12)));
+    //Update the 
+    List.prototype.update = function(action, originADT) {
 
-        for (var i = 0; i < 21; i++){
-            var anim = Raphael.animation({x:8*(-1^i)},25);
-            this.vis.animate(anim.delay(this.VH.setDelay(25)));
+        switch(action){
+            case "add":
+                this.AddAtPosition(1,2);
+                break;
         }
-        var _t = this, _val = this.value;
-        setTimeout(function(){
-            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _val)});
-        },(this.VH.delay - this.VH.date.getTime()));
-
-        var anim = Raphael.animation({x:0},12);
-        this.vis.animate(anim.delay(this.VH.setDelay(12)));
-
-        this.VH.setDelay(50);*/
     };
 
-    //TODO
-    List.prototype.copyTo = function() {
+    //Adds a new dataunit at the specified index
+    List.prototype.AddAtPosition = function(index, value) {
+        //Create the new data unit
+        var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
+                                       this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+        newDU.create();
 
+        //Scooch down all the other data units
+        var delay = this.VH.setDelay(500);
+        for (var i = index; i < this.vis.length; i++){
+            this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay);
+        }
+
+        //Insert the new data unit in it's proper location
+        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500));
+        newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500));
+        //newDU.move(220,200,this.VH.setDelay(500));
+        this.vis.splice(index, 0, newDU);
     }
 });

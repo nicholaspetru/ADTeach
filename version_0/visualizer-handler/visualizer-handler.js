@@ -17,8 +17,9 @@ $(document).ready(function () {
         this.delay = this.date.getTime();
 
         //Testing a stack here
-        this.enqueueEvent("new","Stack<Integer>","stack1","Stack<Integer>",[]);
-        this.enqueueEvent("new","Stack<Integer>","stack2","Stack<Integer>",[1,2]);
+        //event, type, name, value, action, originADT
+        this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
+        this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
@@ -44,11 +45,12 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         //Testing new primitive system
+        /*
         this.enqueueEvent("new", "int", "a", "int", 1);
         this.enqueueEvent("new", "int", "b", "int", 2);
         this.enqueueEvent("new", "int", "c", "int", 3);
         this.enqueueEvent("new", "int", "d", "int", 4);
-        
+        */
 
         return this;
     }
@@ -79,20 +81,20 @@ $(document).ready(function () {
         console.log("Visualizer Handler: goForthOnce()");
         if (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
-            if (curEvent[0] == 'new') {
-                this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4]);
+                if (curEvent[0] == 'new') {
+                    this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
+                }
+                else if (curEvent[0] == 'update') {
+                    this.UpdateEntity(curEvent[1], curEvent[3], curEvent[4], curEvent[5]);
+                }
+                else if (curEvent[0] == 'delete') {
+                    this.DeleteEntity(curEvent[2]);
+                }
+                else {
+                    console.log('unrecognized event: ' + curEvent[0]);
+                }
             }
-            else if (curEvent[0] == 'update') {
-                this.UpdateEntity(curEvent[2], curEvent[4]);
-            }
-            else if (curEvent[0] == 'delete') {
-                this.DeleteEntity(curEvent[1]);
-            }
-            else {
-                console.log('unrecognized event: ' + curEvent[0]);
-            }
-            this.Render();
-        }
+        this.Render();
     };
     
     //Render is just going to chill out and let the change variables hit themselves
@@ -119,7 +121,7 @@ $(document).ready(function () {
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
                 this.entities[i].value = value;
-                this.entities[i].update();
+                this.entities[i].update(action, originADT);
             }
         }
     };

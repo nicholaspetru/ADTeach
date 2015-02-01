@@ -40,7 +40,7 @@ $(document).ready(function () {
           this.x += difX;
           this.y += difY;
 
-          var anim = Raphael.animation({"transform": "t" + difX + "," + difY},500);
+          var anim = Raphael.animation({x: this.x, y: this.y},500);
           for (var i =0; i < this.vis.length; i++){
             this.vis[i].animate(anim.delay(delay));
           }
