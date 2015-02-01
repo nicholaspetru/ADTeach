@@ -17,7 +17,7 @@ $(document).ready(function () {
     VList.prototype.checkParameters = function(method, parameters) {
         var oneParam = ['add', 'get', 'contains', 'indexOf', 'remove', 'populate'];
         var zeroParam = ['isEmpty', 'size'];
-        if (oneParam.indexOf(method) > 0) {
+        if (oneParam.indexOf(method) >= 0) {
             if (parameters[1] != null) {
                 console.log("Only one parameter");
             }

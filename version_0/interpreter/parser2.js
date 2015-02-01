@@ -493,6 +493,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
+                console.log("Second ISSSSSSS: ", expression(0));
+
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -529,6 +531,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<String>";
+                console.log("Second ISSSSSSS: ", expression(0));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";

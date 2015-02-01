@@ -35,7 +35,7 @@ $(document).ready(function () {
     
     VStack.prototype.checkParameters = function(method, parameters) {
         var noParam = ['pop', 'getValue', 'isEmpty'];
-        if (noParam.indexOf(method) > 0) {
+        if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
                 //new IncorrectParameters();
