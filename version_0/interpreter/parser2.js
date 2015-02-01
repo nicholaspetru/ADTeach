@@ -495,6 +495,7 @@ var make_parse = function () {
                 t.first = "Stack<Integer>";
                 console.log("Second ISSSSSSS: ", expression(0));
 
+                console.log("THIS IS BS", expression(0));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -532,6 +533,7 @@ var make_parse = function () {
                 advance("=");
                 t.first = "Stack<String>";
                 console.log("Second ISSSSSSS: ", expression(0));
+                console.log("THIS IS BS", expression(0));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -614,6 +616,81 @@ var make_parse = function () {
             else {
                 t = token;
                 t.value = "List<String>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+
+    stmt("Queue<Integer>", function () {
+        console.log("IN HERE IN HEREI N HERE");
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Queue<Integer>";
+                console.log("THIS IS BS", expression(0));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Queue<Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Queue<String>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Queue<String>";
+                console.log("THIS IS BS", expression(0));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Queue<String>";
                 t.first = n;
                 t.second = null;
                 t.arity = "Initialization";

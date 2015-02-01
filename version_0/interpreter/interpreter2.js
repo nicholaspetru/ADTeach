@@ -211,6 +211,10 @@ $(document).ready(function () {
                 env.createVariable("List<Integer>", root.second.value, [], "new", originADT);
             } else if (root.first == "List<String>") {
                 env.createVariable("List<String>", root.second.value, [], "new", originADT);
+            } else if (root.first == "Queue<Integer>") {
+                env.createVariable("Queue<Integer>", root.second.value, [], "new", originADT);
+            } else if (root.first == "Queue<String>") {
+                env.createVariable("Queue<String>", root.second.value, [], "new", originADT);
             }else {
                 var type = this.checkType(value);
                 if (root.first != type){
@@ -444,10 +448,17 @@ $(document).ready(function () {
             case "Stack<String>":
                 y = new VStack("String");
                 return y.listMethods();
+                break;
             case "List<Integer>":
             case "List<String>":
                 y = new VList("int");
                 return y.listMethods();
+                break;
+            case "Queue<Integer>":
+            case "Queue<String>":
+                y = new VQueue("int");
+                return y.listMethods();
+                break;
         }
     }
     
@@ -458,9 +469,15 @@ $(document).ready(function () {
             case "Stack<String>":
                 y = new VStack("String");
                 return y.checkParameters(method, parameters);
+                break;
             case "List<Integer>":
             case "List<String>":
                 y = new VList("String");
+                return y.checkParameters(method, parameters);
+                break;
+            case "Queue<Integer>":
+            case "Queue<String>":
+                y = new VQueue("String");
                 return y.checkParameters(method, parameters);
         }
     }
@@ -473,16 +490,28 @@ $(document).ready(function () {
                 y = new VStack("int");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
+                break;
             case "Stack<String>":
                 y = new VStack("String");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
+                break;
             case "List<Integer>":
                 y = new VList("int");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
+                break;
             case "List<String>":
                 y = new VList("String");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+                break;
+            case "Queue<Integer>":
+                y = new VQueue("int");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Queue<String>":
+                y = new VQueue("String");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
         }
