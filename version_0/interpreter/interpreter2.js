@@ -417,6 +417,7 @@ $(document).ready(function () {
             console.log("incorrect parameters");
             //new IncorrectParameters();
         } else {
+            if (parameters.length != 0) {
             if (env.getValue(parameters[parameters.length - 1].value) != null) {
                 originADT = parameters[parameters.length-1].value;
             }
@@ -428,6 +429,7 @@ $(document).ready(function () {
                     var cloneVar = {value:parameters[i].value};
                     cloneParam[i] = cloneVar;
                 }
+            }
             }
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
             returnValue = methodValue[0];
@@ -507,6 +509,7 @@ $(document).ready(function () {
                 return value;
                 break;
             case "Queue<Integer>":
+                console.log("PERFORMING METHOD: ", method);
                 y = new VQueue("int");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;

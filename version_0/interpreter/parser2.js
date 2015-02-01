@@ -494,8 +494,6 @@ var make_parse = function () {
                 advance("=");
                 t.first = "Stack<Integer>";
                 console.log("Second ISSSSSSS: ", expression(0));
-
-                console.log("THIS IS BS", expression(0));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";

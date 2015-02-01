@@ -29,12 +29,12 @@ $(document).ready(function () {
         return "Queue";
     }
     
-    VQueue.listMethods = function() {
+    VQueue.prototype.listMethods = function() {
         var methods = ["enqueue", "dequeue", "isEmpty", "size", "populate"];
         return methods;
     }
     
-    VQueue.checkParameters = function(method, parameters) {
+    VQueue.prototype.checkParameters = function(method, parameters) {
         var zeroParam = ["dequeue", "isEmpty", "size"]
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
@@ -53,7 +53,8 @@ $(document).ready(function () {
         if (method == 'enqueue') {
             var newList = [];
             newList.push(parameters[0].value);
-            for (int i = 0; i < origValue.lenth; i++) {
+            var lengthOfList = origValue.length;
+            for (var i = 0; i < lengthOfList; i++) {
                 newList.push(origValue[i]);
             }
             origValue = newList;
@@ -61,6 +62,7 @@ $(document).ready(function () {
         }
         if (method == 'dequeue') {
             returnValue = origValue.pop();
+            console.log("REturning, ", returnValue, " + ", origValue);
             return [returnValue, origValue];
         }
         if (method == 'isEmpty') {
@@ -73,14 +75,14 @@ $(document).ready(function () {
         }
         if (method == "populate") {
             if (type == "Queue<Integer>") {
-                for (int i = 0; i < parameters[0]; i++) {
+                for (var i = 0; i < parameters[0]; i++) {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(toPush);
                 }
             } 
             if (type == "Queue<String>") {
                 var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                for (int i = 0; i < parameters[0]; i++) {
+                for (var i = 0; i < parameters[0]; i++) {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(options[toPush]);
                 }
