@@ -100,7 +100,7 @@ $(document).ready(function () {
     List.prototype.update = function(action, originADT) {
         switch(action){
             case "add":
-                this.AddAtPosition(1,2);
+                this.AddAtPosition(0,action);
                 break;
         }
     };

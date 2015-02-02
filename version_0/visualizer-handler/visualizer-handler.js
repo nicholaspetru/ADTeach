@@ -37,7 +37,7 @@ $(document).ready(function () {
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
 
         //drawing basic stuff on the paper: the sections
-        this.paper = Raphael("vis_paper", 500,1000);
+        this.paper = Raphael("vis_paper", 1000,1000);
         this.paper.text(this.HBORDER, this.VBORDER, "primitives:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.paper.path("M " + this.HBORDER + "," + (this.VBORDER + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.VBORDER + this.FONT_HEIGHT));
 
