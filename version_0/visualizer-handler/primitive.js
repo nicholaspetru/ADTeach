@@ -37,7 +37,7 @@ $(document).ready(function () {
         difY = newY - this.y;
         this.x = newX;
         this.y = newY;
-        var anim = Raphael.animation({x:difX,y:difY},500);
+        var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},500);
         this.vis.animate(anim.delay(this.VH.setDelay(500)));
     };
 

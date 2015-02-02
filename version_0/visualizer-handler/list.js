@@ -67,16 +67,19 @@ $(document).ready(function () {
         this.x = newX;
         this.y = newY;
 
-        //Move the labels
         var delay = this.VH.setDelay(500);
-        var anim = Raphael.animation({"transform": "t" + difX + "," + difY},500);
-        this.myLabel.animate(anim.delay(delay));  
-        this.myFrame.animate(anim.delay(delay));
-          
-        //move the dataunits
-        for (var i =0; i < this.vis.length; i++){
-            this.vis[i].move(difX,difY,delay);
-        }
+        //Set timeout and move the data structure at the proper delay
+        var _t = this;
+        setTimeout(function(){
+            _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
+            _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},500);
+
+            //move the dataunits
+            for (var i =0; i < _t.vis.length; i++){
+                _t.vis[i].move(difX,difY,0);
+            }
+        },(this.VH.delay - this.VH.date.getTime()));
+
     };
 
     //Remove visual primitives
@@ -95,7 +98,6 @@ $(document).ready(function () {
     
     //Update the 
     List.prototype.update = function(action, originADT) {
-
         switch(action){
             case "add":
                 this.AddAtPosition(1,2);

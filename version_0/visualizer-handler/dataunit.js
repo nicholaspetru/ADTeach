@@ -35,15 +35,18 @@ $(document).ready(function () {
           }
       };
 
-      //Moves to the specific positon
+      //Moves the dataunit to the given position at the specified time
       DataUnit.prototype.move = function(difX, difY, delay) {
-          this.x += difX;
-          this.y += difY;
+          var _t = this;
+          setTimeout(function(){
+            _t.x += difX;
+            _t.y += difY;
 
-          var anim = Raphael.animation({x: this.x, y: this.y},500);
-          for (var i =0; i < this.vis.length; i++){
-            this.vis[i].animate(anim.delay(delay));
-          }
+            for (var i =0; i < _t.vis.length; i++){
+              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},500);
+              _t.vis[i].animate(anim.delay(0));
+            }
+          },(delay));
       };
 
       //Create visual primitve in the specific position
