@@ -4,8 +4,8 @@ $(document).ready(function () {
         //Create the paper
 
         //Positional 2D arrays
-        this.primitiveArray = [[null], [null], [null], [null], [null]];
-        this.adtArray = [[null]];
+        this.primitiveArray = [[]];
+        this.adtArray = [[]];
 
         //the list of entities
         this.entities = [];
@@ -46,7 +46,7 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         //Testing new primitive system
-        
+        /*
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
@@ -56,7 +56,7 @@ $(document).ready(function () {
         this.enqueueEvent("new", "int", "g", 7, "int");
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-
+        */
 
     
 
@@ -181,51 +181,54 @@ $(document).ready(function () {
         var curX = this.HBORDER, curY = this.PRIMITIVE_SECTION_Y;
 
         for (var i = 0; i < this.entities.length; i++){ 
-            // ensure entity is a primitive that is allowed to be [re]arranged
-            if (this.isPrimitive(this.entities[i])){
-                if (this.entities[i].dragged == false) { 
-                    // find an index in 2D primitive array where the entity can be placed
-                    var j = 0, k = 0
-                    while (j < this.PRIMITIVE_COL_LEN) {
-                        //for (k = 0; k < this.primitiveArray[j].length; k++) {
-                            if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                                curX = k*this.PRIMITIVE_COLUMNWIDTH*1.7+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y
-                               if (this.primitiveArray[k][j] == null) {
-                                    //check and see if this is a new entity and move it accordingly
-                                    console.log("curX " + curX + " and curY " + curY)
-                                    console.log(this.entities[i].name)
-                                    if (this.entities[i].x == 0){
-                                        this.entities[i].create(curX, curY);
-                                    }else{
-                                        //set former index to null before moving
-                                        //var tempX = this.entities[i].x;
-                                        //var tempY = this.entities[i].y;
-                                        this.entities[i].x = curX;
-                                        this.entities[i].y = curY;
-                                        this.entities[i].move(curX, curY);
+            var j = 0, k = 0;
+
+            while (j < this.PRIMITIVE_COL_LEN) {
+                // ensure entity is a primitive that is allowed to be [re]arranged
+                if (this.isPrimitive(this.entities[i])){
+                    if (this.entities[i].dragged == false) { 
+                        if (this.entities[i].x != curX || this.entities[i].y != curY) {
+                            curX = k*this.PRIMITIVE_COLUMNWIDTH*1.7+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+                            if (this.primitiveArray[k][j] == null) {
+                                //check and see if this is a new entity and move it accordingly
+                                console.log("curX " + curX + " and curY " + curY);
+                                console.log(this.entities[i].name);
+                                if (this.entities[i].x == 0){
+                                    this.entities[i].create(curX, curY);
+                                }else{
+                                    //set former index to null before moving
+                                    //var tempX = this.entities[i].x;
+                                    //var tempY = this.entities[i].y;
+                                    this.entities[i].x = curX;
+                                    this.entities[i].y = curY;
+                                    this.entities[i].move(curX, curY);
                                         
 
-                                        //// determine which spot was vacated and set to null
-                                        //var tempJ = (tempX-this.HBORDER) / this.PRIMITIVE_COLUMNWIDTH;
-                                        //var tempK = (tempY - this.PRIMITIVE_SECTION_Y) / this.FONT_HEIGHT
-                                        //this.primitiveArray[tempJ][(tempK];
-                                    }
-                                    // indicate that the newly filled coordinate is occupied
-                                    this.primitiveArray[k][j] = this.entities[i]
-
+                                    //// determine which spot was vacated and set to null
+                                    //var tempJ = (tempX-this.HBORDER) / this.PRIMITIVE_COLUMNWIDTH;
+                                    //var tempK = (tempY - this.PRIMITIVE_SECTION_Y) / this.FONT_HEIGHT
+                                    //this.primitiveArray[tempJ][(tempK];
                                 }
+
+                                // indicate that the newly filled coordinate is occupied
+                                this.primitiveArray[k].push(this.entities[i]);
+
                             }
-                        //}
-                        if (j == this.PRIMITIVE_COL_LEN) {
-                            if (i < this.entities.length) {
+                        }
+                        //reset the while loop and increment k if there are still entities to arrange
+                        if (i == this.entities.length - 2) {
+                            console.log(j + " and " + this.PRIMITIVE_COL_LEN-1)
+                            if  (j == this.PRIMITIVE_COL_LEN-1){
                                 j = 0;
                                 k += 1;
+                                i += 1;
+                                //this.primitiveArray.push([]);
+                            } else {
+                                j += 1;
                             }
-                        } else {
-                            j += 1;
                         }
                     }
-                }    
+                }
             }
         }
     }
