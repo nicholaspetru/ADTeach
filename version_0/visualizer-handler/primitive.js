@@ -9,6 +9,8 @@ $(document).ready(function () {
         this.name = name;
         this.type = type;
         this.value = value;
+        this.dragged = false
+
 
         //assign the position
         this.x = 0;

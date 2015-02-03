@@ -4,8 +4,8 @@ $(document).ready(function () {
         //Create the paper
 
         //Positional 2D arrays
-        this.primitiveArray = [[]];
-        this.adtArray = [[]];
+        this.primitiveArray = [[null], [null], [null], [null], [null]];
+        this.adtArray = [[null]];
 
         //the list of entities
         this.entities = [];
@@ -18,13 +18,14 @@ $(document).ready(function () {
 
         //Testing a stack here
         //event, type, name, value, action, originADT
-        this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
-        this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
+        //this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
+        //this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
 
         //define constants
+        this.PRIMITIVE_COL_LEN = 5
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;
         this.PRIMITIVE_SECTION_HEIGHT = 100;
@@ -45,12 +46,19 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         //Testing new primitive system
-        /*
-        this.enqueueEvent("new", "int", "a", "int", 1);
-        this.enqueueEvent("new", "int", "b", "int", 2);
-        this.enqueueEvent("new", "int", "c", "int", 3);
-        this.enqueueEvent("new", "int", "d", "int", 4);
-        */
+        
+        this.enqueueEvent("new", "int", "a", 1, "int");
+        this.enqueueEvent("new", "int", "b", 2, "int");
+        this.enqueueEvent("new", "int", "c", 3, "int");
+        this.enqueueEvent("new", "int", "d", 4, "int");
+        this.enqueueEvent("new", "int", "e", 5, "int");
+        this.enqueueEvent("new", "int", "f", 6, "int");
+        this.enqueueEvent("new", "int", "g", 7, "int");
+        this.enqueueEvent("new", "int", "h", 8, "int");
+        this.enqueueEvent("new", "int", "i", 9, "int");
+
+
+    
 
         return this;
     }
@@ -170,34 +178,54 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        //var curX = this.VBORDER, curY = this.PRIMITIVE_SECTION_Y;
+        var curX = this.HBORDER, curY = this.PRIMITIVE_SECTION_Y;
 
         for (var i = 0; i < this.entities.length; i++){ 
             // ensure entity is a primitive that is allowed to be [re]arranged
             if (this.isPrimitive(this.entities[i])){
                 if (this.entities[i].dragged == false) { 
-                    // find an index in prim 2D array where the entity can be placed
-                    for (var j = 0; j < this.primitiveArray.length; j++) {
-                        for (var k = 0; k < this.primitiveArray[j].length; k++) {
-                            var curx = k*this.FONT_HEIGHT+this.VBORDER, curY = j*this.PRIMITIVE_COLUMNWIDTH+this.HBORDER
+                    // find an index in 2D primitive array where the entity can be placed
+                    var j = 0, k = 0
+                    while (j < this.PRIMITIVE_COL_LEN) {
+                        //for (k = 0; k < this.primitiveArray[j].length; k++) {
                             if (this.entities[i].x != curX || this.entities[i].y != curY) {
-
-                                if (this.primitiveArray[k][j] == null) {
-                                    //check and see if this is a new entity. if so, fade it in. if not, move it
+                                curX = k*this.PRIMITIVE_COLUMNWIDTH*1.7+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y
+                               if (this.primitiveArray[k][j] == null) {
+                                    //check and see if this is a new entity and move it accordingly
+                                    console.log("curX " + curX + " and curY " + curY)
+                                    console.log(this.entities[i].name)
                                     if (this.entities[i].x == 0){
                                         this.entities[i].create(curX, curY);
                                     }else{
-                                        // set former index to null before moving
-                                        var tempX = this.entities[i].x;
-                                        var tempY = this.entities[y].y;
+                                        //set former index to null before moving
+                                        //var tempX = this.entities[i].x;
+                                        //var tempY = this.entities[i].y;
+                                        this.entities[i].x = curX;
+                                        this.entities[i].y = curY;
                                         this.entities[i].move(curX, curY);
-                                        this.primitiveArray[tempX][tempY];
+                                        
+
+                                        //// determine which spot was vacated and set to null
+                                        //var tempJ = (tempX-this.HBORDER) / this.PRIMITIVE_COLUMNWIDTH;
+                                        //var tempK = (tempY - this.PRIMITIVE_SECTION_Y) / this.FONT_HEIGHT
+                                        //this.primitiveArray[tempJ][(tempK];
                                     }
+                                    // indicate that the newly filled coordinate is occupied
+                                    this.primitiveArray[k][j] = this.entities[i]
+
                                 }
                             }
+                        //}
+                        if (j == this.PRIMITIVE_COL_LEN) {
+                            if (i < this.entities.length) {
+                                j = 0;
+                                k += 1;
+                            }
+                        } else {
+                            j += 1;
                         }
-                    }    
-                }
+                    }
+                }    
             }
         }
     }
