@@ -25,11 +25,16 @@ $(document).ready(function () {
     Primitive.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
+
+        //set animation and delay
+        var anim = Raphael.animation({opacity:1},250);
+        var delay = this.VH.setDelay(250);
+
         //move them to the new area
         this.vis.transform("t" + (newX) + "," + (newY));
         //fade it in
         var anim = Raphael.animation({opacity:1},1000);
-        this.vis.animate(anim.delay(this.VH.setDelay(1000)));
+        this.vis.animate(anim.delay(delay));
     };
 
     //Moves the visual primitve to the specific positon

@@ -3,10 +3,6 @@ $(document).ready(function () {
     VisualizerHandler = function(){
         //Create the paper
 
-        //Positional 2D arrays
-        this.primitiveArray = [[]];
-        this.adtArray = [[]];
-
         //the list of entities
         this.entities = [];
         this.eventQueue = [];
@@ -25,6 +21,7 @@ $(document).ready(function () {
 
 
         //define constants
+        this.PRIMITIVE_ROW_LEN = 8
         this.PRIMITIVE_COL_LEN = 5
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;
@@ -36,6 +33,10 @@ $(document).ready(function () {
         this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
         this.ADT_SECTION_TEXT_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
+
+        //Positional 2D arrays
+        this.primitiveArray = Array.matrix(this.PRIMITIVE_ROW_LEN, this.PRIMITIVE_COL_LEN, 0);
+        this.adtArray = [[]];
 
         //drawing basic stuff on the paper: the sections
         this.paper = Raphael("vis_paper", 1000,1000);
@@ -104,6 +105,7 @@ $(document).ready(function () {
     };
     
     //Render is just going to chill out and let the change variables hit themselves
+    // this was changed at some point in some way 
     VisualizerHandler.prototype.Render = function() {
         console.log("Visualizer Handler: render()");
     };
@@ -165,8 +167,18 @@ $(document).ready(function () {
             return;
         }
     };
-
-    
+    // from Crockford Javascript the good parts
+    Array.matrix = function(numrows, numcols, initial) {
+        var arr = [];
+        for (var i = 0; i < numrows; ++i) {
+            var columns = [];
+            for (var j = 0; j < numcols; ++j) {
+                columns[j] = initial;
+            }
+            arr[i] = columns;
+        }
+        return arr;
+    }
     //Arranges entities
     VisualizerHandler.prototype.arrangeEntities = function() {
         this.arrangePrimitives();
@@ -178,6 +190,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.arrangePrimitives = function() {
         var curX = this.HBORDER;
         var curY = this.PRIMITIVE_SECTION_Y;
+
         var k = 0;
         for (var i = 0; i < this.entities.length; i++){ 
             var j = 0;
@@ -187,14 +200,16 @@ $(document).ready(function () {
                     if (this.entities[i].dragged == false) { 
                         
                         if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                            curX = k*this.PRIMITIVE_COLUMNWIDTH*1.7+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
-                            console.log("k is: " + k)
-                            if (this.primitiveArray[k][j] == null) {
+                            curX = k*this.PRIMITIVE_COLUMNWIDTH+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+                            console.log(this.primitiveArray[k][j])
+                            if (this.primitiveArray[k][j] == 0) {
                                 //check and see if this is a new entity and move it accordingly
                                 console.log("curX " + curX + " and curY " + curY);
-                                console.log(this.entities[i].name);
-                                this.primitiveArray[k].push(this.entities[i]);
+                                console.log(this.entities[i].name)
+                                //this.primitiveArray[k].push(this.entities[i]);
 
+                                this.primitiveArray[k][j] = this.entities[i].name;
+                                console.log(this.primitiveArray[k][j]);
                                 if (this.entities[i].x == 0){
                                     this.entities[i].create(curX, curY);
                                 }else{
@@ -222,7 +237,6 @@ $(document).ready(function () {
                 if (i == this.entities.length - 2) {
                     if  (j == this.PRIMITIVE_COL_LEN-1){
                         k += 1;
-                        this.primitiveArray.push([]);
                     }
                 }
                 j += 1;
