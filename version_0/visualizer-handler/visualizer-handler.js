@@ -18,8 +18,8 @@ $(document).ready(function () {
 
         //Testing a stack here
         //event, type, name, value, action, originADT
-        //this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
-        //this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
+        this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
+        this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
@@ -179,20 +179,21 @@ $(document).ready(function () {
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
         var curX = this.HBORDER, curY = this.PRIMITIVE_SECTION_Y;
-
         for (var i = 0; i < this.entities.length; i++){ 
             var j = 0, k = 0;
-
             while (j < this.PRIMITIVE_COL_LEN) {
                 // ensure entity is a primitive that is allowed to be [re]arranged
                 if (this.isPrimitive(this.entities[i])){
                     if (this.entities[i].dragged == false) { 
+                        
                         if (this.entities[i].x != curX || this.entities[i].y != curY) {
                             curX = k*this.PRIMITIVE_COLUMNWIDTH*1.7+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+                            
                             if (this.primitiveArray[k][j] == null) {
                                 //check and see if this is a new entity and move it accordingly
                                 console.log("curX " + curX + " and curY " + curY);
                                 console.log(this.entities[i].name);
+                                
                                 if (this.entities[i].x == 0){
                                     this.entities[i].create(curX, curY);
                                 }else{
@@ -214,24 +215,24 @@ $(document).ready(function () {
                                 this.primitiveArray[k].push(this.entities[i]);
 
                             }
-                        }
-                        //reset the while loop and increment k if there are still entities to arrange
-                        if (i == this.entities.length - 2) {
-                            console.log(j + " and " + this.PRIMITIVE_COL_LEN-1)
-                            if  (j == this.PRIMITIVE_COL_LEN-1){
-                                j = 0;
-                                k += 1;
-                                i += 1;
-                                //this.primitiveArray.push([]);
-                            } else {
-                                j += 1;
-                            }
-                        }
+                        }    
                     }
                 }
+                j += 1;
+                //reset the while loop and increment k if there are still entities to arrange
+                // if (i == this.entities.length - 2) {
+                //     console.log(j + " and " + this.PRIMITIVE_COL_LEN-1)
+                //     if  (j == this.PRIMITIVE_COL_LEN-1){
+                //         j = 0;
+                //         k += 1;
+                //         i += 1;
+                //     } else {
+                //         j += 1;
+                //     }
+                // }
             }
         }
-    }
+    };
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangeADTs = function() {
