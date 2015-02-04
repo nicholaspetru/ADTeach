@@ -14,12 +14,13 @@ $(document).ready(function () {
 
         //Testing a stack here
         //event, type, name, value, action, originADT
+        /*
         this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
         this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
         this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
         this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
         this.enqueueEvent("update","List<Integer>","stack1",[2,3,5], "remove", "remove");
-        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
+        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");*/
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
@@ -51,7 +52,7 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         //Testing new primitive system
-        /*
+        
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
@@ -61,7 +62,7 @@ $(document).ready(function () {
         this.enqueueEvent("new", "int", "g", 7, "int");
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-        */
+        
 
         return this;
     }
@@ -206,11 +207,11 @@ $(document).ready(function () {
                         
                         if (this.entities[i].x != curX || this.entities[i].y != curY) {
                             curX = k*this.PRIMITIVE_COLUMNWIDTH+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
-                            console.log(this.primitiveArray[k][j])
+                            console.log("Confirmed primitive on k, " + 0 + ", and entity, " + i + ", is " + this.entities[i].name)
                             if (this.primitiveArray[k][j] == 0) {
                                 //check and see if this is a new entity and move it accordingly
                                 console.log("curX " + curX + " and curY " + curY);
-                                console.log(this.entities[i].name)
+
                                 //this.primitiveArray[k].push(this.entities[i]);
 
                                 this.primitiveArray[k][j] = this.entities[i].name;
@@ -221,8 +222,6 @@ $(document).ready(function () {
                                     //set former index to null before moving
                                     //var tempX = this.entities[i].x;
                                     //var tempY = this.entities[i].y;
-                                    this.entities[i].x = curX;
-                                    this.entities[i].y = curY;
                                     this.entities[i].move(curX, curY);
                                         
 
@@ -238,13 +237,13 @@ $(document).ready(function () {
                         }    
                     }
                 }
-                //reset the while loop and increment k if there are still entities to arrange
-                if (i == this.entities.length - 2) {
-                    if  (j == this.PRIMITIVE_COL_LEN-1){
-                        k += 1;
+                    //reset the while loop and increment k if there are still entities to arrange
+                    if (i == this.entities.length - 2) {
+                        if  (j == this.PRIMITIVE_COL_LEN-1){
+                            k += 1;
+                        }
                     }
-                }
-                j += 1;
+                    j += 1;
             }
         }
     };

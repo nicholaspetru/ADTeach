@@ -41,7 +41,7 @@ $(document).ready(function () {
           setTimeout(function(){
             _t.x += difX;
             _t.y += difY;
-            console.log(difY);
+            //console.log(difY);
             for (var i =0; i < _t.vis.length; i++){
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
               _t.vis[i].animate(anim.delay(0));
@@ -66,7 +66,7 @@ $(document).ready(function () {
       DataUnit.prototype.update = function(newValue, orientation) {
 
           for (var i = 0; i < 20; i++){
-              console.log("y val: " + 8*Math.pow(-1,i));
+              //console.log("y val: " + 8*Math.pow(-1,i));
               this.move(8*Math.pow(-1,i)*orientation,8*Math.pow(-1,i)*(!orientation), this.VH.setDelay(50),25);
           }
 
