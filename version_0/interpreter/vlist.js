@@ -15,26 +15,41 @@ $(document).ready(function () {
     }
     
     VList.prototype.checkParameters = function(method, parameters) {
-        var oneParam = ['add', 'get', 'contains', 'indexOf', 'remove', 'populate'];
-        var zeroParam = ['isEmpty', 'size'];
-        if (oneParam.indexOf(method) >= 0) {
-            if (parameters[1] != null) {
-                console.log("Only one parameter");
-            }
-        } else if (zeroParam.indexOf(method) > 0) {
-            if (parameters[0] != null) {
-                console.log("No parameters");
-            }
-        } else {
-            if (parameters[0] == null && parameters[1] == null && parameters[3] != null) {
-                console.log("Two parameters needed");
+        var noParam = ['isEmpty', 'size', 'clear'];
+        var oneParam = ['get', 'contains', 'indexOf', 'remove', 'populate'];
+        var twoParam = ['set'];
+        if (noParam.indexOf(method) >= 0) {
+            if (parameters.length != 0) {
+                console.log("no parameters");
+                //new IncorrectParameters();
             }
         }
+        if (oneParam.indexOf(method) >= 0) {
+            if (parameters.length != 1) {
+                console.log("One parameters!");
+                //new IncorrectParameters();
+            }
+        }
+        if (twoParam.indexOf(method) >= 0) {
+            if (parameters.length != 2) {
+                console.log("Two parameters!");
+                //new IncorrectParameters();
+            }
+        }
+        if (method == 'add'){
+            if (parameters.length > 2){
+                console.log("Need 2 params or one sometimes...");
+            }
+        }                
         return true;
     }
     
-    VList.prototype.performMethod = function(type, origValue, method, parameters) {
+    VList.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
+        var origValue = [];
+        for (var i = 0; i<origValue1.length; i++){
+            origValue[i]=(origValue1[i]);   
+        }
         if (method == 'add') {
             origValue.push(parameters[0].value);
             return [returnValue, origValue];
