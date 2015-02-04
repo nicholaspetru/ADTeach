@@ -15,7 +15,11 @@ $(document).ready(function () {
         //Testing a stack here
         //event, type, name, value, action, originADT
         this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
+        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
         this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
+        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
+        this.enqueueEvent("update","List<Integer>","stack1",[2,3,5], "remove", "remove");
+        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
@@ -179,6 +183,7 @@ $(document).ready(function () {
         }
         return arr;
     }
+    
     //Arranges entities
     VisualizerHandler.prototype.arrangeEntities = function() {
         this.arrangePrimitives();
@@ -294,7 +299,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.setDelay = function(t) {
         this.getDelay();
         this.delay += t;
-        return (this.delay - this.date.getTime());
+        return (50 + this.delay - this.date.getTime());
     }
 
 });

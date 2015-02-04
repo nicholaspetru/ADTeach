@@ -36,29 +36,25 @@ $(document).ready(function () {
       };
 
       //Moves the dataunit to the given position at the specified time
-      DataUnit.prototype.move = function(difX, difY, delay) {
+      DataUnit.prototype.move = function(difX, difY, delay, time) {
           var _t = this;
           setTimeout(function(){
             _t.x += difX;
             _t.y += difY;
-
+            console.log(difY);
             for (var i =0; i < _t.vis.length; i++){
-              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},500);
+              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
               _t.vis[i].animate(anim.delay(0));
             }
+            _t.VH.setDelay(100);
           },(delay));
       };
 
-      //Create visual primitve in the specific position
-      DataUnit.prototype.fadeIn = function() {
-          //fade it in
-          var anim = Raphael.animation({opacity:1},1000);
-          this.vis.animate(anim.delay(this.VH.setDelay(1000)));
-      };
-
-      //Create visual primitve in the specific position
-      DataUnit.prototype.fadeOut = function(delay) {
-          var anim = Raphael.animation({opacity:0},1000);
+      //Deletes the item (actually, this just fades it out)
+      DataUnit.prototype.destroy = function() {
+          //fade it out
+          var anim = Raphael.animation({opacity:0},250);
+          var delay = this.VH.setDelay(250);
           for (var i =0; i < this.vis.length; i++){
             this.vis[i].animate(anim.delay(delay));
           }
@@ -66,23 +62,19 @@ $(document).ready(function () {
 
 
   	//Modifiy data unit value
-      DataUnit.prototype.update = function(newValue) {
-          // shake it off
-          var anim = Raphael.animation({x:-4},12);
-          this.vis[0].animate(anim.delay(this.VH.setDelay(12)));
+    //Orientation determines whether the dataunit is shaking up and down (0) or left to right (1)
+      DataUnit.prototype.update = function(newValue, orientation) {
 
-          for (var i = 0; i < 21; i++){
-              var anim = Raphael.animation({x:8*(-1^i)},25);
-              this.vis[0].animate(anim.delay(this.VH.setDelay(25)));
+          for (var i = 0; i < 20; i++){
+              console.log("y val: " + 8*Math.pow(-1,i));
+              this.move(8*Math.pow(-1,i)*orientation,8*Math.pow(-1,i)*(!orientation), this.VH.setDelay(50),25);
           }
+
           var _t = this, _val = this.value;
           setTimeout(function(){
-              _t.vis.attr({"text": newValue});
+              _t.vis[0].attr({"text": newValue});
           },(this.VH.delay - this.VH.date.getTime()));
 
-          var anim = Raphael.animation({x:0},12);
-          this.vis[0].animate(anim.delay(this.VH.setDelay(12)));
-          
           this.VH.setDelay(50);
       };
 
@@ -111,7 +103,9 @@ $(document).ready(function () {
 
       //Highlight
      DataUnit.prototype.lowLight = function() {
-        var anim = Raphael.animation({stroke: "black"}, 250)
+        var anim = Raphael.animation({stroke: "#4b4b4b"}, 250)
         this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
      };
 });
+
+//

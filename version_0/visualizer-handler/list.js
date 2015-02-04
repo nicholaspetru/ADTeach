@@ -76,7 +76,7 @@ $(document).ready(function () {
 
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
-                _t.vis[i].move(difX,difY,0);
+                _t.vis[i].move(difX,difY,0,500);
             }
         },(this.VH.delay - this.VH.date.getTime()));
 
@@ -99,8 +99,14 @@ $(document).ready(function () {
     //Update the 
     List.prototype.update = function(action, originADT) {
         switch(action){
+            case "remove":
+                this.RemoveAtPosition(0,action);
+                break;
             case "add":
                 this.AddAtPosition(0,action);
+                break;
+            case "set":
+                this.ChangeAtPosition(2,action);
                 break;
         }
     };
@@ -115,13 +121,34 @@ $(document).ready(function () {
         //Scooch down all the other data units
         var delay = this.VH.setDelay(500);
         for (var i = index; i < this.vis.length; i++){
-            this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay);
+            this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
         }
 
         //Insert the new data unit in it's proper location
-        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500));
-        newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500));
-        //newDU.move(220,200,this.VH.setDelay(500));
+        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
+        newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.vis.splice(index, 0, newDU);
     }
+
+    //Removes a  dataunit at the specified index
+    List.prototype.RemoveAtPosition = function(index) {
+        //deletes the new data unit
+        this.vis[index].destroy();
+
+        var delay = this.VH.setDelay(500);
+        for (var i = index; i < this.vis.length; i++){
+            this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
+        }
+
+        this.vis.splice(index, 1);
+    }
+
+    //Changes the value of the data unit at the given index
+    List.prototype.ChangeAtPosition = function(index, value) {
+        this.vis[index].update(value,0);
+    }
 });
+
+//add : adds something at the end
+//set: inserts a new thing at a certain spot in the list set.index
+//remove: removal.index 
