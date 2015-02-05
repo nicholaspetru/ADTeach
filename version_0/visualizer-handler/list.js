@@ -87,7 +87,7 @@ $(document).ready(function () {
         //get the delay for outside the loop
         var delay = this.VH.setDelay(1000);
 
-        //Fade in the label and frame
+        //Fade out the label and frame
         var anim = Raphael.animation({opacity:0},1000);
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
@@ -96,17 +96,45 @@ $(document).ready(function () {
         }
     };
     
-    //Update the 
+
+    //Update the List
     List.prototype.update = function(action, originADT) {
-        switch(action){
-            case "remove":
-                this.RemoveAtPosition(0,action);
-                break;
+        //strip the string and get the params from the "Action" str
+        var split = action.split(".");
+
+        //animate the change
+        switch(split[0]){
             case "add":
-                this.AddAtPosition(0,action);
+                var index = parseInt(split[1]);
+                this.AddAtPosition(index, this.value[index]);
+                break;
+            case "populate":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].remove();
+                }
+                //create new data units
+                for (var i = 0; i < this.value.length; i++){
+                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
+                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+                    this.vis.push(newDU);
+                    newDU.create();
+                }
+                break;
+            case "remove":
+                var index = parseInt(split[1]);
+                this.RemoveAtPosition(index);
                 break;
             case "set":
-                this.ChangeAtPosition(2,action);
+                var index = parseInt(split[1]);
+                this.ChangeAtPosition(index);
+                break;
+            case "clear":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].destroy();
+                }
+                this.vis = [];
                 break;
         }
     };
@@ -144,8 +172,15 @@ $(document).ready(function () {
     }
 
     //Changes the value of the data unit at the given index
-    List.prototype.ChangeAtPosition = function(index, value) {
-        this.vis[index].update(value,0);
+    List.prototype.ChangeAtPosition = function(index) {
+        this.vis[index].update(this.value[index],0);
+    }
+
+    //Changes the value of the data unit at the given index
+    List.prototype.HighLightAtPosition = function(index) {
+        this.vis[index].highLight();
+        this.VH.setDelay(200);
+        this.vis[index].lowLight();
     }
 });
 

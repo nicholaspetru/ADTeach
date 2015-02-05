@@ -20,7 +20,8 @@ $(document).ready(function () {
         this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
         this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
         this.enqueueEvent("update","List<Integer>","stack1",[2,3,5], "remove", "remove");
-        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");*/
+        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
+        */
         //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
         //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
 
@@ -52,7 +53,7 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         //Testing new primitive system
-        
+        /*
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
@@ -62,7 +63,7 @@ $(document).ready(function () {
         this.enqueueEvent("new", "int", "g", 7, "int");
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-        
+        */
 
         return this;
     }
@@ -162,8 +163,6 @@ $(document).ready(function () {
             return new Primitive(this.paper,name,type,value,this);
         case "bool":
             return new Primitive(this.paper,name,type,value,this);
-        case "Stack<Integer>":
-            return new Stack(this.paper,name,type,value, this);
         case "List<Integer>":
             return new List(this.paper,name,type,value, this);
         //and more cases....
