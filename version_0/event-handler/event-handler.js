@@ -4,7 +4,6 @@ $(document).ready(function() {
     EventHandler = function() {
         this.code = "";
         this.playing = false;
-        this.lineNumber = 0;
         this.interpreted = false;
         this.interpreter = new Interpreter();
         this.codeBox = new CodeBox();
@@ -22,14 +21,7 @@ $(document).ready(function() {
         
         return this;
     }
-    
-    
 
-    EventHandler.prototype.changeTime = function() {
-        console.log('Event Handler: changeTime()');
-        //TO-DO: Allow user to set this number by some user interface
-        this.timeBetweenSteps = 2000;
-    }
 
 
     //build
@@ -47,22 +39,9 @@ $(document).ready(function() {
         $("#sample").hide();
     };
     
-    EventHandler.prototype.playStep = function() {
-        //wrapper for what happens at the same time when going forth
-        console.log('Event Handler: playStep()');
-        this.codeBox.highlightLine(this.lineNumber);
-        this.visualizerHandler.goForthAll();
-    };
-    
-    EventHandler.prototype.takeStep = function() {
-        console.log('Event Handler: takeStep()');
-        this.codeBox.highlightLine(this.lineNumber);
-        this.visualizerHandler.goForthOnce();
-    };
-    
     EventHandler.prototype.onPlay = function() {
         console.log('Event Handler: onPlay()');
-        this.playStep();
+        this.visualizerHandler.goForthAll();
     };
     
 
@@ -74,7 +53,7 @@ $(document).ready(function() {
     // hidden until INTERPRETED = true
     EventHandler.prototype.onStep = function() {
        console.log("Event Handler: onStep()");
-       this.takeStep();
+       this.visualizerHandler.goForthOnce();
     };
     
     // hidden until INTERPRETED = true
