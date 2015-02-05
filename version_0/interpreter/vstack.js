@@ -50,8 +50,12 @@ $(document).ready(function () {
         return true;
     }
     
-    VStack.prototype.performMethod = function(type, origValue, method, parameters) {
+    VStack.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
+        var origValue = [];
+        for (var i = 0; i<origValue1.length; i++){
+            origValue[i]=(origValue1[i]);   
+        }
         if (method == "pop") {
             returnValue = origValue.pop();
             return [returnValue, origValue];

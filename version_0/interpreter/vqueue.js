@@ -48,8 +48,12 @@ $(document).ready(function () {
         return true;
     }
     
-    VQueue.prototype.performMethod = function(type, origValue, method, parameters) {
+    VQueue.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
+        var origValue = [];
+        for (var i = 0; i<origValue1.length; i++){
+            origValue[i]=(origValue1[i]);   
+        }
         if (method == 'enqueue') {
             var newList = [];
             newList.push(parameters[0].value);
