@@ -52,7 +52,7 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         //Testing new primitive system
-        
+        /*
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
@@ -62,7 +62,7 @@ $(document).ready(function () {
         this.enqueueEvent("new", "int", "g", 7, "int");
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-        
+        */
 
         return this;
     }
@@ -138,6 +138,21 @@ $(document).ready(function () {
             }
         }
     };
+
+    //Deletes all Entities
+    VisualizerHandler.prototype.DeleteAll = function(string) {
+        console.log("Visualizer Handler: DeleteAll()");
+        this.paper.clear();
+        this.paper.text(this.HBORDER, this.VBORDER, "primitives:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.VBORDER + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.VBORDER + this.FONT_HEIGHT));
+
+        this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
+        
+        this.entities = [];
+        this.eventQueue = [];
+        this.symbolTable = null;
+    }
 
     //Deletes the named Entity
     VisualizerHandler.prototype.DeleteEntity = function(name) {
