@@ -27,8 +27,8 @@ $(document).ready(function () {
 
 
         //define constants
-        this.PRIMITIVE_ROW_LEN = 8
-        this.PRIMITIVE_COL_LEN = 5
+        this.PRIMITIVE_NUM_COLS= 10;
+        this.PRIMITIVE_COL_LEN = 5;
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;
         this.PRIMITIVE_SECTION_HEIGHT = 100;
@@ -41,7 +41,7 @@ $(document).ready(function () {
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
 
         //Positional 2D arrays
-        this.primitiveArray = Array.matrix(this.PRIMITIVE_ROW_LEN, this.PRIMITIVE_COL_LEN, 0);
+        this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
         this.adtArray = [[]];
 
         //drawing basic stuff on the paper: the sections
@@ -54,17 +54,17 @@ $(document).ready(function () {
 
         this.codeboxPaper = null;        
         //Testing new primitive system
-        /*
-        this.enqueueEvent("new", "int", "a", 1, "int");
-        this.enqueueEvent("new", "int", "b", 2, "int");
-        this.enqueueEvent("new", "int", "c", 3, "int");
-        this.enqueueEvent("new", "int", "d", 4, "int");
-        this.enqueueEvent("new", "int", "e", 5, "int");
-        this.enqueueEvent("new", "int", "f", 6, "int");
-        this.enqueueEvent("new", "int", "g", 7, "int");
-        this.enqueueEvent("new", "int", "h", 8, "int");
-        this.enqueueEvent("new", "int", "i", 9, "int");
-        */
+        
+        //this.enqueueEvent("new", "int", "a", 1, "int");
+        // this.enqueueEvent("new", "int", "b", 2, "int");
+        // this.enqueueEvent("new", "int", "c", 3, "int");
+        // this.enqueueEvent("new", "int", "d", 4, "int");
+        // this.enqueueEvent("new", "int", "e", 5, "int");
+        // this.enqueueEvent("new", "int", "f", 6, "int");
+        // this.enqueueEvent("new", "int", "g", 7, "int");
+        // this.enqueueEvent("new", "int", "h", 8, "int");
+        // this.enqueueEvent("new", "int", "i", 9, "int");
+        
 
         return this;
     }
@@ -201,9 +201,9 @@ $(document).ready(function () {
     // from Crockford Javascript the good parts
     Array.matrix = function(numrows, numcols, initial) {
         var arr = [];
-        for (var i = 0; i < numrows; ++i) {
+        for (var i = 0; i < numcols; ++i) {
             var columns = [];
-            for (var j = 0; j < numcols; ++j) {
+            for (var j = 0; j < numrows; ++j) {
                 columns[j] = initial;
             }
             arr[i] = columns;
@@ -220,6 +220,15 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
+        // for (var i = 0; i < this.entities.length; i++){ 
+        //     this.entities[i].create(80, 200);
+        //     this.entities[i].move(80, 300);
+        //     this.entities[i].move(140, 300);
+        //     this.entities[i].move(140, 200);
+        //     this.entities[i].move(80, 200);
+        // }
+
+
         var curX = this.HBORDER;
         var curY = this.PRIMITIVE_SECTION_Y;
 
@@ -228,20 +237,19 @@ $(document).ready(function () {
             var j = 0;
             while (j < this.PRIMITIVE_COL_LEN) {
                 // ensure entity is a primitive that is allowed to be [re]arranged
-                if (this.isPrimitive(this.entities[i])){
-                    if (this.entities[i].dragged == false) { 
-                        
-                        if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                            curX = k*this.PRIMITIVE_COLUMNWIDTH+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
-                            console.log("Confirmed primitive on k, " + 0 + ", and entity, " + i + ", is " + this.entities[i].name)
-                            if (this.primitiveArray[k][j] == 0) {
-                                //check and see if this is a new entity and move it accordingly
+                if (this.isPrimitive(this.entities[i])){//top
+                    if (this.entities[i].dragged == false) { //top as well (completely ignore these if)
+                        if (this.primitiveArray[k][j] == 0) {
+                            curX = (j*this.PRIMITIVE_COLUMNWIDTH)+this.HBORDER
+                            curY = k*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+
+                            if (this.entities[i].x != curX || this.entities[i].y != curY) {
+                                console.log("Confirmed primitive on k, " + 0 + ", j, " + j + ", and entity, " + i + ", is " + this.entities[i].name)
                                 console.log("curX " + curX + " and curY " + curY);
 
                                 //this.primitiveArray[k].push(this.entities[i]);
 
-                                this.primitiveArray[k][j] = this.entities[i].name;
-                                console.log(this.primitiveArray[k][j]);
+                                this.primitiveArray[k][j] = this.entities[i];
                                 if (this.entities[i].x == 0){
                                     this.entities[i].create(curX, curY);
                                 }else{
@@ -263,13 +271,14 @@ $(document).ready(function () {
                         }    
                     }
                 }
-                    //reset the while loop and increment k if there are still entities to arrange
-                    if (i == this.entities.length - 2) {
-                        if  (j == this.PRIMITIVE_COL_LEN-1){
-                            k += 1;
-                        }
+                //reset the while loop and increment k if there are still entities to arrange
+                if (this.entities.length - (i+1) > 0) {
+                    if  (j == this.PRIMITIVE_COL_LEN-1){
+                        console.log("K is Incremented")
+                        k += 1;
                     }
-                    j += 1;
+                }
+                j += 1;
             }
         }
     };
