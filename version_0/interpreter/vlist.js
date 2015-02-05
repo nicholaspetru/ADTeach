@@ -51,8 +51,21 @@ $(document).ready(function () {
             origValue[i]=(origValue1[i]);   
         }
         if (method == 'add') {
-            origValue.push(parameters[0].value);
-            return [returnValue, origValue];
+            if (parameters.length == 1){
+                origValue.push(parameters[0].value);
+                return [returnValue, origValue];
+            }
+            else{
+                if (parameters[0].value > origValue.length-1) {
+                    console.log("Index out of bounds");
+                } 
+                var first = origValue.slice(0, parameters[0].value);
+                var second = [parameters[1].value];
+                var third = origValue.slice(parameters[0].value);
+                
+                origValue = first.concat(second).concat(third);                
+                return [returnValue, origValue]; 
+            }
         }
         if (method == 'get') {
             if (parameters[0].value > origValue.length) {
@@ -70,8 +83,8 @@ $(document).ready(function () {
             return [returnValue, origValue];
         }
         if (method == "remove") {
-            var index = origValue.indexOf(parameters[0].value);
-            if (index > -1) {
+            var index = parameters[0].value;
+            if (index > -1 && index < origValue.length-1) {
                 origValue.splice(index, 1);
             } else {
                 console.log("Not in list");
@@ -85,6 +98,9 @@ $(document).ready(function () {
         if (method == 'size') {
             returnValue = (origValue.length);
             return [returnValue, origValue];
+        }
+        if (method == 'clear') {
+            return [returnValue, []];
         }
         if (method == 'set') {
             if (parameters[0].value > origValue.length-1) {
