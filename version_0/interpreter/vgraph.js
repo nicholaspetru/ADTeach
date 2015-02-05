@@ -15,19 +15,6 @@ $(document).ready(function () {
         }
     }
     
-    VGraph.prototype.addEdge = function(node1, node2) {
-        this.adList[node1].add(node2);
-        var node1Edges = this.adList[node1];
-            if (typeof node1Edges == typeof [1,2]){
-                node1Edges.add(node2);
-                this.adList[node1] = node1Edges;
-
-        var node2Edges = this.adList[node2];
-            if (typeof node2Edges == typeof [1,2]){
-                node2Edges.add(node1);
-                this.adList[node2] = node2Edges;
-    }
-    
     VGraph.prototype.listMethods = function() {
         var methods = ['removeNode', 'addNode', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate'];
         return methods;
@@ -57,31 +44,28 @@ $(document).ready(function () {
         }
         return true;
     }
-    /*
+    
     VStack.prototype.performMethod = function(type, origValue, method, parameters) {
         var returnValue = null;
-        if (method == "pop") {
-            returnValue = origValue.pop();
-            return [returnValue, origValue];
-        } if (method == "push") {
-            if (type == "Stack<Integer>") {
-                if (parameters[0].jtype != "INT_TYPE") {
-                    console.log('INCOMPATIBLE TYPES, want ints');
+        if (method == "addEdge"){ 
+            var node1 = parameters[0];
+            var node2 = parameters[1];
+            var node1Edges = this.adList[node1];
+                if (typeof node1Edges == typeof [1,2]){
+                    node1Edges.add(node2);
+                    this.adList[node1] = node1Edges;
+                }else{
+                    this.adList[node1] = [node2];
                 }
-            } else if (type == "Stack<String>") {
-                if (parameters[0].jtype != "STRING_TYPE") {
-                    console.log('INCOMPATIBLE TYPES, want strings');
+
+            var node2Edges = this.adList[node2];
+                if (typeof node2Edges == typeof [1,2]){
+                    node2Edges.add(node1);
+                    this.adList[node2] = node2Edges;
+                }else{
+                    this.adList[node2] = [node1];
                 }
-            } 
-            //TODO: Check types
-            origValue.push(parameters[0].value);
-            return [returnValue, origValue];
-        } if (method == "isEmpty") {
-            return origValue.isEmpty();
-        } if (method == "getValue") {
-            return origValue.getValue();
-        } if (method == "getType") {
-            return origValue.getType();
+            }
         } if (method == "populate") {
             if (type == "Stack<Integer>") {
                 var value = [];
@@ -103,7 +87,7 @@ $(document).ready(function () {
         }
         
     }
-    */
+    
     
     
 });
