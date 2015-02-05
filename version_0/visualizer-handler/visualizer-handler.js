@@ -153,6 +153,8 @@ $(document).ready(function () {
         this.entities = [];
         this.eventQueue = [];
         this.symbolTable = null;
+        this.date = new Date();
+        this.delay = this.date.getTime();
     }
 
     //Deletes the named Entity
