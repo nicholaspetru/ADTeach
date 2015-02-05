@@ -4,8 +4,12 @@ $(document).ready(function () {
         this.database = new Object();
         this.database['stack'] = 
             ['List<Integer> s = new List<Integer>();',
-             's.add(3);',
-             's.add(4);',
+             'List<Integer> t = new List<Integer>();',
+             's.populate(4);',
+             's.add(2);',
+             'for (int i = 0; i < s.size(); i++) {',
+             '\t t.add(s.get(i));',
+             '}'
             ].join('\n');
         this.database['stack2'] = 
             ['Stack<String> s = new Stack<String>();',

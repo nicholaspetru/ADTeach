@@ -89,6 +89,11 @@ $(document).ready(function () {
     }
 
     Interpreter.prototype.evalValue = function(root, env) {
+        console.log("Evaling value of: ", root);
+        if (root.arity == "FunCall") {
+            
+            return this.evalMethod(root, env)[0];
+        }
         if (root.arity != "name") {
             switch(root.jtype) {
                 case 'INT_TYPE':
@@ -247,6 +252,8 @@ $(document).ready(function () {
             } else {
                 return variable;
             }
+        } else if (root.arity == "FunCall") {
+            return this.evalMethod(root, env);
         }
         
         if (root.arity === "binary") {
@@ -397,6 +404,7 @@ $(document).ready(function () {
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
         var adtIndex = env.getIndex(adt);
+        console.log("HERE: ", env.getVariables()[adtIndex]);
         var adtType = env.getVariables()[adtIndex].type;
         var adtCurValue = env.getVariables()[adtIndex].value;
         var method = root.MethodName.value;
@@ -408,7 +416,9 @@ $(document).ready(function () {
         var paramCheck = this.checkParameters(adtType, method, parameters);
         var newValue, returnValue;
         var cloneParam = [];
-
+        console.log("Evaluating the method: ", root);
+        console.log("adtMethod: ", method);
+        console.log("Adt type: ", adtType);
         if (adtMethods.indexOf(method) < 0) {
             console.log("Invalid Method");
             //new InvalidMethod();
@@ -422,6 +432,12 @@ $(document).ready(function () {
                 originADT = parameters[parameters.length-1].value;
             }
             for (var i = 0; i < parameters.length; i++){
+                console.log("Parameter is: ", parameters[i]);
+                var varValue = this.evalValue(parameters[i], env);
+                console.log("Value of parameter is: ", varValue);
+                var cloneVar = {value:varValue};
+                cloneParam[i] = cloneVar;
+                /*
                 if (env.getValue(parameters[i].value) != null) {
                     var cloneVar = {value:env.getValue(parameters[i].value)};
                     cloneParam[i] = cloneVar;
@@ -429,6 +445,8 @@ $(document).ready(function () {
                     var cloneVar = {value:parameters[i].value};
                     cloneParam[i] = cloneVar;
                 }
+                */
+                
             }
             }
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
