@@ -10,7 +10,7 @@ $(document).ready(function () {
     }
     
     VList.prototype.listMethods = function() {
-        var methods = ["add", "contains", "get", "indexOf", "isEmpty", "remove", "set", "size", "populate"];
+        var methods = ["add", "contains", "get", "indexOf", "isEmpty", "remove", "set", "size", "populate", "clear"];
         return methods;
     }
     
@@ -100,7 +100,8 @@ $(document).ready(function () {
             return [returnValue, origValue];
         }
         if (method == 'clear') {
-            return [returnValue, []];
+            origValue = [];
+            return [returnValue, origValue];
         }
         if (method == 'set') {
             if (parameters[0].value > origValue.length-1) {
