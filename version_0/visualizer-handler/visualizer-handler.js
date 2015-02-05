@@ -52,6 +52,7 @@ $(document).ready(function () {
         this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
+        this.codeboxPaper = null;        
         //Testing new primitive system
         /*
         this.enqueueEvent("new", "int", "a", 1, "int");
@@ -68,12 +69,25 @@ $(document).ready(function () {
         return this;
     }
 
+    VisualizerHandler.prototype.highlightLine = function(lineNumber) {
+        console.log("Visualizer Handler: highlightLine()");
+        //paper for highlight line
+        if (this.codeboxPaper != null) {
+            this.codeboxPaper.remove();
+        }
+        this.codeboxPaper = Raphael(35, 105, 444, 444);
+        var highlight = this.codeboxPaper.rect(0,3+(13*lineNumber),444,13);
+        highlight.attr("fill", "yellow");
+        highlight.attr("fill-opacity", .2);
+        highlight.attr("stroke-width", 0);
+    }
+
     //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForthAll = function() {
         console.log("Visualizer Handler: goForthAll()");
-
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
+            this.highlightLine(curEvent[6]);
             if (curEvent[0] == 'new') {
                 this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
             }
@@ -87,39 +101,32 @@ $(document).ready(function () {
                 console.log('unrecognized event: ' + curEvent[0]);
             }
         }
-        this.Render();
     };
     
     VisualizerHandler.prototype.goForthOnce = function() {
         console.log("Visualizer Handler: goForthOnce()");
         if (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
-                if (curEvent[0] == 'new') {
-                    this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
-                }
-                else if (curEvent[0] == 'update') {
-                    this.UpdateEntity(curEvent[1], curEvent[3], curEvent[4], curEvent[5]);
-                }
-                else if (curEvent[0] == 'delete') {
-                    this.DeleteEntity(curEvent[2]);
-                }
-                else {
-                    console.log('unrecognized event: ' + curEvent[0]);
-                }
+            this.highlightLine(curEvent[6]);
+            if (curEvent[0] == 'new') {
+                this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
             }
-        this.Render();
-    };
-    
-    //Render is just going to chill out and let the change variables hit themselves
-    // this was changed at some point in some way 
-    VisualizerHandler.prototype.Render = function() {
-        console.log("Visualizer Handler: render()");
+            else if (curEvent[0] == 'update') {
+                this.UpdateEntity(curEvent[1], curEvent[3], curEvent[4], curEvent[5]);
+            }
+            else if (curEvent[0] == 'delete') {
+                this.DeleteEntity(curEvent[2]);
+            }
+            else {
+                console.log('unrecognized event: ' + curEvent[0]);
+            }
+        }
     };
     
     //Enqueue an event onto the event queue
-    VisualizerHandler.prototype.enqueueEvent = function(event, type, name, value, action, originADT) {
-        console.log("Visualizer Handler: enqueueEvent(" + event + ',' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ')');
-        this.eventQueue.push([event, name, type, value, action, originADT]);
+    VisualizerHandler.prototype.enqueueEvent = function(event, type, name, value, action, originADT, lineNum) {
+        console.log("Visualizer Handler: enqueueEvent(" + event + ',' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ',' + lineNum + ')');
+        this.eventQueue.push([event, name, type, value, action, originADT, lineNum]);
     };
 
     //Pushes a new Entity onto the list
@@ -155,6 +162,9 @@ $(document).ready(function () {
         this.symbolTable = null;
         this.date = new Date();
         this.delay = this.date.getTime();
+        if (this.codeboxPaper != null) {
+            this.codeboxPaper.remove();
+        }
     }
 
     //Deletes the named Entity
