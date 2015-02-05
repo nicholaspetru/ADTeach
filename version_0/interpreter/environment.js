@@ -42,20 +42,24 @@ $(document).ready(function () {
 		}
 	}
 
-	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT) {
+	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT, lineNum) {
         console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
+        console.log("Origin method is: ", originMethod);
+        console.log("Line number: ", lineNum);
 		var n = {type: type,
 			name: variable, 
 			value: value};
 		
 		this.variables.push(n);
 		this.names.push(variable);
-		this.symbolTable.newVariable(type, variable, value, originMethod, originADT);
+		this.symbolTable.newVariable(type, variable, value, originMethod, originADT, lineNum-1);
 	}
 
-	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT) {
+	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT, lineNum) {
 		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
-		var index = this.names.indexOf(name);
+        console.log("Line number: ", lineNum);
+		console.log("Origin method is: ", originMethod);
+        var index = this.names.indexOf(name);
         var type = this.variables[index].type;
          
         //CHECK TYPE
@@ -64,6 +68,6 @@ $(document).ready(function () {
             //new IncompatibleTypes();
         }
 		this.variables[index].value = newVal;
-        this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT);
+        this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT, lineNum-1);
 	}
 });

@@ -209,23 +209,24 @@ $(document).ready(function () {
         
         if (root.arity === "Initialization") {
             if (root.first == "Stack<Integer>") {
-                env.createVariable("Stack<Integer>", root.second.value, [], "new", originADT); 
+                env.createVariable("Stack<Integer>", root.second.value, [], "new", originADT, root.linenum); 
             } else if (root.first == "Stack<String>") {
-                env.createVariable("Stack<String>", root.second.value, [], "new", originADT);
+                env.createVariable("Stack<String>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "List<Integer>") {
-                env.createVariable("List<Integer>", root.second.value, [], "new", originADT);
+                console.log("Root is: ", root);
+                env.createVariable("List<Integer>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "List<String>") {
-                env.createVariable("List<String>", root.second.value, [], "new", originADT);
+                env.createVariable("List<String>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "Queue<Integer>") {
-                env.createVariable("Queue<Integer>", root.second.value, [], "new", originADT);
+                env.createVariable("Queue<Integer>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "Queue<String>") {
-                env.createVariable("Queue<String>", root.second.value, [], "new", originADT);
+                env.createVariable("Queue<String>", root.second.value, [], "new", originADT, root.linenum);
             }else {
                 var type = this.checkType(value);
                 if (root.first != type){
                  console.log("INCOMPATIBLE TYPES!!");   
                 }
-                env.createVariable(root.first, root.second.value, value, originMethod, originADT);
+                env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
             }
         }
         else {
@@ -233,8 +234,8 @@ $(document).ready(function () {
             if (root.first != type){
              console.log("INCOMPATIBLE TYPES!!");   
             }
-            
-            env.updateVariable(root.first.value, value, originMethod, originADT);
+            console.log("root is: ", root);
+            env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
     }
     
@@ -386,7 +387,7 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            env.updateVariable(name, value+1, "Step", "new");
+            env.updateVariable(name, value+1, "Step", "new", root.linenum);
         }
     
     }
@@ -396,7 +397,7 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            env.updateVariable(name, value-1, "Step", "new");
+            env.updateVariable(name, value-1, "Step", "new", root.linenum);
         }
     
     }
@@ -452,19 +453,29 @@ $(document).ready(function () {
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
             returnValue = methodValue[0];
             newValue = methodValue[1];
+            console.log("THe parameters are: ", cloneParam);
+            //console.log("Adding to method: ", cloneParam[0].value);
+            switch(method) {
+                case("set"):
+                case("remove"):
+                case("get"):
+                case("search"):
+                case("contains"):
+                case("indexOf"):
+                    console.log("Going to add: ", cloneParam);
+                    method = method + "." + cloneParam[0].value;
+                    console.log("method is: ", method);
+                    break;
+                case("add"):
+                    if (parameters.length == 1) {
+                        method = method + "." + adtCurValue.length;
+                    } else {
+                        method = method + "." + cloneParam[0].value;
+                    }
+                    break;
+            }
             
-            if (method == "set") {
-                method = method + "." + parameters[0].value;
-            }
-            if (method == "add" && parameters.length == 2) {
-                method = method + "." + parameters[0].value;
-            } else if (method == "add" && parameters.length == 1) {
-                method = method + "." + adtCurValue.length;
-            }
-            if (method == "remove") {
-                method = method + "." + parameters[0].value;
-            }
-            env.updateVariable(adt, newValue, method, originADT);
+            env.updateVariable(adt, newValue, method, originADT, root.linenum);
         }
         return [returnValue, newValue];
     }
