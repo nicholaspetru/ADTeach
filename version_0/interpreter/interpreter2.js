@@ -438,6 +438,14 @@ $(document).ready(function () {
             if (method == "set") {
                 method = method + "." + parameters[0].value;
             }
+            if (method == "add" && parameters.length == 2) {
+                method = method + "." + parameters[0].value;
+            } else if (method == "add" && parameters.length == 1) {
+                method = method + "." + adtCurValue.length;
+            }
+            if (method == "remove") {
+                method = method + "." + parameters[0].value;
+            }
             env.updateVariable(adt, newValue, method, originADT);
         }
         return [returnValue, newValue];

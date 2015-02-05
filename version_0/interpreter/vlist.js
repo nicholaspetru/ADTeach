@@ -84,7 +84,7 @@ $(document).ready(function () {
         }
         if (method == "remove") {
             var index = parameters[0].value;
-            if (index > -1 && index < origValue.length-1) {
+            if (index > -1 && index < origValue.length) {
                 origValue.splice(index, 1);
             } else {
                 console.log("Not in list");

@@ -30,12 +30,12 @@ $(document).ready(function () {
     }
     
     VQueue.prototype.listMethods = function() {
-        var methods = ["enqueue", "dequeue", "isEmpty", "size", "populate"];
+        var methods = ["enqueue", "dequeue", "isEmpty", "size", "populate", "peek"];
         return methods;
     }
     
     VQueue.prototype.checkParameters = function(method, parameters) {
-        var zeroParam = ["dequeue", "isEmpty", "size"]
+        var zeroParam = ["dequeue", "isEmpty", "size", "peek"]
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("Only takes one parameter");
@@ -64,6 +64,11 @@ $(document).ready(function () {
             origValue = newList;
             return [returnValue, origValue];
         }
+        if (method == "peek") {
+            var length = origValue.length;
+            returnValue = origValue[length-1];
+            return [returnValue, origValue];
+        }
         if (method == 'dequeue') {
             returnValue = origValue.pop();
             console.log("REturning, ", returnValue, " + ", origValue);
@@ -78,19 +83,21 @@ $(document).ready(function () {
             return [returnValue, origValue];
         }
         if (method == "populate") {
+            var value = [];
             if (type == "Queue<Integer>") {
-                for (var i = 0; i < parameters[0]; i++) {
+                for (var i = 0; i < parameters[0].value; i++) {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(toPush);
                 }
             } 
             if (type == "Queue<String>") {
                 var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                for (var i = 0; i < parameters[0]; i++) {
+                for (var i = 0; i < parameters[0].value; i++) {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(options[toPush]);
                 }
             }
+            return [returnValue, value];
         }
         
     }
