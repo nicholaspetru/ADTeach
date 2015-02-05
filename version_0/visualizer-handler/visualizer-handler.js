@@ -140,6 +140,21 @@ $(document).ready(function () {
         }
     };
 
+    //Deletes all Entities
+    VisualizerHandler.prototype.DeleteAll = function(string) {
+        console.log("Visualizer Handler: DeleteAll()");
+        this.paper.clear();
+        this.paper.text(this.HBORDER, this.VBORDER, "primitives:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.VBORDER + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.VBORDER + this.FONT_HEIGHT));
+
+        this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y, "data structures:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
+        
+        this.entities = [];
+        this.eventQueue = [];
+        this.symbolTable = null;
+    }
+
     //Deletes the named Entity
     VisualizerHandler.prototype.DeleteEntity = function(name) {
         console.log("Visualizer Handler: deleteEntity(" + name + ")");
