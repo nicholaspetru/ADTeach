@@ -61,6 +61,8 @@ $(document).ready(function () {
         this.enqueueEvent("new", "int", "c", 3, "int");
         this.enqueueEvent("new", "int", "d", 4, "int");
         this.enqueueEvent("new", "int", "e", 5, "int");
+        this.enqueueEvent("delete", "int", "b", 2, "int");
+        this.enqueueEvent("delete", "int", "e", 5, "int");   
         this.enqueueEvent("new", "int", "f", 6, "int");
         this.enqueueEvent("new", "int", "g", 7, "int");
         this.enqueueEvent("new", "int", "h", 8, "int");
@@ -256,7 +258,7 @@ $(document).ready(function () {
                     this.entities[i].drawn = true;
                 }
                 // else if this.entities[i].dragged == true
-                // move the primitive
+                // move the primitive <-- i don't think we want to move it if it's been dragged
             }
         }
     };

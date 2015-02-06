@@ -10,7 +10,7 @@ $(document).ready(function () {
         this.type = type;
         this.value = value;
         this.dragged = false;
-        this.drawn = false;
+        this.drawn = false; //what purpose does this serve? for destroying/removing prims?
 
         //assign the position
         this.x = 0;
@@ -56,6 +56,7 @@ $(document).ready(function () {
     Primitive.prototype.destroy = function() {
         var anim = Raphael.animation({opacity:0},1000);
         this.vis.animate(anim.delay(this.VH.setDelay(1000)));
+        console.log("destroy() engaged")
     };
     
     //Modifiy visual primitives
