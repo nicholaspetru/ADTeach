@@ -69,15 +69,15 @@ $(document).ready(function () {
         return this;
     }
 
-    VisualizerHandler.prototype.highlightLine = function(lineNumber) {
-        console.log("Visualizer Handler: highlightLine()");
+    VisualizerHandler.prototype.highlightLine = function(lineNumber, color) {
+        console.log("Visualizer Handler: highlightLine(" + lineNumber + ")");
         //paper for highlight line
         if (this.codeboxPaper != null) {
             this.codeboxPaper.remove();
         }
         this.codeboxPaper = Raphael(35, 105, 444, 444);
         var highlight = this.codeboxPaper.rect(0,3+(13*lineNumber),444,13);
-        highlight.attr("fill", "yellow");
+        highlight.attr("fill", color);
         highlight.attr("fill-opacity", .2);
         highlight.attr("stroke-width", 0);
     }
@@ -87,7 +87,7 @@ $(document).ready(function () {
         console.log("Visualizer Handler: goForthAll()");
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
-            this.highlightLine(curEvent[6]);
+            this.highlightLine(curEvent[6], "yellow");
             if (curEvent[0] == 'new') {
                 this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
             }
@@ -107,7 +107,7 @@ $(document).ready(function () {
         console.log("Visualizer Handler: goForthOnce()");
         if (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
-            this.highlightLine(curEvent[6]);
+            this.highlightLine(curEvent[6], "yellow");
             if (curEvent[0] == 'new') {
                 this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
             }

@@ -86,4 +86,11 @@ $(document).ready(function () {
         return false;
     };
 
+    SymbolTable.prototype.throwError = function(lineNum) {
+        this.visualizerHandler.highlightLine(lineNum, "red");
+        $("#build").hide();
+        $("#sample").hide();
+        $("#stop").show();
+    }
+
 });
