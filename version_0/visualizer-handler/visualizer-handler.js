@@ -55,15 +55,15 @@ $(document).ready(function () {
         this.codeboxPaper = null;        
         //Testing new primitive system
         
-        //this.enqueueEvent("new", "int", "a", 1, "int");
-        // this.enqueueEvent("new", "int", "b", 2, "int");
-        // this.enqueueEvent("new", "int", "c", 3, "int");
-        // this.enqueueEvent("new", "int", "d", 4, "int");
-        // this.enqueueEvent("new", "int", "e", 5, "int");
-        // this.enqueueEvent("new", "int", "f", 6, "int");
-        // this.enqueueEvent("new", "int", "g", 7, "int");
-        // this.enqueueEvent("new", "int", "h", 8, "int");
-        // this.enqueueEvent("new", "int", "i", 9, "int");
+        this.enqueueEvent("new", "int", "a", 1, "int");
+        this.enqueueEvent("new", "int", "b", 2, "int");
+        this.enqueueEvent("new", "int", "c", 3, "int");
+        this.enqueueEvent("new", "int", "d", 4, "int");
+        this.enqueueEvent("new", "int", "e", 5, "int");
+        this.enqueueEvent("new", "int", "f", 6, "int");
+        this.enqueueEvent("new", "int", "g", 7, "int");
+        this.enqueueEvent("new", "int", "h", 8, "int");
+        this.enqueueEvent("new", "int", "i", 9, "int");
         
 
         return this;
@@ -220,65 +220,45 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        // for (var i = 0; i < this.entities.length; i++){ 
-        //     this.entities[i].create(80, 200);
-        //     this.entities[i].move(80, 300);
-        //     this.entities[i].move(140, 300);
-        //     this.entities[i].move(140, 200);
-        //     this.entities[i].move(80, 200);
-        // }
+        var newX = this.HBORDER;
+        var newY = this.PRIMITIVE_SECTION_Y;
+        var col = 0;
 
-
-        var curX = this.HBORDER;
-        var curY = this.PRIMITIVE_SECTION_Y;
-
-        var k = 0;
         for (var i = 0; i < this.entities.length; i++){ 
-            var j = 0;
-            while (j < this.PRIMITIVE_COL_LEN) {
-                // ensure entity is a primitive that is allowed to be [re]arranged
-                if (this.isPrimitive(this.entities[i])){//top
-                    if (this.entities[i].dragged == false) { //top as well (completely ignore these if)
-                        if (this.primitiveArray[k][j] == 0) {
-                            curX = (j*this.PRIMITIVE_COLUMNWIDTH)+this.HBORDER
-                            curY = k*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+            if (this.isPrimitive(this.entities[i])){
+                if (this.entities[i].dragged == false) {
+                    var row = 0;
+                    while (row < this.PRIMITIVE_COL_LEN) {
+                        if (this.primitiveArray[col][row] == 0) {
+                            //newX = col * 60;
+                            //newY = row * 60;
+                            
+                            // COLUMNS AND ROWS SEEM TO BE REVERSED. THIS COULD BE AN ISSUE IN THE MATRIX IN ADDTION TO HERE
 
-                            if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                                console.log("Confirmed primitive on k, " + 0 + ", j, " + j + ", and entity, " + i + ", is " + this.entities[i].name)
-                                console.log("curX " + curX + " and curY " + curY);
+                            newX = row*this.PRIMITIVE_COLUMNWIDTH + this.HBORDER;
+                            newY = col*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+                            if (this.entities[i].x != newX && this.entities[i].y != newY) {
+                                
+                                console.log("col: " + col + " and row: " + row + " for " + this.entities[i].name)
+                                console.log("newX " + newX + " and newY " + newY);
+                                console.log("x " + this.entities[i].x + " and y " + this.entities[i].y);
 
-                                //this.primitiveArray[k].push(this.entities[i]);
-
-                                this.primitiveArray[k][j] = this.entities[i];
+                                this.primitiveArray[col][row] = this.entities[i];
                                 if (this.entities[i].x == 0){
-                                    this.entities[i].create(curX, curY);
-                                }else{
-                                    //set former index to null before moving
-                                    //var tempX = this.entities[i].x;
-                                    //var tempY = this.entities[i].y;
-                                    this.entities[i].move(curX, curY);
-                                        
-
-                                    //// determine which spot was vacated and set to null
-                                    //var tempJ = (tempX-this.HBORDER) / this.PRIMITIVE_COLUMNWIDTH;
-                                    //var tempK = (tempY - this.PRIMITIVE_SECTION_Y) / this.FONT_HEIGHT
-                                    //this.primitiveArray[tempJ][(tempK];
+                                    this.entities[i].create(newX - this.entities[i].x, newY - this.entities[i].y);
+                                    break
+                                } else {
+                                    this.entities[i].move(newX - this.entities[i].x, newY - this.entities[i].y);
+                                    break 
                                 }
-
-                                // indicate that the newly filled coordinate is occupied
-
                             }
-                        }    
+                        }
+                        row += 1;
+                        if (row == this.PRIMITIVE_COL_LEN) {
+                            col += 1;
+                        }
                     }
                 }
-                //reset the while loop and increment k if there are still entities to arrange
-                if (this.entities.length - (i+1) > 0) {
-                    if  (j == this.PRIMITIVE_COL_LEN-1){
-                        console.log("K is Incremented")
-                        k += 1;
-                    }
-                }
-                j += 1;
             }
         }
     };

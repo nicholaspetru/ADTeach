@@ -38,14 +38,18 @@ $(document).ready(function () {
     };
 
     //Moves the visual primitve to the specific positon
-    Primitive.prototype.move = function(newX, newY) {
+    Primitive.prototype.move = function(difX, difY) {
+        var _t = this;
+        var delay = this.VH.setDelay(500);
         var difX, difY;
-        difX = newX - this.x;
-        difY = newY - this.y;
-        this.x = newX;
-        this.y = newY;
-        var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},500);
-        this.vis.animate(anim.delay(this.VH.setDelay(500)));
+
+        setTimeout(function(){
+            _t.x += difX;
+            _t.y += difY;
+
+            var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY}, 250);
+            _t.vis.animate(anim.delay(0));
+        }, (delay));
     };
 
     //Remove visual primitives
