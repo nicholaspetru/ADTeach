@@ -221,6 +221,8 @@ $(document).ready(function () {
                 env.createVariable("Queue<Integer>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "Queue<String>") {
                 env.createVariable("Queue<String>", root.second.value, [], "new", originADT, root.linenum);
+            } else if (root.first == "Dictionary") {
+                env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
             }else {
                 var type = this.checkType(value);
                 if (root.first != type){
@@ -343,6 +345,8 @@ $(document).ready(function () {
                 return "Queue<float>";
             case typeof VQueue("String"):
                 return "Queue<String>";
+            case typeof VDictionary():
+                return "Dictionary";
             default:
                 return null
         }
@@ -498,6 +502,10 @@ $(document).ready(function () {
                 y = new VQueue("int");
                 return y.listMethods();
                 break;
+            case "Dictionary":
+                y = new VDictionary();
+                return y.listMethods();
+                break;
         }
     }
     
@@ -517,6 +525,9 @@ $(document).ready(function () {
             case "Queue<Integer>":
             case "Queue<String>":
                 y = new VQueue("String");
+                return y.checkParameters(method, parameters);
+            case "Dictionary":
+                y = new VDictionary();
                 return y.checkParameters(method, parameters);
         }
     }
@@ -552,6 +563,10 @@ $(document).ready(function () {
                 return value;
             case "Queue<String>":
                 y = new VQueue("String");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary":
+                y = new VDictionary();
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
         }

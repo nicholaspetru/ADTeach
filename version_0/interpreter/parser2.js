@@ -127,9 +127,7 @@ var make_parse = function () {
     var expression = function (rbp, passing) {
         var left;
         var t = token;
-        console.log("Passing: ", passing);
         advance();
-        console.log("T is: ", t);
         //console.log("T nud is: ", t.nud());
         left = t.nud(passing);
         while (rbp < token.lbp) {
@@ -427,8 +425,6 @@ var make_parse = function () {
     });
 
     prefix("new", function (passed) {
-        console.log("Passing in: ", passed);
-        console.log("Token is: ", token);
         if (token.value != passed) {
             console.log("ERROR ERROR ERROR");
         }
@@ -513,7 +509,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
-                console.log("Second ISSSSSSS: ", expression(0));
+                console.log("Second ISSSSSSS: ", expression(0, "Stack<Integer>"));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -551,7 +547,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<String>";
-                console.log("Second ISSSSSSS: ", expression(0));
+                console.log("Second ISSSSSSS: ", expression(0, "Stack<String>"));
                 console.log("THIS IS BS", expression(0));
                 t.second = n;
                 t.third = [];
@@ -628,7 +624,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "List<String>";
-                console.log("Second ISSSSSSS: ", expression(0));
+                console.log("Second ISSSSSSS: ", expression(0, "List<String>"));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -667,7 +663,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Queue<Integer>";
-                console.log("THIS IS BS", expression(0));
+                console.log("THIS IS BS", expression(0, "Queue<Integer>"));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -705,7 +701,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Queue<String>";
-                console.log("THIS IS BS", expression(0));
+                console.log("THIS IS BS", expression(0, "Queue<String>"));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -714,6 +710,44 @@ var make_parse = function () {
             else {
                 t = token;
                 t.value = "Queue<String>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary";
                 t.first = n;
                 t.second = null;
                 t.arity = "Initialization";
