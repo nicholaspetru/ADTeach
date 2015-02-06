@@ -125,6 +125,7 @@ $(document).ready(function () {
                 for (i = 0; i < parameters[0].value; i++) {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
+                    console.log("Going to push: ", options[toPush], typeof options[toPush]);
                     value.push(options[toPush]);
                 }
                 return [returnValue, value];

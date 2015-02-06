@@ -188,9 +188,10 @@ $(document).ready(function () {
             return new Primitive(this.paper,name,type,value,this);
         case "float":
             return new Primitive(this.paper,name,type,value,this);
-        case "bool":
+        case "boolean":
             return new Primitive(this.paper,name,type,value,this);
         case "List<Integer>":
+        case "List<String>":
             return new List(this.paper,name,type,value, this);
         //and more cases....
         default:
@@ -302,10 +303,8 @@ $(document).ready(function () {
                 return true;
             case "float":
                 return true;
-            case "bool":
+            case "boolean":
                 return true;
-            case "Stack<Integer>":
-                return false;
             default:
                 return false;
         }

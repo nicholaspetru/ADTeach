@@ -30,17 +30,17 @@ $(document).ready(function () {
     }
     
     VQueue.prototype.listMethods = function() {
-        var methods = ["enqueue", "dequeue", "isEmpty", "size", "populate", "peek"];
+        var methods = ["remove", "add", "isEmpty", "size", "populate", "peek"];
         return methods;
     }
     
     VQueue.prototype.checkParameters = function(method, parameters) {
-        var zeroParam = ["dequeue", "isEmpty", "size", "peek"]
+        var zeroParam = ["remove", "isEmpty", "size", "peek"]
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("Only takes one parameter");
             }
-        } else if (method == "enqueue" || method == "populate") {
+        } else if (method == "add" || method == "populate") {
             if (parameters.length != 1) {
                 console.log("Method takes one parameter");
             }
@@ -54,7 +54,7 @@ $(document).ready(function () {
         for (var i = 0; i<origValue1.length; i++){
             origValue[i]=(origValue1[i]);   
         }
-        if (method == 'enqueue') {
+        if (method == 'add') {
             var newList = [];
             newList.push(parameters[0].value);
             var lengthOfList = origValue.length;
@@ -69,7 +69,7 @@ $(document).ready(function () {
             returnValue = origValue[length-1];
             return [returnValue, origValue];
         }
-        if (method == 'dequeue') {
+        if (method == 'remove') {
             returnValue = origValue.pop();
             console.log("REturning, ", returnValue, " + ", origValue);
             return [returnValue, origValue];
