@@ -27,8 +27,8 @@ $(document).ready(function () {
 
 
         //define constants
-        this.PRIMITIVE_ROW_LEN = 8
-        this.PRIMITIVE_COL_LEN = 5
+        this.PRIMITIVE_NUM_COLS= 10;
+        this.PRIMITIVE_COL_LEN = 5;
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;
         this.PRIMITIVE_SECTION_HEIGHT = 100;
@@ -41,7 +41,7 @@ $(document).ready(function () {
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
 
         //Positional 2D arrays
-        this.primitiveArray = Array.matrix(this.PRIMITIVE_ROW_LEN, this.PRIMITIVE_COL_LEN, 0);
+        this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
         this.adtArray = [[]];
 
         //drawing basic stuff on the paper: the sections
@@ -54,7 +54,7 @@ $(document).ready(function () {
 
         this.codeboxPaper = null;        
         //Testing new primitive system
-        /*
+        
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
@@ -64,7 +64,7 @@ $(document).ready(function () {
         this.enqueueEvent("new", "int", "g", 7, "int");
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-        */
+        
 
         return this;
     }
@@ -202,9 +202,9 @@ $(document).ready(function () {
     // from Crockford Javascript the good parts
     Array.matrix = function(numrows, numcols, initial) {
         var arr = [];
-        for (var i = 0; i < numrows; ++i) {
+        for (var i = 0; i < numcols; ++i) {
             var columns = [];
-            for (var j = 0; j < numcols; ++j) {
+            for (var j = 0; j < numrows; ++j) {
                 columns[j] = initial;
             }
             arr[i] = columns;
@@ -221,56 +221,45 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        var curX = this.HBORDER;
-        var curY = this.PRIMITIVE_SECTION_Y;
+        var newX = this.HBORDER;
+        var newY = this.PRIMITIVE_SECTION_Y;
+        var col = 0;
 
-        var k = 0;
         for (var i = 0; i < this.entities.length; i++){ 
-            var j = 0;
-            while (j < this.PRIMITIVE_COL_LEN) {
-                // ensure entity is a primitive that is allowed to be [re]arranged
-                if (this.isPrimitive(this.entities[i])){
-                    if (this.entities[i].dragged == false) { 
-                        
-                        if (this.entities[i].x != curX || this.entities[i].y != curY) {
-                            curX = k*this.PRIMITIVE_COLUMNWIDTH+this.HBORDER, curY = j*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
-                            console.log("Confirmed primitive on k, " + 0 + ", and entity, " + i + ", is " + this.entities[i].name)
-                            if (this.primitiveArray[k][j] == 0) {
-                                //check and see if this is a new entity and move it accordingly
-                                console.log("curX " + curX + " and curY " + curY);
+            if (this.isPrimitive(this.entities[i])){
+                if (this.entities[i].dragged == false) {
+                    var row = 0;
+                    while (row < this.PRIMITIVE_COL_LEN) {
+                        if (this.primitiveArray[col][row] == 0) {
+                            //newX = col * 60;
+                            //newY = row * 60;
+                            
+                            // COLUMNS AND ROWS SEEM TO BE REVERSED. THIS COULD BE AN ISSUE IN THE MATRIX IN ADDTION TO HERE
 
-                                //this.primitiveArray[k].push(this.entities[i]);
+                            newX = row*this.PRIMITIVE_COLUMNWIDTH + this.HBORDER;
+                            newY = col*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
+                            if (this.entities[i].x != newX && this.entities[i].y != newY) {
+                                
+                                console.log("col: " + col + " and row: " + row + " for " + this.entities[i].name)
+                                console.log("newX " + newX + " and newY " + newY);
+                                console.log("x " + this.entities[i].x + " and y " + this.entities[i].y);
 
-                                this.primitiveArray[k][j] = this.entities[i].name;
-                                console.log(this.primitiveArray[k][j]);
+                                this.primitiveArray[col][row] = this.entities[i];
                                 if (this.entities[i].x == 0){
-                                    this.entities[i].create(curX, curY);
-                                }else{
-                                    //set former index to null before moving
-                                    //var tempX = this.entities[i].x;
-                                    //var tempY = this.entities[i].y;
-                                    this.entities[i].move(curX, curY);
-                                        
-
-                                    //// determine which spot was vacated and set to null
-                                    //var tempJ = (tempX-this.HBORDER) / this.PRIMITIVE_COLUMNWIDTH;
-                                    //var tempK = (tempY - this.PRIMITIVE_SECTION_Y) / this.FONT_HEIGHT
-                                    //this.primitiveArray[tempJ][(tempK];
+                                    this.entities[i].create(newX - this.entities[i].x, newY - this.entities[i].y);
+                                    break
+                                } else {
+                                    this.entities[i].move(newX - this.entities[i].x, newY - this.entities[i].y);
+                                    break 
                                 }
-
-                                // indicate that the newly filled coordinate is occupied
-
                             }
-                        }    
-                    }
-                }
-                    //reset the while loop and increment k if there are still entities to arrange
-                    if (i == this.entities.length - 2) {
-                        if  (j == this.PRIMITIVE_COL_LEN-1){
-                            k += 1;
+                        }
+                        row += 1;
+                        if (row == this.PRIMITIVE_COL_LEN) {
+                            col += 1;
                         }
                     }
-                    j += 1;
+                }
             }
         }
     };
