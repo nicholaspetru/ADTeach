@@ -39,7 +39,8 @@ $(document).ready(function () {
         this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
         this.ADT_SECTION_TEXT_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
-
+        this.NEXT_PRIM_X = -1;
+        this.NEXT_PRIM_Y = 0;
         //Positional 2D arrays
         this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
         this.adtArray = [[]];
@@ -219,47 +220,43 @@ $(document).ready(function () {
         return;
     }
 
+    // Gives the next available position to draw a primitive entity
+    VisualizerHandler.prototype.nextPrimitivePosition = function() {
+        //console.log("nextPrimitivePosition");
+        if (this.NEXT_PRIM_Y + 1 == this.PRIMITIVE_COL_LEN) {
+            this.NEXT_PRIM_Y = 0;
+            this.NEXT_PRIM_X += 1;
+        }
+        else {
+            this.NEXT_PRIM_Y += 1;
+        }
+        //console.log("NEXTPOS: (" + this.NEXT_PRIM_X + "," + this.NEXT_PRIM_Y + ")");
+    }
+
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
+        //console.log("arrangePrimitives");
         var newX = this.HBORDER;
         var newY = this.PRIMITIVE_SECTION_Y;
-        var col = 0;
 
         for (var i = 0; i < this.entities.length; i++){ 
             if (this.isPrimitive(this.entities[i])){
-                if (this.entities[i].dragged == false) {
-                    var row = 0;
-                    while (row < this.PRIMITIVE_COL_LEN) {
-                        if (this.primitiveArray[col][row] == 0) {
-                            //newX = col * 60;
-                            //newY = row * 60;
-                            
-                            // COLUMNS AND ROWS SEEM TO BE REVERSED. THIS COULD BE AN ISSUE IN THE MATRIX IN ADDTION TO HERE
-
-                            newX = row*this.PRIMITIVE_COLUMNWIDTH + this.HBORDER;
-                            newY = col*this.FONT_HEIGHT*1.7+this.PRIMITIVE_SECTION_Y;
-                            if (this.entities[i].x != newX && this.entities[i].y != newY) {
-                                
-                                console.log("col: " + col + " and row: " + row + " for " + this.entities[i].name)
-                                console.log("newX " + newX + " and newY " + newY);
-                                console.log("x " + this.entities[i].x + " and y " + this.entities[i].y);
-
-                                this.primitiveArray[col][row] = this.entities[i];
-                                if (this.entities[i].x == 0){
-                                    this.entities[i].create(newX - this.entities[i].x, newY - this.entities[i].y);
-                                    break
-                                } else {
-                                    this.entities[i].move(newX - this.entities[i].x, newY - this.entities[i].y);
-                                    break 
-                                }
-                            }
-                        }
-                        row += 1;
-                        if (row == this.PRIMITIVE_COL_LEN) {
-                            col += 1;
-                        }
+                if (this.entities[i].dragged == false && this.entities[i].drawn == false) {
+                    this.nextPrimitivePosition();
+                    // keep generating new positions until we find one that isnt already taken
+                    while (this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] != 0) {
+                        this.nextPrimitivePosition();
                     }
+                    // claim this position
+                    this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] = this.entities[i];
+                    // and draw the primitive there
+                    newX = this.NEXT_PRIM_X * this.PRIMITIVE_COLUMNWIDTH + this.HBORDER;
+                    newY = this.NEXT_PRIM_Y*this.FONT_HEIGHT*1.7 + this.PRIMITIVE_SECTION_Y;
+                    this.entities[i].create(newX, newY);
+                    this.entities[i].drawn = true;
                 }
+                // else if this.entities[i].dragged == true
+                // move the primitive
             }
         }
     };
