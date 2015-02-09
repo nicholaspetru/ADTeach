@@ -54,9 +54,11 @@ $(document).ready(function () {
 
     //Remove visual primitives
     Primitive.prototype.destroy = function() {
+        var prime = Raphael.animation({fill:'red'},250);
+        this.vis.animate(prime.delay(this.VH.setDelay(250)));
+
         var anim = Raphael.animation({opacity:0},1000);
         this.vis.animate(anim.delay(this.VH.setDelay(1000)));
-        console.log("destroy() engaged")
     };
     
     //Modifiy visual primitives

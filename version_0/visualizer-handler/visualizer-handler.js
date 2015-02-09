@@ -27,7 +27,7 @@ $(document).ready(function () {
 
 
         //define constants
-        this.PRIMITIVE_NUM_COLS= 10;
+        this.PRIMITIVE_NUM_COLS= 8;
         this.PRIMITIVE_COL_LEN = 5;
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;
@@ -56,17 +56,21 @@ $(document).ready(function () {
         this.codeboxPaper = null;        
         //Testing new primitive system
         
+        /*
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
         this.enqueueEvent("new", "int", "d", 4, "int");
         this.enqueueEvent("new", "int", "e", 5, "int");
         this.enqueueEvent("delete", "int", "b", 2, "int");
-        this.enqueueEvent("delete", "int", "e", 5, "int");   
+        this.enqueueEvent("delete", "int", "e", 5, "int");
         this.enqueueEvent("new", "int", "f", 6, "int");
+        this.enqueueEvent("delete", "int", "f", 6, "int");
         this.enqueueEvent("new", "int", "g", 7, "int");
+        this.enqueueEvent("delete", "int", "e", 5, "int");   
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
+        */
         
 
         return this;
@@ -98,7 +102,7 @@ $(document).ready(function () {
                 this.UpdateEntity(curEvent[1], curEvent[3], curEvent[4], curEvent[5]);
             }
             else if (curEvent[0] == 'delete') {
-                this.DeleteEntity(curEvent[2]);
+                this.DeleteEntity(curEvent[1]);
             }
             else {
                 console.log('unrecognized event: ' + curEvent[0]);
@@ -118,7 +122,7 @@ $(document).ready(function () {
                 this.UpdateEntity(curEvent[1], curEvent[3], curEvent[4], curEvent[5]);
             }
             else if (curEvent[0] == 'delete') {
-                this.DeleteEntity(curEvent[2]);
+                this.DeleteEntity(curEvent[1]);
             }
             else {
                 console.log('unrecognized event: ' + curEvent[0]);
@@ -176,10 +180,16 @@ $(document).ready(function () {
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
                 this.entities[i].destroy();
+                var start = i;
+
+                // reset respective matrix position to 0 for arranging purposes
+                var delX = (this.entities[i].x-this.HBORDER)/this.PRIMITIVE_COLUMNWIDTH;
+                var delY = (this.entities[i].y-this.PRIMITIVE_SECTION_Y)/(this.FONT_HEIGHT*1.7);
+                this.primitiveArray[Math.round(delY)][Math.round(delX)] = 0;  
                 this.entities.splice(i,1);
             }
         }
-        this.arrangeEntities();
+        this.reArrangePrimitives(start);
     };
     
     //Returns a new Entity of the given type
@@ -214,6 +224,17 @@ $(document).ready(function () {
         }
         return arr;
     }
+
+    // Gives the next available position to draw a primitive entity
+    VisualizerHandler.prototype.nextPrimitivePosition = function() {
+        if (this.NEXT_PRIM_Y + 1 == this.PRIMITIVE_COL_LEN) {
+            this.NEXT_PRIM_Y = 0;
+            this.NEXT_PRIM_X += 1;
+        }
+        else {
+            this.NEXT_PRIM_Y += 1;
+        }
+    }
     
     //Arranges entities
     VisualizerHandler.prototype.arrangeEntities = function() {
@@ -222,22 +243,38 @@ $(document).ready(function () {
         return;
     }
 
-    // Gives the next available position to draw a primitive entity
-    VisualizerHandler.prototype.nextPrimitivePosition = function() {
-        //console.log("nextPrimitivePosition");
-        if (this.NEXT_PRIM_Y + 1 == this.PRIMITIVE_COL_LEN) {
-            this.NEXT_PRIM_Y = 0;
-            this.NEXT_PRIM_X += 1;
+    // RE-arrange primitives when entity destroyed
+    VisualizerHandler.prototype.reArrangePrimitives = function (start) {
+        this.NEXT_PRIM_Y = 0;
+        this.NEXT_PRIM_X = -1;
+        for (var i = start; i < this.entities.length; i++){ 
+            if (this.isPrimitive(this.entities[i])) {
+                if (this.entities[i].drawn == true) {
+                    this.nextPrimitivePosition();
+
+                    while (this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] != 0) {
+                        this.nextPrimitivePosition();
+                    }
+
+                    // reset respective matrix position to 0 for arranging purposes
+                    var delX = Math.round((this.entities[i].x-this.HBORDER)/this.PRIMITIVE_COLUMNWIDTH);
+                    var delY = Math.round((this.entities[i].y-this.PRIMITIVE_SECTION_Y)/(this.FONT_HEIGHT*1.7));
+                    this.primitiveArray[delY][delX] = 0;
+
+                    this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] = this.entities[i];
+
+                    console.log(this.NEXT_PRIM_X, this.NEXT_PRIM_Y)
+                    var difX = (this.NEXT_PRIM_X * this.PRIMITIVE_COLUMNWIDTH + this.HBORDER) - this.entities[i].x;
+                    var difY = (this.NEXT_PRIM_Y*this.FONT_HEIGHT*1.7 + this.PRIMITIVE_SECTION_Y) - this.entities[i].y;
+                    this.entities[i].move(difX, difY);
+                }
+            }
         }
-        else {
-            this.NEXT_PRIM_Y += 1;
-        }
-        //console.log("NEXTPOS: (" + this.NEXT_PRIM_X + "," + this.NEXT_PRIM_Y + ")");
-    }
+    };
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        //console.log("arrangePrimitives");
+        console.log(this.entities.length);
         var newX = this.HBORDER;
         var newY = this.PRIMITIVE_SECTION_Y;
 
@@ -246,9 +283,12 @@ $(document).ready(function () {
                 if (this.entities[i].dragged == false && this.entities[i].drawn == false) {
                     this.nextPrimitivePosition();
                     // keep generating new positions until we find one that isnt already taken
+                    this.NEXT_PRIM_X = 0;
+                    this.NEXT_PRIM_Y = 0;
                     while (this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] != 0) {
                         this.nextPrimitivePosition();
                     }
+                    console.log("arranging: " + this.entities[i].name + " at " + this.NEXT_PRIM_Y + ", " + this.NEXT_PRIM_X)
                     // claim this position
                     this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] = this.entities[i];
                     // and draw the primitive there
