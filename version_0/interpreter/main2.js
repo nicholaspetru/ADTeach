@@ -138,7 +138,10 @@ $(document).ready(function () {
         console.log("======= Test code ======== \n\n" + code + "\n\n ==========================");
         var vh = 1;
         var i = new Interpreter();
-        i.interpret(code,vh);
+        //i.interpret(code,vh);
+        i.code = code;
+        i.makeTokenList();
+        var source = this.TokenList;
 
         // Tokenize the test code and display the array of tokens
         var token_result = i.displayTokens();
