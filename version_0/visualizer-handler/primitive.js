@@ -56,7 +56,6 @@ $(document).ready(function () {
     Primitive.prototype.destroy = function() {
         var prime = Raphael.animation({fill:'red'},250);
         this.vis.animate(prime.delay(this.VH.setDelay(250)));
-
         var anim = Raphael.animation({opacity:0},1000);
         this.vis.animate(anim.delay(this.VH.setDelay(1000)));
     };
@@ -64,8 +63,8 @@ $(document).ready(function () {
     //Modifiy visual primitives
     Primitive.prototype.update = function() {
         // shake it off
-        var anim = Raphael.animation({x:-4},12);
-        this.vis.animate(anim.delay(this.VH.setDelay(12)));
+        //var anim = Raphael.animation({x:-4},12);
+       // this.vis.animate(anim.delay(this.VH.setDelay(12)));
 
         for (var i = 0; i < 21; i++){
             var anim = Raphael.animation({x:8*(-1^i)},25);
