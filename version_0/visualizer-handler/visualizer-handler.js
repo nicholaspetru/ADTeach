@@ -56,11 +56,13 @@ $(document).ready(function () {
         this.codeboxPaper = null;        
         //Testing new primitive system
         
-        /*
+        
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
         this.enqueueEvent("new", "int", "d", 4, "int");
+        this.enqueueEvent("update", "int", "c", 10, "int");
+        this.enqueueEvent("update", "int", "d", 11, "int");
         this.enqueueEvent("new", "int", "e", 5, "int");
         this.enqueueEvent("delete", "int", "b", 2, "int");
         this.enqueueEvent("delete", "int", "e", 5, "int");
@@ -70,8 +72,7 @@ $(document).ready(function () {
         this.enqueueEvent("delete", "int", "e", 5, "int");   
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-        */
-        
+
 
         return this;
     }
@@ -274,7 +275,6 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangePrimitives = function() {
-        console.log(this.entities.length);
         var newX = this.HBORDER;
         var newY = this.PRIMITIVE_SECTION_Y;
 
@@ -288,7 +288,7 @@ $(document).ready(function () {
                     while (this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] != 0) {
                         this.nextPrimitivePosition();
                     }
-                    console.log("arranging: " + this.entities[i].name + " at " + this.NEXT_PRIM_Y + ", " + this.NEXT_PRIM_X)
+
                     // claim this position
                     this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] = this.entities[i];
                     // and draw the primitive there
