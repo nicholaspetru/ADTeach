@@ -226,7 +226,9 @@ $(document).ready(function () {
                 env.createVariable("Queue<String>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "Dictionary") {
                 env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
-            }else {
+            } else if (root.first == "Graph") {
+                env.createVariable("Graph", root.second.value, [], "new", originADT, root.linenum);
+            } else {
                 var type = this.checkType(value);
                 if (root.first != type){
                  console.log("INCOMPATIBLE TYPES!!");   
@@ -353,6 +355,8 @@ $(document).ready(function () {
                 return "Queue<String>";
             case typeof VDictionary():
                 return "Dictionary";
+            case typeof VGraph():
+                return "Graph";
             default:
                 return null
         }
@@ -462,7 +466,9 @@ $(document).ready(function () {
             }
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
             returnValue = methodValue[0];
+            
             newValue = methodValue[1];
+            console.log("Return value is: ", newValue);
             console.log("THe parameters are: ", cloneParam);
             //console.log("Adding to method: ", cloneParam[0].value);
             switch(method) {
@@ -512,6 +518,10 @@ $(document).ready(function () {
                 y = new VDictionary();
                 return y.listMethods();
                 break;
+            case "Graph":
+                y = new VGraph();
+                return y.listMethods();
+                break;
         }
     }
     
@@ -534,6 +544,9 @@ $(document).ready(function () {
                 return y.checkParameters(method, parameters);
             case "Dictionary":
                 y = new VDictionary();
+                return y.checkParameters(method, parameters);
+            case "Graph":
+                y = new VGraph();
                 return y.checkParameters(method, parameters);
         }
     }
@@ -573,6 +586,10 @@ $(document).ready(function () {
                 return value;
             case "Dictionary":
                 y = new VDictionary();
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Graph":
+                y = new VGraph();
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
         }
