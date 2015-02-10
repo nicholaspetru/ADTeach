@@ -126,7 +126,7 @@ $(document).ready(function () {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
                     console.log("Going to push: ", options[toPush], typeof options[toPush]);
-                    value.push(options[toPush]);
+                    value.push('"' + options[toPush] + '"');
                 }
                 return [returnValue, value];
             }

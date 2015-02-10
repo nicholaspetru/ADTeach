@@ -111,6 +111,9 @@ $(document).ready(function () {
                 case 'BOOL_TYPE':
                     return root.value;
                     break;
+                case 'OPERATOR_TYPE':
+                    return this.evalMaths(root);
+                    break;
             }
         } else {
             var val = env.getValue(root.value);
@@ -302,6 +305,9 @@ $(document).ready(function () {
             this.evalSemiColonBlock(step, env);
             isTrue = this.evalCondition(condition, env);
         }
+        console.log(initialization);
+        env.removeVariable(initialization.second.value, initialization.linenum);
+        
     }
     
     Interpreter.prototype.evalIfBlock = function(block, env) {

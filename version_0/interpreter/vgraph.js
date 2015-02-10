@@ -80,7 +80,7 @@ $(document).ready(function () {
                 for (i = 0; i < parameters[0].value; i++) {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
-                    value.push(options[toPush]);
+                    value.push('"' + options[toPush] + '"');
                 }
                 return [returnValue, value];
             }
