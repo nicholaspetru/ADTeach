@@ -70,4 +70,19 @@ $(document).ready(function () {
 		this.variables[index].value = newVal;
         this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT, lineNum-1);
 	}
+    
+    Environment.prototype.removeVariable = function(name, lineNum) {
+		console.log("-------removeVariable( " + name + ")");
+        console.log("Line number: ", lineNum);
+        var index = this.names.indexOf(name);
+        var type = this.variables[index].type;
+         
+        //CHECK TYPE
+        if (type != "int") {
+            console.log("Incompatible types");
+            //new IncompatibleTypes();
+        }
+		this.variables.splice(this.variables.indexOf(name), 1);
+        this.symbolTable.updateVariable(type, name, null, null, null, lineNum-1);
+	}
 });
