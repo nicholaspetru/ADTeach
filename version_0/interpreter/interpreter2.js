@@ -226,6 +226,10 @@ $(document).ready(function () {
                 env.createVariable("Queue<String>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "Dictionary") {
                 env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
+            } else if (root.first == "PriorityQueue<Integer>") {
+                env.createVariable("PriorityQueue<Integer>", root.second.value, [], "new", originADT, root.linenum);
+            } else if (root.first == "PriorityQueue<String>") {
+                env.createVariable("PriorityQueue<String>", root.second.value, [], "new", originADT, root.linenum);
             } else if (root.first == "Graph") {
                 env.createVariable("Graph", root.second.value, [], "new", originADT, root.linenum);
             } else {
@@ -353,6 +357,10 @@ $(document).ready(function () {
                 return "Queue<float>";
             case typeof VQueue("String"):
                 return "Queue<String>";
+            case typeof VPQueue("int"):
+                return "PriorityQueue<Integer>";
+            case typeof VPQueue("String"):
+                return "PriorityQueue<String>";
             case typeof VDictionary():
                 return "Dictionary";
             case typeof VGraph():
@@ -452,15 +460,7 @@ $(document).ready(function () {
                 console.log("Value of parameter is: ", varValue);
                 var cloneVar = {value:varValue};
                 cloneParam[i] = cloneVar;
-                /*
-                if (env.getValue(parameters[i].value) != null) {
-                    var cloneVar = {value:env.getValue(parameters[i].value)};
-                    cloneParam[i] = cloneVar;
-                } else {
-                    var cloneVar = {value:parameters[i].value};
-                    cloneParam[i] = cloneVar;
-                }
-                */
+                
                 
             }
             }
@@ -483,6 +483,10 @@ $(document).ready(function () {
                     console.log("method is: ", method);
                     break;
                 case("add"):
+                    if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>") {
+                        method = method + "." + returnValue;
+                        break;
+                    }
                     if (parameters.length == 1) {
                         method = method + "." + adtCurValue.length;
                     } else {
@@ -514,6 +518,11 @@ $(document).ready(function () {
                 y = new VQueue("int");
                 return y.listMethods();
                 break;
+            case "PriorityQueue<Integer>":
+            case "PriorityQueue<String>":
+                y = new VPQueue("int");
+                return y.listMethods();
+                break;
             case "Dictionary":
                 y = new VDictionary();
                 return y.listMethods();
@@ -541,6 +550,10 @@ $(document).ready(function () {
             case "Queue<Integer>":
             case "Queue<String>":
                 y = new VQueue("String");
+                return y.checkParameters(method, parameters);
+            case "PriorityQueue<Integer>":
+            case "PriorityQueue<String>":
+                y = new VPQueue("String");
                 return y.checkParameters(method, parameters);
             case "Dictionary":
                 y = new VDictionary();
@@ -582,6 +595,14 @@ $(document).ready(function () {
                 return value;
             case "Queue<String>":
                 y = new VQueue("String");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "PriorityQueue<Integer>":
+                y = new VPQueue("int");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "PriorityQueue<String>":
+                y = new VPQueue("String");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
             case "Dictionary":

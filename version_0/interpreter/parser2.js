@@ -724,6 +724,84 @@ var make_parse = function () {
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
     
+    stmt("PriorityQueue<Integer>", function () {
+        console.log("IN HERE IN HEREI N HERE");
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "PriorityQueue<Integer>";
+                console.log("THIS IS BS", expression(0, "PriorityQueue<Integer>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "PriorityQueue<Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("PriorityQueue<String>", function () {
+        console.log("IN HERE IN HEREI N HERE");
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "PriorityQueue<String>";
+                console.log("THIS IS BS", expression(0, "PriorityQueue<String>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "PriorityQueue<String>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
     stmt("Dictionary", function () {
         var a = [], n, t;
         while (true) {

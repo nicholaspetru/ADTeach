@@ -63,6 +63,7 @@ $(document).ready(function () {
             }
             origValue = newList;
             origValue.sort();
+            returnValue = origValue.indexOf(parameters[0].value);
             return [returnValue, origValue];
         }
         if (method == "peek") {
