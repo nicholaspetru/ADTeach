@@ -13,26 +13,26 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addNode', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate'];
+        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate'];
         return methods;
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getNodes'];
+        var noParam = ['getEdges', 'getNodes', 'addVertex'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['removeNode', 'addNode', 'getDegree', 'getNeighbors'];
+        var oneParam = ['removeNode', 'getDegree', 'getNeighbors'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
                 //new IncorrectParameters();
             }
         }
-        var twoParam = ['addEdge', 'removeEdge', 'populate'];
+        var twoParam = ['addEdge', 'removeEdge', 'populate', 'hasEdge'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("two parameters");
@@ -64,7 +64,8 @@ $(document).ready(function () {
                 //Throw an error!
             }
             node1Edges.push(node2);
-            node1Edges.push(node2);
+            node2Edges.push(node1);
+            return [returnValue, origValue];
             
         } if (method == "populate") {
             var numNodes = parameters[0].value;
@@ -81,9 +82,68 @@ $(document).ready(function () {
                     }
                 }
             }
+            return [returnValue, origValue];
         }
-        value = origValue;
-        return [returnValue, value];
+        
+        if (method == "removeEdge") {
+            var node1 = parameters[0].value;
+            var node2 = parameters[1].value;
+            var node1Edges = origValue[node1];
+            var node2Edges = origValue[node2];
+            var node1NEdges = [];
+            var node2NEdges = [];
+            if (node1Edges.indexOf(node2) < 0) {
+                console.log("Not an edge");
+                //Throw an error
+            } else {
+                for (var i = 0; i < node1Edges.length; i++) {
+                    var currEdge = node1Edges[i];
+                    if (currEdge != node2) {
+                        node1NEdges.push(currEdge);
+                    }
+                }
+                for (var j = 0; j < node2Edges.length; j++) {
+                    var curr2Edge = node2Edges[j];
+                    if (curr2Edge != node1) {
+                        node2NEdges.push(curr2Edge);
+                    }
+                }
+                origValue[node1] = node1NEdges;
+                origValue[node2] = node2NEdges;
+                return [returnValue, origValue];
+            }
+        }
+        
+        if (method == "addVertex") {
+            origValue.push([]);
+            return [returnValue, origValue];
+        }
+        
+        if (method == "hasEdge") {
+            var node1 = parameters[0].value;
+            var node2 = parameters[1].value;
+            console.log("Nodes are: ", origValue);
+            console.log("Node 1 is: ", node1);
+            var node1Edges = origValue[node1];
+            console.log("Node 1 edges are: ", node1Edges);
+            if (node1Edges.indexOf(node2) < 0) {
+                returnValue = false;
+            } else {
+                returnValue = true;
+            }
+            return [returnValue, origValue];
+        }
+        
+        if (method == "getNeighbors") {
+            var node = parameters[0].value;
+            if (origValue.indexOf(node) < 0) {
+                console.log("Node not in graph");
+                //Throw Error
+            }
+            returnValue = origValue[node];
+            return [returnValue, origValue];
+        }
+        
         
     }
     

@@ -173,9 +173,11 @@ $(document).ready(function () {
         var originMethod = "new";
         var originADT = "";
         if (root.arity === "Initialization") {
-            if (root.value == "Stack<Integer>") {
-                valueRoot = root.second
-                value = root.first
+            console.log("ROOT IS: ", root);
+            if (root.second.arity == "FunCall") {
+                valueRoot = root.second;
+                //valueRoot = root.second
+                //value = root.first
             } else {
                 valueRoot = root.third;
             }
@@ -187,6 +189,7 @@ $(document).ready(function () {
                 
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
+            console.log("CALLING A FUNCTION");
             var methodValue = this.evalMethod(valueRoot, env);
             returnedValue = methodValue[1];
             value = methodValue[0];
