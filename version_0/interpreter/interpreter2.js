@@ -90,11 +90,13 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalValue = function(root, env) {
         console.log("Evaling value of: ", root);
+        console.log("ENV ##### IS: ", env);
         if (root.arity == "FunCall") {
-            
+            console.log("ENV1 IS: ", env);
             return this.evalMethod(root, env)[0];
         }
         if (root.arity != "name") {
+            console.log("Going to evaluate math!");
             switch(root.jtype) {
                 case 'INT_TYPE':
                     return parseInt(root.value);
@@ -112,7 +114,7 @@ $(document).ready(function () {
                     return root.value;
                     break;
                 case 'OPERATOR_TYPE':
-                    return this.evalMaths(root);
+                    return this.evalMaths(root, env);
                     break;
             }
         } else {
@@ -227,8 +229,10 @@ $(document).ready(function () {
                     case "PriorityQueue<String>":
                     case "Graph":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
+                        break;
                     case "Dictionary":
                         env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
+                        break;
                     default:
                         var type = this.checkType(value);
                         if (root.first != type){
@@ -259,7 +263,7 @@ $(document).ready(function () {
         } else if (root.arity == "literal") {
             console.log("Can't do literals");
         } else if (root.arity == "name") {
-            var variable = this.evalValue(root.value);
+            var variable = this.evalValue(root.value, env);
             if (typeof variable != typeof true) {
                 console.log("No literals");
             } else {
@@ -427,6 +431,7 @@ $(document).ready(function () {
     
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
+        console.log("Env is: ", env);
         var adtIndex = env.getIndex(adt);
         console.log("HERE: ", env.getVariables()[adtIndex]);
         var adtType = env.getVariables()[adtIndex].type;
@@ -461,8 +466,10 @@ $(document).ready(function () {
                 }
                 for (var i = 0; i < parameters.length; i++){
                     console.log("Parameter is: ", parameters[i]);
+                    console.log("ENV2 IS: ", env);
                     var varValue = this.evalValue(parameters[i], env);
                     console.log("Value of parameter is: ", varValue);
+                    console.log("VAR VALUE IS: ", varValue);
                     var cloneVar = {value:varValue};
                     cloneParam[i] = cloneVar;
                 }

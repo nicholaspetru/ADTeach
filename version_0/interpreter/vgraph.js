@@ -13,12 +13,12 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate'];
+        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges'];
         return methods;
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getNodes', 'addVertex'];
+        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
@@ -141,6 +141,30 @@ $(document).ready(function () {
                 //Throw Error
             }
             returnValue = origValue[node];
+            return [returnValue, origValue];
+        }
+        
+        if (method == "numEdges") {
+            var edges = [];
+            var edge = [];
+            edge.push([3, 1]);
+            var attempt = [3, 1];
+            console.log("TEST EDGES ARE: ", edge);
+            var testing = edge.indexOf(attempt);
+            console.log("IS IN???: ", testing);
+            console.log("ORig value = ", origValue);
+            for (var i = 0; i < origValue.length; i++) {
+                for (var j = 0; j < origValue[i].length; j++) {
+                    var currEdge = [i, origValue[i][j]];
+                    var otherCurrEdge = [origValue[i][j], i];
+                    console.log("Current edge and other current edge is: ", currEdge, otherCurrEdge);
+                    if (edges.indexOf(currEdge) < 0 && edges.indexOf(otherCurrEdge) < 0) {
+                        edges.push(currEdge);
+                    }
+                    console.log("edges are: ", edges);
+                }
+            }
+            returnValue = edges.length;
             return [returnValue, origValue];
         }
         
