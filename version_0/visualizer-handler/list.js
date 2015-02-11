@@ -18,11 +18,15 @@ $(document).ready(function () {
         this.HEIGHT = 45;
         this.DUNIT_HEIGHT = this.HEIGHT*.85;
         this.DUNIT_WIDTH = this.DUNIT_HEIGHT*.5;
-        this.vis = [];
 
         //visual component
         this.myLabel = null;
         this.myFrame = null;
+        this.vis = [];
+
+        //anonymous DU unit
+        this.anon = null;
+        this.clearAnon = true;
     }
 
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
@@ -41,7 +45,58 @@ $(document).ready(function () {
         }
     }
 
-   //Create visual primitve in the specific position
+    //Update the List
+    List.prototype.update = function(action, originADT) {
+        //strip the string and get the params from the "Action" str
+        var split = action.split(".");
+
+        //animate the change
+        switch(split[0]){
+            case "add":
+                var index = parseInt(split[1]);
+                this.AddAtPosition(index, this.value[index]);
+                break;
+            case "populate":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].remove();
+                }
+                //create new data units to match the new dataset
+                for (var i = 0; i < this.value.length; i++){
+                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
+                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+                    this.vis.push(newDU);
+                    newDU.create();
+                }
+                break;
+            case "remove":
+                var index = parseInt(split[1]);
+                this.RemoveAtPosition(index);
+                break;
+            case "set":
+                var index = parseInt(split[1]);
+                this.ChangeAtPosition(index);
+                break;
+            case "clear":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].destroy();
+                }
+                this.vis = [];
+                break;
+            case "get":
+                var index = parseInt(split[1]);
+                this.GetFromPosition(index);
+                break;
+        }
+    };
+
+
+    /*
+    ANIMATIONS
+    */
+
+    //Create visual primitve in the specific position
     List.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
@@ -58,6 +113,7 @@ $(document).ready(function () {
             this.vis[i].create();
         }
     };
+
 
     //Moves the visual primitve to the specific positon
     List.prototype.move = function(newX, newY) {
@@ -95,49 +151,6 @@ $(document).ready(function () {
             this.vis[i].fadeOut(delay);
         }
     };
-    
-
-    //Update the List
-    List.prototype.update = function(action, originADT) {
-        //strip the string and get the params from the "Action" str
-        var split = action.split(".");
-
-        //animate the change
-        switch(split[0]){
-            case "add":
-                var index = parseInt(split[1]);
-                this.AddAtPosition(index, this.value[index]);
-                break;
-            case "populate":
-                //erase old data
-                for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].remove();
-                }
-                //create new data units
-                for (var i = 0; i < this.value.length; i++){
-                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
-                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-                    this.vis.push(newDU);
-                    newDU.create();
-                }
-                break;
-            case "remove":
-                var index = parseInt(split[1]);
-                this.RemoveAtPosition(index);
-                break;
-            case "set":
-                var index = parseInt(split[1]);
-                this.ChangeAtPosition(index);
-                break;
-            case "clear":
-                //erase old data
-                for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].destroy();
-                }
-                this.vis = [];
-                break;
-        }
-    };
 
     //Adds a new dataunit at the specified index
     List.prototype.AddAtPosition = function(index, value) {
@@ -156,6 +169,26 @@ $(document).ready(function () {
         newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.vis.splice(index, 0, newDU);
+    }
+
+    //Gets a new dataunit at the specified index
+    List.prototype.GetFromPosition = function(index) {
+        //Create the new data unit
+        var xx = this.x + (this.DUNIT_WIDTH*.2) + this.DUNIT_WIDTH*1.2*index,
+            yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
+
+        var newDU = new DataUnit(this.paper,this.type, this.value[index], this.VH,  xx,
+                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+        newDU.create();
+
+        //Move the new data unit to it's proper location
+        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
+        newDU.move(-this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
+
+        //TODO:
+        //Set anonymous to this, and toclear to false
+        this.anon = newDU;
+        this.clearAnon = false;
     }
 
     //Removes a  dataunit at the specified index
@@ -183,7 +216,3 @@ $(document).ready(function () {
         this.vis[index].lowLight();
     }
 });
-
-//add : adds something at the end
-//set: inserts a new thing at a certain spot in the list set.index
-//remove: removal.index 
