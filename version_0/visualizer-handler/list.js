@@ -24,9 +24,8 @@ $(document).ready(function () {
         this.myFrame = null;
         this.vis = [];
 
-        //anonymous DU unit
+        //anonymous DU
         this.anon = null;
-        this.clearAnon = true;
     }
 
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
@@ -53,6 +52,11 @@ $(document).ready(function () {
         //animate the change
         switch(split[0]){
             case "add":
+                //check if there's an anonymous variable
+                if (originADT != null){
+                    console.log(originADT);
+                    this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
+                }
                 var index = parseInt(split[1]);
                 this.AddAtPosition(index, this.value[index]);
                 break;
@@ -185,10 +189,8 @@ $(document).ready(function () {
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         newDU.move(-this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
 
-        //TODO:
-        //Set anonymous to this, and toclear to false
+        //this is now the anonymous variable of this ADT
         this.anon = newDU;
-        this.clearAnon = false;
     }
 
     //Removes a  dataunit at the specified index
