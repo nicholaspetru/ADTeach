@@ -12,20 +12,6 @@ $(document).ready(function () {
         this.date = new Date();
         this.delay = this.date.getTime();
 
-        //Testing a stack here
-        //event, type, name, value, action, originADT
-        /*
-        this.enqueueEvent("new","List<Integer>","stack1",[1,2,3], "", "");
-        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
-        this.enqueueEvent("update","List<Integer>","stack1",[1,2,3,5], "add", "add");
-        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
-        this.enqueueEvent("update","List<Integer>","stack1",[2,3,5], "remove", "remove");
-        this.enqueueEvent("update","List<Integer>","stack1",[2,5,5], "set", "set");
-        */
-        //this.enqueueEvent("update","Stack<Integer>","stack1","Stack<Integer>",[3,4]);
-        //this.enqueueEvent("update","stack","stack2","stack",[1,2]);
-
-
         //define constants
         this.PRIMITIVE_NUM_COLS= 8;
         this.PRIMITIVE_COL_LEN = 5;
@@ -114,9 +100,10 @@ $(document).ready(function () {
     };
     
     VisualizerHandler.prototype.goForthOnce = function() {
-        console.log("Visualizer Handler: goForthOnce()");
+        console.log("Visualizer Handler: goForthOnce() ");
         if (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
+            console.log("CUR5: " + curEvent[5]);
             this.highlightLine(curEvent[6], "yellow");
             if (curEvent[0] == 'new') {
                 this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
@@ -156,7 +143,7 @@ $(document).ready(function () {
 
     //Updates the value of an Entity
     VisualizerHandler.prototype.UpdateEntity = function(name, value, action, originADT) {
-        console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ')');
+        console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ', ' +  action + ', ' + originADT + ')');
 
         if (originADT == null){
             this.ClearAnonymous();
@@ -168,8 +155,55 @@ $(document).ready(function () {
                 this.entities[i].update(action, originADT);
             }
         }
-        //this.ClearAnonymous();
     };
+
+    //Deletes the named Entity
+    VisualizerHandler.prototype.DeleteEntity = function(name) {
+        console.log("Visualizer Handler: deleteEntity(" + name + ")");
+        for (var i = 0; i < this.entities.length; i++){
+            if (this.entities[i] != null && this.entities[i].name == name){
+                this.entities[i].destroy();
+                var start = i;
+
+                // reset respective matrix position to 0 for arranging purposes
+                var delX = (this.entities[i].x-this.HBORDER)/this.PRIMITIVE_COLUMNWIDTH;
+                var delY = (this.entities[i].y-this.PRIMITIVE_SECTION_Y)/(this.FONT_HEIGHT*1.7);
+                this.primitiveArray[Math.round(delY)][Math.round(delX)] = 0;  
+                this.entities.splice(i,1);
+            }
+        }
+        this.ClearAnonymous();
+        this.reArrangePrimitives(start);
+    };
+
+
+    //Grabs the anonymous variable from the named entity, moves it to the proper location
+    VisualizerHandler.prototype.getAnonymousVariable = function(name, x, y){
+        var anon = null;
+        for (var i = 0; i < this.entities.length; i++){
+            if (this.entities[i].name == name){
+                //it's an ADT
+                if (!this.isPrimitive(this.entities[i])){
+                    anon = this.entities[i].anon;
+                //it's a primitive, create a new DU
+                }else{
+                    anon = this.entities[i].createAnonymous();
+                }
+            }
+        }
+
+        //now move the anon to the new location
+        if (anon != null){
+            var difX, difY;
+            difX = x - anon.x;
+            difY = y - anon.y;
+            anon.move(difX,0,this.setDelay(500),500);
+            anon.move(0,difY,this.setDelay(500),500);
+            this.setDelay(500);
+            anon.destroy();
+        }
+    }
+
 
     //Clear the anonymous variables of ADTs
     VisualizerHandler.prototype.ClearAnonymous = function(){
@@ -205,24 +239,7 @@ $(document).ready(function () {
         }
     }
 
-    //Deletes the named Entity
-    VisualizerHandler.prototype.DeleteEntity = function(name) {
-        console.log("Visualizer Handler: deleteEntity(" + name + ")");
-        for (var i = 0; i < this.entities.length; i++){
-            if (this.entities[i] != null && this.entities[i].name == name){
-                this.entities[i].destroy();
-                var start = i;
 
-                // reset respective matrix position to 0 for arranging purposes
-                var delX = (this.entities[i].x-this.HBORDER)/this.PRIMITIVE_COLUMNWIDTH;
-                var delY = (this.entities[i].y-this.PRIMITIVE_SECTION_Y)/(this.FONT_HEIGHT*1.7);
-                this.primitiveArray[Math.round(delY)][Math.round(delX)] = 0;  
-                this.entities.splice(i,1);
-            }
-        }
-        this.ClearAnonymous();
-        this.reArrangePrimitives(start);
-    };
     
     //Returns a new Entity of the given type
     VisualizerHandler.prototype.getNewEntity = function(name, type, value, action, originADT) {

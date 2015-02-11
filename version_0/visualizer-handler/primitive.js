@@ -81,7 +81,15 @@ $(document).ready(function () {
         this.VH.setDelay(50);
     };
 
-    Primitive.prototype.copyTo = function() {
+    //make a data unit near your location and return it 
+    Primitive.prototype.createAnonymous = function() {
+        //Create the new data unit
+        var xx = this.x;
+            yy = this.y;
 
+        var newDU = new DataUnit(this.paper,this.type, this.value, this.VH,  xx,
+                                        yy, 18, 18, -1);
+        newDU.create();
+        return newDU;
     }
 });
