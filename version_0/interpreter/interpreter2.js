@@ -227,8 +227,10 @@ $(document).ready(function () {
                     case "PriorityQueue<String>":
                     case "Graph":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
+                        break;
                     case "Dictionary":
                         env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
+                        break;
                     default:
                         var type = this.checkType(value);
                         if (root.first != type){
