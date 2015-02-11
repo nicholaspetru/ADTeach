@@ -56,7 +56,7 @@ $(document).ready(function () {
         this.codeboxPaper = null;        
         //Testing new primitive system
         
-        
+        /*
         this.enqueueEvent("new", "int", "a", 1, "int");
         this.enqueueEvent("new", "int", "b", 2, "int");
         this.enqueueEvent("new", "int", "c", 3, "int");
@@ -72,7 +72,7 @@ $(document).ready(function () {
         this.enqueueEvent("delete", "int", "e", 5, "int");   
         this.enqueueEvent("new", "int", "h", 8, "int");
         this.enqueueEvent("new", "int", "i", 9, "int");
-
+        */
 
         return this;
     }
@@ -90,6 +90,8 @@ $(document).ready(function () {
         highlight.attr("stroke-width", 0);
     }
 
+    //TODO: Dudes, this is just not the right way to do this.
+    //We gotta fix this up, so that it waits to do a new event
     //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForthAll = function() {
         console.log("Visualizer Handler: goForthAll()");
@@ -135,25 +137,53 @@ $(document).ready(function () {
     VisualizerHandler.prototype.enqueueEvent = function(event, type, name, value, action, originADT, lineNum) {
         console.log("Visualizer Handler: enqueueEvent(" + event + ',' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ',' + lineNum + ')');
         this.eventQueue.push([event, name, type, value, action, originADT, lineNum]);
+        this.ClearAnonymous();
     };
 
     //Pushes a new Entity onto the list
     VisualizerHandler.prototype.NewEntity = function(name, type, value, action, originADT) {
         console.log("Visualizer Handler: newEntity(" + name + ',' + type + ',' + value + ',' + action + ',' + originADT + ')');
+        
+        if (originADT == null){
+            this.ClearAnonymous();
+        }
+
         this.entities.push(this.getNewEntity(name,type,value, action, originADT));
+
         this.arrangeEntities();
+        //this.ClearAnonymous();
     };
 
     //Updates the value of an Entity
     VisualizerHandler.prototype.UpdateEntity = function(name, value, action, originADT) {
         console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ')');
+
+        if (originADT == null){
+            this.ClearAnonymous();
+        }
+
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
                 this.entities[i].value = value;
                 this.entities[i].update(action, originADT);
             }
         }
+        //this.ClearAnonymous();
     };
+
+    //Clear the anonymous variables of ADTs
+    VisualizerHandler.prototype.ClearAnonymous = function(){
+        for (var i = 0; i < this.entities.length; i++){
+            if (!this.isPrimitive(this.entities[i])){
+                var adt = this.entities[i];
+                //if it has an anonymous variable, clear it
+                if (adt.anon != null ){
+                    adt.anon.destroy();
+                    adt.anon = null;
+                }
+            }
+        }
+    }
 
     //Deletes all Entities
     VisualizerHandler.prototype.DeleteAll = function(string) {
@@ -190,6 +220,7 @@ $(document).ready(function () {
                 this.entities.splice(i,1);
             }
         }
+        this.ClearAnonymous();
         this.reArrangePrimitives(start);
     };
     
