@@ -509,7 +509,7 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
-                console.log("Second ISSSSSSS: ", expression(0, "Stack<Integer>"));
+                t.third = expression(0, "Stack<Integer>")//console.log("Second ISSSSSSS: ", expression(0, "Stack<Integer>"));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -586,9 +586,10 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "List<Integer>";
-                console.log("Second ISSSSSSS: ", expression(0, "List<Integer>"));
+                t.third = expression(0, "List<Integer>")//console.log("Second ISSSSSSS: ", expression(0, "List<Integer>"));
+                console.log("Third is: ", t.third);
                 t.second = n;
-                t.third = [];
+                //t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }

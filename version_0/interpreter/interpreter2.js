@@ -214,32 +214,30 @@ $(document).ready(function () {
 
         
         if (root.arity === "Initialization") {
-            if (root.first == "Stack<Integer>") {
-                env.createVariable("Stack<Integer>", root.second.value, [], "new", originADT, root.linenum); 
-            } else if (root.first == "Stack<String>") {
-                env.createVariable("Stack<String>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "List<Integer>") {
-                console.log("Root is: ", root);
-                env.createVariable("List<Integer>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "List<String>") {
-                env.createVariable("List<String>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "Queue<Integer>") {
-                env.createVariable("Queue<Integer>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "Queue<String>") {
-                env.createVariable("Queue<String>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "Dictionary") {
-                env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
-            } else if (root.first == "PriorityQueue<Integer>") {
-                env.createVariable("PriorityQueue<Integer>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "PriorityQueue<String>") {
-                env.createVariable("PriorityQueue<String>", root.second.value, [], "new", originADT, root.linenum);
-            } else if (root.first == "Graph") {
-                env.createVariable("Graph", root.second.value, [], "new", originADT, root.linenum);
-            } else {
-                var type = this.checkType(value);
-                if (root.first != type){
-                 console.log("INCOMPATIBLE TYPES!!");   
+            if (root.third.arity != "FUN_CALL") {
+                var typeString = root.first;
+                switch(root.first) {
+                    case "Stack<Integer>":
+                    case "Stack<String>":
+                    case "List<Integer>":
+                    case "List<String>":
+                    case "Queue<Integer>":
+                    case "Queue<String>":
+                    case "PriorityQueue<Integer>":
+                    case "PriorityQueue<String>":
+                    case "Graph":
+                        env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
+                    case "Dictionary":
+                        env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
+                    default:
+                        var type = this.checkType(value);
+                        if (root.first != type){
+                            console.log("INCOMPATIBLE TYPES!!");   
+                        }
+                        env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                 }
+            console.log("HERE AND ROOT IS: ", root);
+            } else {
                 env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
             }
         }
@@ -454,18 +452,20 @@ $(document).ready(function () {
             //new IncorrectParameters();
         } else {
             if (parameters.length != 0) {
-            if (env.getValue(parameters[parameters.length - 1].value) != null) {
-                originADT = parameters[parameters.length-1].value;
-            }
-            for (var i = 0; i < parameters.length; i++){
-                console.log("Parameter is: ", parameters[i]);
-                var varValue = this.evalValue(parameters[i], env);
-                console.log("Value of parameter is: ", varValue);
-                var cloneVar = {value:varValue};
-                cloneParam[i] = cloneVar;
-                
-                
-            }
+                console.log("PARAMETERS ARE: ", parameters);
+                if (parameters[0].arity == "FunCall") {
+                    originADT = parameters[0].Caller.value;
+                }
+                else if (env.getValue(parameters[parameters.length - 1].value) != null) {
+                    originADT = parameters[parameters.length-1].value;
+                }
+                for (var i = 0; i < parameters.length; i++){
+                    console.log("Parameter is: ", parameters[i]);
+                    var varValue = this.evalValue(parameters[i], env);
+                    console.log("Value of parameter is: ", varValue);
+                    var cloneVar = {value:varValue};
+                    cloneParam[i] = cloneVar;
+                }
             }
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
             returnValue = methodValue[0];
@@ -481,6 +481,7 @@ $(document).ready(function () {
                 case("search"):
                 case("contains"):
                 case("indexOf"):
+                case("getNeighbors"):
                     console.log("Going to add: ", cloneParam);
                     method = method + "." + cloneParam[0].value;
                     console.log("method is: ", method);
