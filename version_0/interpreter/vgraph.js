@@ -13,19 +13,19 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges'];
+        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         return methods;
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges'];
+        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['removeNode', 'getDegree', 'getNeighbors'];
+        var oneParam = ['removeNode', 'getDegree', 'getNeighbors', 'setDirected'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
@@ -145,26 +145,27 @@ $(document).ready(function () {
         }
         
         if (method == "numEdges") {
-            var edges = [];
-            var edge = [];
-            edge.push([3, 1]);
-            var attempt = [3, 1];
-            console.log("TEST EDGES ARE: ", edge);
-            var testing = edge.indexOf(attempt);
-            console.log("IS IN???: ", testing);
-            console.log("ORig value = ", origValue);
+            var length = 0;
             for (var i = 0; i < origValue.length; i++) {
-                for (var j = 0; j < origValue[i].length; j++) {
-                    var currEdge = [i, origValue[i][j]];
-                    var otherCurrEdge = [origValue[i][j], i];
-                    console.log("Current edge and other current edge is: ", currEdge, otherCurrEdge);
-                    if (edges.indexOf(currEdge) < 0 && edges.indexOf(otherCurrEdge) < 0) {
-                        edges.push(currEdge);
-                    }
-                    console.log("edges are: ", edges);
-                }
+                console.log("looking at edge: ", i, origValue[i], "length: ");
+                length += origValue[i].length;
             }
-            returnValue = edges.length;
+            returnValue = length / 2;
+            return [returnValue, origValue];
+        }
+        
+        if (method == "numVerts") {
+            returnValue = origValue.length;
+            return [returnValue, origValue];
+        }
+        
+        if (method == "isEmpty") {
+            returnValue = (origValue.length == 0);
+            return [returnValue, origValue];
+        }
+        
+        if (method == "clear") {
+            origValue = [];
             return [returnValue, origValue];
         }
         

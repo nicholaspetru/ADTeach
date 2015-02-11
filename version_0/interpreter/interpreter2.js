@@ -195,7 +195,8 @@ $(document).ready(function () {
             var methodValue = this.evalMethod(valueRoot, env);
             returnedValue = methodValue[1];
             value = methodValue[0];
-            originMethod = valueRoot.MethodName.value;
+            originMethod = methodValue[2];
+            //originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
             //ADD ORIGIN
         }
@@ -216,7 +217,7 @@ $(document).ready(function () {
 
         
         if (root.arity === "Initialization") {
-            if (root.third.arity != "FUN_CALL") {
+            if (root.third.arity != "FunCall") {
                 var typeString = root.first;
                 switch(root.first) {
                     case "Stack<Integer>":
@@ -242,6 +243,11 @@ $(document).ready(function () {
                 }
             console.log("HERE AND ROOT IS: ", root);
             } else {
+                console.log("Creating variable: ", root.first);
+                console.log("Value is: ", value);
+                //returnValue = value[0];
+                //method = value[2];
+                //originMethod = method;
                 env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
             }
         }
@@ -508,7 +514,7 @@ $(document).ready(function () {
             
             env.updateVariable(adt, newValue, method, originADT, root.linenum);
         }
-        return [returnValue, newValue];
+        return [returnValue, newValue, method];
     }
     
     Interpreter.prototype.findMethods = function(type) {
