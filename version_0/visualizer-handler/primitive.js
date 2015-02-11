@@ -16,9 +16,11 @@ $(document).ready(function () {
         this.x = 0;
         this.y = 0;
 
+        this.FONT_SIZE = 18;
+
         //visual component
         this.vis = this.paper.text(this.x, this.y, this.type + " " + this.name + " = " + this.value);
-        this.vis.attr({"opacity": 0,"font-family": "times", "font-size": 18, 'text-anchor': 'start'});
+        this.vis.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
     }
 
     //Create visual primitve in the specific position
@@ -83,13 +85,16 @@ $(document).ready(function () {
 
     //make a data unit near your location and return it 
     Primitive.prototype.createAnonymous = function() {
+
         //Create the new data unit
-        var xx = this.x;
-            yy = this.y;
+        var xx = this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length;
+            yy = this.y - this.FONT_SIZE/2;
 
         var newDU = new DataUnit(this.paper,this.type, this.value, this.VH,  xx,
                                         yy, 18, 18, -1);
+        newDU.font_size = 18;
         newDU.create();
+
         return newDU;
     }
 });

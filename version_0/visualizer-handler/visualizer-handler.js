@@ -199,8 +199,7 @@ $(document).ready(function () {
             difY = y - anon.y;
             anon.move(difX,0,this.setDelay(500),500);
             anon.move(0,difY,this.setDelay(500),500);
-            this.setDelay(500);
-            anon.destroy();
+            anon.fadeOut(this.setDelay(500) + 300);
         }
     }
 
@@ -243,22 +242,22 @@ $(document).ready(function () {
     
     //Returns a new Entity of the given type
     VisualizerHandler.prototype.getNewEntity = function(name, type, value, action, originADT) {
-        switch(type){
-        case "int":
-            return new Primitive(this.paper,name,type,value,this);
-        case "String":
-            return new Primitive(this.paper,name,type,value,this);
-        case "float":
-            return new Primitive(this.paper,name,type,value,this);
-        case "boolean":
-            return new Primitive(this.paper,name,type,value,this);
-        case "List<Integer>":
-        case "List<String>":
-            return new List(this.paper,name,type,value, this);
-        //and more cases....
-        default:
-            console.log("Unknown type for newEntity: " + className);
-            return;
+        
+        switch(type.split("<")[0]){
+            case "int":
+                return new Primitive(this.paper,name,type,value,this);
+            case "String":
+                return new Primitive(this.paper,name,type,value,this);
+            case "float":
+                return new Primitive(this.paper,name,type,value,this);
+            case "boolean":
+                return new Primitive(this.paper,name,type,value,this);
+            case "List":
+                return new List(this.paper,name,type,value, this);
+            //and more cases....
+            default:
+                console.log("Unknown type for newEntity: " + type);
+                return;
         }
     };
     // from Crockford Javascript the good parts

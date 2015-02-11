@@ -12,6 +12,7 @@ $(document).ready(function () {
           // dimension of box/circle
           this.width = width;
           this.height = height;
+          this.font_size = 14;
 
           // array of value, box/circle container, associated arrows, etc.
           // IMPORTANT: first item is the value, second is the container (box/circle)
@@ -60,6 +61,14 @@ $(document).ready(function () {
           }
       };
 
+      //Deletes the item with a provided delay
+      DataUnit.prototype.fadeOut = function(delay) {
+          //fade it out
+          var anim = Raphael.animation({opacity:0},250);
+          for (var i =0; i < this.vis.length; i++){
+            this.vis[i].animate(anim.delay(delay));
+          }
+      };
 
   	//Modifiy data unit value
     //Orientation determines whether the dataunit is shaking up and down (0) or left to right (1)
@@ -83,7 +92,7 @@ $(document).ready(function () {
      DataUnit.prototype.buildVisual = function() {
         //value
         this.vis[0] = this.paper.text(this.x+this.width/2, this.y+this.height/2, this.value);
-        this.vis[0].attr({"opacity": 0,"font-family": "times", "font-size": 14, 'text-anchor': 'center'});
+        this.vis[0].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size, 'text-anchor': 'center'});
 
      		// which container type is it? (0 is box, 1 is circle, -1 is nothing)
      		if (this.shape == 0) {
