@@ -75,4 +75,21 @@ $(document).ready(function() {
        code = this.codeDatabase.getCode('stack') 
        this.codeBox.setCode(code);
     };
+
+
+    //TODO: Actually get this to modify delay appropriately...
+
+    //takes in a value from 0-100
+    //0 represents slower animation speed
+    //100 represents higher animation speed
+    EventHandler.prototype.onSlider = function(newDelay) {
+        console.log('Event Handler: onSlider(' + newDelay + ');');
+        var curDelay = this.visualizerHandler.getDelay();
+        //delayMod in between 0 and 2
+        //0 corresponds to newDelay of 100, represents faster animation speed
+        //2 corresponds to newDelay of 0, represents slower animation speed
+        var delayMod = (50-newDelay)/50;
+        //delay may be set to anywhere from 0 to twice the current delay
+        this.visualizerHandler.setDelay(curDelay*delayMod);
+    }
 });
