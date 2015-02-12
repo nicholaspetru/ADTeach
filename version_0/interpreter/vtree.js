@@ -59,9 +59,17 @@ $(document).ready(function () {
             var vertex = parameters[0].value;
             var child = parameters[1].value;
             var origValueCopy = [];
-            
+            var seenVertex = false;
             for (var k = 0; k < origValue.length; k++) {
                 origValueCopy.push(origValue[k]);
+                if (origValue[k][0] == vertex) {
+                    seenVertex = true;
+                }
+            }
+            
+            if (seenVertex != true) {
+                console.log("Vertex not in graph");
+                //Throw error
             }
             
             for (var i = 0; i < origValue.length; i++) {
@@ -81,24 +89,6 @@ $(document).ready(function () {
                 }
             }
             origValue = origValueCopy;
-            
-            /*
-            for (var i = 0; i < origValue.length; i++) {
-                console.log("In first for");
-                var currTreeNode = origValue[i];
-                var currValue = currTreeNode[0];
-                if (currValue == vertex) {
-                    var currChildrenCopy = [];
-                    for (var j = 0; j < currTreeNode[2]; j++) {
-                        console.log("In second for");
-                        currChildrenCopy.push(currTreeNode[2][j]);
-                    }
-                    currChildrenCopy.push(child);
-                    origValue[i][2] = currChildrenCopy;
-                    origValue.push([vertex, currValue, []]);
-                }
-            }
-            */
             return [returnValue, origValue];
             
         }
