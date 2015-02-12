@@ -39,5 +39,9 @@ $(document).ready(function () {
     $("#sample").click(function() {        
         EVH.onSample();
     });
+    $("#slider").change(function() {
+        var newDelay = $("#slider").val();
+        EVH.onSlider(newDelay);
+    });
     
 });
