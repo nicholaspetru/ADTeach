@@ -46,6 +46,7 @@ $(document).ready(function () {
         var returnValue = null;
         var origValue = [];
         var isDirected = origValue1[1];
+        var neighborNeigh = [];
         for (var i = 0; i<origValue1[0].length; i++){
             origValue[i]=(origValue1[0][i]);   
         }
@@ -59,19 +60,33 @@ $(document).ready(function () {
                 isDirected = false;
                 for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
                     var vertexNeighbors = origValue[currVertex];
+                    //var copyVertexNeighbors = [];
+                    //for (var copy = 0; copy < vertexNeighbors.length; copy++) {
+                    //    copyVertexNeighbors.push(vertexNeighbors[copy]);
+                    //}
+                    
                     for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
+                        
                         var currNeighbor = vertexNeighbors[neighbor];
                         var neighborNeigh = origValue[currNeighbor];
+                        
+                        //var copyNeighborNeigh = [];
+                        //for (var copy1 = 0; copy1 < neighborNeigh.length; copy1++) {
+                        //    copyNeighborNeigh.push(neighborNeigh[copy1]);
+                        //}
+                        
                         if (neighborNeigh.indexOf(currVertex) < 0) {
-                            console.log("Looking at: ", currVertex, "and", currNeighbor);
+                            //console.log("Looking at: ", currVertex, "and", currNeighbor);
                             neighborNeigh.push(currVertex);
                         }
                     }
-                    origValue[neighbor] = neighborNeigh;
+                    console.log("After changing, neighbors are: ", neighborNeigh, "for", currNeighbor);
+                    origValue[currNeighbor] = neighborNeigh;
                     
                 }
+                return [returnValue, [origValue, isDirected]];
             }
-            return [returnValue, [origValue, isDirected]];
+            
         }
         
         if (method == "addEdge"){ 
