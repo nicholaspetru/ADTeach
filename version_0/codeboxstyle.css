@@ -18,7 +18,6 @@
     padding: 5px;
 }
 
-
 #code_env {
     line-height:30px;
     height:500px;
@@ -38,6 +37,14 @@ textarea#user_textbox{
     margin-left: 5%;
     width: 87%;
     resize:none;
+}
+
+#range {
+    position: relative;
+    top: -10px;
+    text-align: center;
+    line-height: 20px;
+
 }
 
 #vis_paper {
