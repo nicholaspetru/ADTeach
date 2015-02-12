@@ -52,9 +52,39 @@ $(document).ready(function () {
     VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
         var origValue = [];
+        var isDirected = origValue1[1];
+        var neighborNeigh = [];
         for (var i = 0; i<origValue1[0].length; i++){
             origValue[i]=(origValue1[0][i]);   
         }
+        /*
+        if (method == "setDirected") {
+            if (parameters[0].value == true) {
+                isDirected = true;
+                return [returnValue, [origValue, isDirected]];
+            }
+            if (parameters[0].value == false) {
+                isDirected = false;
+                for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
+                    var vertexNeighbors = origValue[currVertex];
+
+                    for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
+                        
+                        var currNeighbor = vertexNeighbors[neighbor];
+                        var neighborNeigh = origValue[currNeighbor];
+
+                        
+                        if (neighborNeigh.indexOf(currVertex) < 0) {
+                            neighborNeigh.push(currVertex);
+                        }
+                    }
+                    origValue[currNeighbor] = neighborNeigh;                    
+                }
+                return [returnValue, [origValue, isDirected]];
+            }
+            
+        } */
+        
         if (method == "addEdge"){ 
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
@@ -72,8 +102,9 @@ $(document).ready(function () {
                 //Throw an error!
             }
             node1Edges.push([node2, weight]);
-            node2Edges.push([node1, weight]);
-            return [returnValue, origValue];
+            if (isDirected != true) node2Edges.push([node1, weight]);
+            
+            return [returnValue, [origValue, isDirected]];
             
         } if (method == "populate") {
             var numNodes = parameters[0].value;
@@ -82,15 +113,20 @@ $(document).ready(function () {
                 origValue.push([]);
                 for (var j = 0; j < i; j++) {
                     var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
+                    var weight = Math.floor((Math.random() * 10) + 1);
                     if (prob < density) {
                         iEdge = origValue[i];
                         jEdge = origValue[j];
-                        iEdge.push(j);
-                        jEdge.push(i);
+                        iEdge.push([j, weight]);
+                        if (isDirected != true) jEdge.push([i, weight]);
+                        else {
+                            prob = (Math.random()* (0 - 1) + 1).toFixed(2);
+                            if (prob < density) jEdge.push([i, weight]);
+                        }
                     }
                 }
             }
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "removeEdge") {
@@ -114,21 +150,27 @@ $(document).ready(function () {
                         node1NEdges.push(currEdge);
                     }
                 }
-                for (var j = 0; j < node2Edges.length; j++) {
-                    var curr2Edge = node2Edges[j];
-                    if (curr2Edge[0] != node1) {
-                        node2NEdges.push(curr2Edge);
-                    }
-                }
                 origValue[node1] = node1NEdges;
-                origValue[node2] = node2NEdges;
-                return [returnValue, origValue];
+                
+                if (isDirected != true){
+                    for (var j = 0; j < node2Edges.length; j++) {
+                        var curr2Edge = node2Edges[j];
+                        if (curr2Edge[0] != node1) {
+                            node2NEdges.push(curr2Edge);
+                        }
+                    }
+                    origValue[node2] = node2NEdges;
+                } else{
+                    origValue[node2] = node2Edges;
+                }
+                
+                return [returnValue, [origValue, isDirected]];
             }
         }
         
         if (method == "addVertex") {
             origValue.push([]);
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "hasEdge") {
@@ -143,7 +185,7 @@ $(document).ready(function () {
                 if (node1Edges[i][0] == node2) returnValue = true;
             }
             console.log(returnValue);
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "getNeighbors") {
@@ -161,7 +203,7 @@ $(document).ready(function () {
             }
             
             returnValue = neighbors;
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "numEdges") {
@@ -171,22 +213,22 @@ $(document).ready(function () {
                 length += origValue[i].length;
             }
             returnValue = length / 2;
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "numVerts") {
             returnValue = origValue.length;
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "isEmpty") {
             returnValue = (origValue.length == 0);
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "clear") {
             origValue = [];
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "getWeight") {
@@ -201,7 +243,7 @@ $(document).ready(function () {
                 }
             }
 
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
 
         }
 
@@ -210,15 +252,17 @@ $(document).ready(function () {
             var node2 = parameters[1].value;
             var weight = parameters[2].value;
             var node1Edges = origValue[node1];
+            var node2Edges = origValue[node2];
             
             edgeCheck = false;
             for (var i = 0; i < node1Edges.length; i++){
                 if (node1Edges[i][0] == node2) {
                     node1Edges[i][1] = weight;
+                    if (isDirected != true) node2Edges[node1][1] = weight;
                 }
             }
 
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
 
         }
         
