@@ -93,6 +93,87 @@ $(document).ready(function () {
             
         }
         
+        if (method == "addLeftChild") {
+            var vertex = parameters[0].value;
+            var leftChild = parameters[1].value;
+            var origValueCopy = [];
+            var seenVertex = false;
+            for (var k = 0; k < origValue.length; k++) {
+                origValueCopy.push(origValue[k]);
+                if (origValue[k][0] == vertex) {
+                    seenVertex = true;
+                }
+            }
+            
+            if (seenVertex != true) {
+                console.log("Vertex not in graph");
+                //Throw error
+            }
+            
+            for (var i = 0; i < origValue.length; i++) {
+                var currentTreeNode = origValueCopy[i];
+                var currValue = currentTreeNode[0];
+                if (currValue == vertex) {
+                    var currChildrenCopy = [];
+                    var currentChildren = currentTreeNode[2];
+                    if (currentChildren.length > 1) {
+                        console.log("Already has two children");
+                        //Throw error
+                    } else {
+                        currChildrenCopy.push(leftChild);
+                        if (currentChildren[0] != null) {
+                            currChildrenCopy.push(currentChildren[0]);
+                        }
+                        origValueCopy[i][2] = currChildrenCopy;
+                        origValueCopy.push([leftChild, currValue, []]);
+                    }
+                }
+            }
+            origValue = origValueCopy;
+            return [returnValue, origValue];
+        }
+        
+        if (method == "addRightChild") {
+            var vertex = parameters[0].value;
+            var rightChild = parameters[1].value;
+            var origValueCopy = [];
+            var seenVertex = false;
+            for (var k = 0; k < origValue.length; k++) {
+                origValueCopy.push(origValue[k]);
+                if (origValue[k][0] == vertex) {
+                    seenVertex = true;
+                }
+            }
+            
+            if (seenVertex != true) {
+                console.log("Vertex not in graph");
+                //Throw error
+            }
+            
+            for (var i = 0; i < origValue.length; i++) {
+                var currentTreeNode = origValueCopy[i];
+                var currValue = currentTreeNode[0];
+                if (currValue == vertex) {
+                    var currChildrenCopy = [];
+                    var currentChildren = currentTreeNode[2];
+                    if (currentChildren.length > 1) {
+                        console.log("Already has two children");
+                        //Throw error
+                    } else {
+                        if (currentChildren[0] != null) {
+                            currChildrenCopy.push(currentChildren[0]);
+                        }
+                        currChildrenCopy.push(rightChild);
+                        origValueCopy[i][2] = currChildrenCopy;
+                        origValueCopy.push([rightChild, currValue, []]);
+                    }
+                }
+            }
+            origValue = origValueCopy;
+            return [returnValue, origValue];
+        }
+        
+        
         if (method == 'getParent') {
             var vertex = parameters[0].value;
             var parent;
