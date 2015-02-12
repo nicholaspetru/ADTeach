@@ -452,8 +452,9 @@ $(document).ready(function () {
         var name = root.first.value;
         var index = env.getIndex(name);
         var adding = root.second.value;
+        console.log("Want to add: ", root);
         if (adding.jtype != "INT_TYPE" || adding.jtype != "STRING_TYPE") {
-            adding = this.evalValue(root.second);
+            adding = this.evalValue(root.second, env);
         }
         if (index < 0) {
             console.log("Variable not declared");
@@ -465,6 +466,20 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalMinusEqual = function(root, env) {
+        var name = root.first.value;
+        var index = env.getIndex(name);
+        var subtracting = root.second.value;
+        console.log("Want to add: ", root);
+        if (subtracting.jtype != "INT_TYPE" || subtracting.jtype != "STRING_TYPE") {
+            subtracting = this.evalValue(root.second, env);
+        }
+        if (index < 0) {
+            console.log("Variable not declared");
+            //Throw error
+        }
+        var value = env.getValue(name);
+        var newVal = value - subtracting;
+        env.updateVariable(name, newVal, "-=", "new", root.linenum);
     }
     
     Interpreter.prototype.evalMethod = function(root, env) {
