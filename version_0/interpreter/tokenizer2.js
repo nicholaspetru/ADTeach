@@ -203,7 +203,7 @@ Tokenizer.prototype._process_symbol = function() {
 		return tok;
 	}
 */
-	else if (temp === 'Stack' || temp === 'Queue' || temp === 'List' || temp === 'PriorityQueue') {
+	else if (temp === 'Stack' || temp === 'Queue' || temp === 'List' || temp === 'PriorityQueue' || temp === "Dictionary") {
 		if (this.buf.charAt(endpos) !== '<') {
 			throw Error('Syntax error: expected type specifier for ADT');
 		}

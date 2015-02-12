@@ -803,7 +803,7 @@ var make_parse = function () {
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
     
-    stmt("Dictionary", function () {
+    stmt("Dictionary<Integer, Integer>", function () {
         var a = [], n, t;
         while (true) {
             n = token;
@@ -817,8 +817,8 @@ var make_parse = function () {
                 t = token;
                 t.value = "init";
                 advance("=");
-                t.first = "Dictionary";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary"));
+                t.first = "Dictionary<Integer, Integer>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, Integer>"));
                 t.second = n;
                 t.third = [];
                 t.arity = "Initialization";
@@ -826,7 +826,425 @@ var make_parse = function () {
             }
             else {
                 t = token;
-                t.value = "Dictionary";
+                t.value = "Dictionary<Integer, Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Integer, String>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Integer, String>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, String>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Integer, String>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Integer, Float>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Integer, Float>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, Float>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Integer, Float>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Integer, Boolean>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Integer, Boolean>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, Boolean>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Integer, Boolean>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<String, Integer>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<String, Integer>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, Integer>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<String, Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<String, String>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<String, String>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, String>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<String, String>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<String, Float>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<String, Float>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, Float>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<String, Float>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<String, Boolean>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<String, Boolean>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, Boolean>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<String, Boolean>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Float, Integer>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Float, Integer>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, Integer>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Float, Integer>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Float, String>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Float, String>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, String>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Float, String>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Float, Float>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Float, Float>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, Float>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Float, Float>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
+    stmt("Dictionary<Float, Boolean>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Dictionary<Float, Boolean>";
+                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, Boolean>"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Dictionary<Float, Boolean>";
                 t.first = n;
                 t.second = null;
                 t.arity = "Initialization";

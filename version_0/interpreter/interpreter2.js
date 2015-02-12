@@ -236,8 +236,19 @@ $(document).ready(function () {
                     case "Tree":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         break;
-                    case "Dictionary":
-                        env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
+                    case "Dictionary<Integer, Integer>":
+                    case "Dictionary<Integer, String>":
+                    case "Dictionary<Integer, Float>":
+                    case "Dictionary<Integer, Boolean>":
+                    case "Dictionary<String, String>":
+                    case "Dictionary<String, Integer>":
+                    case "Dictionary<String, Float>":
+                    case "Dictionary<String, Boolean>":
+                    case "Dictionary<Float, String>":
+                    case "Dictionary<Float, Integer>":
+                    case "Dictionary<Float, Float>":
+                    case "Dictionary<Float, Boolean>":
+                        env.createVariable(typeString, root.second.value, {}, "new", originADT, root.linenum);
                         break;
                     case "Graph":
                         env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
@@ -364,28 +375,58 @@ $(document).ready(function () {
                 return "String";
             case typeof true:
                 return "Boolean";
+                
             case typeof VStack("int"):
                 return "Stack<int>";
             case typeof VStack("float"):
                 return "Stack<float>";
             case typeof VStack("String"):
                 return "Stack<String>";
+                
             case typeof VList("int"):
                 return "List<Integer>";
             case typeof VList("String"):
                 return "List<String>";
+                
             case typeof VQueue("int"):
                 return "Queue<int>";
             case typeof VQueue("float"):
                 return "Queue<float>";
             case typeof VQueue("String"):
                 return "Queue<String>";
+                
             case typeof VPQueue("int"):
                 return "PriorityQueue<Integer>";
             case typeof VPQueue("String"):
                 return "PriorityQueue<String>";
-            case typeof VDictionary():
-                return "Dictionary";
+                
+            case typeof VDictionary("int", "int"):
+                return "Dictionary<Integer, Integer>";
+            case typeof VDictionary("int", "String"):
+                return "Dictionary<Integer, String>";
+            case typeof VDictionary("int", "bool"):
+                return "Dictionary<Integer, Boolean>";
+            case typeof VDictionary("int", "float"):
+                return "Dictionary<Integer, Float>";
+                
+            case typeof VDictionary("String", "int"):
+                return "Dictionary<String, Integer>";
+            case typeof VDictionary("String", "String"):
+                return "Dictionary<String, String>";
+            case typeof VDictionary("String", "bool"):
+                return "Dictionary<String, Boolean>";
+            case typeof VDictionary("String", "float"):
+                return "Dictionary<String, Float>";
+                
+            case typeof VDictionary("float", "int"):
+                return "Dictionary<Float, Integer>";
+            case typeof VDictionary("float", "String"):
+                return "Dictionary<Float, String>";
+            case typeof VDictionary("float", "bool"):
+                return "Dictionary<Float, Boolean>";
+            case typeof VDictionary("float", "float"):
+                return "Dictionary<Float, Float>";
+                
             case typeof VGraph():
                 return "Graph";
             case typeof VWeightedGraph():
@@ -505,6 +546,7 @@ $(document).ready(function () {
         var cloneParam = [];
         console.log("Evaluating the method: ", root);
         console.log("adtMethod: ", method);
+        console.log("Adt methods are: ", adtMethods);
         console.log("Adt type: ", adtType);
         if (adtMethods.indexOf(method) < 0) {
             console.log("Invalid Method");
@@ -595,8 +637,19 @@ $(document).ready(function () {
                 y = new VPQueue("int");
                 return y.listMethods();
                 break;
-            case "Dictionary":
-                y = new VDictionary();
+            case "Dictionary<Integer, Integer>":
+            case "Dictionary<Integer, String>":
+            case "Dictionary<Integer, Boolean>":
+            case "Dictionary<Integer, Float>":
+            case "Dictionary<String, Integer>":
+            case "Dictionary<String, String>":
+            case "Dictionary<String, Boolean>":
+            case "Dictionary<String, Float>":
+            case "Dictionary<Float, Integer>":
+            case "Dictionary<Float, String>":
+            case "Dictionary<Float, Boolean>":
+            case "Dictionary<Float, Float>":
+                y = new VDictionary("int");
                 return y.listMethods();
                 break;
             case "Graph":
@@ -635,8 +688,19 @@ $(document).ready(function () {
             case "PriorityQueue<String>":
                 y = new VPQueue("String");
                 return y.checkParameters(method, parameters);
-            case "Dictionary":
-                y = new VDictionary();
+            case "Dictionary<Integer, Integer>":
+            case "Dictionary<Integer, String>":
+            case "Dictionary<Integer, Boolean>":
+            case "Dictionary<Integer, Float>":
+            case "Dictionary<String, Integer>":
+            case "Dictionary<String, String>":
+            case "Dictionary<String, Boolean>":
+            case "Dictionary<String, Float>":
+            case "Dictionary<Float, Integer>":
+            case "Dictionary<Float, String>":
+            case "Dictionary<Float, Boolean>":
+            case "Dictionary<Float, Float>":
+                y = new VDictionary("String");
                 return y.checkParameters(method, parameters);
             case "Graph":
                 y = new VGraph();
@@ -691,8 +755,52 @@ $(document).ready(function () {
                 y = new VPQueue("String");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
-            case "Dictionary":
-                y = new VDictionary();
+            case "Dictionary<Integer, Integer>":
+                y = new VDictionary("int", "int");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Integer, String>":
+                y = new VDictionary("int", "String");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Integer, Boolean>":
+                y = new VDictionary("int", "bool");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Integer, Float>":
+                y = new VDictionary("int", "float");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<String, Integer>":
+                y = new VDictionary("String", "int");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<String, String>":
+                y = new VDictionary("String", "String");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<String, Boolean>":
+                y = new VDictionary("String", "bool");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<String, Float>":
+                y = new VDictionary("String", "float");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Float, Integer>":
+                y = new VDictionary("float", "int");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Float, String>":
+                y = new VDictionary("float", "String");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Float, Boolean>":
+                y = new VDictionary("float", "bool");
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Dictionary<Float, Float>":
+                y = new VDictionary("float", "float");
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
             case "Graph":
