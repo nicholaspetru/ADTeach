@@ -149,15 +149,19 @@ $(document).ready(function () {
         
         if (method == "getNeighbors") {
             var node = parameters[0].value;
-            var nodeCheck = false;
-            for (var i = 0; i < origValue.length; i++){
-                if (origValue[i][0] == node) nodeCheck = true;
-            }
-            if (!nodeCheck) {
-                console.log("Node not in graph");
+            var node1Edges = origValue[node];
+            var neighbors = [];
+            
+            if (node >= origValue.length) {
+                console.log("********Node not in graph");
                 //Throw Error
+            } 
+            console.log("######### ok, let's get the neighbors");
+            for (var i = 0; i<node1Edges.length; i++){
+                neighbors.push(node1Edges[i][0]);
             }
-            returnValue = origValue[node];
+            
+            returnValue = neighbors;
             return [returnValue, origValue];
         }
         
@@ -185,6 +189,40 @@ $(document).ready(function () {
             origValue = [];
             return [returnValue, origValue];
         }
+        
+        if (method == "getWeight") {
+            var node1 = parameters[0].value;
+            var node2 = parameters[1].value;
+            var node1Edges = origValue[node1];
+            console.log(node1, node2, node1Edges);
+            returnValue = 89;
+            for (var i = 0; i < node1Edges.length; i++){
+                if (node1Edges[i][0] == node2) {
+                    returnValue = node1Edges[i][1];
+                }
+            }
+
+            return [returnValue, origValue];
+
+        }
+
+        if (method == "setWeight") {
+            var node1 = parameters[0].value;
+            var node2 = parameters[1].value;
+            var weight = parameters[2].value;
+            var node1Edges = origValue[node1];
+            
+            edgeCheck = false;
+            for (var i = 0; i < node1Edges.length; i++){
+                if (node1Edges[i][0] == node2) {
+                    node1Edges[i][1] = weight;
+                }
+            }
+
+            return [returnValue, origValue];
+
+        }
+        
         
         
     }
