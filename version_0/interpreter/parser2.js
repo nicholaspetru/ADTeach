@@ -916,6 +916,44 @@ var make_parse = function () {
         advance(";");
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
+    
+    stmt("Tree", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Tree";
+                console.log("Second ISSSSSSS: ", expression(0, "Tree"));
+                t.second = n;
+                t.third = [];
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Tree";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
     // TODO
     // ------------------
     // REST OF TYPES

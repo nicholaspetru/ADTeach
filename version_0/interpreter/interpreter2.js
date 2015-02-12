@@ -233,6 +233,7 @@ $(document).ready(function () {
                     case "Queue<String>":
                     case "PriorityQueue<Integer>":
                     case "PriorityQueue<String>":
+                    case "Tree":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         break;
                     case "Dictionary":
@@ -242,9 +243,9 @@ $(document).ready(function () {
                         env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         break;
                     case "WeightedGraph":
-                        console.log("CREATING A GRAPH THROUGH HERE!!!");
                         env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         break;
+                    
                     default:
                         var type = this.checkType(value);
                         if (root.first != type){
@@ -389,6 +390,8 @@ $(document).ready(function () {
                 return "Graph";
             case typeof VWeightedGraph():
                 return "WeightedGraph";
+            case typeof VTree():
+                return "Tree";
             default:
                 return null
         }
@@ -545,6 +548,8 @@ $(document).ready(function () {
                 case("contains"):
                 case("indexOf"):
                 case("getNeighbors"):
+                case("getParent"):
+                case("getChildren"):
                     console.log("Going to add: ", cloneParam);
                     method = method + "." + cloneParam[0].value;
                     console.log("method is: ", method);
@@ -602,6 +607,10 @@ $(document).ready(function () {
                 y = new VWeightedGraph();
                 return y.listMethods();
                 break;
+            case "Tree":
+                y = new VTree();
+                return y.listMethods();
+                break;
         }
     }
     
@@ -634,6 +643,9 @@ $(document).ready(function () {
                 return y.checkParameters(method, parameters);
             case "WeightedGraph":
                 y = new VWeightedGraph();
+                return y.checkParameters(method, parameters);
+            case "Tree":
+                y = new VTree();
                 return y.checkParameters(method, parameters);
         }
     }
@@ -689,6 +701,10 @@ $(document).ready(function () {
                 return value;
             case "WeightedGraph":
                 y = new VWeightedGraph();
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "Tree":
+                y = new VTree();
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
         }
