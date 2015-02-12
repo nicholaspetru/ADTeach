@@ -13,7 +13,7 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree'];
         return methods;
     }
     
@@ -25,7 +25,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['removeNode', 'getDegree', 'getNeighbors', 'setDirected'];
+        var oneParam = ['removeNode', 'getDegree', 'getNeighbors', 'setDirected', 'getInDegree', 'getOutDegree'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
@@ -249,14 +249,53 @@ $(document).ready(function () {
             return [returnValue, [origValue, isDirected]];
         }
         
-        if (method == "numEdges") {
-            var length = 0;
-            for (var i = 0; i < origValue.length; i++) {
-                console.log("looking at edge: ", i, origValue[i], "length: ");
-                length += origValue[i].length;
+        if (method == "getOutDegree") {
+            if (isDirected != true) {
+                console.log("No out degree for undirected graph");
+                //Throw error
             }
-            returnValue = length / 2;
+            var vertex = parameters[0].value;
+            returnValue = origValue[vertex].length;
             return [returnValue, [origValue, isDirected]];
+        }
+        
+        if (method == "getInDegree") {
+            if (isDirected != true) {
+                console.log("No out degree for undirected graph");
+                //Throw error
+            }
+            var vertex = parameters[0].value;
+            var degree = 0;
+            for (var i = 0; i < origValue.length; i++) {
+                var neighbors = origValue[i];
+                if (neighbors.indexOf(vertex) >= 0) {
+                    degree += 1;
+                }
+            }
+            returnValue = degree;
+            return [returnValue, [origValue, isDirected]];
+        }
+        
+        if (method == "numEdges") {
+            if (isDirected != true) {
+                var length = 0;
+                for (var i = 0; i < origValue.length; i++) {
+                    console.log("looking at edge: ", i, origValue[i], "length: ");
+                    length += origValue[i].length;
+                }
+                returnValue = length / 2;
+                return [returnValue, [origValue, isDirected]];
+            }
+            
+            if (isDirected == true) {
+                var length = 0;
+                for (var i = 0; i < origValue.length; i++) {
+                    console.log("looking at edge: ", i, origValue[i], "length: ");
+                    length += origValue[i].length;
+                }
+                returnValue = length;
+                return [returnValue, [origValue, isDirected]];
+            }
         }
         
         if (method == "numVerts") {
