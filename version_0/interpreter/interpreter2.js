@@ -228,17 +228,11 @@ $(document).ready(function () {
                     case "Queue<String>":
                     case "PriorityQueue<Integer>":
                     case "PriorityQueue<String>":
-<<<<<<< HEAD
-=======
-                    case "WeightedGraph":
-                    case "Graph":
->>>>>>> 40a1890485354800411f075d1e927fbced1806e1
-                        env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
-                        break;
                     case "Dictionary":
                         env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
                         break;
                     case "Graph":
+                    case "WeightedGraph":
                         console.log("CREATING A GRAPH THROUGH HERE!!!");
                         env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         break;
