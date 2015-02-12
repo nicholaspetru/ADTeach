@@ -52,8 +52,8 @@ $(document).ready(function () {
     VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
         var origValue = [];
-        for (var i = 0; i<origValue1.length; i++){
-            origValue[i]=(origValue1[i]);   
+        for (var i = 0; i<origValue1[0].length; i++){
+            origValue[i]=(origValue1[0][i]);   
         }
         if (method == "addEdge"){ 
             var node1 = parameters[0].value;
@@ -82,12 +82,11 @@ $(document).ready(function () {
                 origValue.push([]);
                 for (var j = 0; j < i; j++) {
                     var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
-                    var weight = Math.floor((Math.random() * 10) + 1);
                     if (prob < density) {
                         iEdge = origValue[i];
                         jEdge = origValue[j];
-                        iEdge.push([j, weight]);
-                        jEdge.push([i, weight]);
+                        iEdge.push(j);
+                        jEdge.push(i);
                     }
                 }
             }
