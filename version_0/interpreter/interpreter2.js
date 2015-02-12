@@ -228,13 +228,17 @@ $(document).ready(function () {
                     case "Queue<String>":
                     case "PriorityQueue<Integer>":
                     case "PriorityQueue<String>":
+                        env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
+                        break;
                     case "Dictionary":
                         env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
                         break;
                     case "Graph":
+                        env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        break;
                     case "WeightedGraph":
                         console.log("CREATING A GRAPH THROUGH HERE!!!");
-                        env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         break;
                     default:
                         var type = this.checkType(value);

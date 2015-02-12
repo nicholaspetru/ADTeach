@@ -60,29 +60,18 @@ $(document).ready(function () {
                 isDirected = false;
                 for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
                     var vertexNeighbors = origValue[currVertex];
-                    //var copyVertexNeighbors = [];
-                    //for (var copy = 0; copy < vertexNeighbors.length; copy++) {
-                    //    copyVertexNeighbors.push(vertexNeighbors[copy]);
-                    //}
-                    
+
                     for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
                         
                         var currNeighbor = vertexNeighbors[neighbor];
                         var neighborNeigh = origValue[currNeighbor];
-                        
-                        //var copyNeighborNeigh = [];
-                        //for (var copy1 = 0; copy1 < neighborNeigh.length; copy1++) {
-                        //    copyNeighborNeigh.push(neighborNeigh[copy1]);
-                        //}
+
                         
                         if (neighborNeigh.indexOf(currVertex) < 0) {
-                            //console.log("Looking at: ", currVertex, "and", currNeighbor);
                             neighborNeigh.push(currVertex);
                         }
                     }
-                    console.log("After changing, neighbors are: ", neighborNeigh, "for", currNeighbor);
-                    origValue[currNeighbor] = neighborNeigh;
-                    
+                    origValue[currNeighbor] = neighborNeigh;                    
                 }
                 return [returnValue, [origValue, isDirected]];
             }
@@ -90,8 +79,6 @@ $(document).ready(function () {
         }
         
         if (method == "addEdge"){ 
-            console.log("In add edge!!!!!!!!!!");
-            console.log(isDirected);
             if (isDirected != true) {
                 console.log("ADDING EDGE WHEN FALSE");
                 var node1 = parameters[0].value;
@@ -133,46 +120,87 @@ $(document).ready(function () {
         } if (method == "populate") {
             var numNodes = parameters[0].value;
             var density = parameters[1].value;
-            for (var i = 0; i < numNodes; i++) {
-                origValue.push([]);
-                for (var j = 0; j < i; j++) {
-                    var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
-                    if (prob < density) {
-                        iEdge = origValue[i];
-                        jEdge = origValue[j];
-                        iEdge.push(j);
-                        jEdge.push(i);
+            if (isDirected != true) {
+                for (var i = 0; i < numNodes; i++) {
+                    origValue.push([]);
+                    for (var j = 0; j < i; j++) {
+                        var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
+                        if (prob < density) {
+                            iEdge = origValue[i];
+                            jEdge = origValue[j];
+                            iEdge.push(j);
+                            jEdge.push(i);
+                        }
                     }
                 }
+                return [returnValue, [origValue, isDirected]];
             }
-            return [returnValue, [origValue, isDirected]];
+            if (isDirected == true) {
+                for (var m = 0; m < numNodes; m++) {
+                    origValue.push([]);
+                    for (var n = 0; n < m; n++) {
+                        var probFrom = (Math.random() * (0 - 1) + 1).toFixed(2);
+                        if (probFrom < density) {
+                            iEdge = origValue[m];
+                            iEdge.push(n);
+                        }
+                        var probTo = (Math.random() * (0 - 1) + 1).toFixed(2);
+                        if (probTo < density) {
+                            jEdge = origValue[n];
+                            jEdge.push(m);
+                        }
+                    }
+                }
+                return [returnValue, [origValue, isDirected]];
+            }
         }
         
         if (method == "removeEdge") {
-            var node1 = parameters[0].value;
-            var node2 = parameters[1].value;
-            var node1Edges = origValue[node1];
-            var node2Edges = origValue[node2];
-            var node1NEdges = [];
-            var node2NEdges = [];
-            if (node1Edges.indexOf(node2) < 0) {
-                console.log("Not an edge");
-                //Throw an error
-            } else {
-                for (var i = 0; i < node1Edges.length; i++) {
+            if (isDirected != true) {
+                var node1 = parameters[0].value;
+                var node2 = parameters[1].value;
+                var node1Edges = origValue[node1];
+                var node2Edges = origValue[node2];
+                var node1NEdges = [];
+                var node2NEdges = [];
+                if (node1Edges.indexOf(node2) < 0) {
+                    console.log("Not an edge");
+                    //Throw an error
+                } else {
+                    for (var i = 0; i < node1Edges.length; i++) {
+                        var currEdge = node1Edges[i];
+                        if (currEdge != node2) {
+                            node1NEdges.push(currEdge);
+                        }
+                    }
+                    for (var j = 0; j < node2Edges.length; j++) {
+                        var curr2Edge = node2Edges[j];
+                        if (curr2Edge != node1) {
+                            node2NEdges.push(curr2Edge);
+                        }
+                    }
+                    origValue[node1] = node1NEdges;
+                    origValue[node2] = node2NEdges;
+                    return [returnValue, [origValue, isDirected]];
+                }
+            }
+            
+            if (isDirected == true) {
+                var node1 = parameters[0].value;
+                var node2 = parameters[1].value;
+                var node1Edges = origValue[node1];
+                var node1NEdges = [];
+                if (node1Edges.indexOf(node2) < 0) {
+                    console.log("Not an edge");
+                    //Throw an error
+                }
+                for (var i = 0; i < node1Edges; i++) {
                     var currEdge = node1Edges[i];
                     if (currEdge != node2) {
                         node1NEdges.push(currEdge);
                     }
                 }
-                for (var j = 0; j < node2Edges.length; j++) {
-                    var curr2Edge = node2Edges[j];
-                    if (curr2Edge != node1) {
-                        node2NEdges.push(curr2Edge);
-                    }
-                }
                 origValue[node1] = node1NEdges;
-                origValue[node2] = node2NEdges;
                 return [returnValue, [origValue, isDirected]];
             }
         }
@@ -183,18 +211,32 @@ $(document).ready(function () {
         }
         
         if (method == "hasEdge") {
-            var node1 = parameters[0].value;
-            var node2 = parameters[1].value;
-            console.log("Nodes are: ", origValue);
-            console.log("Node 1 is: ", node1);
-            var node1Edges = origValue[node1];
-            console.log("Node 1 edges are: ", node1Edges);
-            if (node1Edges.indexOf(node2) < 0) {
-                returnValue = false;
-            } else {
-                returnValue = true;
+            if (isDirected != true) {
+                var node1 = parameters[0].value;
+                var node2 = parameters[1].value;
+                console.log("Nodes are: ", origValue);
+                console.log("Node 1 is: ", node1);
+                var node1Edges = origValue[node1];
+                console.log("Node 1 edges are: ", node1Edges);
+                if (node1Edges.indexOf(node2) < 0) {
+                    returnValue = false;
+                } else {
+                    returnValue = true;
+                }
+                return [returnValue, [origValue, isDirected]];
             }
-            return [returnValue, [origValue, isDirected]];
+            
+            if (isDirected == true) {
+                var node1 = parameters[0].value;
+                var node2 = parameters[1].value;
+                var node1Edges = origValue[node1];
+                if (node1Edges.indexOf(node2) < 0) {
+                    returnValue = false;
+                } else {
+                    returnValue = true;
+                }
+                return [returnValue, [origValue, isDirected]];
+            }
         }
         
         if (method == "getNeighbors") {
