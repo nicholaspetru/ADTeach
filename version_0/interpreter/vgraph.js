@@ -45,27 +45,75 @@ $(document).ready(function () {
     VGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
         var origValue = [];
-        for (var i = 0; i<origValue1.length; i++){
-            origValue[i]=(origValue1[i]);   
+        var isDirected = origValue1[1];
+        for (var i = 0; i<origValue1[0].length; i++){
+            origValue[i]=(origValue1[0][i]);   
         }
+        
+        if (method == "setDirected") {
+            if (parameters[0].value == true) {
+                isDirected = true;
+                return [returnValue, [origValue, isDirected]];
+            }
+            if (parameters[0].value == false) {
+                isDirected = false;
+                for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
+                    var vertexNeighbors = origValue[currVertex];
+                    for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
+                        var currNeighbor = vertexNeighbors[neighbor];
+                        var neighborNeigh = origValue[currNeighbor];
+                        if (neighborNeigh.indexOf(currVertex) < 0) {
+                            console.log("Looking at: ", currVertex, "and", currNeighbor);
+                            neighborNeigh.push(currVertex);
+                        }
+                    }
+                    origValue[neighbor] = neighborNeigh;
+                    
+                }
+            }
+            return [returnValue, [origValue, isDirected]];
+        }
+        
         if (method == "addEdge"){ 
-            var node1 = parameters[0].value;
-            var node2 = parameters[1].value;
-            if (node1 > origValue.length || node2 > origValue.length){
-                console.log("Error! Node not in graph");
-                //Throw an error!
+            console.log("In add edge!!!!!!!!!!");
+            console.log(isDirected);
+            if (isDirected != true) {
+                console.log("ADDING EDGE WHEN FALSE");
+                var node1 = parameters[0].value;
+                var node2 = parameters[1].value;
+                console.log("NODE 1 IS: ", node1);
+                console.log("NODE2 IS: ", node2);
+                if (node1 > origValue.length || node2 > origValue.length){
+                    console.log("Error! Node not in graph");
+                    //Throw an error!
+                }
+
+                var node1Edges = origValue[node1];
+                var node2Edges = origValue[node2];
+
+                if (node1Edges.indexOf(node2) >= 0){
+                    console.log("Error! Edge in graph already");
+                    //Throw an error!
+                }
+                node1Edges.push(node2);
+                node2Edges.push(node1);
+                return [returnValue, [origValue, isDirected]];
             }
-            
-            var node1Edges = origValue[node1];
-            var node2Edges = origValue[node2];
-            
-            if (node1Edges.indexOf(node2) >= 0){
-                console.log("Error! Edge in graph already");
-                //Throw an error!
+            if (isDirected === true) {
+                console.log("ADDING EDGE WHEN TRUE");
+                var fromVertex = parameters[0].value;
+                var toVertex = parameters[1].value;
+                var fromNeighbors = origValue[fromVertex];
+                var toNeighbors = origValue[toVertex];
+                if (fromNeighbors.indexOf(toVertex) >= 0) {
+                    console.log("Already exists an edge");
+                    //Throw an error
+                } 
+                fromNeighbors.push(toVertex);
+                origValue[fromVertex] = fromNeighbors;
+                return [returnValue, [origValue, isDirected]];
+                
             }
-            node1Edges.push(node2);
-            node2Edges.push(node1);
-            return [returnValue, origValue];
             
         } if (method == "populate") {
             var numNodes = parameters[0].value;
@@ -82,7 +130,7 @@ $(document).ready(function () {
                     }
                 }
             }
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "removeEdge") {
@@ -110,13 +158,13 @@ $(document).ready(function () {
                 }
                 origValue[node1] = node1NEdges;
                 origValue[node2] = node2NEdges;
-                return [returnValue, origValue];
+                return [returnValue, [origValue, isDirected]];
             }
         }
         
         if (method == "addVertex") {
             origValue.push([]);
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "hasEdge") {
@@ -131,7 +179,7 @@ $(document).ready(function () {
             } else {
                 returnValue = true;
             }
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "getNeighbors") {
@@ -141,7 +189,7 @@ $(document).ready(function () {
                 //Throw Error
             }
             returnValue = origValue[node];
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "numEdges") {
@@ -151,22 +199,22 @@ $(document).ready(function () {
                 length += origValue[i].length;
             }
             returnValue = length / 2;
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "numVerts") {
             returnValue = origValue.length;
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "isEmpty") {
             returnValue = (origValue.length == 0);
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "clear") {
             origValue = [];
-            return [returnValue, origValue];
+            return [returnValue, [origValue, isDirected]];
         }
         
         
