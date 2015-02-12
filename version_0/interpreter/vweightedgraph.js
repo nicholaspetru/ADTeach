@@ -1,10 +1,10 @@
 /*
-* VGraph.js
+* VWeightedGraph.js
 */
 
 $(document).ready(function () {
 
-    VGraph = function(t) {
+    VWeightedGraph = function(t) {
         if (t == "String") {
             this.storeType = typeof string;
         } else if (t == "int") {
@@ -12,12 +12,12 @@ $(document).ready(function () {
         }
     }
     
-    VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+    VWeightedGraph.prototype.listMethods = function() {
+        var methods = ['hasEdge', 'removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         return methods;
     }
     
-    VGraph.prototype.checkParameters = function(method, parameters) {
+    VWeightedGraph.prototype.checkParameters = function(method, parameters) {
         var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
@@ -49,7 +49,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
         var returnValue = null;
         var origValue = [];
         for (var i = 0; i<origValue1.length; i++){
@@ -138,18 +138,22 @@ $(document).ready(function () {
             console.log("Nodes are: ", origValue);
             console.log("Node 1 is: ", node1);
             var node1Edges = origValue[node1];
-            console.log("Node 1 edges are: ", node1Edges);
-            if (node1Edges.indexOf(node2) < 0) {
-                returnValue = false;
-            } else {
-                returnValue = true;
+            
+            returnValue = false;
+            for (var i = 0; i < node1Edges.length; i++){
+                if (node1Edges[i][0] == node2) returnValue = true;
             }
+            console.log(returnValue);
             return [returnValue, origValue];
         }
         
         if (method == "getNeighbors") {
             var node = parameters[0].value;
-            if (origValue.indexOf(node) < 0) {
+            var nodeCheck = false;
+            for (var i = 0; i < origValue.length; i++){
+                if (origValue[i][0] == node) nodeCheck = true;
+            }
+            if (!nodeCheck) {
                 console.log("Node not in graph");
                 //Throw Error
             }

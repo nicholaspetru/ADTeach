@@ -228,6 +228,7 @@ $(document).ready(function () {
                     case "Queue<String>":
                     case "PriorityQueue<Integer>":
                     case "PriorityQueue<String>":
+                    case "WeightedGraph":
                     case "Graph":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         break;
@@ -269,7 +270,7 @@ $(document).ready(function () {
         } else if (root.arity == "literal") {
             console.log("Can't do literals");
         } else if (root.arity == "name") {
-            var variable = this.evalValue(root.value, env);
+            var variable = this.evalValue(root, env);
             if (typeof variable != typeof true) {
                 console.log("No literals");
             } else {
@@ -376,6 +377,8 @@ $(document).ready(function () {
                 return "Dictionary";
             case typeof VGraph():
                 return "Graph";
+            case typeof VWeightedGraph():
+                return "WeightedGraph";
             default:
                 return null
         }
@@ -548,6 +551,10 @@ $(document).ready(function () {
                 y = new VGraph();
                 return y.listMethods();
                 break;
+            case "WeightedGraph":
+                y = new VWeightedGraph();
+                return y.listMethods();
+                break;
         }
     }
     
@@ -577,6 +584,9 @@ $(document).ready(function () {
                 return y.checkParameters(method, parameters);
             case "Graph":
                 y = new VGraph();
+                return y.checkParameters(method, parameters);
+            case "WeightedGraph":
+                y = new VWeightedGraph();
                 return y.checkParameters(method, parameters);
         }
     }
@@ -628,6 +638,10 @@ $(document).ready(function () {
                 return value;
             case "Graph":
                 y = new VGraph();
+                value = y.performMethod(type, origValue, method, parameters);
+                return value;
+            case "WeightedGraph":
+                y = new VWeightedGraph();
                 value = y.performMethod(type, origValue, method, parameters);
                 return value;
         }
