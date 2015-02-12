@@ -74,23 +74,26 @@ $(document).ready(function () {
     Interpreter.prototype.evalSemiColonBlock = function(block, env) {
         var root = block.value;
         var rootType = block.arity;
-        
         if (rootType == "binary" && root == "=") {
             this.evalAssignment(block, env);
         } else if (rootType == "unary" && root == "++") {
             this.evalPlusPlus(block, env);
         } else if (rootType == "unary" && root == "--") {
             this.evalMinusMinus(block, env);
+        } else if (rootType == "binary" && root == "+=") {
+            console.log("Where I wanna be");
+            this.evalPlusEqual(block, env);
+        } else if (rootType == "binary" && root == "-=") {
+            this.evalMinusEqual(block, env);
         } else if (rootType == "Initialization") {
             this.evalAssignment(block, env);
         } else if (rootType == "FunCall") {
             this.evalMethod(block, env);
         }
+        console.log("Didn't find anything");
     }
 
     Interpreter.prototype.evalValue = function(root, env) {
-        console.log("Evaling value of: ", root);
-        console.log("ENV ##### IS: ", env);
         if (root.arity == "FunCall") {
             console.log("ENV1 IS: ", env);
             return this.evalMethod(root, env)[0];
@@ -174,6 +177,7 @@ $(document).ready(function () {
         var valueRoot, value, returnedValue;
         var originMethod = "new";
         var originADT = "";
+        
         if (root.arity === "Initialization") {
             console.log("ROOT IS: ", root);
             if (root.second.arity == "FunCall") {
@@ -187,6 +191,7 @@ $(document).ready(function () {
         else {
             variable = root.first.value;
             valueRoot = root.second;
+            console.log("VALUE ROOT IS: ", valueRoot);
         }
                 
         // Get the value of the righthand side of the equals sign
@@ -441,6 +446,25 @@ $(document).ready(function () {
             env.updateVariable(name, value-1, "Step", "new", root.linenum);
         }
     
+    }
+    
+    Interpreter.prototype.evalPlusEqual = function(root, env) {
+        var name = root.first.value;
+        var index = env.getIndex(name);
+        var adding = root.second.value;
+        if (adding.jtype != "INT_TYPE" || adding.jtype != "STRING_TYPE") {
+            adding = this.evalValue(root.second);
+        }
+        if (index < 0) {
+            console.log("Variable not declared");
+            //Throw error
+        }
+        var value = env.getValue(name);
+        var newVal = value + adding;
+        env.updateVariable(name, newVal, "+=", "new", root.linenum);
+    }
+    
+    Interpreter.prototype.evalMinusEqual = function(root, env) {
     }
     
     Interpreter.prototype.evalMethod = function(root, env) {
