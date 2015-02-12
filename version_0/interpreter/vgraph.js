@@ -18,31 +18,24 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
-                console.log("zero parameters needed");
+                console.log("no parameters");
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['removeNode', 'getDegree', 'getNeighbors'];
+        var oneParam = ['removeNode', 'getDegree', 'getNeighbors', 'setDirected'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
-                console.log("one parameters needed");
+                console.log("one parameters");
                 //new IncorrectParameters();
             }
         }
-        var twoParam = ['removeEdge', 'populate', 'hasEdge', 'getWeight', 'setWeight'];
+        var twoParam = ['addEdge', 'removeEdge', 'populate', 'hasEdge'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
-                console.log("two parameters needed");
-                //new IncorrectParameters();
-            }
-        }
-        var threeParam = ['addEdge'];
-        if (noParam.indexOf(method) >= 0) {
-            if (parameters.length != 3) {
-                console.log("three parameters needed");
+                console.log("two parameters");
                 //new IncorrectParameters();
             }
         }
@@ -58,7 +51,6 @@ $(document).ready(function () {
         if (method == "addEdge"){ 
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
-            var weight = parameters[2].value;
             if (node1 > origValue.length || node2 > origValue.length){
                 console.log("Error! Node not in graph");
                 //Throw an error!
@@ -71,8 +63,8 @@ $(document).ready(function () {
                 console.log("Error! Edge in graph already");
                 //Throw an error!
             }
-            node1Edges.push([node2, weight]);
-            node2Edges.push([node1, weight]);
+            node1Edges.push(node2);
+            node2Edges.push(node1);
             return [returnValue, origValue];
             
         } if (method == "populate") {
@@ -82,12 +74,11 @@ $(document).ready(function () {
                 origValue.push([]);
                 for (var j = 0; j < i; j++) {
                     var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
-                    var weight = Math.floor((Math.random() * 10) + 1);
                     if (prob < density) {
                         iEdge = origValue[i];
                         jEdge = origValue[j];
-                        iEdge.push([j, weight]);
-                        jEdge.push([i, weight]);
+                        iEdge.push(j);
+                        jEdge.push(i);
                     }
                 }
             }
@@ -101,23 +92,19 @@ $(document).ready(function () {
             var node2Edges = origValue[node2];
             var node1NEdges = [];
             var node2NEdges = [];
-            var edgeCheck = false;
-            for (var i = 0; i < node1Edges.length; i++){
-                if (node1Edges[i][0] == node2) edgeCheck = true;
-            }
-            if (!edgeCheck) {
+            if (node1Edges.indexOf(node2) < 0) {
                 console.log("Not an edge");
                 //Throw an error
             } else {
                 for (var i = 0; i < node1Edges.length; i++) {
                     var currEdge = node1Edges[i];
-                    if (currEdge[0] != node2) {
+                    if (currEdge != node2) {
                         node1NEdges.push(currEdge);
                     }
                 }
                 for (var j = 0; j < node2Edges.length; j++) {
                     var curr2Edge = node2Edges[j];
-                    if (curr2Edge[0] != node1) {
+                    if (curr2Edge != node1) {
                         node2NEdges.push(curr2Edge);
                     }
                 }
