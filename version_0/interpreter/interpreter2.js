@@ -96,7 +96,7 @@ $(document).ready(function () {
             return this.evalMethod(root, env)[0];
         }
         if (root.arity != "name") {
-            console.log("Going to evaluate math!");
+            console.log("NOT GOING TO MATH: ", root);
             switch(root.jtype) {
                 case 'INT_TYPE':
                     return parseInt(root.value);
@@ -228,12 +228,17 @@ $(document).ready(function () {
                     case "Queue<String>":
                     case "PriorityQueue<Integer>":
                     case "PriorityQueue<String>":
-                    case "WeightedGraph":
-                    case "Graph":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         break;
                     case "Dictionary":
                         env.createVariable("Dictionary", root.second.value, {}, "new", originADT, root.linenum);
+                        break;
+                    case "Graph":
+                        env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        break;
+                    case "WeightedGraph":
+                        console.log("CREATING A GRAPH THROUGH HERE!!!");
+                        env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         break;
                     default:
                         var type = this.checkType(value);
@@ -386,7 +391,7 @@ $(document).ready(function () {
     
     
     
-    Interpreter.prototype.evalMaths = function(root, env) {
+    Interpreter.prototype.evalMaths = function(root, env) {        
         if (['%', '+', '-', '*', '/', '**'].indexOf(root.value) < 0) {
             return this.evalValue(root, env);
         } else {
@@ -445,6 +450,8 @@ $(document).ready(function () {
         console.log("HERE: ", env.getVariables()[adtIndex]);
         var adtType = env.getVariables()[adtIndex].type;
         var adtCurValue = env.getVariables()[adtIndex].value;
+        console.log(env.getVariables()[adtIndex]);
+        console.log("ADT CURRENT VALUE IS: ", adtCurValue);
         var method = root.MethodName.value;
         var parameters = root.Arguments;
         var originADT = null;
@@ -484,6 +491,7 @@ $(document).ready(function () {
                 }
             }
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
+            console.log("returned value is *******: ", methodValue, "From method: ", method);
             returnValue = methodValue[0];
             
             newValue = methodValue[1];

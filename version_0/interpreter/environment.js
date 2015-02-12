@@ -45,11 +45,12 @@ $(document).ready(function () {
 	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT, lineNum) {
         console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
         console.log("Origin method is: ", originMethod);
+        console.log("Value is: ", value);
         console.log("Line number: ", lineNum);
 		var n = {type: type,
 			name: variable, 
 			value: value};
-		
+		console.log("AFTER CREATION: ", n.value);
 		this.variables.push(n);
 		this.names.push(variable);
 		this.symbolTable.newVariable(type, variable, value, originMethod, originADT, lineNum-1);
@@ -58,6 +59,7 @@ $(document).ready(function () {
 	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT, lineNum) {
 		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
         console.log("Line number: ", lineNum);
+        console.log("Value is: ", newVal);
 		console.log("Origin method is: ", originMethod);
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
