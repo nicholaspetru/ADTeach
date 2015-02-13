@@ -2,7 +2,7 @@ $(document).ready(function () {
     CodeDatabase = function() {
         //hash table of code samples
         this.database = new Object();
-        this.database['stack'] = 
+        this.database['list'] = 
             ['List<Integer> s = new List<Integer>();',
              'List<Integer> t = new List<Integer>();',
              's.populate(4);',
@@ -11,10 +11,31 @@ $(document).ready(function () {
              '\t t.add(s.get(i));',
              '}'
             ].join('\n');
-        this.database['stack2'] = 
+        this.database['stack'] = 
             ['Stack<String> s = new Stack<String>();',
-            's.push("hello")',
+            's.push("hello");',
             's.push("world");',
+            'String curItem = s.peek();',
+            'while (s.isEmpty() == false) {',
+            '\t s.pop();',
+            '\t curItem = s.peek();',
+            '}',
+            's.populate(5);',
+            's.push("importantItem");',
+            'int x = s.search("importantItem");'
+            ].join('\n');
+        this.database['queue'] =
+            ['Queue<Integer> q = new Queue<Integer>();',
+            'q.populate(3);',
+            'q.add(70);',
+            'int size = q.size();',
+            'q.remove();'
+            ].join('\n');
+        this.database['graph'] =
+            ['Graph g = new Graph();'
+            ].join('\n');
+        this.database['dict'] =
+            ['Dict<String, Integer> d = new Dict<String, Integer>();'
             ].join('\n');
         return this;
     }
