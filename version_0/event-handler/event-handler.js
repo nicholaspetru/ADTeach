@@ -88,11 +88,11 @@ $(document).ready(function() {
         $("#stop").hide();
         $("#build").show();
         $("#helptext").show();
-        $("#sampleList").show();
-        $("#sampleStack").show();
-        $("#sampleQueue").show();
-        $("#sampleGraph").show();
-        $("#sampleDict").show();
+        $("#listHelp").show();
+        $("#stackHelp").show();
+        $("#queueHelp").show();
+        $("#graphHelp").show();
+        $("#dictHelp").show();
     };
     
     EventHandler.prototype.onSampleList = function() {
