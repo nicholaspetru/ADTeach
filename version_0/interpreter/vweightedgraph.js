@@ -57,7 +57,7 @@ $(document).ready(function () {
         for (var i = 0; i<origValue1[0].length; i++){
             origValue[i]=(origValue1[0][i]);   
         }
-        /*
+        
         if (method == "setDirected") {
             if (parameters[0].value == true) {
                 isDirected = true;
@@ -70,12 +70,18 @@ $(document).ready(function () {
 
                     for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
                         
-                        var currNeighbor = vertexNeighbors[neighbor];
+                        var currNeighbor = vertexNeighbors[neighbor][0];
                         var neighborNeigh = origValue[currNeighbor];
 
+                        var edgeCheck = false;
+                        for (var i = 0; i<neighborNeigh.length; i++){
+                            if (neighborNeigh[i][0] == currVertex) edgeCheck = true;
+                        }
+
                         
-                        if (neighborNeigh.indexOf(currVertex) < 0) {
-                            neighborNeigh.push(currVertex);
+                        if (!edgeCheck) {
+                            var weight = vertexNeighbors[neighbor][1];
+                            neighborNeigh.push([currVertex, weight]);
                         }
                     }
                     origValue[currNeighbor] = neighborNeigh;                    
@@ -83,7 +89,7 @@ $(document).ready(function () {
                 return [returnValue, [origValue, isDirected]];
             }
             
-        } */
+        } 
         
         if (method == "addEdge"){ 
             var node1 = parameters[0].value;
