@@ -58,16 +58,25 @@
     <div class="grid">
         <div class="col-1-2" id="code_env"> 
             <b>Programming Environment </b>
+            <br>
             <button name="build" id="build">Build</button>
 			<button name="play" id="play">Play</button>
 			<button name="pause" id="pause">Pause</button>
 			<button name="step" id="step">Step</button>
 			<button name="stop" id="stop">Stop</button>
-            <button name="sample" id="sample">Sample Code</button>
+
+            
+            <h5 id="helptext">Get help with:</h5>
+            <button id="listHelp">Lists</button>
+            <button id="stackHelp">Stacks</button>
+            <button id="queueHelp">Queues</button>
+            <button id="graphHelp">Graphs</button>
+            <button id="dictHelp">Dicts</button>
+
             
 		    <textarea role="textbox" id="user_textbox" aria-multiline="true">List<Integer>y = new List<Integer>();</textarea>
             <h4 id="range"> Set animation speed <br> 
-                <input type="range" id="slider" min="0" max="100" value="100" />
+                <input type="range" id="slider" min="0" max="100" value="50" />
             </h4>
             
             
@@ -101,6 +110,38 @@
         
         <!--<div id="visual_env"><b> Visual Environment </b></div>-->
         <div class="col-2-3" id="vis_paper"></div>
+
+        <dialog id="listWindow">
+            <h3>List ADT</h3>
+            <p>Stuff about lists...</p>
+            <button name="sampleList" id="sampleList">Sample List</button>
+        </dialog>
+
+        <dialog id="stackWindow">
+            <h3>Stack ADT</h3>
+            <p>Stuff about stacks...</p>
+            <button name="sampleStack" id="sampleStack">Sample Stack</button>
+        </dialog>
+
+        <dialog id="queueWindow">
+            <h3>Queue ADT</h3>
+            <p>Stuff about queues...</p>
+            <button name="sampleQueue" id="sampleQueue">Sample Queue</button>
+        </dialog>
+
+        <dialog id="graphWindow">
+            <h3>Graph ADT</h3>
+            <p>Stuff about graphs...</p>
+            <button name="sampleGraph" id="sampleGraph">Sample Graph</button>
+        </dialog>
+
+        <dialog id="dictWindow">
+            <h3>Dict ADT</h3>
+            <p>Stuff about dicts...</p>
+            <button name="sampleDict" id="sampleDict">Sample Dictionary</button>
+        </dialog>
+        
+
     </div>
     </body>
 <html>
