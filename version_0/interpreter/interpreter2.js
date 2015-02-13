@@ -584,7 +584,6 @@ $(document).ready(function () {
             //console.log("Adding to method: ", cloneParam[0].value);
             switch(method) {
                 case("set"):
-                case("remove"):
                 case("get"):
                 case("search"):
                 case("contains"):
@@ -607,6 +606,13 @@ $(document).ready(function () {
                         method = method + "." + cloneParam[0].value;
                     }
                     break;
+                case("remove"):
+                    if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || 
+                        adtType == "Queue<String>" || adtType == "Queue<Integer>") {
+                        method = method + "." + adtCurValue.length;
+                    } else {
+                        method = method + "." + cloneParam[0].value;
+                    }
             }
             
             env.updateVariable(adt, newValue, method, originADT, root.linenum);

@@ -509,9 +509,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
-                t.third = expression(0, "Stack<Integer>")//console.log("Second ISSSSSSS: ", expression(0, "Stack<Integer>"));
+                t.third = expression(0, "Stack<Integer>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -547,10 +546,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<String>";
-                console.log("Second ISSSSSSS: ", expression(0, "Stack<String>"));
-                console.log("THIS IS BS", expression(0));
+                t.third = expression(0, "Stack<String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -586,10 +583,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "List<Integer>";
-                t.third = expression(0, "List<Integer>")//console.log("Second ISSSSSSS: ", expression(0, "List<Integer>"));
-                console.log("Third is: ", t.third);
+                t.third = expression(0, "List<Integer>")
                 t.second = n;
-                //t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -625,9 +620,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "List<String>";
-                console.log("Second ISSSSSSS: ", expression(0, "List<String>"));
+                t.third = expression(0, "List<String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -664,9 +658,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Queue<Integer>";
-                console.log("THIS IS BS", expression(0, "Queue<Integer>"));
+                t.third = expression(0, "Queue<Integer>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -702,9 +695,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Queue<String>";
-                console.log("THIS IS BS", expression(0, "Queue<String>"));
+                t.third = expression(0, "Queue<String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -741,9 +733,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "PriorityQueue<Integer>";
-                console.log("THIS IS BS", expression(0, "PriorityQueue<Integer>"));
+                t.third = expression(0, "PriorityQueue<Integer>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -780,9 +771,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "PriorityQueue<String>";
-                console.log("THIS IS BS", expression(0, "PriorityQueue<String>"));
+                t.third = expression(0, "PriorityQueue<String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -818,9 +808,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Integer, Integer>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, Integer>"));
+                t.third = expression(0, "Dictionary<Integer, Integer>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -856,9 +845,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Integer, String>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, String>"));
+                t.third = expression(0, "Dictionary<Integer, String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -894,9 +882,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Integer, Float>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, Float>"));
+                t.third = expression(0, "Dictionary<Integer, Float>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -932,9 +919,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Integer, Boolean>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Integer, Boolean>"));
+                t.third = expression(0, "Dictionary<Integer, Boolean>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -970,9 +956,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<String, Integer>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, Integer>"));
+                t.third = expression(0, "Dictionary<String, Integer>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1008,9 +993,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<String, String>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, String>"));
+                t.third = expression(0, "Dictionary<String, String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1046,9 +1030,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<String, Float>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, Float>"));
+                t.third = expression(0, "Dictionary<String, Float>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1084,9 +1067,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<String, Boolean>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<String, Boolean>"));
+                t.third = expression(0, "Dictionary<String, Boolean>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1122,9 +1104,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Float, Integer>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, Integer>"));
+                t.third = expression(0, "Dictionary<Float, Integer>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1160,9 +1141,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Float, String>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, String>"));
+                t.third = expression(0, "Dictionary<Float, String>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1198,9 +1178,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Float, Float>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, Float>"));
+                t.third = expression(0, "Dictionary<Float, Float>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1236,9 +1215,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Dictionary<Float, Boolean>";
-                console.log("Second ISSSSSSS: ", expression(0, "Dictionary<Float, Boolean>"));
+                t.third = expression(0, "Dictionary<Float, Boolean>");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1274,9 +1252,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Graph";
-                console.log("Second ISSSSSSS: ", expression(0, "Graph"));
+                t.third = expression(0, "Graph");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1312,9 +1289,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "WeightedGraph";
-                console.log("Second ISSSSSSS: ", expression(0, "WeightedGraph"));
+                t.third = expression(0, "WeightedGraph");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }
@@ -1350,9 +1326,8 @@ var make_parse = function () {
                 t.value = "init";
                 advance("=");
                 t.first = "Tree";
-                console.log("Second ISSSSSSS: ", expression(0, "Tree"));
+                t.third = expression(0, "Tree");
                 t.second = n;
-                t.third = [];
                 t.arity = "Initialization";
                 a.push(t);
             }

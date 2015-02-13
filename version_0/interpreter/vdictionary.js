@@ -130,6 +130,7 @@ $(document).ready(function () {
             for (var i in origValue) {
                 returnValue.push(origValue[i]);
             }
+            console.log("IN ELEMENTS");
             return [returnValue, origValue];
         }
         
@@ -148,7 +149,11 @@ $(document).ready(function () {
         }
         
         if (method == 'size') {
-            returnValue = origValue.length;
+            var count = 0;
+            for (var i in origValue) {
+                count += 1;
+            }
+            returnValue = count;
             return [returnValue, origValue];
             
         }
@@ -166,5 +171,63 @@ $(document).ready(function () {
             origValue[key] = value;
             return [returnValue, origValue];
         }
+        
+        if (method == "remove") {
+            var keyToRemove = parameters[0].value;
+            var newDictionary = {};
+            for (var i in origValue) {
+                if (i != keyToRemove) {
+                    newDictionary[i] = origValue[i];
+                }
+            }
+            origValue = newDictionary;
+            return [returnValue, origValue];
+        }
+        
+        if (method == "populate") {
+            var numKeys = parameters[0].value;
+            var dict = {};
+            var alph = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var toPush;
+            for (var i = 0; i < numKeys; i++) {
+                if (keyType == "int") {
+                    toPush = Math.floor((Math.random()*100) + 1);
+                    dict[toPush] = 0;
+                }
+                else if (keyType == "String") {
+                    toPush = Math.floor((Math.random()*26) + 1);
+                    dict[alph[toPush]] = 0;
+                }
+                else if (keyType == "float") {
+                    toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    dict[toPush] = 0;
+                }
+            }
+            for (var j in dict) {
+                if (valueType == "int") {
+                    toPush = Math.floor((Math.random()*100) + 1);
+                    dict[j] = toPush;
+                }
+                if (valueType == "String") {
+                    toPush = Math.floor((Math.random() * 26) + 1);
+                    dict[j] = alph[toPush];
+                }
+                if (valueType == "float") {
+                    toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    dict[j] = toPush;
+                }
+                if (valueType == "bool") {
+                    toPush = Math.floor((Math.random() * 2) + 1);
+                    if (toPush == 1) {
+                        dict[j] = true;
+                    } else {
+                        dict[j] = false;
+                    }
+                }
+            }
+            origValue = dict;
+            return [returnValue, origValue];
+        }
+            
     }
 });
