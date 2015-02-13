@@ -26,6 +26,11 @@
     border-style: solid;
     border-width: thin;
     background-color:#eeeeee;
+    text-align:center;
+}
+
+#helptext {
+    line-height:0px;
 }
 
 textarea#user_textbox:hover {
@@ -33,7 +38,7 @@ textarea#user_textbox:hover {
 }
 
 textarea#user_textbox{
-    height: 80%;
+    height: 60%;
     margin-left: 5%;
     width: 87%;
     resize:none;
@@ -42,7 +47,6 @@ textarea#user_textbox{
 #range {
     position: relative;
     top: -10px;
-    text-align: center;
     line-height: 20px;
 
 }
