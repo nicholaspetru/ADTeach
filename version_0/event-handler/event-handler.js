@@ -42,21 +42,7 @@ $(document).ready(function() {
         $("#queueHelp").hide();
         $("#graphHelp").hide();
         $("#dictHelp").hide();
-        try {
-        document.getElementById("listWindow").close();
-        } catch(InvalidStateError) {}
-        try {
-        document.getElementById("stackWindow").close();
-        } catch(InvalidStateError) {}
-        try {
-        document.getElementById("queueWindow").close();
-        } catch(InvalidStateError) {}
-        try {
-        document.getElementById("graphWindow").close();
-        } catch(InvalidStateError) {}
-        try {
-        document.getElementById("dictWindow").close();
-        } catch(InvalidStateError) {}
+        $("#modal").hide();
     };
     
     EventHandler.prototype.onPlay = function() {
