@@ -31,6 +31,13 @@ $(document).ready(function () {
             'int size = q.size();',
             'q.remove();'
             ].join('\n');
+        this.database['priorityQueue'] =
+            ['PriorityQueue<Integer> q = new PriorityQueue<Integer>();',
+            'q.populate(3);',
+            'q.add(4);',
+            'int size = q.size();',
+            'q.remove();'
+            ].join('\n');
         this.database['graph'] =
             ['Graph g = new Graph();'
             ].join('\n');
