@@ -50,6 +50,26 @@ textarea#user_textbox{
     line-height: 20px;
 
 }
+#listWindow {
+    height:500px;
+    width:57%;
+}
+#stackWindow {
+    height:500px;
+    width:57%;
+}
+#queueWindow {
+    height:500px;
+    width:57%;
+}
+#graphWindow {
+    height:500px;
+    width:57%;
+}
+#dictWindow {
+    height:500px;
+    width:57%;
+}
 
 #vis_paper {
     height:500px;
