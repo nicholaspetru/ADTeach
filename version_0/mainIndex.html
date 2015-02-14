@@ -112,33 +112,76 @@
         <div class="col-2-3" id="vis_paper"></div>
 
         <dialog id="listWindow">
-            <h3>List ADT</h3>
-            <p>Stuff about lists...</p>
-            <button name="sampleList" id="sampleList">Sample List</button>
+            <button name="exitList" id="exitList" onclick="listWindow.close()">Exit</button>
+            <h3><center>List ADT</center></h3>
+            <p><h4>Instantiation:</h4>
+                List&lt;type&gt; listName = new List&lt;type&gt;();
+            </p>
+            <p><h4>Methods:</h4>
+                <b>listName.add(x);</b> Adds element x to the end of the list<br>
+                <b>listName.add(x,y);</b> Adds element y to the list at index x<br>
+                <b>listName.contains(x);</b> Returns a boolean <em>true</em> if the list contains element x, <em>false</em> if it does not<br>
+                <b>listName.get(x);</b> Returns the element at index x<br>
+                <b>listName.indexOf(x);</b> Returns the index of element x<br>
+                <b>listName.isEmpty();</b> Returns a boolean <em>true</em> if the list is empty, <em>false</em> if the list contains at least one element<br>
+                <b>listName.populate(x);</b> Empties the list, then adds x randomly generated elements of appropriate type to the list<br>
+                <b>listName.size();</b> Returns the size of the list<br>
+                <b>listName.remove(x);</b> Removes the element at index x in the list<br>
+                <b>listName.set(x,y);</b> Replaces the element at index x in the list with element y<br>
+                <b>listName.clear();</b> Empties the list
+            </p>
+            <center><button name="sampleList" id="sampleList">Sample List</button></center>
         </dialog>
 
         <dialog id="stackWindow">
-            <h3>Stack ADT</h3>
-            <p>Stuff about stacks...</p>
-            <button name="sampleStack" id="sampleStack">Sample Stack</button>
+            <button name="exitStack" id="exitStack" onclick="stackWindow.close()">Exit</button>
+            <h3><center>Stack ADT</center></h3>
+            <p><h4>Instantiation:</h4> 
+                Stack&lt;type&gt; stackName = new Stack&lt;type&gt;();
+            </p>
+            <p><h4>Methods:</h4>
+                <b>stackName.peek();</b> Returns the top item in the stack, but does not remove it<br>
+                <b>stackName.push(x);</b> Adds element x to the top of the stack<br>
+                <b>stackName.pop();</b> Removes and returns the top item in the stack<br>
+                <b>stackName.isEmpty();</b> Returns a boolean <em>true</em> if the stack is empty, <em>false</em> if the stack contains at least one element<br>
+                <b>stackName.populate(x);</b> Empties the stack, then adds x randomly generated elements of appropriate type to the stack<br>
+                <b>stackName.search(x);</b> Returns the index of value x in the stack, where an index of 1 represents the top of the stack
+            </p>
+            <center><button name="sampleStack" id="sampleStack">Sample Stack</button></center>
         </dialog>
 
         <dialog id="queueWindow">
-            <h3>Queue ADT</h3>
-            <p>Stuff about queues...</p>
-            <button name="sampleQueue" id="sampleQueue">Sample Queue</button>
+            <button name="exitQueue" id="exitQueue" onclick="queueWindow.close()">Exit</button>
+            <h3><center>Queue ADT</center></h3>
+            <p><h4>Instantiation:</h4> 
+                Queue&lt;type&gt; queueName = new Queue&lt;type&gt;();<br>
+                PriorityQueue&lt;type&gt; queueName = new PriorityQueue&lt;type&gt;();
+            </p>
+            <p><h4>Methods:</h4>
+                <b>queueName.peek();</b> Returns the first item in the queue, but does not remove it<br>
+                <b>queueName.add(x);</b> Adds element x to the end of the queue<br>
+                <b>queueName.remove();</b> Removes and returns the first item in the queue<br>
+                <b>queueName.isEmpty();</b> Returns a boolean <em>true</em> if the queue is empty, <em>false</em> if the queue contains at least one element<br>
+                <b>queueName.populate(x);</b> Empties the queue, then adds x randomly generated elements of appropriate type to the queue<br>
+                <b>queueName.size(x);</b> Returns the size of the queue
+            </p>
+            <center><button name="sampleQueue" id="sampleQueue">Sample Queue</button>
+                <button name="samplePQueue" id="samplePQueue">Sample Priority Queue</button>
+            </center>
         </dialog>
 
         <dialog id="graphWindow">
-            <h3>Graph ADT</h3>
+            <button name="exitGraph" id="exitGraph" onclick="graphWindow.close()">Exit</button>
+            <h3><center>Graph ADT</center></h3>
             <p>Stuff about graphs...</p>
-            <button name="sampleGraph" id="sampleGraph">Sample Graph</button>
+            <center><button name="sampleGraph" id="sampleGraph">Sample Graph</button></center>
         </dialog>
 
         <dialog id="dictWindow">
-            <h3>Dict ADT</h3>
+            <button name="exitDict" id="exitDict" onclick="dictWindow.close()">Exit</button>
+            <h3><center>Dict ADT</center></h3>
             <p>Stuff about dicts...</p>
-            <button name="sampleDict" id="sampleDict">Sample Dictionary</button>
+            <center><button name="sampleDict" id="sampleDict">Sample Dictionary</button></center>
         </dialog>
         
 
