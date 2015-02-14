@@ -39,7 +39,6 @@ textarea#user_textbox:hover {
 
 textarea#user_textbox{
     height: 60%;
-    margin-left: 5%;
     width: 87%;
     resize:none;
 }
