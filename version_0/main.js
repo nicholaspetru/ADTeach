@@ -136,6 +136,10 @@ $(document).ready(function () {
         EVH.onSampleQueue();
     });
 
+    $("#samplePQueue").click(function() {        
+        EVH.onSamplePQueue();
+    });
+
     $("#sampleGraph").click(function() {        
         EVH.onSampleGraph();
     });
