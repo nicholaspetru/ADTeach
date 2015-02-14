@@ -50,26 +50,6 @@ textarea#user_textbox{
     line-height: 20px;
 
 }
-#listWindow {
-    height:500px;
-    width:57%;
-}
-#stackWindow {
-    height:500px;
-    width:57%;
-}
-#queueWindow {
-    height:500px;
-    width:57%;
-}
-#graphWindow {
-    height:500px;
-    width:57%;
-}
-#dictWindow {
-    height:500px;
-    width:57%;
-}
 
 #vis_paper {
     height:500px;
@@ -78,3 +58,22 @@ textarea#user_textbox{
     border-style: solid;
     border-width: thin;
 }
+
+#modal {
+    position:absolute;
+    height:500px;
+    width:59%;
+    right:0px;
+    background:rgba(0,0,0,1);
+    border-radius:10px;
+    padding:8px;
+}
+
+#content {
+    border-radius:8px;
+    background:#fff;
+    padding:20px;
+}
+
+
+
