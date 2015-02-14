@@ -113,6 +113,12 @@ $(document).ready(function() {
        this.codeBox.setCode(code);
     };
 
+    EventHandler.prototype.onSamplePQueue = function() {
+       console.log('Event Handler: onSamplePQueue()');
+       code = this.codeDatabase.getCode('priorityQueue'); 
+       this.codeBox.setCode(code);
+    };
+
     EventHandler.prototype.onSampleGraph = function() {
        console.log('Event Handler: onSampleGraph()');
        code = this.codeDatabase.getCode('graph'); 
