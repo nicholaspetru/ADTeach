@@ -178,7 +178,7 @@ $(document).ready(function () {
 
 
     //Grabs the anonymous variable from the named entity, moves it to the proper location
-    VisualizerHandler.prototype.getAnonymousVariable = function(name, x, y){
+    VisualizerHandler.prototype.getAnonymousVariable = function(name, goTo){
         var anon = null;
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i].name == name){
@@ -195,10 +195,9 @@ $(document).ready(function () {
         //now move the anon to the new location
         if (anon != null){
             var difX, difY;
-            difX = x - anon.x;
-            difY = y - anon.y;
-            anon.move(difX,0,this.setDelay(500),500);
-            anon.move(0,difY,this.setDelay(500),500);
+            difX = goTo.x - anon.x;
+            difY = goTo.y - anon.y ;//- goTo.DUNIT_HEIGHT;// - anon.height;
+            anon.move(difX,difY,this.setDelay(500),500);
             anon.fadeOut(this.setDelay(500) + 300);
         }
     }

@@ -13,6 +13,7 @@ $(document).ready(function () {
           this.width = width;
           this.height = height;
           this.font_size = 14;
+          this.index = "";
 
           // array of value, box/circle container, associated arrows, etc.
           // IMPORTANT: first item is the value, second is the container (box/circle)
@@ -87,6 +88,15 @@ $(document).ready(function () {
           this.VH.setDelay(50);
       };
 
+      //Modifiy data unit index
+      DataUnit.prototype.updateIndex = function(newIndex) {
+        if (this.vis[2] != null){
+          var _t = this, _val = this.value;
+          setTimeout(function(){
+              _t.vis[2].attr({"text": newIndex});
+          },(this.VH.delay - this.VH.date.getTime()));
+        }
+      };
 
      // build the visual rep for the dataunit
      DataUnit.prototype.buildVisual = function() {
@@ -103,6 +113,10 @@ $(document).ready(function () {
      			this.vis[1] = this.paper.circle(this.x+this.dimension/2, this.y+this.dimension/2, this.dimension/2);
           this.vis[1].attr({"opacity": 0, "stroke-width": 1.5, "stroke": "#4b4b4b"});
      		}
+
+        //add an index
+        this.vis[2] = this.paper.text(this.x+this.width/2, this.y - 6, this.index);
+        this.vis[2].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size - 3, 'text-anchor': 'center'});
      };
 
      //Highlight
