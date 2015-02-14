@@ -40,7 +40,7 @@ $(document).ready(function () {
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
-        this.myFrame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH) + " V " + this.y);
+        this.myFrame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)) + " V " + this.y));
         this.myFrame.attr({"opacity": 0,"stroke": "black", "stroke-width": 2.25});
 
         //here's the visual component's representation of the content of the stack. the "data units"
@@ -54,6 +54,7 @@ $(document).ready(function () {
     List.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
         var split = action.split(".");
+        this.stretch();
 
         //animate the change
         switch(split[0]){
@@ -123,6 +124,18 @@ $(document).ready(function () {
         for (var i = 0; i < this.vis.length; i++){
             this.vis[i].create();
         }
+    };
+
+    //Stretches the frame to accomadate the new length of the list
+    List.prototype.stretch = function() {
+        /*
+        var newSize = this.value.length/this.vis.length,
+            difX = (this.value.length - this.vis.length)*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))/2;
+
+        var delay = this.VH.setDelay(500);
+        var anim = Raphael.animation({transform:'...s' + newSize + ' 1, ...t ' + difX},500);
+        this.myFrame.animate(anim.delay(delay));
+        */
     };
 
 
