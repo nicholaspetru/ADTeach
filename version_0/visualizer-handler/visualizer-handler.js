@@ -260,6 +260,9 @@ $(document).ready(function () {
                 return new Primitive(this.paper,name,type,value,this);
             case "List":
                 return new List(this.paper,name,type,value, this);
+            case "Queue":
+                console.log("made a queue");
+                return new Queue(this.paper,name,type,value, this);
             //and more cases....
             default:
                 console.log("Unknown type for newEntity: " + type);
