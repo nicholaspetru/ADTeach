@@ -13,12 +13,14 @@ $(document).ready(function () {
         //assign the position
         this.x = 0;
         this.y = 0;
-        this.FONT_SIZE = 11;
+        this.cur_length = 1;
         this.MAX_LENGTH = 10;
+        this.FONT_SIZE = 11;
         this.DUNIT_HEIGHT = 45*.85;
         this.DUNIT_WIDTH = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
 
+        //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
         this.HEIGHT = 45;
 
@@ -37,7 +39,8 @@ $(document).ready(function () {
         this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
-        this.myFrame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH) + " V " + this.y);
+        //new: scale the frame's length to the length of the list
+        this.myFrame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)) + " V " + this.y));
         this.myFrame.attr({"opacity": 0,"stroke": "black", "stroke-width": 2.25});
 
         //here's the visual component's representation of the content of the stack. the "data units"
@@ -51,6 +54,7 @@ $(document).ready(function () {
     List.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
         var split = action.split(".");
+        this.stretch();
 
         //animate the change
         switch(split[0]){
@@ -58,7 +62,7 @@ $(document).ready(function () {
                 //check if there's an anonymous variable
                 if (originADT != null){
                     console.log(originADT);
-                    this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
+                    this.VH.getAnonymousVariable(originADT, this);
                 }
                 var index = parseInt(split[1]);
                 this.AddAtPosition(index, this.value[index]);
@@ -74,6 +78,7 @@ $(document).ready(function () {
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
                     this.vis.push(newDU);
                     newDU.create();
+                    newDU.updateIndex(i);
                 }
                 break;
             case "remove":
@@ -121,6 +126,18 @@ $(document).ready(function () {
         }
     };
 
+    //Stretches the frame to accomadate the new length of the list
+    List.prototype.stretch = function() {
+        /*
+        var newSize = this.value.length/this.vis.length,
+            difX = (this.value.length - this.vis.length)*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))/2;
+
+        var delay = this.VH.setDelay(500);
+        var anim = Raphael.animation({transform:'...s' + newSize + ' 1, ...t ' + difX},500);
+        this.myFrame.animate(anim.delay(delay));
+        */
+    };
+
 
     //Moves the visual primitve to the specific positon
     List.prototype.move = function(newX, newY) {
@@ -165,11 +182,13 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
+        newDU.updateIndex(index);
 
         //Scooch down all the other data units
         var delay = this.VH.setDelay(500);
         for (var i = index; i < this.vis.length; i++){
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
+            this.vis[i].updateIndex(i + 1);
         }
 
         //Insert the new data unit in it's proper location
@@ -188,11 +207,8 @@ $(document).ready(function () {
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
 
-        //Move the new data unit to it's proper location
+        //Move the new data unit to it's proper location and set as the anonymous variable
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
-        newDU.move(-this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
-
-        //this is now the anonymous variable of this ADT
         this.anon = newDU;
     }
 
@@ -204,6 +220,7 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(500);
         for (var i = index; i < this.vis.length; i++){
             this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
+            this.vis[i].updateIndex(i - 1);
         }
 
         this.vis.splice(index, 1);

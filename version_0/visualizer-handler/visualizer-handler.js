@@ -69,8 +69,15 @@ $(document).ready(function () {
         if (this.codeboxPaper != null) {
             this.codeboxPaper.remove();
         }
-        this.codeboxPaper = Raphael(35, 105, 444, 444);
-        var highlight = this.codeboxPaper.rect(0,3+(13*lineNumber),444,13);
+        var xpos = $("#code_env").position().left - ($("#code_env").position().left - $("#user_textbox").position().left);
+        var ypos = $("#code_env").position().top - ($("#code_env").position().top - $("#user_textbox").position().top);
+        var w = $("#code_env").width() - ($("#code_env").width() - $("#user_textbox").width());
+        var h = $("#code_env").height() - ($("#code_env").height() - $("#user_textbox").height());
+
+        //console.log("xpos: " + xpos + " width: " + w);
+        this.codeboxPaper = Raphael(xpos, ypos, w, h);
+
+        var highlight = this.codeboxPaper.rect(0,3+(13*lineNumber),w,13);
         highlight.attr("fill", color);
         highlight.attr("fill-opacity", .2);
         highlight.attr("stroke-width", 0);
@@ -178,7 +185,7 @@ $(document).ready(function () {
 
 
     //Grabs the anonymous variable from the named entity, moves it to the proper location
-    VisualizerHandler.prototype.getAnonymousVariable = function(name, x, y){
+    VisualizerHandler.prototype.getAnonymousVariable = function(name, goTo){
         var anon = null;
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i].name == name){
@@ -195,10 +202,9 @@ $(document).ready(function () {
         //now move the anon to the new location
         if (anon != null){
             var difX, difY;
-            difX = x - anon.x;
-            difY = y - anon.y;
-            anon.move(difX,0,this.setDelay(500),500);
-            anon.move(0,difY,this.setDelay(500),500);
+            difX = goTo.x - anon.x;
+            difY = goTo.y - anon.y ;//- goTo.DUNIT_HEIGHT;// - anon.height;
+            anon.move(difX,difY,this.setDelay(500),500);
             anon.fadeOut(this.setDelay(500) + 300);
         }
     }
