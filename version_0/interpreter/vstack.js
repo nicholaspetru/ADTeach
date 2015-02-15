@@ -39,12 +39,14 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
+                return false;
                 //new IncorrectParameters();
             }
         }
         if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("need one parameter");
+                return false;
                 //new IncorrectParameters();
             }
         }
@@ -88,7 +90,7 @@ $(document).ready(function () {
                     root.error("Incompatible types");
                 }
             } else if (type == "Stack<String>") {
-                if (parameters[0].jtype != "STRING_TYPE") {
+                if (typeof parameters[0].value != typeof "h") {
                     console.log('INCOMPATIBLE TYPES, want strings');
                     env.throwError(root.linenum);
                     root.error("Incompatible types");

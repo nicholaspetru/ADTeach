@@ -18,26 +18,32 @@ $(document).ready(function () {
         var noParam = ['isEmpty', 'size', 'clear'];
         var oneParam = ['get', 'contains', 'indexOf', 'remove', 'populate'];
         var twoParam = ['set'];
+        console.log("Checking parameters of: ", method, "with parameters: ", parameters);
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
+                return false;
                 console.log("no parameters");
                 //new IncorrectParameters();
             }
         }
         if (oneParam.indexOf(method) >= 0) {
+            console.log("Checking for one parameter");
             if (parameters.length != 1) {
+                return false;
                 console.log("One parameters!");
                 //new IncorrectParameters();
             }
         }
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
+                return false;
                 console.log("Two parameters!");
                 //new IncorrectParameters();
             }
         }
         if (method == 'add'){
             if (parameters.length > 2){
+                return false;
                 console.log("Need 2 params or one sometimes...");
             }
         }                
@@ -51,7 +57,19 @@ $(document).ready(function () {
             origValue[i]=(origValue1[i]);   
         }
         if (method == 'add') {
+            
             if (parameters.length == 1){
+                if (type == "List<Integer>") {
+                    if (typeof parameters[0].value != typeof 2) {
+                        env.throwError(root.linenum);
+                    } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                        env.throwError(root.linenum);
+                    }
+                } else if (type == "List<String>") {
+                    if (typeof parameters[0].value != typeof "h") {
+                        env.throwError(root.linenum);
+                    }
+                }
                 origValue.push(parameters[0].value);
                 return [returnValue, origValue];
             }
@@ -61,6 +79,22 @@ $(document).ready(function () {
                     console.log("Index out of bounds");
                     root.error("Index out of bounds");
                 } 
+                
+                if (type == "List<Integer>") {
+                    if (typeof parameters[1].value != typeof 2) {
+                        console.log("THIS IS TRUE");
+                        env.throwError(root.linenum);
+                        root.error();
+                    } else if (parameters[1].value.toString().indexOf('.') >= 0) {
+                        env.throwError(root.linenum);
+                        root.error();
+                    }
+                } else if (type == "List<String>") {
+                    if (typeof parameters[1].value != typeof "h") {
+                        env.throwError(root.linenum);
+                        root.error();
+                    }
+                }
                 var first = origValue.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
                 var third = origValue.slice(parameters[0].value);

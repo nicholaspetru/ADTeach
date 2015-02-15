@@ -22,6 +22,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("no parameters");
+                return false;
                 //new IncorrectParameters();
             }
         }
@@ -29,6 +30,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
+                return false;
                 //new IncorrectParameters();
             }
         }
@@ -36,6 +38,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("two parameters");
+                return false;
                 //new IncorrectParameters();
             }
         }

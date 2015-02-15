@@ -25,18 +25,21 @@ $(document).ready(function () {
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("Does not take any parameters");
+                return false;
             }
         }
         
         if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("Only takes one parameter");
+                return false;
             }   
         }  
             
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("Takes two parameters");
+                return false;
             }
         }
         

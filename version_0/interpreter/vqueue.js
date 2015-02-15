@@ -39,10 +39,12 @@ $(document).ready(function () {
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("Only takes one parameter");
+                return false;
             }
         } else if (method == "add" || method == "populate") {
             if (parameters.length != 1) {
                 console.log("Method takes one parameter");
+                return false;
             }
         }
         return true;
@@ -56,7 +58,7 @@ $(document).ready(function () {
         }
         if (method == 'add') {
             if (type == "Queue<Integer>") {
-                if (typeof parameters[0].value != number) {
+                if (typeof parameters[0].value != typeof 1) {
                     env.throwError(root.linenum);
                     root.error("Looking for ints");
                 } else if (parameters[0].value.toString().indexOf(".") >= 0) {

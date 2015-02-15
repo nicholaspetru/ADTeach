@@ -89,7 +89,8 @@ $(document).ready(function () {
 	}
     
     Environment.prototype.throwError = function(lineNum) {
-        this.symbolTable.throwError(lineNum);
+        console.log("THROWING ERROR AT LINE: ", lineNum);
+        this.symbolTable.throwError(lineNum-1);
     }
     
 });

@@ -285,6 +285,9 @@ $(document).ready(function () {
         }
         else {
             var type = this.checkType(value);
+            var val = this.evalValue(root);
+            console.log("VAL IS: ", val);
+            console.log("Root.first is: ", root.first, " and type is: ", type);
             if (root.first != type){
                 env.throwError(root.linenum);
                 console.log("INCOMPATIBLE TYPES!!");   
@@ -574,6 +577,7 @@ $(document).ready(function () {
             //new InvalidMethod();
         }
         if (paramCheck != true) {
+            console.log("Incorrect parameters");
             env.throwError(root.linenum);
             console.log("incorrect parameters");
             root.error("Incorrect parameters");

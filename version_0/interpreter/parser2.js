@@ -91,7 +91,7 @@ var make_parse = function (env) {
         var a, o, t, v;
         if (id && token.id !== id) {
             console.log("Syntax error: ", token.linenum-1);
-            envir.throwError(token.linenum-1);
+            envir.throwError(token.linenum);
             token.error("Expected '" + id + "'.");
         }
         if (token_nr >= tokens.length) {
@@ -438,6 +438,7 @@ var make_parse = function (env) {
         if (token.value != passed) {
             console.log("ERROR ERROR ERROR");
             envir.throwError(token.linenum);
+            envir.error();
         }
         if (token.arity !== "name") {
             console.log("Syntax error: ", token.linenum);

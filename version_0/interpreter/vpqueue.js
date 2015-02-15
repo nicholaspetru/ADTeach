@@ -39,10 +39,12 @@ $(document).ready(function () {
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("Only takes one parameter");
+                return false;
             }
         } else if (method == "add" || method == "populate") {
             if (parameters.length != 1) {
                 console.log("Method takes one parameter");
+                return false;
             }
         }
         return true;

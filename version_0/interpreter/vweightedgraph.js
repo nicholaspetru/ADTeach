@@ -22,6 +22,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("zero parameters needed");
+                return false;
                 //new IncorrectParameters();
             }
         }
@@ -29,6 +30,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters needed");
+                return false;
                 //new IncorrectParameters();
             }
         }
@@ -36,6 +38,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("two parameters needed");
+                return false;
                 //new IncorrectParameters();
             }
         }
@@ -43,6 +46,7 @@ $(document).ready(function () {
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 3) {
                 console.log("three parameters needed");
+                return false;
                 //new IncorrectParameters();
             }
         }
