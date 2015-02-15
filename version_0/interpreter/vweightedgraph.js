@@ -49,7 +49,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
         var isDirected = origValue1[1];
@@ -96,7 +96,9 @@ $(document).ready(function () {
             var node2 = parameters[1].value;
             var weight = parameters[2].value;
             if (node1 > origValue.length || node2 > origValue.length){
+                env.throwError(root.linenum);
                 console.log("Error! Node not in graph");
+                root.error("Node not in graph");
                 //Throw an error!
             }
             
@@ -104,7 +106,9 @@ $(document).ready(function () {
             var node2Edges = origValue[node2];
             
             if (node1Edges.indexOf(node2) >= 0){
+                env.throwError(root.linenum);
                 console.log("Error! Edge in graph already");
+                root.error("Edge already in graph");
                 //Throw an error!
             }
             node1Edges.push([node2, weight]);
@@ -147,7 +151,9 @@ $(document).ready(function () {
                 if (node1Edges[i][0] == node2) edgeCheck = true;
             }
             if (!edgeCheck) {
+                env.throwError(root.linenum);
                 console.log("Not an edge");
+                root.error("Not an edge");
                 //Throw an error
             } else {
                 for (var i = 0; i < node1Edges.length; i++) {
@@ -200,7 +206,9 @@ $(document).ready(function () {
             var neighbors = [];
             
             if (node >= origValue.length) {
+                env.throwError(root.linenum);
                 console.log("********Node not in graph");
+                root.error("Node not in graph");
                 //Throw Error
             } 
             console.log("######### ok, let's get the neighbors");
@@ -240,6 +248,10 @@ $(document).ready(function () {
         if (method == "getWeight") {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
+            if (origValue.indexOf(node1) < 0 || origValue.indexOf(node2) < 0) {
+                env.throwError(root.linenum);
+                root.error("Nodes not in graph");
+            }
             var node1Edges = origValue[node1];
             console.log(node1, node2, node1Edges);
             returnValue = 89;

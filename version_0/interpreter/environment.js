@@ -87,4 +87,9 @@ $(document).ready(function () {
 		this.variables.splice(this.variables.indexOf(name), 1);
         this.symbolTable.updateVariable(type, name, null, null, null, lineNum-1);
 	}
+    
+    Environment.prototype.throwError = function(lineNum) {
+        this.symbolTable.throwError(lineNum);
+    }
+    
 });

@@ -30,7 +30,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VTree.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VTree.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
         for (var i = 0; i<origValue1.length; i++){
@@ -68,7 +68,9 @@ $(document).ready(function () {
             }
             
             if (seenVertex != true) {
+                env.throwError(root.linenum);
                 console.log("Vertex not in graph");
+                root.error("Node not in graph");
                 //Throw error
             }
             
@@ -106,7 +108,9 @@ $(document).ready(function () {
             }
             
             if (seenVertex != true) {
+                env.throwError(root.linenum);
                 console.log("Vertex not in graph");
+                root.error("Vertex not in graph");
                 //Throw error
             }
             

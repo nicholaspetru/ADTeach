@@ -17,12 +17,12 @@ $(document).ready(function () {
         return this;
     }
     Interpreter.prototype.interpret = function(code, vh) {
+        var f = new Environment(null, vh);
         this.code = code;
         this.makeTokenList();
         var source = this.TokenList;
-        var parse = make_parse();
+        var parse = make_parse(f);
         var tree = parse(source);
-        var f = new Environment(null, vh);
         this.eval(tree, f);
     }
     
@@ -125,11 +125,15 @@ $(document).ready(function () {
             var valType = env.getType(root.value);
             if (val === "no value") {
                 console.log("not in env");
+                env.throwError(root.linenum);
+                root.error("Error no value");
                 //new UnidentifiedVariable();
             } 
 
             else if (valType === "no type") {
+                env.throwError(root.linenum);
                 console.log("variable " + root.value + " is in env, but does not have a type associated with it");
+                root.error("No type");
             }
 
             else {
@@ -154,6 +158,9 @@ $(document).ready(function () {
                         break;
                     default:
                         console.log("variable " + root.value + " was initialized with an invalid type...or alternatively, it references an ADT and we haven't implemented that here yet.");
+                        env.throwError(token.linenum);
+                        root.error("No type");
+                        
                         break;
                 }
             }
@@ -260,7 +267,9 @@ $(document).ready(function () {
                     default:
                         var type = this.checkType(value);
                         if (root.first != type){
-                            console.log("INCOMPATIBLE TYPES!!");   
+                            env.throwError(root.linenum);
+                            console.log("INCOMPATIBLE TYPES!!");
+                            root.error("Incompatible types");
                         }
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                 }
@@ -277,7 +286,9 @@ $(document).ready(function () {
         else {
             var type = this.checkType(value);
             if (root.first != type){
-             console.log("INCOMPATIBLE TYPES!!");   
+                env.throwError(root.linenum);
+                console.log("INCOMPATIBLE TYPES!!");   
+                root.error("INcompatible types");
             }
             console.log("root is: ", root);
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
@@ -294,7 +305,9 @@ $(document).ready(function () {
         } else if (root.arity == "name") {
             var variable = this.evalValue(root, env);
             if (typeof variable != typeof true) {
+                env.throwError(root.linenum);
                 console.log("No literals");
+                root.error("No literals");
             } else {
                 return variable;
             }
@@ -450,7 +463,9 @@ $(document).ready(function () {
                 var leftValue = this.evalMaths(root.first, env);
                 var rightValue = this.evalMaths(root.second, env);
                 if (typeof leftValue === "String" || typeof rightValue === "String") {
+                    env.throwError(root.linenum);
                     console.log("Incompatible types");
+                    root.error("Incompatible types");
                 } else {
                     switch (root.value) {
                         case "%":
@@ -501,7 +516,9 @@ $(document).ready(function () {
             adding = this.evalValue(root.second, env);
         }
         if (index < 0) {
+            env.throwError(root.linenum);
             console.log("Variable not declared");
+            root.error("Variable not declared");
             //Throw error
         }
         var value = env.getValue(name);
@@ -518,7 +535,9 @@ $(document).ready(function () {
             subtracting = this.evalValue(root.second, env);
         }
         if (index < 0) {
+            env.throwError(root.linenum);
             console.log("Variable not declared");
+            root.error("Variable not declared");
             //Throw error
         }
         var value = env.getValue(name);
@@ -549,11 +568,15 @@ $(document).ready(function () {
         console.log("Adt methods are: ", adtMethods);
         console.log("Adt type: ", adtType);
         if (adtMethods.indexOf(method) < 0) {
+            env.throwError(root.linenum);
             console.log("Invalid Method");
+            root.error("Invalid method");
             //new InvalidMethod();
         }
         if (paramCheck != true) {
+            env.throwError(root.linenum);
             console.log("incorrect parameters");
+            root.error("Incorrect parameters");
             //new IncorrectParameters();
         } else {
             if (parameters.length != 0) {
@@ -574,7 +597,7 @@ $(document).ready(function () {
                     cloneParam[i] = cloneVar;
                 }
             }
-            methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam);
+            methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam, env, root);
             console.log("returned value is *******: ", methodValue, "From method: ", method);
             returnValue = methodValue[0];
             
@@ -720,106 +743,106 @@ $(document).ready(function () {
         }
     }
     
-    Interpreter.prototype.doMethod = function(type, origValue, method, parameters) {
+    Interpreter.prototype.doMethod = function(type, origValue, method, parameters, env, root) {
         var y;
         var newV, returnV, value;
         switch(type) {
             case "Stack<Integer>":
                 y = new VStack("int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Stack<String>":
                 y = new VStack("String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "List<Integer>":
                 y = new VList("int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "List<String>":
                 y = new VList("String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Queue<Integer>":
                 console.log("PERFORMING METHOD: ", method);
                 y = new VQueue("int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Queue<String>":
                 y = new VQueue("String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "PriorityQueue<Integer>":
                 y = new VPQueue("int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "PriorityQueue<String>":
                 y = new VPQueue("String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Integer, Integer>":
                 y = new VDictionary("int", "int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Integer, String>":
                 y = new VDictionary("int", "String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Integer, Boolean>":
                 y = new VDictionary("int", "bool");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Integer, Float>":
                 y = new VDictionary("int", "float");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<String, Integer>":
                 y = new VDictionary("String", "int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<String, String>":
                 y = new VDictionary("String", "String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<String, Boolean>":
                 y = new VDictionary("String", "bool");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<String, Float>":
                 y = new VDictionary("String", "float");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Float, Integer>":
                 y = new VDictionary("float", "int");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Float, String>":
                 y = new VDictionary("float", "String");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Float, Boolean>":
                 y = new VDictionary("float", "bool");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Float, Float>":
                 y = new VDictionary("float", "float");
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Graph":
                 y = new VGraph();
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "WeightedGraph":
                 y = new VWeightedGraph();
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Tree":
                 y = new VTree();
-                value = y.performMethod(type, origValue, method, parameters);
+                value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
         }
     }
@@ -866,15 +889,19 @@ $(document).ready(function () {
         }
 
         if (parenLevel > 0) {
+            env.throwError(1);
             this.Error = "Syntax error: Missing close parenthesis";
         }
         else if (parenLevel < 0) {
+            env.throwError(1);
             this.Error = "Syntax error: Missing open parenthesis";
         }
         else if (braceLevel > 0) {
+            env.throwError(1);
             this.Error = "Syntax error: Missing close brace";
         }
         else if (braceLevel < 0) {
+            env.throwError(1);
             this.Error = "Syntax error: Missing open brace";
         }
 

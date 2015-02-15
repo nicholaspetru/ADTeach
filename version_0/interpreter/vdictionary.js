@@ -57,7 +57,7 @@ $(document).ready(function () {
         }
     }
     
-    VDictionary.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VDictionary.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var keyType;
         var valueJType;
         var valueType;
@@ -116,7 +116,9 @@ $(document).ready(function () {
             var key = parameters[0].value;
             var getType = this.getType(key);
             if (getType != keyType) {
+                env.throwError(root.linenum);
                 console.log("Incompatible Types!");
+                root.error("Incompatible types");
                 //Throw Error
             }
             returnValue = origValue[parameters[0].value];
@@ -165,7 +167,9 @@ $(document).ready(function () {
             var valueT = this.getType(value);
             console.log("key type is: ", keyT, " wanting: ", keyType);
             if (keyT != keyType || valueT != valueType) {
+                env.throwError(root.linenum);
                 console.log("Incompatible Types!");
+                root.error("Incompatible types");
                 //Throw an error
             }
             origValue[key] = value;
@@ -174,12 +178,26 @@ $(document).ready(function () {
         
         if (method == "remove") {
             var keyToRemove = parameters[0].value;
+            if (this.getType(keyToRemove) != keyType) {
+                env.throwError(root.linenum);
+                console.log("Incompatible key types");
+                root.error("Incompatible types");
+            }
             var newDictionary = {};
+            var isSeen = false;
             for (var i in origValue) {
                 if (i != keyToRemove) {
                     newDictionary[i] = origValue[i];
+                } if (i == keyToRemove) {
+                    isSeen = true;
                 }
             }
+            if (isSeen != true) {
+                env.throwError(root.linenum);
+                console.log("key not in dictionary");
+                root.error("Not in dictionary");
+            }
+            
             origValue = newDictionary;
             return [returnValue, origValue];
         }

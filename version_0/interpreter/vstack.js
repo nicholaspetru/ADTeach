@@ -51,7 +51,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VStack.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VStack.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
         for (var i = 0; i<origValue1.length; i++){
@@ -84,10 +84,14 @@ $(document).ready(function () {
             if (type == "Stack<Integer>") {
                 if (parameters[0].jtype != "INT_TYPE") {
                     console.log('INCOMPATIBLE TYPES, want ints');
+                    env.throwError(root.linenum);
+                    root.error("Incompatible types");
                 }
             } else if (type == "Stack<String>") {
                 if (parameters[0].jtype != "STRING_TYPE") {
                     console.log('INCOMPATIBLE TYPES, want strings');
+                    env.throwError(root.linenum);
+                    root.error("Incompatible types");
                 }
             } 
             //TODO: Check types

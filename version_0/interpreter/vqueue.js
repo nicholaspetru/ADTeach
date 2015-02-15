@@ -48,13 +48,28 @@ $(document).ready(function () {
         return true;
     }
     
-    VQueue.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
         for (var i = 0; i<origValue1.length; i++){
             origValue[i]=(origValue1[i]);   
         }
         if (method == 'add') {
+            if (type == "Queue<Integer>") {
+                if (typeof parameters[0].value != number) {
+                    env.throwError(root.linenum);
+                    root.error("Looking for ints");
+                } else if (parameters[0].value.toString().indexOf(".") >= 0) {
+                    env.throwError(root.linenum);
+                    root.error("Looking for ints");
+                }
+            } else if (type == "Queue<String>") {
+                if (typeof parameters[0].value != typeof "H") {
+                    env.throwError(root.linenum);
+                    root.error("Looking for strings");
+                }
+                    
+            }
             var newList = [];
             newList.push(parameters[0].value);
             var lengthOfList = origValue.length;

@@ -44,7 +44,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VList.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VList.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
         for (var i = 0; i<origValue1.length; i++){
@@ -57,7 +57,9 @@ $(document).ready(function () {
             }
             else{
                 if (parameters[0].value > origValue.length-1) {
+                    env.throwError(root.linenum);
                     console.log("Index out of bounds");
+                    root.error("Index out of bounds");
                 } 
                 var first = origValue.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
@@ -69,7 +71,9 @@ $(document).ready(function () {
         }
         if (method == 'get') {
             if (parameters[0].value > origValue.length) {
+                env.throwError(root.linenum);
                 console.log("Index out of bounds");
+                root.error("index out of bounds");
             }
             returnValue = origValue[parameters[0].value];
             return [returnValue, origValue];
@@ -87,7 +91,9 @@ $(document).ready(function () {
             if (index > -1 && index < origValue.length) {
                 origValue.splice(index, 1);
             } else {
+                env.throwError(root.linenum);
                 console.log("Not in list");
+                root.error("Not in list");
             }
             return [returnValue, origValue];
         }
@@ -105,7 +111,9 @@ $(document).ready(function () {
         }
         if (method == 'set') {
             if (parameters[0].value > origValue.length-1) {
+                env.throwError(root.linenum);
                 console.log("Index out of bounds");
+                root.error("Index out of bounds");
             } 
             origValue[parameters[0].value] = parameters[1].value;
             return [returnValue, origValue];
@@ -144,7 +152,9 @@ $(document).ready(function () {
     
     VList.prototype.get = function(i) {
         if (i > (this.vals.length -1)) {
+            env.throwError(root.linenum);
             console.log("Index out of bounds");
+            root.error("Index out of bounds");
             //new IndexOutOfBoundsException();
         }
         return this.vals[i];
@@ -174,7 +184,9 @@ $(document).ready(function () {
     
     VList.prototype.set = function(i, e) {
         if (i > this.vals.length) {
+            env.throwError(root.linenum);
             console.log("Index out of bounds");
+            root.error("Index out of bounds");
             //new IndexOutOfBoundException();
         }
         for (j = 0; j < this.vals.length; j++) {

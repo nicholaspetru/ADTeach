@@ -5,12 +5,13 @@
 // Douglas Crockford
 // 2010-06-26
 // Modified by the Data Tutor Team to parse Vava, January 2015
-var make_parse = function () {
+var make_parse = function (env) {
     var scope;
     var symbol_table = {};
     var token;
     var tokens;
     var token_nr;
+    var envir = env;
 
     var itself = function () {
         return this;
@@ -24,6 +25,7 @@ var make_parse = function () {
             var t = this.def[n.value];
             if (typeof t === "object") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error(t.reserved ? "Already reserved." : "Already defined.");
             }
             this.def[n.value] = n;
@@ -63,6 +65,7 @@ var make_parse = function () {
                 }
                 if (t.arity === "name") {
                     console.log("Syntax error: ", token.linenum);
+                    envir.throwError(token.linenum);
                     n.error("Already defined.");
                 }
             }
@@ -88,6 +91,7 @@ var make_parse = function () {
         var a, o, t, v;
         if (id && token.id !== id) {
             console.log("Syntax error: ", token.linenum-1);
+            envir.throwError(token.linenum-1);
             token.error("Expected '" + id + "'.");
         }
         if (token_nr >= tokens.length) {
@@ -104,6 +108,7 @@ var make_parse = function () {
             o = symbol_table[v];
             if (!o) {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 t.error("Unknown operator.");
             }
         } else if (a === "string" || a ===  "number") {
@@ -111,6 +116,7 @@ var make_parse = function () {
             a = "literal";
         } else {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             t.error("Unexpected token.");
         }
         token = Object.create(o);
@@ -185,10 +191,12 @@ var make_parse = function () {
     var original_symbol = {
         nud: function () {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             this.error("Undefined.");
         },
         led: function (left) {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             this.error("Missing operator.");
         }
     };
@@ -360,6 +368,7 @@ var make_parse = function () {
         this.first = left;
         if (token.arity !== "name") {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             token.error("Expected a property name.");
         }
         token.arity = "literal";
@@ -387,6 +396,7 @@ var make_parse = function () {
                     left.arity !== "name" && left.id !== "(" &&
                     left.id !== "&&" && left.id !== "||" && left.id !== "?") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 left.error("Expected a variable name.");
             }
         }
@@ -427,9 +437,11 @@ var make_parse = function () {
     prefix("new", function (passed) {
         if (token.value != passed) {
             console.log("ERROR ERROR ERROR");
+            envir.throwError(token.linenum);
         }
         if (token.arity !== "name") {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             token.error("Expected a property name.");
         }
         token.arity = "literal";
@@ -457,6 +469,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -500,6 +513,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -537,6 +551,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -574,6 +589,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -611,6 +627,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -649,6 +666,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -686,6 +704,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -724,6 +743,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -762,6 +782,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -799,6 +820,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -836,6 +858,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -873,6 +896,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -910,6 +934,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -947,6 +972,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -984,6 +1010,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1021,6 +1048,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1058,6 +1086,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1095,6 +1124,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1132,6 +1162,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1169,6 +1200,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1206,6 +1238,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1243,6 +1276,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1280,6 +1314,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1317,6 +1352,7 @@ var make_parse = function () {
             n = token;
             if (n.arity !== "name") {
                 console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
@@ -1380,6 +1416,7 @@ var make_parse = function () {
         advance(";");
         if (token.id !== "}") {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             token.error("Unreachable statement.");
         }
         this.arity = "RETURN_STATEMENT";
@@ -1390,6 +1427,7 @@ var make_parse = function () {
         advance(";");
         if (token.id !== "}") {
             console.log("Syntax error: ", token.linenum);
+            envir.throwError(token.linenum);
             token.error("Unreachable statement.");
         }
         this.arity = "BREAK_STATEMENT";

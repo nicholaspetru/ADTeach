@@ -42,7 +42,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VGraph.prototype.performMethod = function(type, origValue1, method, parameters) {
+    VGraph.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
         var isDirected = origValue1[1];
@@ -56,7 +56,7 @@ $(document).ready(function () {
                 isDirected = true;
                 return [returnValue, [origValue, isDirected]];
             }
-            if (parameters[0].value == false) {
+            if (parameters[0].value != true) {
                 isDirected = false;
                 for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
                     var vertexNeighbors = origValue[currVertex];
@@ -86,7 +86,9 @@ $(document).ready(function () {
                 console.log("NODE 1 IS: ", node1);
                 console.log("NODE2 IS: ", node2);
                 if (node1 > origValue.length || node2 > origValue.length){
+                    env.throwError(root.linenum);
                     console.log("Error! Node not in graph");
+                    root.error("Edge not in graph");
                     //Throw an error!
                 }
 
@@ -94,7 +96,9 @@ $(document).ready(function () {
                 var node2Edges = origValue[node2];
 
                 if (node1Edges.indexOf(node2) >= 0){
+                    env.throwError(root.linenum);
                     console.log("Error! Edge in graph already");
+                    root.error("Edge not in graph");
                     //Throw an error!
                 }
                 node1Edges.push(node2);
@@ -108,7 +112,9 @@ $(document).ready(function () {
                 var fromNeighbors = origValue[fromVertex];
                 var toNeighbors = origValue[toVertex];
                 if (fromNeighbors.indexOf(toVertex) >= 0) {
+                    env.throwError(root.linenum);
                     console.log("Already exists an edge");
+                    root.error("Edge already exists");
                     //Throw an error
                 } 
                 fromNeighbors.push(toVertex);
@@ -164,7 +170,9 @@ $(document).ready(function () {
                 var node1NEdges = [];
                 var node2NEdges = [];
                 if (node1Edges.indexOf(node2) < 0) {
+                    env.throwError(root.linenum);
                     console.log("Not an edge");
+                    root.error("Not an edge");
                     //Throw an error
                 } else {
                     for (var i = 0; i < node1Edges.length; i++) {
@@ -191,7 +199,9 @@ $(document).ready(function () {
                 var node1Edges = origValue[node1];
                 var node1NEdges = [];
                 if (node1Edges.indexOf(node2) < 0) {
+                    env.throwError(root.linenum);
                     console.log("Not an edge");
+                    root.error("Not an edge");
                     //Throw an error
                 }
                 for (var i = 0; i < node1Edges; i++) {
@@ -211,6 +221,10 @@ $(document).ready(function () {
         }
         
         if (method == "hasEdge") {
+            if (typeof parameters[0].value != number || typeof parameters[1].value != number) {
+                env.throwError(root.linenum);
+                root.error("Need ints");
+            }
             if (isDirected != true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
@@ -242,7 +256,9 @@ $(document).ready(function () {
         if (method == "getNeighbors") {
             var node = parameters[0].value;
             if (origValue.indexOf(node) < 0) {
+                env.throwError(root.linenum);
                 console.log("Node not in graph");
+                root.error("Not in graph");
                 //Throw Error
             }
             returnValue = origValue[node];
@@ -251,7 +267,9 @@ $(document).ready(function () {
         
         if (method == "getOutDegree") {
             if (isDirected != true) {
+                env.throwError(root.linenum);
                 console.log("No out degree for undirected graph");
+                root.error("No degree for undirected graph");
                 //Throw error
             }
             var vertex = parameters[0].value;
@@ -261,7 +279,9 @@ $(document).ready(function () {
         
         if (method == "getInDegree") {
             if (isDirected != true) {
+                env.throwError(root.linenum);
                 console.log("No out degree for undirected graph");
+                root.error("No degree for undirected graph");
                 //Throw error
             }
             var vertex = parameters[0].value;
