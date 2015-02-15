@@ -15,7 +15,7 @@ $(document).ready(function () {
         this.y = 0;
         this.cur_length = 1;
         this.MAX_LENGTH = 10;
-        this.FONT_SIZE = 11;
+        this.FONT_SIZE = 18;
         this.DUNIT_HEIGHT = 45*.85;
         this.DUNIT_WIDTH = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
@@ -54,7 +54,6 @@ $(document).ready(function () {
     List.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
         var split = action.split(".");
-        this.stretch();
 
         //animate the change
         switch(split[0]){
@@ -65,6 +64,7 @@ $(document).ready(function () {
                     this.VH.getAnonymousVariable(originADT, this);
                 }
                 var index = parseInt(split[1]);
+                this.stretch();
                 this.AddAtPosition(index, this.value[index]);
                 break;
             case "populate":
@@ -72,6 +72,7 @@ $(document).ready(function () {
                 for (var i = 0; i < this.vis.length; i++){
                     this.vis[i].remove();
                 }
+                this.stretch();
                 //create new data units to match the new dataset
                 for (var i = 0; i < this.value.length; i++){
                     var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
@@ -84,6 +85,7 @@ $(document).ready(function () {
             case "remove":
                 var index = parseInt(split[1]);
                 this.RemoveAtPosition(index);
+                this.stretch();
                 break;
             case "set":
                 var index = parseInt(split[1]);
@@ -95,6 +97,7 @@ $(document).ready(function () {
                     this.vis[i].destroy();
                 }
                 this.vis = [];
+                this.stretch();
                 break;
             case "get":
                 var index = parseInt(split[1]);
@@ -128,14 +131,22 @@ $(document).ready(function () {
 
     //Stretches the frame to accomadate the new length of the list
     List.prototype.stretch = function() {
-        /*
-        var newSize = this.value.length/this.vis.length,
-            difX = (this.value.length - this.vis.length)*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))/2;
-
+        //variables for list
+        var _t = this, _0 = this.x, _1 = this.y, _2 = (this.y + this.HEIGHT), _3 = (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + this.value.length*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)));
+/*
+        //animate the change to the new path
         var delay = this.VH.setDelay(500);
-        var anim = Raphael.animation({transform:'...s' + newSize + ' 1, ...t ' + difX},500);
+        var anim = Raphael.animation({path : "...M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1},500);
         this.myFrame.animate(anim.delay(delay));
         */
+        //in the timeout, create and assign the actual path
+        this.VH.setDelay(500);
+
+        setTimeout(function(){
+            _t.myFrame.remove();
+            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
+            _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+        },(this.VH.delay - this.VH.date.getTime()));
     };
 
 
