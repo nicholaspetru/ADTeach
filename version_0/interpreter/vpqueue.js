@@ -50,6 +50,10 @@ $(document).ready(function () {
         return true;
     }
     
+    VPQueue.prototype.compareNumbers = function(a, b) {
+        return a - b;
+    }
+    
     VPQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
@@ -58,7 +62,7 @@ $(document).ready(function () {
         }
         if (method == 'add') {
             if (type == "PriorityQueue<Integer>") {
-                if (typeof parameters[0].value != number) {
+                if (typeof parameters[0].value != typeof 1) {
                     env.throwError(root.linenum);
                     root.error("Looking for ints");
                 } else if (parameters[0].value.toString().indexOf(".") >= 0) {
@@ -79,7 +83,7 @@ $(document).ready(function () {
                 newList.push(origValue[i]);
             }
             origValue = newList;
-            origValue.sort();
+            origValue.sort(this.compareNumbers);
             returnValue = origValue.indexOf(parameters[0].value);
             return [returnValue, origValue];
         }

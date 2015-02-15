@@ -85,7 +85,7 @@ $(document).ready(function () {
             //new IncompatibleTypes();
         }
 		this.variables.splice(this.variables.indexOf(name), 1);
-        this.symbolTable.updateVariable(type, name, null, null, null, lineNum-1);
+        this.symbolTable.removeVariable(type, name, null, null, null, lineNum-1);
 	}
     
     Environment.prototype.throwError = function(lineNum) {

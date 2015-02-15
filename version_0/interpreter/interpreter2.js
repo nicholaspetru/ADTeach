@@ -285,10 +285,16 @@ $(document).ready(function () {
         }
         else {
             var type = this.checkType(value);
-            var val = this.evalValue(root);
+            var val = this.evalValue(root.first, env);
             console.log("VAL IS: ", val);
-            console.log("Root.first is: ", root.first, " and type is: ", type);
-            if (root.first != type){
+            console.log("Root.first type is: ", typeof val, " and type is: ", type);
+            if (typeof val == "string") {
+                if (type != "String") {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
+            }
+            else if (typeof val != type){
                 env.throwError(root.linenum);
                 console.log("INCOMPATIBLE TYPES!!");   
                 root.error("INcompatible types");

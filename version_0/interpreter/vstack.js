@@ -140,7 +140,11 @@ $(document).ready(function () {
         
         if (method == "peek") {
             var length = origValue.length;
-            returnValue = origValue[length-1];
+            if (length == 0) {
+                returnValue = "null";
+            } else {
+                returnValue = origValue[length-1];
+            }
             return [returnValue, origValue];
         }
         
