@@ -69,8 +69,15 @@ $(document).ready(function () {
                 if (typeof parameters[0].value != typeof "H") {
                     env.throwError(root.linenum);
                     root.error("Looking for strings");
+                }   
+            } else if (type == "Queue<Float>") {
+                if (typeof parameters[0].value != typeof 1) {
+                    env.throwError(root.linenum);
+                    root.error();
+                } else if (parameters[0].value.toString().indexOf(".") < 0) {
+                    env.throwError(root.linenum);
+                    root.error();
                 }
-                    
             }
             var newList = [];
             newList.push(parameters[0].value);
@@ -112,6 +119,12 @@ $(document).ready(function () {
                 for (var i = 0; i < parameters[0].value; i++) {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(options[toPush]);
+                }
+            }
+            if (type == "Queue<Float>") {
+                for (var i = 0; i < parameters[0].value; i++) {
+                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    value.push(toPush);
                 }
             }
             return [returnValue, value];

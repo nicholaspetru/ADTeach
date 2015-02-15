@@ -240,8 +240,10 @@ $(document).ready(function () {
                     case "List<Float>":
                     case "Queue<Integer>":
                     case "Queue<String>":
+                    case "Queue<Float>":
                     case "PriorityQueue<Integer>":
                     case "PriorityQueue<String>":
+                    case "PriorityQueue<Float>":
                     case "Tree":
                         env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         break;
@@ -417,7 +419,7 @@ $(document).ready(function () {
             case typeof VQueue("int"):
                 return "Queue<int>";
             case typeof VQueue("float"):
-                return "Queue<float>";
+                return "Queue<Float>";
             case typeof VQueue("String"):
                 return "Queue<String>";
                 
@@ -425,6 +427,8 @@ $(document).ready(function () {
                 return "PriorityQueue<Integer>";
             case typeof VPQueue("String"):
                 return "PriorityQueue<String>";
+            case typeof VPQueue("float"):
+                return "PriorityQueue<Float>";
                 
             case typeof VDictionary("int", "int"):
                 return "Dictionary<Integer, Integer>";
@@ -644,8 +648,8 @@ $(document).ready(function () {
                     }
                     break;
                 case("remove"):
-                    if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || 
-                        adtType == "Queue<String>" || adtType == "Queue<Integer>") {
+                    if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || adtType == "PriorityQueue<Float>" 
+                        || adtType == "Queue<String>" || adtType == "Queue<Integer>" || adtType == "Queue<Float>") {
                         method = method + "." + adtCurValue.length;
                     } else {
                         method = method + "." + cloneParam[0].value;
@@ -674,11 +678,13 @@ $(document).ready(function () {
                 break;
             case "Queue<Integer>":
             case "Queue<String>":
+            case "Queue<Float>":
                 y = new VQueue("int");
                 return y.listMethods();
                 break;
             case "PriorityQueue<Integer>":
             case "PriorityQueue<String>":
+            case "PriorityQueue<Float>":
                 y = new VPQueue("int");
                 return y.listMethods();
                 break;
@@ -729,10 +735,12 @@ $(document).ready(function () {
                 break;
             case "Queue<Integer>":
             case "Queue<String>":
+            case "Queue<Float>":
                 y = new VQueue("String");
                 return y.checkParameters(method, parameters);
             case "PriorityQueue<Integer>":
             case "PriorityQueue<String>":
+            case "PriorityQueue<Float>":
                 y = new VPQueue("String");
                 return y.checkParameters(method, parameters);
             case "Dictionary<Integer, Integer>":
@@ -796,12 +804,15 @@ $(document).ready(function () {
                 return value;
                 break;
             case "Queue<Integer>":
-                console.log("PERFORMING METHOD: ", method);
                 y = new VQueue("int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Queue<String>":
                 y = new VQueue("String");
+                value = y.performMethod(type, origValue, method, parameters, env, root);
+                return value;
+            case "Queue<Float>":
+                y = new VQueue("float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "PriorityQueue<Integer>":
@@ -810,6 +821,10 @@ $(document).ready(function () {
                 return value;
             case "PriorityQueue<String>":
                 y = new VPQueue("String");
+                value = y.performMethod(type, origValue, method, parameters, env, root);
+                return value;
+            case "PriorityQueue<Float>":
+                y = new VPQueue("float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
             case "Dictionary<Integer, Integer>":

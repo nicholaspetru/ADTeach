@@ -75,6 +75,14 @@ $(document).ready(function () {
                     root.error("Looking for strings");
                 }
                     
+            } else if (type == "PriorityQueue<Float>") {
+                if (typeof parameters[0].value != typeof 1) {
+                    env.throwError(root.linenum);
+                    root.error();
+                } else if (parameters[0].value.toString().indexOf('.') < 0) {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
             }
             var newList = [];
             newList.push(parameters[0].value);
@@ -112,7 +120,7 @@ $(document).ready(function () {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(toPush);
                 }
-                value.sort();
+                value.sort(this.compareNumbers);
             } 
             if (type == "PriorityQueue<String>") {
                 var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -121,6 +129,13 @@ $(document).ready(function () {
                     value.push(options[toPush]);
                 }
                 value.sort();
+            }
+            if (type == "PriorityQueue<Float>") {
+                for (var i = 0; i < parameters[0].value; i++) {
+                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    value.push(toPush);
+                }
+                value.sort(this.compareNumbers);
             }
             return [returnValue, value];
         }
