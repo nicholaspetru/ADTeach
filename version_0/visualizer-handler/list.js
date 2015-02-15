@@ -133,12 +133,7 @@ $(document).ready(function () {
     List.prototype.stretch = function() {
         //variables for list
         var _t = this, _0 = this.x, _1 = this.y, _2 = (this.y + this.HEIGHT), _3 = (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + this.value.length*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)));
-/*
-        //animate the change to the new path
-        var delay = this.VH.setDelay(500);
-        var anim = Raphael.animation({path : "...M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1},500);
-        this.myFrame.animate(anim.delay(delay));
-        */
+        
         //in the timeout, create and assign the actual path
         this.VH.setDelay(500);
 

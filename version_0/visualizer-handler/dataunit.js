@@ -13,7 +13,7 @@ $(document).ready(function () {
           this.width = width;
           this.height = height;
           this.font_size = 14;
-          this.index = "";
+          this.index = " ";
 
           // array of value, box/circle container, associated arrows, etc.
           // IMPORTANT: first item is the value, second is the container (box/circle)
@@ -105,7 +105,11 @@ $(document).ready(function () {
         this.vis[0].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size, 'text-anchor': 'center'});
 
      		// which container type is it? (0 is box, 1 is circle, -1 is nothing)
-     		if (this.shape == 0) {
+     		if (this.shape == -1) {
+          this.vis[1] = this.paper.rect(this.x, this.y, this.width, this.height);
+          this.vis[1].attr({"opacity": 0, "stroke-width": 0, "stroke": "#4b4b4b"});
+        } 
+        if (this.shape == 0) {
      			this.vis[1] = this.paper.rect(this.x, this.y, this.width, this.height);
           this.vis[1].attr({"opacity": 0, "stroke-width": 1.5, "stroke": "#4b4b4b"});
      		} 
