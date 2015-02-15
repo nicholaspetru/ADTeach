@@ -236,6 +236,7 @@ $(document).ready(function () {
                     case "Stack<String>":
                     case "List<Integer>":
                     case "List<String>":
+                    case "List<Float>":
                     case "Queue<Integer>":
                     case "Queue<String>":
                     case "PriorityQueue<Integer>":
@@ -409,6 +410,8 @@ $(document).ready(function () {
                 return "List<Integer>";
             case typeof VList("String"):
                 return "List<String>";
+            case typeof VList("float"):
+                return "List<Float>";
                 
             case typeof VQueue("int"):
                 return "Queue<int>";
@@ -663,6 +666,7 @@ $(document).ready(function () {
                 break;
             case "List<Integer>":
             case "List<String>":
+            case "List<Float>":
                 y = new VList("int");
                 return y.listMethods();
                 break;
@@ -716,6 +720,7 @@ $(document).ready(function () {
                 break;
             case "List<Integer>":
             case "List<String>":
+            case "List<Float>":
                 y = new VList("String");
                 return y.checkParameters(method, parameters);
                 break;
@@ -774,6 +779,11 @@ $(document).ready(function () {
                 break;
             case "List<String>":
                 y = new VList("String");
+                value = y.performMethod(type, origValue, method, parameters, env, root);
+                return value;
+                break;
+            case "List<Float>":
+                y = new VList("float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
@@ -867,7 +877,7 @@ $(document).ready(function () {
     
     
     // Generate list of tokens and store it in this.TokenList
-    Interpreter.prototype.makeTokenList = function() {
+    Interpreter.prototype.makeTokenList = function(env) {
         var t = new Tokenizer();
         var tokens = [];
         var parenLevel = 0;
@@ -895,7 +905,7 @@ $(document).ready(function () {
             }
 
             tokens.push(currentToken);
-            currentToken = t.token();
+            currentToken = t.token(env);
         }
 
         if (parenLevel > 0) {

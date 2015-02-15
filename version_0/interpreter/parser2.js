@@ -659,6 +659,44 @@ var make_parse = function (env) {
         advance(";");
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
+    
+    stmt("List<Float>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "List<Float>";
+                t.third = expression(0, "List<Float>")
+                t.second = n;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "List<Float>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
 
     stmt("Queue<Integer>", function () {
         console.log("IN HERE IN HEREI N HERE");

@@ -46,7 +46,8 @@ Tokenizer.prototype.input = function(buf) {
 // - linenum: linenum in the current buffer where the token starts
 //
 // If there are not more tokens in the buffer, returns null. In case of error throws error.
-Tokenizer.prototype.token = function() {
+Tokenizer.prototype.token = function(env) {
+    var e = env;
 	this._skipnontokens();
 	if (this.pos >= this.buflen) return null;
 
@@ -58,16 +59,16 @@ Tokenizer.prototype.token = function() {
 	}
 	else {
 		if (this._isdigit(c)) {
-			return this._process_number();
+			return this._process_number(e);
 		}
 		else if (c === '"') {
-			return this._process_string();
+			return this._process_string(e);
 		}
 		else if (c === "'") {
-			return this._process_char();
+			return this._process_char(e);
 		}
 		else {
-			return this._process_symbol();
+			return this._process_symbol(e);
 		}
 	}
 }
@@ -143,7 +144,8 @@ Tokenizer.prototype._process_number = function() {
 }
 
 
-Tokenizer.prototype._process_symbol = function() {
+Tokenizer.prototype._process_symbol = function(env) {
+    var e = env;
 	var endpos = this.pos + 1;
 	var op1 = this.operators.indexOf(this.buf.charAt(this.pos));
 	var op2 = this.operators.indexOf(this.buf.charAt(endpos));
@@ -205,10 +207,12 @@ Tokenizer.prototype._process_symbol = function() {
 */
 	else if (temp === 'Stack' || temp === 'Queue' || temp === 'List' || temp === 'PriorityQueue' || temp === "Dictionary") {
 		if (this.buf.charAt(endpos) !== '<') {
+            e.throwError(this.linenum);
 			throw Error('Syntax error: expected type specifier for ADT');
 		}
 		var close_angle = this.buf.indexOf('>', endpos+1); // find the closing bracket >
 		if (close_angle === -1) {
+            e.throwError(this.linenum);
 			throw Error("Syntax error: missing closing bracket >");
 		} else {
 			var tok = {
@@ -234,11 +238,12 @@ Tokenizer.prototype._process_symbol = function() {
 	return tok;
 }
 
-Tokenizer.prototype._process_string = function() {
+Tokenizer.prototype._process_string = function(env) {
 	// this.pos points at the opening quote
 	var end_index = this.buf.indexOf('"', this.pos+1); // find the ending quote
 
 	if (end_index === -1) {
+        env.throwError(this.linenum);
 		throw Error('Unterminated quote');
 	} else {
 		var tok = {
@@ -253,11 +258,12 @@ Tokenizer.prototype._process_string = function() {
 	}
 }
 
-Tokenizer.prototype._process_char = function() {
+Tokenizer.prototype._process_char = function(env) {
 	// this.pos points at the opening quote
 	var end_index = this.buf.indexOf("'", this.pos+1); // find the ending quote
 
 	if (end_index === -1) {
+        env.throwError(this.linenum);
 		throw Error('Unterminated quote');
 	} else {
 		var tok = {

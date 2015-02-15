@@ -62,12 +62,23 @@ $(document).ready(function () {
                 if (type == "List<Integer>") {
                     if (typeof parameters[0].value != typeof 2) {
                         env.throwError(root.linenum);
+                        root.error();
                     } else if (parameters[0].value.toString().indexOf('.') >= 0) {
                         env.throwError(root.linenum);
+                        root.error();
+                    }
+                } else if (type == "List<Float>") {
+                    if (typeof parameters[0].value != typeof 2) {
+                        env.throwError(root.linenum);
+                        root.error();
+                    } else if (parameters[0].value.toString().indexOf('.') < 0) {
+                        env.throwError(root.linenum);
+                        root.error();
                     }
                 } else if (type == "List<String>") {
                     if (typeof parameters[0].value != typeof "h") {
                         env.throwError(root.linenum);
+                        root.error();
                     }
                 }
                 origValue.push(parameters[0].value);
@@ -89,6 +100,14 @@ $(document).ready(function () {
                         env.throwError(root.linenum);
                         root.error();
                     }
+                } else if (type == "List<Float>") {
+                    if (typeof parameters[1].value != typeof 2) {
+                        env.throwError(root.linenum);
+                        root.error();
+                    } else if (parameters[1].value.toString().indexOf('.') < 0) {
+                        env.throwError(root.linenum);
+                        root.error();
+                    }
                 } else if (type == "List<String>") {
                     if (typeof parameters[1].value != typeof "h") {
                         env.throwError(root.linenum);
@@ -104,7 +123,7 @@ $(document).ready(function () {
             }
         }
         if (method == 'get') {
-            if (parameters[0].value > origValue.length) {
+            if (parameters[0].value > origValue.length || parameters[0].value < 0) {
                 env.throwError(root.linenum);
                 console.log("Index out of bounds");
                 root.error("index out of bounds");
@@ -149,6 +168,29 @@ $(document).ready(function () {
                 console.log("Index out of bounds");
                 root.error("Index out of bounds");
             } 
+            
+            if (type == "List<Integer>") {
+                if (typeof parameters[1].value != typeof 2) {
+                    env.throwError(root.linenum);
+                    root.error();
+                } else if (parameters[1].value.toString().indexOf(".") >= 0) {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
+            } else if (type == "List<Float>") {
+                if (typeof parameters[1].value != typeof 2) {
+                    env.throwError(root.linenum);
+                    root.error();
+                } else if (parameters[1].value.toString().indexOf(".") < 0) {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
+            } else if (type == "List<String>") {
+                if (typeof parameters[1].value != typeof "h") {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
+            }
             origValue[parameters[0].value] = parameters[1].value;
             return [returnValue, origValue];
             
@@ -169,6 +211,14 @@ $(document).ready(function () {
                     var toPush = Math.floor((Math.random()*26) + 1);
                     console.log("Going to push: ", options[toPush], typeof options[toPush]);
                     value.push('"' + options[toPush] + '"');
+                }
+                return [returnValue, value];
+            }
+            if (type == "List<Float>") {
+                var value = [];
+                for (i = 0; i < parameters[0].value; i++) {
+                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    value.push(toPush);
                 }
                 return [returnValue, value];
             }
