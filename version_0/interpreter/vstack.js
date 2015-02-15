@@ -84,14 +84,24 @@ $(document).ready(function () {
         
         if (method == "push") {
             if (type == "Stack<Integer>") {
-                if (parameters[0].jtype != "INT_TYPE") {
-                    console.log('INCOMPATIBLE TYPES, want ints');
+                if (typeof parameters[0] != typeof 2) {
                     env.throwError(root.linenum);
                     root.error("Incompatible types");
+                } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                    env.throwError(root.linenum);
+                    root.error();
                 }
+            } else if (type == "Stack<Float>") {
+                if (typeof parameters[0].value != typeof 2) {
+                    env.throwError(root.linenum);
+                    root.error();
+                } else if (parameters[0].value.toString().indexOf('.') < 0) {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
+            
             } else if (type == "Stack<String>") {
                 if (typeof parameters[0].value != typeof "h") {
-                    console.log('INCOMPATIBLE TYPES, want strings');
                     env.throwError(root.linenum);
                     root.error("Incompatible types");
                 }
@@ -133,6 +143,14 @@ $(document).ready(function () {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
                     value.push(options[toPush]);
+                }
+                return [returnValue, value];
+            }
+            if (type == "Stack<Float>") {
+                var value = [];
+                for (i = 0; i < parameters[0].value; i++) {
+                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    value.push(toPush);
                 }
                 return [returnValue, value];
             }

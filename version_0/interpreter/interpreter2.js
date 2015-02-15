@@ -234,6 +234,7 @@ $(document).ready(function () {
                 switch(root.first) {
                     case "Stack<Integer>":
                     case "Stack<String>":
+                    case "Stack<Float>":
                     case "List<Integer>":
                     case "List<String>":
                     case "List<Float>":
@@ -402,7 +403,7 @@ $(document).ready(function () {
             case typeof VStack("int"):
                 return "Stack<int>";
             case typeof VStack("float"):
-                return "Stack<float>";
+                return "Stack<Float>";
             case typeof VStack("String"):
                 return "Stack<String>";
                 
@@ -661,6 +662,7 @@ $(document).ready(function () {
         switch(type) {
             case "Stack<Integer>":
             case "Stack<String>":
+            case "Stack<Float>":
                 y = new VStack("String");
                 return y.listMethods();
                 break;
@@ -715,6 +717,7 @@ $(document).ready(function () {
         switch(type) {
             case "Stack<Integer>":
             case "Stack<String>":
+            case "Stack<Float>":
                 y = new VStack("String");
                 return y.checkParameters(method, parameters);
                 break;
@@ -769,6 +772,11 @@ $(document).ready(function () {
                 break;
             case "Stack<String>":
                 y = new VStack("String");
+                value = y.performMethod(type, origValue, method, parameters, env, root);
+                return value;
+                break;
+            case "Stack<Float>":
+                y = new VStack("float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;

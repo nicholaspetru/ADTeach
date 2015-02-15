@@ -584,6 +584,44 @@ var make_parse = function (env) {
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
     
+    stmt("Stack<Float>", function () {
+        var a = [], n, t;
+        while (true) {
+            n = token;
+            if (n.arity !== "name") {
+                console.log("Syntax error: ", token.linenum);
+                envir.throwError(token.linenum);
+                n.error("Expected a new variable name.");
+            }
+            scope.define(n);
+            advance();
+            if (token.id === "=") {
+                t = token;
+                t.value = "init";
+                advance("=");
+                t.first = "Stack<Float>";
+                t.third = expression(0, "Stack<Float>");
+                t.second = n;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            else {
+                t = token;
+                t.value = "Stack<Float>";
+                t.first = n;
+                t.second = null;
+                t.arity = "Initialization";
+                a.push(t);
+            }
+            if (token.id !== ",") {
+                break;
+            }
+            advance(",");
+        }
+        advance(";");
+        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
+    });
+    
     stmt("List<Integer>", function () {
         var a = [], n, t;
         while (true) {
