@@ -15,6 +15,7 @@ $(document).ready(function () {
     */
     //Listen to buttonz
     $("#modal").hide();
+    $("#highlight_paper").hide();
     
     var EVH = new EventHandler();
     $("#build").click(function() {
