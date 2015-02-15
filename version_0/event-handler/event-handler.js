@@ -67,6 +67,7 @@ $(document).ready(function() {
        console.log("Event Handler: onStop()");
        this.codeBox.unfreezeCode();
        this.visualizerHandler.DeleteAll();
+       $("#highlight_paper").hide();
         //show the needed buttonz
         $("#play").hide();
         $("#pause").hide();
