@@ -39,7 +39,6 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     List.prototype.buildVisual = function(){
-        this.me = this.paper.set();
         this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
@@ -52,9 +51,9 @@ $(document).ready(function () {
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
-        this.me.push(this.myLabel);
-        this.me.push(this.myFrame);
-        this.me.push(this.vis);
+        this.me = this.paper.set();
+        this.me.push(this.myLabel,this.myFrame);
+        this.me.draggable();
     }
 
     //Update the List
@@ -133,14 +132,16 @@ $(document).ready(function () {
         /*
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
+        */
         for (var i = 0; i < this.vis.length; i++){
             this.vis[i].create();
         }
-        */
+        
     };
 
     //Stretches the frame to accomadate the new length of the list
     List.prototype.stretch = function() {
+        this.checkPosition();
         //variables for list
         var _t = this, _0 = this.x, _1 = this.y, _2 = (this.y + this.HEIGHT), _3 = (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + this.value.length*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)));
         
@@ -151,12 +152,14 @@ $(document).ready(function () {
             _t.myFrame.remove();
             _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
             _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+            _t.me.push(_t.myFrame);
         },(this.VH.delay - this.VH.date.getTime()));
     };
 
 
     //Moves the visual primitve to the specific positon
     List.prototype.move = function(newX, newY) {
+        this.checkPosition();
         var difX, difY;
         difX = newX - this.x;
         difY = newY - this.y;
@@ -194,12 +197,12 @@ $(document).ready(function () {
 
     //Adds a new dataunit at the specified index
     List.prototype.AddAtPosition = function(index, value) {
+        this.checkPosition();
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
         newDU.updateIndex(index);
-
         //Scooch down all the other data units
         var delay = this.VH.setDelay(500);
         for (var i = index; i < this.vis.length; i++){
@@ -211,8 +214,22 @@ $(document).ready(function () {
         newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.vis.splice(index, 0, newDU);
-    }
 
+        // weird stuff happens
+        this.me = this.paper.set();
+        this.me.push(this.myFrame, this.myLabel, newDU.vis[0],newDU.vis[1]);
+        this.me.draggable();
+
+    }
+    List.prototype.checkPosition = function() {
+        var curX = this.myFrame.getBBox().x;
+        var curY = this.myFrame.getBBox().y;
+        if (curX !== this.x || curY !== this.y) {
+            this.x = curX;
+            this.y = curY;
+        }
+        
+    }
     //Gets a new dataunit at the specified index
     List.prototype.GetFromPosition = function(index) {
         //Create the new data unit

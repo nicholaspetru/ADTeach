@@ -18,6 +18,7 @@ $(document).ready(function () {
           // array of value, box/circle container, associated arrows, etc.
           // IMPORTANT: first item is the value, second is the container (box/circle)
           this.vis = [];
+          this.me= null // for when we want to drag just this dataunit (graphs)
 
           //assign the position
           this.x = x;
@@ -35,6 +36,7 @@ $(document).ready(function () {
           for (var i =0; i < this.vis.length; i++){
           	this.vis[i].animate(anim.delay(delay));
           }
+
       };
 
       //Moves the dataunit to the given position at the specified time
@@ -116,11 +118,18 @@ $(document).ready(function () {
      		if (this.shape == 1) {
      			this.vis[1] = this.paper.circle(this.x+this.width/2, this.y+this.width/2, this.width/2);
           this.vis[1].attr({"opacity": 0, "stroke-width": 1.5, "stroke": "#4b4b4b"});
+          // TODO in edges
+          /*
+          this.me = this.paper.set();
+          this.me.push(this.vis[0],this.vis[1]);
+          this.me.draggable();
+          */
      		}
 
         //add an index
         this.vis[2] = this.paper.text(this.x+this.width/2, this.y - 6, this.index);
         this.vis[2].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size - 3, 'text-anchor': 'center'});
+
      };
 
      //Highlight
