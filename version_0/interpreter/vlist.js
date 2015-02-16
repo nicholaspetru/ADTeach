@@ -19,6 +19,12 @@ $(document).ready(function () {
         var oneParam = ['get', 'contains', 'indexOf', 'remove', 'populate'];
         var twoParam = ['set'];
         console.log("Checking parameters of: ", method, "with parameters: ", parameters);
+        if (method == 'add'){
+            if (parameters.length > 2){
+                return false;
+                console.log("Need 2 params or one sometimes...");
+            }
+        }
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 return false;
@@ -41,12 +47,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        if (method == 'add'){
-            if (parameters.length > 2){
-                return false;
-                console.log("Need 2 params or one sometimes...");
-            }
-        }                
+                        
         return true;
     }
     
@@ -84,7 +85,7 @@ $(document).ready(function () {
                 origValue.push(parameters[0].value);
                 return [returnValue, origValue];
             }
-            else{
+            else {
                 if (parameters[0].value > origValue.length-1) {
                     env.throwError(root.linenum);
                     console.log("Index out of bounds");
