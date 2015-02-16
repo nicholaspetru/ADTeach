@@ -114,7 +114,7 @@ $(document).ready(function () {
           this.vis[1].attr({"opacity": 0, "stroke-width": 1.5, "stroke": "#4b4b4b"});
      		} 
      		if (this.shape == 1) {
-     			this.vis[1] = this.paper.circle(this.x+this.dimension/2, this.y+this.dimension/2, this.dimension/2);
+     			this.vis[1] = this.paper.circle(this.x+this.width/2, this.y+this.width/2, this.width/2);
           this.vis[1].attr({"opacity": 0, "stroke-width": 1.5, "stroke": "#4b4b4b"});
      		}
 
