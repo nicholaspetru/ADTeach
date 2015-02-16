@@ -297,12 +297,13 @@ $(document).ready(function () {
                     env.throwError(root.linenum);
                     root.error();
                 }
-            }
+            }/*
             else if (typeof val != type){
+                console.log(val, typeof val, type);
                 env.throwError(root.linenum);
                 console.log("INCOMPATIBLE TYPES!!");   
                 root.error("INcompatible types");
-            }
+            }*/
             console.log("root is: ", root);
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
@@ -392,9 +393,12 @@ $(document).ready(function () {
         }
     }
     Interpreter.prototype.checkType = function(value) {
+        console.log("**************** Type of value is:", typeof value);
         switch (typeof value) {
             case typeof 1:
-                return "int";
+                console.log(value);
+                if (value === +value && value === (value|0)) return"int";
+                else return "float";
             case typeof 1.0:
                 return "float";
             case typeof "1":
