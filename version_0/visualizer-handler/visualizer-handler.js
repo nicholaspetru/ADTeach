@@ -407,7 +407,7 @@ $(document).ready(function () {
     VisualizerHandler.prototype.setDelay = function(t) {
         this.getDelay();
         this.delay += t;
-        return (50 + this.delay - this.date.getTime());
+        return (100 + this.delay - this.date.getTime());
     }
 
 

@@ -19,10 +19,7 @@ $(document).ready(function () {
         this.DUNIT_HEIGHT = 45*.85;
         this.DUNIT_WIDTH = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
-
-        //width and height refer to max width and height-- how much room this object takes up on the screen
-        this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.cur_length));
-        this.HEIGHT = 45;
+        this.setDimensions();
 
         //visual component
         this.myLabel = null;
@@ -50,6 +47,19 @@ $(document).ready(function () {
         }
     }
 
+    //Sets the appropriate width and height for the Queue
+    Queue.prototype.setDimensions = function() {
+        //width and height refer to max width and height-- how much room this object takes up on the screen
+        var min;
+        if (this.value.length < 11)
+            min = 10;
+        else
+            min = this.value.length;
+
+        this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(min));
+        this.HEIGHT = 45;
+    }
+
     //Update the List
     Queue.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
@@ -62,9 +72,7 @@ $(document).ready(function () {
                 if (originADT != null){
                     this.VH.getAnonymousVariable(originADT, this);
                 }
-                if (this.value.length >= 10){
-                    this.stretch();
-                }
+                this.stretch();
                 this.Add();
                 break;
             case "populate":
@@ -72,9 +80,7 @@ $(document).ready(function () {
                 for (var i = 0; i < this.vis.length; i++){
                     this.vis[i].remove();
                 }                
-                if (this.value.length > 10){
-                    this.stretch();
-                }
+                this.stretch();
                 //create new data units to match the new dataset
                 for (var i = 0; i < this.value.length; i++){
                     var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
@@ -85,9 +91,7 @@ $(document).ready(function () {
                 break;
             case "remove":
                 this.Remove();                
-                if (this.value.length >= 10){
-                    this.stretch();
-                }
+                this.stretch();
                 break;
             case "clear":
                 //erase old data
@@ -130,14 +134,15 @@ $(document).ready(function () {
     //Stretches the frame to accomadate the new length of the list
     Queue.prototype.stretch = function() {
         //variables for list
-        var _t = this, _0 = this.x, _1 = this.y, _2 = (this.y + this.HEIGHT), _3 = (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + this.value.length*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)));
+        this.setDimensions();
+        var _t = this, _0 = this.x + this.WIDTH, _1 = this.y, _2 = this.x, _3 = this.y + this.HEIGHT;
         
         //in the timeout, create and assign the actual path
         this.VH.setDelay(500);
 
         setTimeout(function(){
             _t.myFrame.remove();
-            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
+            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
             _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
         },(this.VH.delay - this.VH.date.getTime()));
     };
@@ -189,6 +194,7 @@ $(document).ready(function () {
 
         //Insert the new data unit in it's proper location
         newDU.move(this.DUNIT_WIDTH*1.2*(this.value.length - 1),0,this.VH.setDelay(500),500);
+        this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.vis.splice(this.value.length, 0, newDU);
     }
