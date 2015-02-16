@@ -25,6 +25,9 @@ $(document).ready(function () {
         this.HEIGHT = 45;
 
         //visual component
+        // this.me is a Raphael set containing the name, frame, and data units of the list. 
+        // any animation on this.me will affect the entire list, which'll be useful for dragging ADTs
+        this.me = null; 
         this.myLabel = null;
         this.myFrame = null;
         this.vis = [];
@@ -36,6 +39,7 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     List.prototype.buildVisual = function(){
+        this.me = this.paper.set();
         this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
@@ -48,6 +52,9 @@ $(document).ready(function () {
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
+        this.me.push(this.myLabel);
+        this.me.push(this.myFrame);
+        this.me.push(this.vis);
     }
 
     //Update the List
@@ -122,11 +129,14 @@ $(document).ready(function () {
 
         //Fade in the label and frame
         var anim = Raphael.animation({opacity:1},500);
+        this.me.animate(anim.delay(delay));
+        /*
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
         for (var i = 0; i < this.vis.length; i++){
             this.vis[i].create();
         }
+        */
     };
 
     //Stretches the frame to accomadate the new length of the list
