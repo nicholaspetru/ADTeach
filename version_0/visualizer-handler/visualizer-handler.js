@@ -261,8 +261,9 @@ $(document).ready(function () {
             case "List":
                 return new List(this.paper,name,type,value, this);
             case "Queue":
-                console.log("made a queue");
                 return new Queue(this.paper,name,type,value, this);
+            case "Stack":
+                return new Stack(this.paper,name,type,value, this);
             //and more cases....
             default:
                 console.log("Unknown type for newEntity: " + type);
@@ -409,8 +410,4 @@ $(document).ready(function () {
         this.delay += t;
         return (100 + this.delay - this.date.getTime());
     }
-
-
-
-
 });

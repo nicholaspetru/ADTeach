@@ -65,9 +65,6 @@ $(document).ready(function () {
     //Modifiy visual primitives
     Primitive.prototype.update = function() {
         // shake it off
-        //var anim = Raphael.animation({x:-4},12);
-       // this.vis.animate(anim.delay(this.VH.setDelay(12)));
-
         for (var i = 0; i < 21; i++){
             var anim = Raphael.animation({x:8*(-1^i)},25);
             this.vis.animate(anim.delay(this.VH.setDelay(25)));

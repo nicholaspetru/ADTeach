@@ -1,5 +1,5 @@
-//stack.js
-//Represents a stack
+//queue.js
+//Represents a queue
 
 $(document).ready(function () {
     
@@ -8,22 +8,26 @@ $(document).ready(function () {
         this.VH = vishandler;
         this.name = name;
         this.type = type;
-        //HARDCODED VALUE OF STACK RIGHT HERE FOR TESTING
-        this.value = [2,3, 5,"brady"];
+        this.value = value;
 
         //assign the position
         this.x = 0;
         this.y = 0;
-        this.FONT_SIZE = 11;
-        this.WIDTH = 95;
-        this.HEIGHT = 280;
-        this.DUNIT_WIDTH = this.WIDTH*.85;
-        this.DUNIT_HEIGHT = this.DUNIT_WIDTH*.3;
-        this.vis = [];
+        this.cur_length = 10;
+        this.MAX_LENGTH = 10;
+        this.FONT_SIZE = 18;
+        this.DUNIT_WIDTH = 65*.85;
+        this.DUNIT_HEIGHT = (45*.85)*.5;
+        this.DUNIT_BUFFER = .2;
+        this.setDimensions();
 
         //visual component
         this.myLabel = null;
         this.myFrame = null;
+        this.vis = [];
+
+        //anonymous DU
+        this.anon = null;
     }
 
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
@@ -32,19 +36,84 @@ $(document).ready(function () {
         this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
-        this.myFrame = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH) + " V " + this.y);
+        //new: scale the frame's length to the length of the list
+        this.myFrame = this.paper.path("M " + (this.x) + ", " + this.y + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH) + " V " + (this.y));
         this.myFrame.attr({"opacity": 0,"stroke": "black", "stroke-width": 2.25});
 
         //here's the visual component's representation of the content of the stack. the "data units"
-        //that we'd talked about, nick
-        for (var i = this.value.length - 1; i >= 0; i--){
+        for (var i = 0; i < this.value.length; i++){
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
-                                        this.y + this.HEIGHT - (this.DUNIT_HEIGHT*1.2)*(i + 1), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
-            //paper,type,value,vishandler,x,y, width, height, shape
+                                       this.y + this.HEIGHT  - this.DUNIT_HEIGHT - (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
     }
 
-   //Create visual primitve in the specific position
+    //Sets the appropriate width and height for the Queue
+    Stack.prototype.setDimensions = function() {
+        //width and height refer to max width and height-- how much room this object takes up on the screen
+        var min;
+        if (this.value.length < 11)
+            min = 10;
+        else
+            min = this.value.length;
+
+        this.HEIGHT = (this.DUNIT_HEIGHT*this.DUNIT_BUFFER*2) + (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER)*(min));
+        this.WIDTH = 65;
+    }
+
+    //Update the List
+    Stack.prototype.update = function(action, originADT) {
+        //strip the string and get the params from the "Action" str
+        var split = action.split(".");
+
+        //animate the change
+        switch(split[0]){
+            case "push":
+                //check if there's an anonymous variable
+                if (originADT != null){
+                    this.VH.getAnonymousVariable(originADT, this);
+                }
+                this.stretch();
+                this.Add();
+                break;
+            case "populate":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].remove();
+                }                
+                this.stretch();
+                //create new data units to match the new dataset
+                for (var i = 0; i < this.value.length; i++){
+                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
+                                       this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+                    this.vis.push(newDU);
+                    newDU.create();
+                }
+                break;
+            case "pop":
+                this.Remove();                
+                this.stretch();
+                break;
+            case "clear":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].destroy();
+                }
+                this.vis = [];
+                this.stretch();
+                break;
+            case "peek":
+                var index = parseInt(split[1]);
+                this.GetFromPosition(index);
+                break;
+        }
+    };
+
+
+    /*
+    ANIMATIONS
+    */
+
+    //Create visual primitve in the specific position
     Stack.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
@@ -57,10 +126,27 @@ $(document).ready(function () {
         var anim = Raphael.animation({opacity:1},500);
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
-        for (var i = this.vis.length-1; i >= 0; i--){
+        for (var i = 0; i < this.vis.length; i++){
             this.vis[i].create();
         }
     };
+
+    //Stretches the frame to accomadate the new length of the list
+    Stack.prototype.stretch = function() {
+        //variables for list
+        this.setDimensions();
+        var _t = this, _0 = this.x, _1 = this.y, _2 = this.y + this.HEIGHT, _3 = this.x+ this.WIDTH;
+        
+        //in the timeout, create and assign the actual path
+        this.VH.setDelay(500);
+
+        setTimeout(function(){
+            _t.myFrame.remove();
+            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
+            _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+        },(this.VH.delay - this.VH.date.getTime()));
+    };
+
 
     //Moves the visual primitve to the specific positon
     Stack.prototype.move = function(newX, newY) {
@@ -70,112 +156,91 @@ $(document).ready(function () {
         this.x = newX;
         this.y = newY;
 
-        //Move the labels
         var delay = this.VH.setDelay(500);
-        var anim = Raphael.animation({"transform": "t" + difX + "," + difY},500);
-        this.myLabel.animate(anim.delay(delay));  
-        this.myFrame.animate(anim.delay(delay));
-          
-        //move the dataunits
-        for (var i =0; i < this.vis.length; i++){
-            this.vis[i].move(newX,newY,delay)
-        }
+        //Set timeout and move the data structure at the proper delay
+        var _t = this;
+        setTimeout(function(){
+            _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
+            _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},500);
+
+            //move the dataunits
+            for (var i =0; i < _t.vis.length; i++){
+                _t.vis[i].move(difX,difY,0,500);
+            }
+        },(this.VH.delay - this.VH.date.getTime()));
+
     };
 
     //Remove visual primitives
     Stack.prototype.destroy = function() {
+        //get the delay for outside the loop
+        var delay = this.VH.setDelay(1000);
+
+        //Fade out the label and frame
         var anim = Raphael.animation({opacity:0},1000);
-        this.vis.animate(anim.delay(this.VH.setDelay(1000)));
-    };
-    
-    //Remove visual primitives
-    Stack.prototype.update = function() {
-        //I hhave disabled this for the time being so it wont cause crashes
-        /*
-        //animate changing the value
-        var anim = Raphael.animation({x:-4},12);
-        this.vis.animate(anim.delay(this.VH.setDelay(12)));
-
-        for (var i = 0; i < 21; i++){
-            var anim = Raphael.animation({x:8*(-1^i)},25);
-            this.vis.animate(anim.delay(this.VH.setDelay(25)));
+        this.myLabel.animate(anim.delay(delay));
+        this.myFrame.animate(anim.delay(delay));
+        for (var i = this.vis.length-1; i >= 0; i--){
+            this.vis[i].fadeOut(delay);
         }
-        var _t = this, _val = this.value;
-        setTimeout(function(){
-            _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _val)});
-        },(this.VH.delay - this.VH.date.getTime()));
-
-        var anim = Raphael.animation({x:0},12);
-        this.vis.animate(anim.delay(this.VH.setDelay(12)));
-
-        this.VH.setDelay(50);*/
     };
+
+    //Adds a new dataunit 
+    Stack.prototype.Add = function(value) {
+        //Create the new data unit
+        var newDU = new DataUnit(this.paper,this.type,this.value[this.value.length-1], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
+                                       this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+        newDU.create();
+
+        //Insert the new data unit in it's proper location
+        newDU.move(0, this.HEIGHT - (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.value.length - 1),this.VH.setDelay(500),500);
+        this.vis.splice(this.value.length, 0, newDU);
+    }
+
 
     //TODO
-    Stack.prototype.copyTo = function() {
+    //Gets a new dataunit at the specified index
+    Stack.prototype.GetFromPosition = function(index) {
+        //Create the new data unit
+        var xx = this.x + (this.DUNIT_WIDTH*.2) + this.DUNIT_WIDTH*1.2*index,
+            yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
 
+        var newDU = new DataUnit(this.paper,this.type, this.value[index], this.VH,  xx,
+                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+        newDU.create();
+
+        //Move the new data unit to it's proper location and set as the anonymous variable
+        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
+        this.anon = newDU;
+    }
+
+    //Removes a  dataunit at the specified index
+    Stack.prototype.Remove = function() {
+        //move the top item to the stack and fade it out
+        this.vis[this.vis.length - 1].move(0,-(this.HEIGHT - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.value.length)), this.VH.setDelay(500),500);
+        this.VH.setDelay(400);
+        this.vis[this.vis.length - 1].fadeOut(this.VH.setDelay(250));
+
+        //Create the new data at the top of the stack
+        var xx = this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
+            yy = this.y - this.DUNIT_HEIGHT;
+
+        var newDU = new DataUnit(this.paper,this.type, this.vis[this.vis.length - 1].value, this.VH,  xx,
+                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+        newDU.create();
+        this.vis.splice(this.vis.length - 1, 1);
+        this.anon = newDU;
+    }
+
+    //Changes the value of the data unit at the given index
+    Stack.prototype.ChangeAtPosition = function(index) {
+        this.vis[index].update(this.value[index],0);
+    }
+
+    //Changes the value of the data unit at the given index
+    Stack.prototype.HighLightAtPosition = function(index) {
+        this.vis[index].highLight();
+        this.VH.setDelay(200);
+        this.vis[index].lowLight();
     }
 });
-
-
-//stack.js
-//A test implementation of a stack.
-
-/*
-Put this code in  Redner() in visualizer-handler.js to test this code
-
-var xstack = new Stack(paper, "test stack", "Integer", ["test", "a", "is", "this"]);
-        xstack.Draw(300, 200);
-        xstack.Populate();
-
-
-$(document).ready(function () {
-    
-    // eventually we will want to pass in x, y, width, and height into Stack instatiations
-    // currently the Draw function (in primitives) takes x and y
-    Stack = function(paper,name,type,value) {// x, y, width, height){
-        //assigning the stack attributes
-        this.paper = paper;
-        this.name = name;
-        this.type = "stack<" + type + ">"; 
-        this.value = value;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-    
-    Stack.prototype = Object.create(Entity.prototype);
-    Stack.prototype.constructor = Stack;
-
-    //draw a Stack of the function
-    Stack.prototype.Draw = function(){
-        var box = this.paper.path("M " + this.x + ", " + this.y + " V " + (this.y + this.height) + " H " + (this.x + this.width) + " V " + this.y);
-        var name = this.paper.text(this.x + this.width/2, this.y + this.height + 10, this.name)
-        console.log(this.DrawName() + " = " + this.value);
-    }
-
-    // Loop through values and put them into the stack
-    Stack.prototype.Populate = function(){
-        var tempY, t = 500;
-        for (var i = 0; i < this.value.length; i++) {
-            if (i == 0) 
-                tempY = (this.y + this.height) - (i+1)*(this.width/2 + 4);
-            else 
-                tempY = tempY - (this.width);
-
-            var item = this.paper.rect(0, 0, this.width - 4, this.width - 4);
-            //var val = this.paper.text(this.x + this.width/2, tempY, this.value[i]);
-            var val = this.paper.text(this.x + this.width/2, tempY, this.value[i]);
-
-            var anim = Raphael.animation({x:this.x + 2 ,y:(this.y + this.height) - (i+1)*(this.width)}, 500);
-            item.animate(anim.delay(t));
-            val.animateWith(anim, {x:this.x + this.width/2, y:tempY});
-            t += 500;
-        }
-    }
-
-});*/
-
-
-
