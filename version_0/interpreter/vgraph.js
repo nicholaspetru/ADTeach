@@ -13,12 +13,12 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addVertex', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree', 'hasEdge'];
+        var methods = ['addVertex', 'getNeighbors', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree', 'hasEdge'];
         return methods;
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
+        var noParam = ['getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
             console.log("LOOKing at method: ", method);
             console.log("Parameters are: ", parameters);
@@ -28,7 +28,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['removeNode', 'getDegree', 'getNeighbors', 'setDirected', 'getInDegree', 'getOutDegree'];
+        var oneParam = ['getNeighbors', 'setDirected', 'getInDegree', 'getOutDegree'];
         if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
@@ -99,7 +99,6 @@ $(document).ready(function () {
 
                 var node1Edges = origValue[node1];
                 var node2Edges = origValue[node2];
-                console.log(node1Edges, "&&&&&&");
                 if (node1Edges.indexOf(node2) >= 0){
                     env.throwError(root.linenum);
                     console.log("Error! Edge in graph already");
@@ -220,9 +219,19 @@ $(document).ready(function () {
             }
         }
         
+        
+        
         if (method == "addVertex") {
             origValue.push([]);
             returnValue = origValue.length;
+            return [returnValue, [origValue, isDirected]];
+        }
+        
+        if (method == "getNodes") {
+            returnValue = [];
+            for (var i = 0; i < origValue.length; i++) {
+                returnValue.push(i);
+            }
             return [returnValue, [origValue, isDirected]];
         }
         
