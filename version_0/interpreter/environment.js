@@ -56,19 +56,23 @@ $(document).ready(function () {
 		this.symbolTable.newVariable(type, variable, value, originMethod, originADT, lineNum-1);
 	}
 
-	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT, lineNum) {
+	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT, lineNum, adtType) {
 		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
         console.log("Line number: ", lineNum);
         console.log("Value is: ", newVal);
 		console.log("Origin method is: ", originMethod);
+        console.log("Origin method type is: ", adtType); 
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
-         
-        //CHECK TYPE
-        if (type != "int") {
-            console.log("Incompatible types");
-            //new IncompatibleTypes();
+        if (adtType == "Stack<Float>" || adtType == "List<Float>" || adtType == "Queue<Float>" || adtType == "PriorityQueue<Float>") {
+            var slicedValue = [];
+            for (var i = 0; i < newVal.length; i++) {
+                slicedValue.push(newVal[i][0]);
+            }
+            newVal = slicedValue;
+        
         }
+        
 		this.variables[index].value = newVal;
         this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT, lineNum-1);
 	}

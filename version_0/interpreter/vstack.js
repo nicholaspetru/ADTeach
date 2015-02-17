@@ -69,6 +69,7 @@ $(document).ready(function () {
                 var valType = "int";
             } else if (type == "Stack<Float>") {
                 var valType = "float";
+                returnValue = returnValue[0];
             }
             return [returnValue, origValue, valType];
         } 
@@ -120,8 +121,10 @@ $(document).ready(function () {
                     root.error("Incompatible types");
                 }
             } 
-            //TODO: Check types
-            origValue.push(parameters[0].value);
+            
+            console.log("PUSHING: ", parameters[0]);
+                origValue.push(parameters[0].value);
+            
             return [returnValue, origValue];
         } 
         
@@ -164,7 +167,7 @@ $(document).ready(function () {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
                     var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    value.push(toPush);
+                    value.push([toPush, "float"]);
                 }
                 return [returnValue, value];
             }

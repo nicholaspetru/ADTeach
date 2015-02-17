@@ -70,9 +70,12 @@ $(document).ready(function () {
                         root.error();
                     }
                 } else if (type == "List<Float>") {
-                    if (parameters[0].value[1] != "float") {
-                    env.throwError(root.linenum);
-                    root.error();
+                    console.log("Parameters are: ", parameters);
+                    if (parameters[0].value.toString().indexOf('.') < 0) {
+                        if (parameters[0].value[1] != "float") {
+                        env.throwError(root.linenum);
+                        root.error();
+                        }
                     }
                 } else if (type == "List<String>") {
                     if (typeof parameters[0].value != typeof "h") {

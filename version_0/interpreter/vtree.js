@@ -152,7 +152,7 @@ $(document).ready(function () {
                 }
             }
             returnValue = parent;
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         
         if (method == "getChildren") {
@@ -166,7 +166,7 @@ $(document).ready(function () {
                 }
             }
             returnValue = children;
-            return [returnValue, origValue];
+            return [returnValue, origValue, "List<Integer>"];
         }
         
         if (method == "getChild") {
@@ -181,7 +181,7 @@ $(document).ready(function () {
                 }
             }
             returnValue = child;
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         
         if (method == "removeChild") {
@@ -328,26 +328,33 @@ $(document).ready(function () {
             var numChildren = Math.floor((Math.random()*2) + 1)
             console.log("Vertices are: ", values);
             var parValue = parents[0][0];
-            
+            numChildren = 2;
             //Root:
             //one child
-            if (numChildren == 1) {
-                var child1 = children[0][0];
-                parents[0][2].push(children[0][0]);
-                parents[parentVertices.indexOf(child1)][1] = parents[0][0];
-                children.splice(0, 1);
-            } 
-            
-            //root has two child
-            else if (numChildren == 2) {
-                var child1 = children[0][0];
-                var child2 = children[1][0];
-                parents[0][2].push(children[0][0]);
-                parents[0][2].push(children[1][0]);
-                parents[parentVertices.indexOf(child1)][1] = parValue;
-                parents[parentVertices.indexOf(child2)][1] = parValue;
-                children.splice(0, 2);
-            
+            if (children.length != 0) {
+                if (numChildren == 1) {
+                    var child1 = children[0][0];
+                    parents[0][2].push(children[0][0]);
+                    parents[parentVertices.indexOf(child1)][1] = parents[0][0];
+                    children.splice(0, 1);
+                } 
+
+                //root has two child
+                else if (numChildren == 2) {
+                    console.log("Trying to set: ", children);
+                    var child1 = children[0][0];
+                    parents[0][2].push(children[0][0]);
+                    parents[parentVertices.indexOf(child1)][1] = parValue;
+                    if (children.length >= 2) {
+                        var child2 = children[1][0];
+                        parents[0][2].push(children[1][0]);
+                        parents[parentVertices.indexOf(child2)][1] = parents[0][0];
+                    }
+                    children.splice(0, 2);
+
+                }
+            } else {
+                parents[0][2] = [];
             }
             console.log("Children are now: ", children);
             tree.push(parents[0]);
@@ -373,10 +380,10 @@ $(document).ready(function () {
                 } else if (numChildren == 2) {
                     console.log("Parents are: ", parents);
                     var child1 = children[0][0];
-                    var child2 = children[1][0];
                     parents[0][2].push(children[0][0]);
                     parents[parentVertices.indexOf(child1)][1] = parents[0][0];
                     if (children.length >= 2) {
+                        var child2 = children[1][0];
                         parents[0][2].push(children[1][0]);
                         parents[parentVertices.indexOf(child2)][1] = parents[0][0];
                     }
