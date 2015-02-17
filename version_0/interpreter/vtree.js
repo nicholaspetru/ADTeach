@@ -235,9 +235,11 @@ $(document).ready(function () {
             var vertex = parameters[0].value;
             
             var origValueCopy = [];
+            var justVertices = [];
             var seenVertex = false;
             for (var k = 0; k < origValue.length; k++) {
                 origValueCopy.push(origValue[k]);
+                justVertices.push(origValue[k][0]);
                 if (origValue[k][0] == vertex) {
                     seenVertex = true;
                 }
@@ -247,7 +249,6 @@ $(document).ready(function () {
                 env.throwError(root.linenum);
                 console.log("Vertex not in graph");
                 root.error("Node not in graph");
-                //Throw error
             }
             
             if (typeof vertex != typeof 1 || vertex.toString().indexOf('.') >= 0) {
@@ -256,16 +257,32 @@ $(document).ready(function () {
             }
             
             var newList = [];
-            for (var i = 0; i < origValueCopy.length; i++) {
-                var currentTreeNode = origValueCopy[i];
+            
+            for (var j = 0; j < origValueCopy.length; j++) {
+                var currentTreeNode = origValue[j];
                 var currValue = currentTreeNode[0];
-                console.log("Loooooking at: ", currValue);
-                console.log("Currrrrent value is: ", currentTreeNode[2]);
-                console.log(currValue != vertex);
-                console.log(currentTreeNode[2].indexOf(vertex) > 0);
-                if (currValue != vertex && currentTreeNode[2].indexOf(vertex) < 0) {
-                    console.log("GOOD TO GOOOO: ", currValue);
-                    newList.push(currentTreeNode);
+                if (currValue == vertex) {
+                    var children = origValue[j][2];
+                    var parent = origValue[j][1];
+                    var parentIndex = justVertices.indexOf(parent);
+                    var otherChildren = origValueCopy[parentIndex][2];
+                    otherChildren.splice(otherChildren.indexOf(currValue), 1);
+                    
+                    for (var i = 0; i < origValueCopy.length; i++) {
+                        var currentTreeNode2 = origValueCopy[i];
+                        var currValue2 = currentTreeNode2[0];
+                        
+                        if (currValue2 == parent) {
+                            var newChildren = [];
+                            var parentChildren = 0;
+                        }
+                        
+                        if (currValue2 != currValue && children.indexOf(currValue2) < 0) {
+                            newList.push(currentTreeNode2);
+                        }
+                    }
+                    
+                    
                 }
             }
             origValue = newList;
@@ -274,7 +291,92 @@ $(document).ready(function () {
         }
         
         if (method == "populate") {
-        
+            var tree = [];
+            var vertices = [];
+            var values = [];
+            var parents = [];
+            var children = [];
+            var numVertices = parameters[0].value;
+            var count = 0;
+            
+            //Create vertices
+            while (count < numVertices) {
+                var randomV = Math.floor((Math.random() * 100) + 1);
+                console.log("Random: ", randomV, "Values: ", values);
+                while (values.indexOf(randomV) >= 0) {
+                    randomV = Math.floor((Math.random() * 100) + 1);
+                }
+                var vertex = [randomV, null, []];
+                values.push(randomV);
+                vertices.push(vertex);
+                count += 1;
+            }
+            //Make connections
+            //Choose root:
+            var randomRoot = Math.floor((Math.random()*numVertices-1) + 1);
+            var root = [values[randomRoot], null, []];
+            
+            for (var i = 0; i < vertices.length; i++) {
+                parents.push(vertices[i]);
+                if (i != 0) {
+                    children.push(vertices[i]);
+                }
+            }
+            
+            //Connect root
+            var numChildren = Math.floor((Math.random()*2) + 1)
+            console.log("Vertices are: ", values);
+            if (numChildren == 1) {
+                parents[0][2].push(children[0][0]);
+                parents[1][1] = parents[0][0];
+                children.splice(0, 1);
+            } else if (numChildren == 2) {
+                parents[0][2].push(children[0][0]);
+                parents[0][2].push(children[1][0]);
+                parents[1][1] = parents[0][0];
+                parents[2][1] = parents[0][0];
+                children.splice(0, 2);
+            
+            }
+            console.log("Children are now: ", children);
+            tree.push(parents[0]);
+            console.log("Tree is: ", tree);
+            
+            parents.splice(0, 1);
+            
+            
+            while (children.length != 0) {
+                numChildren = Math.floor((Math.random()*2) + 1);
+                
+                if (numChildren == 1) {
+                    parents[0][2].push(children[0][0]);
+                    parents[1][1] = parents[0][0];
+                    tree.push(parents[0]);
+                    children.splice(0, 1);
+                    parents.splice(0, 1);
+                    continue;
+                    
+                } else if (numChildren == 2) {
+                    console.log("Parents are: ", parents);
+                    parents[0][2].push(children[0][0]);
+                    parents[1][1] = parents[0][0];
+                    if (children.length >= 2) {
+                        parents[0][2].push(children[1][0]);
+                        parents[2][1] = parents[0][0];
+                    }
+                    tree.push(parents[0]);
+                    children.splice(0, 2);
+                    parents.splice(0, 1);
+                }
+            }
+            
+            for (var j = 0; j < parents.length; j++) {
+                tree.push(parents[j]);
+            }
+            console.log("Ending tree is: ", tree);
+            console.log("Leftover parents: ", parents);
+            
+                
         }
         
     }
