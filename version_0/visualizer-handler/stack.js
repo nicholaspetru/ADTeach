@@ -102,8 +102,7 @@ $(document).ready(function () {
                 this.stretch();
                 break;
             case "peek":
-                var index = parseInt(split[1]);
-                this.GetFromPosition(index);
+                this.Get();
                 break;
         }
     };
@@ -200,18 +199,16 @@ $(document).ready(function () {
 
     //TODO
     //Gets a new dataunit at the specified index
-    Stack.prototype.GetFromPosition = function(index) {
+    Stack.prototype.Get = function() {
         //Create the new data unit
-        var xx = this.x + (this.DUNIT_WIDTH*.2) + this.DUNIT_WIDTH*1.2*index,
-            yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
-
-        var newDU = new DataUnit(this.paper,this.type, this.value[index], this.VH,  xx,
-                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+        var newDU = new DataUnit(this.paper,this.type, this.value[this.value.length - 1], this.VH, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
+                                       this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.vis.length - 1), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
 
         //Move the new data unit to it's proper location and set as the anonymous variable
-        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
+        newDU.move(0,-(this.HEIGHT - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(-1 + this.value.length)), this.VH.setDelay(500),500);
         this.anon = newDU;
+        this.VH.setDelay(250);
     }
 
     //Removes a  dataunit at the specified index
