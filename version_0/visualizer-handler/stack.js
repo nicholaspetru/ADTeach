@@ -15,7 +15,7 @@ $(document).ready(function () {
         this.y = 0;
         this.cur_length = 10;
         this.MAX_LENGTH = 10;
-        this.FONT_SIZE = 18;
+        this.FONT_SIZE = 15;
         this.DUNIT_WIDTH = 65*.85;
         this.DUNIT_HEIGHT = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
@@ -70,7 +70,7 @@ $(document).ready(function () {
             case "push":
                 //check if there's an anonymous variable
                 if (originADT != null){
-                    this.VH.getAnonymousVariable(originADT, this);
+                    this.VH.getAnonymousVariable(originADT, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2, this.y - this.DUNIT_HEIGHT);
                 }
                 this.stretch();
                 this.Add();

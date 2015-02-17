@@ -82,15 +82,21 @@ $(document).ready(function () {
 
     //make a data unit near your location and return it 
     Primitive.prototype.createAnonymous = function() {
-
+        console.log("ADSADSADASDSADASD")
         //Create the new data unit
         var xx = this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length;
             yy = this.y - this.FONT_SIZE/2;
 
         var newDU = new DataUnit(this.paper,this.type, this.value, this.VH,  xx,
                                         yy, 18, 18, -1);
+        
+        //Oh my god this is the bunkest shit. Here's what's happening: we can't animate this!
+        //Because the delay is AHEAD of what's happening right now, most of the time.
         newDU.font_size = 18;
-        newDU.create();
+        newDU.buildVisual();
+        newDU.vis[0].attr({"opacity": 1});
+        newDU.vis[1].attr({"opacity": 1});
+        newDU.vis[2].attr({"opacity": 1});
 
         return newDU;
     }

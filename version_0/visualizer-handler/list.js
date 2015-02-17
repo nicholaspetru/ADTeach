@@ -67,7 +67,7 @@ $(document).ready(function () {
                 //check if there's an anonymous variable
                 if (originADT != null){
                     console.log(originADT);
-                    this.VH.getAnonymousVariable(originADT, this);
+                    this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 var index = parseInt(split[1]);
                 this.stretch();
@@ -212,6 +212,7 @@ $(document).ready(function () {
 
         //Insert the new data unit in it's proper location
         newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
+        this.VH.setDelay(250);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.vis.splice(index, 0, newDU);
 

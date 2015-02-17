@@ -70,7 +70,7 @@ $(document).ready(function () {
             case "add":
                 //check if there's an anonymous variable
                 if (originADT != null){
-                    this.VH.getAnonymousVariable(originADT, this);
+                    this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 this.stretch();
                 this.Add();

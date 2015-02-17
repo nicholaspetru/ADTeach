@@ -43,9 +43,9 @@ $(document).ready(function () {
         
         // Keep a count of all ADT types to determine positioning
         // There are three categories: vertADT is stacks, hoADT are lists/queues (horizontally oriented), and blobADT is graphs and dicts
-        this.vertADT_count = 0
-        this.hoADT_count = 0;
-        this.blobADT_count = 0;
+        this.vertADT_count = -1;
+        this.hoADT_count = -1;
+        this.blobADT_count = -1;
 
 
         //Testing new primitive system
@@ -144,7 +144,7 @@ $(document).ready(function () {
 
     //Pushes a new Entity onto the list
     VisualizerHandler.prototype.NewEntity = function(name, type, value, action, originADT) {
-        console.log("Visualizer Handler: newEntity(" + name + ',' + type + ',' + value + ',' + action + ',' + originADT + ')');
+        console.log("Visualizer Handler: newEntity("+ name + ',' + type + ',' + value + ',' + action + ',' + originADT + ')');
         
         if (originADT == null){
             this.ClearAnonymous();
@@ -193,8 +193,8 @@ $(document).ready(function () {
 
 
     //Grabs the anonymous variable from the named entity, moves it to the proper location
-    VisualizerHandler.prototype.getAnonymousVariable = function(name, goTo){
-
+    VisualizerHandler.prototype.getAnonymousVariable = function(name, destX, destY){
+        this.getDelay();
         var _t = this;
         setTimeout(function(){
             var anon = null;
@@ -213,10 +213,10 @@ $(document).ready(function () {
             //now move the anon to the new location
             if (anon != null){
                 var difX, difY;
-                difX = goTo.x - anon.x + goTo.DUNIT_WIDTH/2;
-                difY = goTo.y - anon.y - goTo.DUNIT_HEIGHT ;//- goTo.DUNIT_HEIGHT;// - anon.height;
+                difX = destX - anon.x;
+                difY = destY - anon.y;
                 anon.move(difX,difY,0,500);
-                anon.destroy()
+                anon.fadeOut(750);
             }
         },(this.delay - this.date.getTime()));
 
@@ -261,7 +261,6 @@ $(document).ready(function () {
     
     //Returns a new Entity of the given type
     VisualizerHandler.prototype.getNewEntity = function(name, type, value, action, originADT) {
-        
         switch(type.split("<")[0]){
             case "int":
                 return new Primitive(this.paper,name,type,value,this);
@@ -309,6 +308,7 @@ $(document).ready(function () {
     
     //Arranges entities
     VisualizerHandler.prototype.arrangeEntities = function() {
+        console.log("Visualizer Handler: arrangeEntities()")
         this.arrangePrimitives();
         this.arrangeADTs();
         return;
@@ -375,59 +375,60 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangeADTs = function() {
-        var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
-
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
+
+        var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+        //var curX = 0, curY = 0;
 
         for (var i = 0; i < this.entities.length; i++){
             if (!this.isPrimitive(this.entities[i])){
                 if (this.entities[i].x != curX) {
 
+                    console.log("Before " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
+
                     // check ADT type to determine general positioning
                     switch(this.entities[i].type.split("<")[0]){
                         case "List":
                             // top(ish) right
-                            curX = this.VBORDER + (this.entities[i].WIDTH)*this.vertADT_count;
-                            curY = this.ADT_SECTION_Y + (this.HEIGHT + 6)*this.hoADT_count;
-                            if (this.entities[i].action == "new")
+                            //increment the ADT category count
+                            if (this.entities[i].x == 0)
                                 this.hoADT_count += 1;
+                            curX = this.VBORDER + (90)*(this.vertADT_count+1);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 20)*this.hoADT_count;
+                            console.log("curX: " + curX + " and curY: " + curY)
                             break;
                         case "Queue":
                             // same as list
-                            if (this.entities[i].action == "new")
-                                this.hoADT_count += 1;
+                            this.hoADT_count += 1;
                             break;
                         case "PriorityQueue":
                             // same as Queue
-                            if (this.entities[i].action == "new")
-                                this.hoADT_count += 1;
+                            this.hoADT_count += 1;
                             break;
                         case "Stack":
-                            // bottom left
-                            curX = this.VBORDER + (this.entities[i].WIDTH + 6)*this.vertADT_count;
-                            curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
-                            console.log("action: " + this.entities[i])
-                            //if (this.entities[i].event == "new")
+                            // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
+                            //increment the ADT category count
+                            if (this.entities[i].x == 0)
                                 this.vertADT_count += 1;
+                            curX = this.VBORDER + (this.entities[i].WIDTH+20)*this.vertADT_count;
+                            curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
+                        
                             break;
                         case "Graph":
                             // bottom right
-                            if (this.entities[i].action == "new")
-                                this.blobADT_count += 1;
+                            this.blobADT_count += 1;
                             break;
                         case "Dict":
                             // same as Graph
-                            if (this.entities[i].action == "new")
-                                this.blobADT_count += 1;
+                            this.blobADT_count += 1;
                             break;
                         default:
                             console.log("Unknown type for newEntity: " + this.entities[i].type);
                             return; 
                     }
 
-                    console.log("Create/Move ADT to " + curX + " and " + curY)
                     console.log(this.vertADT_count)
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
@@ -435,6 +436,8 @@ $(document).ready(function () {
                     }else{
                         this.entities[i].move(curX, curY);
                     }
+                    console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
+
                 }
                 //curX +=  this.entities[i].WIDTH*1.2;
             }
