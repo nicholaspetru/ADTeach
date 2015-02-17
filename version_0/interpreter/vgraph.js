@@ -13,13 +13,15 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree'];
+        var methods = ['removeNode', 'addVertex', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree', 'hasEdge'];
         return methods;
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
         var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
+            console.log("LOOKing at method: ", method);
+            console.log("Parameters are: ", parameters);
             if (parameters.length != 0) {
                 console.log("no parameters");
                 return false;
@@ -27,7 +29,7 @@ $(document).ready(function () {
             }
         }
         var oneParam = ['removeNode', 'getDegree', 'getNeighbors', 'setDirected', 'getInDegree', 'getOutDegree'];
-        if (noParam.indexOf(method) >= 0) {
+        if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
                 return false;
@@ -35,7 +37,7 @@ $(document).ready(function () {
             }
         }
         var twoParam = ['addEdge', 'removeEdge', 'populate', 'hasEdge'];
-        if (noParam.indexOf(method) >= 0) {
+        if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("two parameters");
                 return false;
@@ -97,7 +99,7 @@ $(document).ready(function () {
 
                 var node1Edges = origValue[node1];
                 var node2Edges = origValue[node2];
-
+                console.log(node1Edges, "&&&&&&");
                 if (node1Edges.indexOf(node2) >= 0){
                     env.throwError(root.linenum);
                     console.log("Error! Edge in graph already");
@@ -220,13 +222,17 @@ $(document).ready(function () {
         
         if (method == "addVertex") {
             origValue.push([]);
+            returnValue = origValue.length;
             return [returnValue, [origValue, isDirected]];
         }
         
         if (method == "hasEdge") {
-            if (typeof parameters[0].value != number || typeof parameters[1].value != number) {
+            if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
                 env.throwError(root.linenum);
                 root.error("Need ints");
+            } else if (parameters[0].value.toString().indexOf('.') >= 0 || parameters[1].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum);
+                root.error();
             }
             if (isDirected != true) {
                 var node1 = parameters[0].value;
@@ -258,7 +264,8 @@ $(document).ready(function () {
         
         if (method == "getNeighbors") {
             var node = parameters[0].value;
-            if (origValue.indexOf(node) < 0) {
+            console.log("Here: ", origValue);
+            if (origValue.length < node) {
                 env.throwError(root.linenum);
                 console.log("Node not in graph");
                 root.error("Not in graph");

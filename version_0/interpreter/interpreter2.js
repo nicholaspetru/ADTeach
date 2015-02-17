@@ -636,12 +636,16 @@ $(document).ready(function () {
                 case("getNeighbors"):
                 case("getParent"):
                 case("getChildren"):
+                case('getInDegree'):
+                case('getOutDegree'):
                     console.log("Going to add: ", cloneParam);
                     method = method + "." + cloneParam[0].value;
                     console.log("method is: ", method);
                     break;
                 case("add"):
-                    if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>") {
+                case("addVertex"):
+                    if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>"
+                       || adtType == "Graph") {
                         method = method + "." + returnValue;
                         break;
                     }
@@ -658,6 +662,10 @@ $(document).ready(function () {
                     } else {
                         method = method + "." + cloneParam[0].value;
                     }
+                case("addEdge"):
+                case("removeEdge"):
+                case("hasEdge"):
+                    method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
             }
             
             env.updateVariable(adt, newValue, method, originADT, root.linenum);
