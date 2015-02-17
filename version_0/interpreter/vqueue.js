@@ -91,7 +91,22 @@ $(document).ready(function () {
         if (method == "peek") {
             var length = origValue.length;
             returnValue = origValue[length-1];
-            return [returnValue, origValue];
+            var valType;
+            switch (type) {
+                case "Queue<Integer>":
+                    valType = "int";
+                    break;
+                case "Queue<String>":
+                    valType = "String";
+                    break;
+                case "Queue<Float>":
+                    valType = "float";
+                    break;
+            }
+            if (type == "Queue<Integer>") {
+                valType = "int";
+            }
+            return [returnValue, origValue, valType];
         }
         if (method == 'remove') {
             returnValue = origValue.pop();
@@ -100,11 +115,11 @@ $(document).ready(function () {
         }
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         if (method == 'size') {
             returnValue = origValue.length;
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         if (method == "populate") {
             var value = [];
@@ -123,7 +138,7 @@ $(document).ready(function () {
             }
             if (type == "Queue<Float>") {
                 for (var i = 0; i < parameters[0].value; i++) {
-                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     value.push(toPush);
                 }
             }

@@ -99,7 +99,7 @@ $(document).ready(function () {
             case "Dictionary<Integer, Boolean>":
             case "Dictionary<String, Boolean>":
             case "Dictionary<Float, Boolean>":
-                valueType = "bool";
+                valueType = "boolean";
                 break;
             case "Dictionary<Integer, Float>":
             case "Dictionary<String, Float>":
@@ -125,32 +125,53 @@ $(document).ready(function () {
                 //Throw Error
             }
             returnValue = origValue[parameters[0].value];
-            return [returnValue, origValue];
+            return [returnValue, origValue, valueType];
         }
         
         if (method == 'elements') {
+            var valType;
+            switch (valueType) {
+                case "int":
+                    valType = "List<Integer>";
+                    break;
+                case "String":
+                    valType = "List<String>";
+                    break;
+                case "float":
+                    valType = "List<Float>";
+                    break;
+            }
             returnValue = [];
-            console.log("Original value is: ", origValue);
-            
             for (var i in origValue) {
                 returnValue.push(origValue[i]);
             }
-            console.log("IN ELEMENTS");
-            return [returnValue, origValue];
+            return [returnValue, origValue, valType];
         }
         
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);
-            return [returnValue, origValue];
+            return [returnValue, origValue, "boolean"];
         }
         
         if (method == 'keys') {
+            var valType;
+            switch (keyType) {
+                case "int":
+                    valType = "List<Integer>";
+                    break;
+                case "String":
+                    valType = "List<String>";
+                    break;
+                case "float":
+                    valType = "List<Float>";
+                    break;
+            }
             var keys = [];
             for (i in origValue) {
                 keys.push(i);
             }
             returnValue = keys;
-            return [returnValue, origValue];
+            return [returnValue, origValue, valType];
         }
         
         if (method == 'size') {
@@ -159,7 +180,7 @@ $(document).ready(function () {
                 count += 1;
             }
             returnValue = count;
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
             
         }
         
@@ -220,7 +241,7 @@ $(document).ready(function () {
                     dict[alph[toPush]] = 0;
                 }
                 else if (keyType == "float") {
-                    toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     dict[toPush] = 0;
                 }
             }
@@ -234,7 +255,7 @@ $(document).ready(function () {
                     dict[j] = alph[toPush];
                 }
                 if (valueType == "float") {
-                    toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     dict[j] = toPush;
                 }
                 if (valueType == "bool") {

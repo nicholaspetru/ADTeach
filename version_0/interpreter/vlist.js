@@ -60,6 +60,7 @@ $(document).ready(function () {
         if (method == 'add') {
             
             if (parameters.length == 1){
+                console.log("Parameters are: ", parameters);
                 if (type == "List<Integer>") {
                     if (typeof parameters[0].value != typeof 2) {
                         env.throwError(root.linenum);
@@ -69,12 +70,9 @@ $(document).ready(function () {
                         root.error();
                     }
                 } else if (type == "List<Float>") {
-                    if (typeof parameters[0].value != typeof 2) {
-                        env.throwError(root.linenum);
-                        root.error();
-                    } else if (parameters[0].value.toString().indexOf('.') < 0) {
-                        env.throwError(root.linenum);
-                        root.error();
+                    if (parameters[0].value[1] != "float") {
+                    env.throwError(root.linenum);
+                    root.error();
                     }
                 } else if (type == "List<String>") {
                     if (typeof parameters[0].value != typeof "h") {
@@ -82,7 +80,11 @@ $(document).ready(function () {
                         root.error();
                     }
                 }
-                origValue.push(parameters[0].value);
+                if (type == "List<Float>") {
+                    origValue.push(parameters[0].value[0]);
+                } else {
+                    origValue.push(parameters[0].value);
+                }
                 return [returnValue, origValue];
             }
             else {
@@ -102,10 +104,7 @@ $(document).ready(function () {
                         root.error();
                     }
                 } else if (type == "List<Float>") {
-                    if (typeof parameters[1].value != typeof 2) {
-                        env.throwError(root.linenum);
-                        root.error();
-                    } else if (parameters[1].value.toString().indexOf('.') < 0) {
+                    if (parameters[0].value[1] != "float") {
                         env.throwError(root.linenum);
                         root.error();
                     }
@@ -124,22 +123,33 @@ $(document).ready(function () {
             }
         }
         if (method == 'get') {
-            console.log("GETTING: ", parameters[0].value);
+            var valType;
+            switch (type) {
+                case "List<Integer>":
+                    valType = "int";
+                    break;
+                case "List<Float>":
+                    valType = "float";
+                    break;
+                case "List<String>":
+                    valType = "String";
+                    break;
+            }
             if (parameters[0].value > origValue.length || parameters[0].value < 0) {
                 env.throwError(root.linenum);
                 console.log("Index out of bounds");
                 root.error("index out of bounds");
             }
             returnValue = origValue[parameters[0].value];
-            return [returnValue, origValue];
+            return [returnValue, origValue, valType];
         }
         if (method == 'contains') {
             returnValue = (origValue.indexOf(parameters[0].value) >= 0);
-            return [returnValue, origValue];
+            return [returnValue, origValue, "boolean"];
         }
         if (method == 'indexOf') {
             returnValue = origValue.indexOf(parameters[0].value);
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         if (method == "remove") {
             var index = parameters[0].value;
@@ -154,11 +164,11 @@ $(document).ready(function () {
         }
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);
-            return [returnValue, origValue];
+            return [returnValue, origValue, 'boolean'];
         }
         if (method == 'size') {
             returnValue = (origValue.length);
-            return [returnValue, origValue];
+            return [returnValue, origValue, 'int'];
         }
         if (method == 'clear') {
             origValue = [];
@@ -219,7 +229,7 @@ $(document).ready(function () {
             if (type == "List<Float>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
-                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     value.push(toPush);
                 }
                 return [returnValue, value];

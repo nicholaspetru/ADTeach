@@ -95,6 +95,7 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalValue = function(root, env) {
         if (root.arity == "FunCall") {
+            console.log("ROOOOOOOT is: ", root);
             console.log("ENV1 IS: ", env);
             return this.evalMethod(root, env)[0];
         }
@@ -105,6 +106,15 @@ $(document).ready(function () {
                     return parseInt(root.value);
                     break;
                 case 'FLOAT_TYPE':
+                    console.log("<><><>", root.value);
+                    if (parseFloat(root.value).toString().indexOf('.') < 0) {
+                        var precNumber = parseFloat(root.value).toString().length + 1;
+                        console.log("Parsed float will be: ", typeof parseFloat(root.value).toPrecision(precNumber));
+                        var front = Number(root.value);
+                        //var returning = front.0;
+                        return [front, "float"];
+                    }
+                    console.log("Parsed float will be: ", typeof parseFloat(root.value));
                     return parseFloat(root.value);
                     break;
                 case 'STR_TYPE':
@@ -121,6 +131,7 @@ $(document).ready(function () {
                     break;
             }
         } else {
+            console.log("LOOKING FOR I");
             var val = env.getValue(root.value);
             var valType = env.getType(root.value);
             if (val === "no value") {
@@ -142,7 +153,8 @@ $(document).ready(function () {
                         return parseInt(val);
                         break;
                     case "float":
-                        return parseFloat(val);
+                        
+                        return [parseFloat(val), "float"];
                         break;
                     case "double":
                         return parseFloat(val);
@@ -188,10 +200,12 @@ $(document).ready(function () {
         if (root.arity === "Initialization") {
             console.log("ROOT IS: ", root);
             if (root.second.arity == "FunCall") {
+                console.log("Right side of equal side is function call", root.second);
                 valueRoot = root.second;
                 //valueRoot = root.second
                 //value = root.first
             } else {
+                console.log("Saying right side is: ", root.third);
                 valueRoot = root.third;
             }
         }
@@ -207,6 +221,8 @@ $(document).ready(function () {
             var methodValue = this.evalMethod(valueRoot, env);
             returnedValue = methodValue[1];
             value = methodValue[0];
+            valueType = methodValue[3];
+            console.log("BEING RETURNED: ", typeof value);
             originMethod = methodValue[2];
             //originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
@@ -270,17 +286,35 @@ $(document).ready(function () {
                     
                     default:
                         var type = this.checkType(value);
+                        console.log("Value is: ", value);
                         if (root.first != type){
+                            console.log("root.first is: ", root.first, "and type is:", type);
                             env.throwError(root.linenum);
                             console.log("INCOMPATIBLE TYPES!!");
                             root.error("Incompatible types");
                         }
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
+                        break;
                 }
             console.log("HERE AND ROOT IS: ", root);
             } else {
-                console.log("Creating variable: ", root.first);
-                console.log("Value is: ", value);
+                console.log("Creating variable: ", root);
+                console.log("Value is: ", typeof value);
+                //console.log("Type is: ", valueType);
+                //console.log("Of type: ", this.checkType(value));
+                if (root.third.arity == "FunCall") {
+                    console.log("IS A FUNCALL");
+                    console.log("Root first: ", root.first);
+                    console.log("Want type: ", valueType);
+                    if (root.first != valueType) {
+                        env.throwError(root.linenum);
+                        root.error();
+                    }
+                }
+                 else if (root.first != this.checkType(value)) {
+                    env.throwError(root.linenum);
+                    root.error();
+                }
                 //returnValue = value[0];
                 //method = value[2];
                 //originMethod = method;
@@ -394,13 +428,22 @@ $(document).ready(function () {
     }
     Interpreter.prototype.checkType = function(value) {
         console.log("**************** Type of value is:", typeof value);
+        console.log("Looking at: ", value);
+        if (value.length == 2) {
+            if (value[1] == "float") {
+                return "float";
+            }
+        }
         switch (typeof value) {
             case typeof 1:
-                console.log(value);
-                if (value === +value && value === (value|0)) return"int";
-                else return "float";
-            case typeof 1.0:
-                return "float";
+                if (value.toString().indexOf(".") < 0) {
+                    return "int";
+                } else {
+                    return "float";
+                }
+                //console.log(value);
+                //if (value === +value && value === (value|0)) return"int";
+                //else return "float";
             case typeof "1":
                 return "String";
             case typeof true:
@@ -624,6 +667,7 @@ $(document).ready(function () {
             returnValue = methodValue[0];
             
             newValue = methodValue[1];
+            var valueType = methodValue[2];
             console.log("Return value is: ", newValue);
             console.log("THe parameters are: ", cloneParam);
             //console.log("Adding to method: ", cloneParam[0].value);
@@ -651,26 +695,32 @@ $(document).ready(function () {
                     }
                     if (parameters.length == 1) {
                         method = method + "." + adtCurValue.length;
+                        break;
                     } else {
                         method = method + "." + cloneParam[0].value;
+                        break;
                     }
                     break;
                 case("remove"):
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || adtType == "PriorityQueue<Float>" 
                         || adtType == "Queue<String>" || adtType == "Queue<Integer>" || adtType == "Queue<Float>") {
                         method = method + "." + adtCurValue.length;
+                        break;
                     } else {
                         method = method + "." + cloneParam[0].value;
+                        break;
                     }
                 case("addEdge"):
                 case("removeEdge"):
                 case("hasEdge"):
                     method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
+                    break;
             }
             
             env.updateVariable(adt, newValue, method, originADT, root.linenum);
         }
-        return [returnValue, newValue, method];
+        console.log("IN PERFORM METHOD: ", valueType);
+        return [returnValue, newValue, method, valueType];
     }
     
     Interpreter.prototype.findMethods = function(type) {
@@ -712,6 +762,7 @@ $(document).ready(function () {
             case "Dictionary<Float, String>":
             case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
+                console.log("111111111111");
                 y = new VDictionary("int");
                 return y.listMethods();
                 break;
@@ -750,11 +801,13 @@ $(document).ready(function () {
             case "Queue<Float>":
                 y = new VQueue("String");
                 return y.checkParameters(method, parameters);
+                break;
             case "PriorityQueue<Integer>":
             case "PriorityQueue<String>":
             case "PriorityQueue<Float>":
                 y = new VPQueue("String");
                 return y.checkParameters(method, parameters);
+                break;
             case "Dictionary<Integer, Integer>":
             case "Dictionary<Integer, String>":
             case "Dictionary<Integer, Boolean>":
@@ -767,17 +820,22 @@ $(document).ready(function () {
             case "Dictionary<Float, String>":
             case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
+                console.log("2222222222222");
                 y = new VDictionary("String");
                 return y.checkParameters(method, parameters);
+                break;
             case "Graph":
                 y = new VGraph();
                 return y.checkParameters(method, parameters);
+                break;
             case "WeightedGraph":
                 y = new VWeightedGraph();
                 return y.checkParameters(method, parameters);
+                break;
             case "Tree":
                 y = new VTree();
                 return y.checkParameters(method, parameters);
+                break;
         }
     }
     
@@ -819,86 +877,119 @@ $(document).ready(function () {
                 y = new VQueue("int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Queue<String>":
                 y = new VQueue("String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Queue<Float>":
                 y = new VQueue("float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "PriorityQueue<Integer>":
                 y = new VPQueue("int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "PriorityQueue<String>":
                 y = new VPQueue("String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "PriorityQueue<Float>":
                 y = new VPQueue("float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Integer, Integer>":
+                console.log("333333333");
                 y = new VDictionary("int", "int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Integer, String>":
+                console.log("333333333");
                 y = new VDictionary("int", "String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Integer, Boolean>":
+                console.log("333333333");
                 y = new VDictionary("int", "bool");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Integer, Float>":
+                console.log("333333333");
                 y = new VDictionary("int", "float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<String, Integer>":
+                console.log("333333333");
                 y = new VDictionary("String", "int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<String, String>":
+                console.log("333333333");
                 y = new VDictionary("String", "String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<String, Boolean>":
+                console.log("333333333");
                 y = new VDictionary("String", "bool");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<String, Float>":
+                console.log("333333333");
                 y = new VDictionary("String", "float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Float, Integer>":
+                console.log("333333333");
                 y = new VDictionary("float", "int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Float, String>":
+                console.log("333333333");
                 y = new VDictionary("float", "String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Float, Boolean>":
+                console.log("333333333");
                 y = new VDictionary("float", "bool");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Dictionary<Float, Float>":
+                console.log("333333333");
                 y = new VDictionary("float", "float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Graph":
                 y = new VGraph();
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "WeightedGraph":
                 y = new VWeightedGraph();
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
             case "Tree":
                 y = new VTree();
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
+                break;
         }
     }
     
