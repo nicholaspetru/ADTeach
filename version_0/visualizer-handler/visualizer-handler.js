@@ -40,6 +40,14 @@ $(document).ready(function () {
         this.paper.path("M " + this.HBORDER + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.ADT_SECTION_TEXT_Y + this.FONT_HEIGHT));
 
         this.codeboxPaper = null;        
+        
+        // Keep a count of all ADT types to determine positioning
+        // There are three categories: vertADT is stacks, hoADT are lists/queues (horizontally oriented), and blobADT is graphs and dicts
+        this.vertADT_count = 0
+        this.hoADT_count = 0;
+        this.blobADT_count = 0;
+
+
         //Testing new primitive system
         
         /*
@@ -367,41 +375,51 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangeADTs = function() {
-
-
-
-
         var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+
+        var element = document.getElementById('vis_paper');
+        var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
+        var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
+        console.log("paper attr: " + paper_width + " and " + paper_height)
 
         for (var i = 0; i < this.entities.length; i++){
             if (!this.isPrimitive(this.entities[i])){
 
-                /*
+/*
+                console.log(this.entities[i].type.split("<")[0] + " is the ADT type")
                 // check ADT type to determine general positioning
-                switch(type.split("<")[0]){
+                switch(this.entities[i].type.split("<")[0]){
                     case "List":
-                        // top right
-                        continue
+                        // top(ish) right
+                        curX = this.VBORDER + (this.entities[i].WIDTH)*this.vertADT_count;
+                        curY = this.ADT_SECTION_Y + (this.HEIGHT + 6)*this.hoADT_count;
+                        this.hoADT_count += 1;
                     case "Queue":
                         // same as list
-                        continue
+                        this.hoADT_count += 1;
                     case "PriorityQueue":
                         // same as Queue
-                        continue    
+                        this.hoADT_count += 1;
                     case "Stack":
-                        // top left
-                        continue
+                        console.log("Set Stack curX and curY")
+                        // bottom left
+                        curX = this.VBORDER + (this.entities[i].WIDTH + 6)*this.vertADT_count;
+                        curY = paper_height - 12;
+                        this.vertADT_count += 1;
                     case "Graph":
                         // bottom right
-                        continue
+                        this.blobADT_count += 1;
                     case "Dict":
                         // same as Graph
-                        continue
+                        this.blobADT_count += 1;
                     default:
-                        console.log("Unknown type for newEntity: " + type);
-                        return; */
+                        console.log("Unknown type for newEntity: " + this.entities[i].type);
+                        return; 
+                }*/
 
+                console.log("entity x: " + this.entities[i].x)
                 if (this.entities[i].x != curX) {
+                    console.log("Create/Move ADT")
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
                         this.entities[i].create(curX, curY);
