@@ -295,6 +295,7 @@ $(document).ready(function () {
             var vertices = [];
             var values = [];
             var parents = [];
+            var parentVertices = [];
             var children = [];
             var numVertices = parameters[0].value;
             var count = 0;
@@ -302,7 +303,6 @@ $(document).ready(function () {
             //Create vertices
             while (count < numVertices) {
                 var randomV = Math.floor((Math.random() * 100) + 1);
-                console.log("Random: ", randomV, "Values: ", values);
                 while (values.indexOf(randomV) >= 0) {
                     randomV = Math.floor((Math.random() * 100) + 1);
                 }
@@ -318,6 +318,7 @@ $(document).ready(function () {
             
             for (var i = 0; i < vertices.length; i++) {
                 parents.push(vertices[i]);
+                parentVertices.push(vertices[i][0]);
                 if (i != 0) {
                     children.push(vertices[i]);
                 }
@@ -326,15 +327,25 @@ $(document).ready(function () {
             //Connect root
             var numChildren = Math.floor((Math.random()*2) + 1)
             console.log("Vertices are: ", values);
+            var parValue = parents[0][0];
+            
+            //Root:
+            //one child
             if (numChildren == 1) {
+                var child1 = children[0][0];
                 parents[0][2].push(children[0][0]);
-                parents[1][1] = parents[0][0];
+                parents[parentVertices.indexOf(child1)][1] = parents[0][0];
                 children.splice(0, 1);
-            } else if (numChildren == 2) {
+            } 
+            
+            //root has two child
+            else if (numChildren == 2) {
+                var child1 = children[0][0];
+                var child2 = children[1][0];
                 parents[0][2].push(children[0][0]);
                 parents[0][2].push(children[1][0]);
-                parents[1][1] = parents[0][0];
-                parents[2][1] = parents[0][0];
+                parents[parentVertices.indexOf(child1)][1] = parValue;
+                parents[parentVertices.indexOf(child2)][1] = parValue;
                 children.splice(0, 2);
             
             }
@@ -343,30 +354,36 @@ $(document).ready(function () {
             console.log("Tree is: ", tree);
             
             parents.splice(0, 1);
+            parentVertices.splice(0, 1);
             
             
             while (children.length != 0) {
                 numChildren = Math.floor((Math.random()*2) + 1);
                 
                 if (numChildren == 1) {
+                    var child1 = children[0][0];
                     parents[0][2].push(children[0][0]);
-                    parents[1][1] = parents[0][0];
+                    parents[parentVertices.indexOf(child1)][1] = parents[0][0];
                     tree.push(parents[0]);
                     children.splice(0, 1);
                     parents.splice(0, 1);
+                    parentVertices.splice(0, 1);
                     continue;
                     
                 } else if (numChildren == 2) {
                     console.log("Parents are: ", parents);
+                    var child1 = children[0][0];
+                    var child2 = children[1][0];
                     parents[0][2].push(children[0][0]);
-                    parents[1][1] = parents[0][0];
+                    parents[parentVertices.indexOf(child1)][1] = parents[0][0];
                     if (children.length >= 2) {
                         parents[0][2].push(children[1][0]);
-                        parents[2][1] = parents[0][0];
+                        parents[parentVertices.indexOf(child2)][1] = parents[0][0];
                     }
                     tree.push(parents[0]);
                     children.splice(0, 2);
                     parents.splice(0, 1);
+                    parentVertices.splice(0, 1);
                 }
             }
             
@@ -376,6 +393,8 @@ $(document).ready(function () {
             console.log("Ending tree is: ", tree);
             console.log("Leftover parents: ", parents);
             
+            origValue = tree;
+            return [returnValue, origValue];
                 
         }
         
