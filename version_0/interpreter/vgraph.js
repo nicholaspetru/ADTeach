@@ -13,12 +13,12 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['addVertex', 'getNeighbors', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree', 'hasEdge'];
+        var methods = ['addVertex', 'getNeighbors', 'getVertices', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree', 'hasEdge'];
         return methods;
     }
     
     VGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
+        var noParam = ['getVertices', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
             console.log("LOOKing at method: ", method);
             console.log("Parameters are: ", parameters);
@@ -227,7 +227,7 @@ $(document).ready(function () {
             return [returnValue, [origValue, isDirected]];
         }
         
-        if (method == "getNodes") {
+        if (method == "getVertices") {
             returnValue = [];
             for (var i = 0; i < origValue.length; i++) {
                 returnValue.push(i);
