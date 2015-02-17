@@ -124,6 +124,7 @@ $(document).ready(function () {
             }
         }
         if (method == 'get') {
+            console.log("GETTING: ", parameters[0].value);
             if (parameters[0].value > origValue.length || parameters[0].value < 0) {
                 env.throwError(root.linenum);
                 console.log("Index out of bounds");

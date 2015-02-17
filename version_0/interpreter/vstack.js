@@ -84,7 +84,8 @@ $(document).ready(function () {
         
         if (method == "push") {
             if (type == "Stack<Integer>") {
-                if (typeof parameters[0] != typeof 2) {
+                
+                if (typeof parameters[0].value != typeof 2) {
                     env.throwError(root.linenum);
                     root.error("Incompatible types");
                 } else if (parameters[0].value.toString().indexOf('.') >= 0) {
