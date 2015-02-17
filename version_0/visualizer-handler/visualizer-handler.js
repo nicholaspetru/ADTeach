@@ -380,7 +380,6 @@ $(document).ready(function () {
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
-        console.log("paper attr: " + paper_width + " and " + paper_height)
 
         for (var i = 0; i < this.entities.length; i++){
             if (!this.isPrimitive(this.entities[i])){
@@ -392,30 +391,36 @@ $(document).ready(function () {
                             // top(ish) right
                             curX = this.VBORDER + (this.entities[i].WIDTH)*this.vertADT_count;
                             curY = this.ADT_SECTION_Y + (this.HEIGHT + 6)*this.hoADT_count;
-                            this.hoADT_count += 1;
+                            if (this.entities[i].action == "new")
+                                this.hoADT_count += 1;
                             break;
                         case "Queue":
                             // same as list
-                            this.hoADT_count += 1;
+                            if (this.entities[i].action == "new")
+                                this.hoADT_count += 1;
                             break;
                         case "PriorityQueue":
                             // same as Queue
-                            this.hoADT_count += 1;
+                            if (this.entities[i].action == "new")
+                                this.hoADT_count += 1;
                             break;
                         case "Stack":
-                            console.log("Set Stack curX and curY")
                             // bottom left
                             curX = this.VBORDER + (this.entities[i].WIDTH + 6)*this.vertADT_count;
                             curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
-                            this.vertADT_count += 1;
+                            console.log("action: " + this.entities[i])
+                            //if (this.entities[i].event == "new")
+                                this.vertADT_count += 1;
                             break;
                         case "Graph":
                             // bottom right
-                            this.blobADT_count += 1;
+                            if (this.entities[i].action == "new")
+                                this.blobADT_count += 1;
                             break;
                         case "Dict":
                             // same as Graph
-                            this.blobADT_count += 1;
+                            if (this.entities[i].action == "new")
+                                this.blobADT_count += 1;
                             break;
                         default:
                             console.log("Unknown type for newEntity: " + this.entities[i].type);
@@ -423,6 +428,7 @@ $(document).ready(function () {
                     }
 
                     console.log("Create/Move ADT to " + curX + " and " + curY)
+                    console.log(this.vertADT_count)
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
                         this.entities[i].create(curX, curY);
@@ -430,7 +436,7 @@ $(document).ready(function () {
                         this.entities[i].move(curX, curY);
                     }
                 }
-                curX +=  this.entities[i].WIDTH*1.2;
+                //curX +=  this.entities[i].WIDTH*1.2;
             }
         }
     }

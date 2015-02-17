@@ -140,7 +140,6 @@ $(document).ready(function () {
         this.VH.setDelay(500);
 
         setTimeout(function(){
-            console.log("Object to be stretched: " + this)
             _t.myFrame.remove();
             _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
             _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
