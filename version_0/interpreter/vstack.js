@@ -29,12 +29,12 @@ $(document).ready(function () {
     }
     
     VStack.prototype.listMethods = function() {
-        var methods = ['getValue', 'isEmpty', 'push', 'pop', 'populate', 'peek', 'search'];
+        var methods = ['getValue', 'isEmpty', 'push', 'pop', 'populate', 'peek', 'search', 'size'];
         return methods;
     }
     
     VStack.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['pop', 'getValue', 'isEmpty', 'peek'];
+        var noParam = ['pop', 'getValue', 'isEmpty', 'peek', 'size'];
         var oneParam = ['push', 'populate', 'search'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
@@ -65,6 +65,11 @@ $(document).ready(function () {
             return [returnValue, origValue];
         } 
         
+        if (method == "size") {
+            returnValue = origValue.length;
+            return [returnValue, origValue];
+        }
+        
         if (method == "search") {
             var count = 1;
             if (origValue.indexOf(parameters[0].value) >= 0) {
@@ -84,7 +89,6 @@ $(document).ready(function () {
         
         if (method == "push") {
             if (type == "Stack<Integer>") {
-                
                 if (typeof parameters[0].value != typeof 2) {
                     env.throwError(root.linenum);
                     root.error("Incompatible types");
