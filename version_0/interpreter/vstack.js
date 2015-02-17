@@ -62,12 +62,20 @@ $(document).ready(function () {
         
         if (method == "pop") {
             returnValue = origValue.pop();
-            return [returnValue, origValue];
+            console.log('POPPING', typeof returnValue);
+            if (type == "Stack<String>") {
+                var valType = "String";
+            } else if (type == "Stack<Integer>") {
+                var valType = "int";
+            } else if (type == "Stack<Float>") {
+                var valType = "float";
+            }
+            return [returnValue, origValue, valType];
         } 
         
         if (method == "size") {
             returnValue = origValue.length;
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         
         if (method == "search") {
@@ -84,7 +92,7 @@ $(document).ready(function () {
             } else {
                 returnValue = -1;
             }
-            return [returnValue, origValue];
+            return [returnValue, origValue, "int"];
         }
         
         if (method == "push") {
@@ -97,13 +105,14 @@ $(document).ready(function () {
                     root.error();
                 }
             } else if (type == "Stack<Float>") {
-                if (typeof parameters[0].value != typeof 2) {
+                console.log("Parameters are: ", parameters);
+                if (parameters[0].value[1] != "float") {
                     env.throwError(root.linenum);
                     root.error();
-                } else if (parameters[0].value.toString().indexOf('.') < 0) {
-                    env.throwError(root.linenum);
-                    root.error();
-                }
+                } //else if (parameters[0].value.toString().indexOf('.') < 0) {
+                    //env.throwError(root.linenum);
+                    //root.error();
+                //}
             
             } else if (type == "Stack<String>") {
                 if (typeof parameters[0].value != typeof "h") {
@@ -122,7 +131,7 @@ $(document).ready(function () {
             } else {
                 returnValue = false;
             }
-            return [returnValue, origValue];
+            return [returnValue, origValue, "boolean"];
         } 
         
         if (method == "getValue") {
@@ -154,7 +163,7 @@ $(document).ready(function () {
             if (type == "Stack<Float>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
-                    var toPush = (Math.random()*(7.00 - 0.01) + 1).toFixed(2);
+                    var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     value.push(toPush);
                 }
                 return [returnValue, value];
@@ -163,12 +172,21 @@ $(document).ready(function () {
         
         if (method == "peek") {
             var length = origValue.length;
+            if (type == "Stack<String>") {
+                var valType = "String";
+            } else if (type == "Stack<Integer>") {
+                var valType = "int";
+                
+            } else if (type == "Stack<Float>") {
+                var valType = "float";
+                
+            }
             if (length == 0) {
                 returnValue = "null";
             } else {
                 returnValue = origValue[length-1];
             }
-            return [returnValue, origValue];
+            return [returnValue, origValue, valType];
         }
         
     }

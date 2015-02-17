@@ -232,7 +232,7 @@ $(document).ready(function () {
             for (var i = 0; i < origValue.length; i++) {
                 returnValue.push(i);
             }
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "List<Integer>"];
         }
         
         if (method == "hasEdge") {
@@ -267,7 +267,7 @@ $(document).ready(function () {
                 } else {
                     returnValue = true;
                 }
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [origValue, isDirected], "boolean"];
             }
         }
         
@@ -281,7 +281,7 @@ $(document).ready(function () {
                 //Throw Error
             }
             returnValue = origValue[node];
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "List<Integer>"];
         }
         
         if (method == "getOutDegree") {
@@ -293,7 +293,7 @@ $(document).ready(function () {
             }
             var vertex = parameters[0].value;
             returnValue = origValue[vertex].length;
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
         }
         
         if (method == "getInDegree") {
@@ -312,7 +312,7 @@ $(document).ready(function () {
                 }
             }
             returnValue = degree;
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
         }
         
         if (method == "numEdges") {
@@ -323,7 +323,7 @@ $(document).ready(function () {
                     length += origValue[i].length;
                 }
                 returnValue = length / 2;
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [origValue, isDirected], "int"];
             }
             
             if (isDirected == true) {
@@ -333,18 +333,18 @@ $(document).ready(function () {
                     length += origValue[i].length;
                 }
                 returnValue = length;
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [origValue, isDirected], "int"];
             }
         }
         
         if (method == "numVerts") {
             returnValue = origValue.length;
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
         }
         
         if (method == "isEmpty") {
             returnValue = (origValue.length == 0);
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "boolean"];
         }
         
         if (method == "clear") {
