@@ -367,10 +367,40 @@ $(document).ready(function () {
 
     //Arranges primitives
     VisualizerHandler.prototype.arrangeADTs = function() {
+
+
+
+
         var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
 
         for (var i = 0; i < this.entities.length; i++){
             if (!this.isPrimitive(this.entities[i])){
+
+                /*
+                // check ADT type to determine general positioning
+                switch(type.split("<")[0]){
+                    case "List":
+                        // top right
+                        continue
+                    case "Queue":
+                        // same as list
+                        continue
+                    case "PriorityQueue":
+                        // same as Queue
+                        continue    
+                    case "Stack":
+                        // top left
+                        continue
+                    case "Graph":
+                        // bottom right
+                        continue
+                    case "Dict":
+                        // same as Graph
+                        continue
+                    default:
+                        console.log("Unknown type for newEntity: " + type);
+                        return; */
+
                 if (this.entities[i].x != curX) {
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
