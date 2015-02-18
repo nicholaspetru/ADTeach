@@ -373,7 +373,65 @@ $(document).ready(function () {
         }
     };
 
-    //Arranges primitives
+    //Arrange ADT helper function
+    VisualizerHandler.prototype.shiftADT = function(entities) {
+        console.log("Visualizer Handler: shiftADT()")
+
+        var element = document.getElementById('vis_paper');
+        var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
+        var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
+
+        var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+
+        for (var i = 0; i < entities.length; i++){
+            if (!this.isPrimitive(entities[i])){
+                if (entities[i].x != curX) {
+
+                    // check ADT type to determine general positioning
+                    switch(entities[i].type.split("<")[0]){
+                        // "fall-through" case for horizontal ADTS; to right of vert, and above blob
+                        case "List":
+                        case "Queue":
+                        case "PriorityQueue":
+                            //increment the ADT category count
+                            if (entities[i].x == 0)
+                                this.hoADT_count += 1;
+                            curX = this.VBORDER + (90)*(this.vertADT_count+1);
+                            curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 20)*this.hoADT_count;
+                            break;
+
+                        // Stack is only vertical ADT (?); starts on bottom left
+                        case "Stack":
+                            // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
+                            //increment the ADT category count
+                            if (entities[i].x == 0)
+                                this.vertADT_count += 1;
+                            //if (this.hoADT_count > -1 || this.blobADT_count > -1)
+                            //   i = 0;
+                            curX = this.VBORDER + (entities[i].WIDTH+20)*this.vertADT_count;
+                            curY = parseInt(paper_height, 10) - entities[i].HEIGHT-entities[i].FONT_SIZE-6;
+
+                        
+                            break;
+
+                        //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
+                        case "Graph":
+                        case "Dict":
+                            // bottom right
+                            this.blobADT_count += 1;
+                            break;
+                        
+                        default:
+                            console.log("Unknown ADT type: " + entities[i].type);
+                            return; 
+                    }
+                    entities[i].move(curX, curY);
+                }
+            }
+        }
+    };
+
+    //Arranges ADT
     VisualizerHandler.prototype.arrangeADTs = function() {
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
@@ -390,8 +448,10 @@ $(document).ready(function () {
 
                     // check ADT type to determine general positioning
                     switch(this.entities[i].type.split("<")[0]){
+                        // "fall-through" case for horizontal ADTS; to right of vert, and above blob
                         case "List":
-                            // top(ish) right
+                        case "Queue":
+                        case "PriorityQueue":
                             //increment the ADT category count
                             if (this.entities[i].x == 0)
                                 this.hoADT_count += 1;
@@ -399,33 +459,32 @@ $(document).ready(function () {
                             curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 20)*this.hoADT_count;
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
-                        case "Queue":
-                            // same as list
-                            this.hoADT_count += 1;
-                            break;
-                        case "PriorityQueue":
-                            // same as Queue
-                            this.hoADT_count += 1;
-                            break;
+
+                        // Stack is only vertical ADT (?); starts on bottom left
                         case "Stack":
                             // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
                             //increment the ADT category count
                             if (this.entities[i].x == 0)
                                 this.vertADT_count += 1;
+                            if (this.hoADT_count > -1 || this.blobADT_count > -1)
+                                this.shiftADT(this.entities.slice(0,i));
+
+
                             curX = this.VBORDER + (this.entities[i].WIDTH+20)*this.vertADT_count;
                             curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
+
                         
                             break;
+
+                        //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                         case "Graph":
+                        case "Dict":
                             // bottom right
                             this.blobADT_count += 1;
                             break;
-                        case "Dict":
-                            // same as Graph
-                            this.blobADT_count += 1;
-                            break;
+                        
                         default:
-                            console.log("Unknown type for newEntity: " + this.entities[i].type);
+                            console.log("Unknown ADT type: " + this.entities[i].type);
                             return; 
                     }
 
