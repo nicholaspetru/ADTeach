@@ -54,6 +54,14 @@ $(document).ready(function () {
         return a - b;
     }
     
+    VPQueue.prototype.compareFloats = function(a, b) {
+        return a[0] - b[0];
+    }
+    
+    VPQueue.prototype.compareStrings = function(a, b) {
+        return a > b;
+    }
+    
     VPQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var returnValue = null;
         var origValue = [];
@@ -65,10 +73,7 @@ $(document).ready(function () {
                 if (typeof parameters[0].value != typeof 1) {
                     env.throwError(root.linenum);
                     root.error("Looking for ints");
-                } else if (parameters[0].value.toString().indexOf(".") >= 0) {
-                    env.throwError(root.linenum);
-                    root.error("Looking for ints");
-                }
+                } 
             } else if (type == "PriorityQueue<String>") {
                 if (typeof parameters[0].value != typeof "H") {
                     env.throwError(root.linenum);
@@ -76,10 +81,8 @@ $(document).ready(function () {
                 }
                     
             } else if (type == "PriorityQueue<Float>") {
-                if (typeof parameters[0].value != typeof 1) {
-                    env.throwError(root.linenum);
-                    root.error();
-                } else if (parameters[0].value.toString().indexOf('.') < 0) {
+                console.log("Looking to add parameters: ", parameters);
+                if (parameters[0].value.length != 2 || parameters[0].value[1] != "float") {
                     env.throwError(root.linenum);
                     root.error();
                 }
@@ -91,7 +94,13 @@ $(document).ready(function () {
                 newList.push(origValue[i]);
             }
             origValue = newList;
-            origValue.sort(this.compareNumbers);
+            if (type == "PriorityQueue<Integer>") {
+                origValue.sort(this.compareNumbers);
+            } else if (type == "PriorityQueue<String>") {
+                origValue.sort(this.compareStrings);
+            } else if (type == "PriorityQueue<Float>") {
+                origValue.sort(this.compareFloats);
+            }
             returnValue = origValue.indexOf(parameters[0].value);
             return [returnValue, origValue];
         }
@@ -140,14 +149,14 @@ $(document).ready(function () {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(options[toPush]);
                 }
-                value.sort();
+                value.sort(this.compareStrings);
             }
             if (type == "PriorityQueue<Float>") {
                 for (var i = 0; i < parameters[0].value; i++) {
                     var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    value.push(toPush);
+                    value.push([toPush, "float"]);
                 }
-                value.sort(this.compareNumbers);
+                value.sort(this.compareFloats);
             }
             return [returnValue, value];
         }
