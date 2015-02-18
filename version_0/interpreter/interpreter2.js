@@ -105,6 +105,7 @@ $(document).ready(function () {
                     return parseInt(root.value);
                     break;
                 case 'FLOAT_TYPE':
+                    /*
                     console.log("<><><>", root.value);
                     if (parseFloat(root.value).toString().indexOf('.') < 0) {
                         var precNumber = parseFloat(root.value).toString().length + 1;
@@ -113,6 +114,7 @@ $(document).ready(function () {
                         //var returning = front.0;
                         return [front, "float"];
                     }
+                    */
                     console.log("Parsed float will be: ", typeof parseFloat(root.value));
                     return [parseFloat(root.value), "float"];
                     break;
@@ -238,7 +240,9 @@ $(document).ready(function () {
         }
         
         else if (['%', '+', '-', '*', '/', '**'].indexOf(valueRoot.value) >= 0) {
+                console.log("Passing in: ", valueRoot);
                 value = this.evalMaths(valueRoot, env);
+                console.log("VVVValue is: ", value);
                 
         } 
 
@@ -287,16 +291,17 @@ $(document).ready(function () {
                         var type = this.checkType(value);
                         console.log("Value is: ", value);
                         if (root.first != type){
+                            console.log("root is: ", root);
                             console.log("root.first is: ", root.first, "and type is:", type);
                             env.throwError(root.linenum);
                             console.log("INCOMPATIBLE TYPES!!");
                             root.error("Incompatible types");
-                        }
+                        }/*
                         if (value.length = 2) {
                             if (value[1] == "float") {
                                 value = value[0];
                             }
-                        }
+                        }*/
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                         break;
                 }
@@ -372,7 +377,12 @@ $(document).ready(function () {
         
             var leftValue = this.evalValue(root.first, env);
             var rightValue = this.evalValue(root.second, env);
-        
+            if (leftValue.length == 2 && leftValue[1] == "float") {
+                leftValue = leftValue[0];
+            } 
+            if (rightValue.length == 2 && rightValue[1] == "float") {
+                rightValue = rightValue[0];
+            }
             switch (root.value) {
                 case "<":
                     return (leftValue < rightValue);
@@ -441,14 +451,7 @@ $(document).ready(function () {
         }
         switch (typeof value) {
             case typeof 1:
-                if (value.toString().indexOf(".") < 0) {
-                    return "int";
-                } else {
-                    return "float";
-                }
-                //console.log(value);
-                //if (value === +value && value === (value|0)) return"int";
-                //else return "float";
+                return "int";
             case typeof "1":
                 return "String";
             case typeof true:
@@ -522,15 +525,41 @@ $(document).ready(function () {
     
     
     
-    Interpreter.prototype.evalMaths = function(root, env) {        
+    Interpreter.prototype.evalMaths = function(root, env) {      
+        console.log("root is:::::", root);
         if (['%', '+', '-', '*', '/', '**'].indexOf(root.value) < 0) {
-            return this.evalValue(root, env);
+            value = this.evalValue(root, env);
+            return value;
         } else {
             if (root.value == "+") {
+                if (root.first.jtype == "FLOAT_TYPE") {
+                    if (root.second.jtype == "FLOAT_TYPE") {
+                        return [parseFloat(root.first.value) + parseFloat(root.second.value), "float"];
+                    }
+                }
                 return this.evalMaths(root.first, env) + this.evalMaths(root.second, env);
             } else {
-                var leftValue = this.evalMaths(root.first, env);
-                var rightValue = this.evalMaths(root.second, env);
+                var leftValue, rightValue;
+                if (root.first.jtype == "FLOAT_TYPE") {
+                    if (root.first.jtype == "FLOAT_TYPE") {
+                        leftValue = parseFloat(root.first.value)
+                        rightValue = parseFloat(root.second.value)
+                        
+                        switch(root.value) {
+                            case "%":
+                                return [leftValue % rightValue, "float"];
+                            case "-":
+                                return [leftValue - rightValue, "float"];
+                            case "*":
+                                return [leftValue * rightValue, "float"];
+                            case "/":
+                                return [leftValue / rightValue, "float"];
+                        }
+                    }
+                } else {    
+                    leftValue = this.evalMaths(root.first, env);
+                    rightValue = this.evalMaths(root.second, env);
+                }
                 if (typeof leftValue === "String" || typeof rightValue === "String") {
                     env.throwError(root.linenum);
                     console.log("Incompatible types");
@@ -561,7 +590,11 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            env.updateVariable(name, value+1, "Step", "new", root.linenum);
+            if (value.length == 2 && value[1] == "float") {
+                env.updateVariable(name, [value[0]+1, "float"], "Step", "new", root.linenum);
+            } else {
+                env.updateVariable(name, value+1, "Step", "new", root.linenum);
+            }
         }
     
     }
@@ -571,7 +604,11 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            env.updateVariable(name, value-1, "Step", "new", root.linenum);
+            if (value.length == 2 && value[1] == "float") {
+                env.updateVariable(name, [value[0]-1, "float"], "Step", "new", root.linenum);
+            } else {
+                env.updateVariable(name, value-1, "Step", "new", root.linenum);
+            }
         }
     
     }
@@ -581,8 +618,12 @@ $(document).ready(function () {
         var index = env.getIndex(name);
         var adding = root.second.value;
         console.log("Want to add: ", root);
-        if (adding.jtype != "INT_TYPE" || adding.jtype != "STRING_TYPE") {
+        if (adding.jtype != "INT_TYPE" || adding.jtype != "STRING_TYPE" || adding.jtype != "FLOAT_TYPE") {
             adding = this.evalValue(root.second, env);
+        }
+        
+        if (adding.length == 2 && adding[1] == "float") {
+            adding = adding[0];
         }
         if (index < 0) {
             env.throwError(root.linenum);
@@ -591,7 +632,12 @@ $(document).ready(function () {
             //Throw error
         }
         var value = env.getValue(name);
-        var newVal = value + adding;
+        if (value.length == 2 && value[1] == "float") {
+            console.log("ADDING: ", value[0], "and", adding);
+            newVal = [value[0] + adding, "float"];
+        } else {
+            var newVal = value + adding;
+        }
         env.updateVariable(name, newVal, "+=", "new", root.linenum);
     }
     
@@ -600,8 +646,11 @@ $(document).ready(function () {
         var index = env.getIndex(name);
         var subtracting = root.second.value;
         console.log("Want to add: ", root);
-        if (subtracting.jtype != "INT_TYPE" || subtracting.jtype != "STRING_TYPE") {
+        if (subtracting.jtype != "INT_TYPE" || subtracting.jtype != "STRING_TYPE" || subtracting.jtype != "FLOAT_TYPE") {
             subtracting = this.evalValue(root.second, env);
+        }
+        if (subtracting.length == 2 && subtracting[1] == "float") {
+            subtracting = subtracting[0];
         }
         if (index < 0) {
             env.throwError(root.linenum);
@@ -610,7 +659,11 @@ $(document).ready(function () {
             //Throw error
         }
         var value = env.getValue(name);
-        var newVal = value - subtracting;
+        if (value.length == 2 && value[1] == "float") {
+            newVal = [value[0] - subtracting, "float"];
+        } else {
+            var newVal = value - subtracting;
+        }
         env.updateVariable(name, newVal, "-=", "new", root.linenum);
     }
     
