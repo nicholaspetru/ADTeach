@@ -64,7 +64,7 @@ $(document).ready(function () {
     Queue.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
         var split = action.split(".");
-
+        console.log("XXXXXXXX " + action);
         //animate the change
         switch(split[0]){
             case "add":
@@ -73,7 +73,7 @@ $(document).ready(function () {
                     this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 this.stretch();
-                this.Add();
+                this.Add(parseInt(split[1]));
                 break;
             case "populate":
                 //erase old data
@@ -102,8 +102,7 @@ $(document).ready(function () {
                 this.stretch();
                 break;
             case "peek":
-                var index = parseInt(split[1]);
-                this.GetFromPosition(index);
+                this.Get();
                 break;
         }
     };
@@ -186,31 +185,38 @@ $(document).ready(function () {
     };
 
     //Adds a new dataunit 
-    Queue.prototype.Add = function(value) {
+    Queue.prototype.Add = function(index) {
         //Create the new data unit
-        var newDU = new DataUnit(this.paper,this.type,this.value[this.value.length-1], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
+        var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
 
+        //Scooch down all the other data units
+        var delay = this.VH.setDelay(500);
+        for (var i = index; i < this.vis.length; i++){
+            this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
+        }
+
         //Insert the new data unit in it's proper location
-        newDU.move(this.DUNIT_WIDTH*1.2*(this.value.length - 1),0,this.VH.setDelay(500),500);
+        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
         this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
-        this.vis.splice(this.value.length, 0, newDU);
+        this.vis.splice(index, 0, newDU);
     }
 
     //Gets a new dataunit at the specified index
-    Queue.prototype.GetFromPosition = function(index) {
+    Queue.prototype.Get = function() {
         //Create the new data unit
-        var xx = this.x + (this.DUNIT_WIDTH*.2) + this.DUNIT_WIDTH*1.2*index,
+        var xx = this.x + (this.DUNIT_WIDTH*.2),
             yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
 
-        var newDU = new DataUnit(this.paper,this.type, this.value[index], this.VH,  xx,
+        var newDU = new DataUnit(this.paper,this.type, this.value[0], this.VH,  xx,
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
 
         //Move the new data unit to it's proper location and set as the anonymous variable
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
+        this.VH.setDelay(250);
         this.anon = newDU;
     }
 

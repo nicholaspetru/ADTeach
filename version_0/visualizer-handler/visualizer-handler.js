@@ -276,6 +276,8 @@ $(document).ready(function () {
                 return new List(this.paper,name,type,value, this);
             case "Queue":
                 return new Queue(this.paper,name,type,value, this);
+            case "PriorityQueue":
+                return new Queue(this.paper,name,type,value, this);
             case "Stack":
                 return new Stack(this.paper,name,type,value, this);
             case "Graph":
