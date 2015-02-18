@@ -47,6 +47,15 @@ $(document).ready(function () {
              'g.addEdge(0,2);',
              'int x = g.getOutDegree(0);'
             ].join('\n');
+        this.database['weightedGraph'] =
+            ['WeightedGraph g = new WeightedGraph();',
+             'g.setDirected(true);',
+             'g.populate(5, 0);',
+             'g.addEdge(0,1,3);',
+             'g.addEdge(1,2,7);',
+             'g.addEdge(0,2,0);',
+             'int x = g.getWeight(0,1);'
+            ].join('\n');
         this.database['tree'] =
             ['Tree t = new Tree();',
             't.populate(6);'
