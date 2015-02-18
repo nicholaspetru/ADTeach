@@ -21,8 +21,8 @@ $(document).ready(function () {
             '\t curItem = s.peek();',
             '}',
             's.populate(5);',
-            's.push("importantItem");',
-            'int x = s.search("importantItem");'
+            's.push("item");',
+            'int x = s.search("item");'
             ].join('\n');
         this.database['queue'] =
             ['Queue<Integer> q = new Queue<Integer>();',
@@ -39,10 +39,22 @@ $(document).ready(function () {
             'q.remove();'
             ].join('\n');
         this.database['graph'] =
-            ['Graph g = new Graph();'
+            ['Graph g = new Graph();',
+            'g.addEdge(0,1);',
+            'g.addEdge(1,2);',
+            'g.addEdge(0,2);',
+            'int x = g.outDegree(0);'
+            ].join('\n');
+        this.database['tree'] =
+            ['Tree t = new Tree();',
+            't.populate(6);',
+            't.removeVertex(5);'
             ].join('\n');
         this.database['dict'] =
-            ['Dict<String, Integer> d = new Dict<String, Integer>();'
+            ['Dictionary<String, Integer> d = new Dictionary<String, Integer>();',
+            'd.populate(5);',
+            'd.put("hello",4);',
+            'int x = d.get("hello);'
             ].join('\n');
         return this;
     }
