@@ -263,6 +263,7 @@ $(document).ready(function () {
     
     //Returns a new Entity of the given type
     VisualizerHandler.prototype.getNewEntity = function(name, type, value, action, originADT) {
+
         switch(type.split("<")[0]){
             case "int":
                 return new Primitive(this.paper,name,type,value,this);
@@ -280,6 +281,8 @@ $(document).ready(function () {
                 return new Queue(this.paper,name,type,value, this);
             case "Stack":
                 return new Stack(this.paper,name,type,value, this);
+            case "Dictionary":
+                return new Dictionary(this.paper,name,type,value, this);
             case "Graph":
                 return new Graph(this.paper,name,type,value, this);
             default:
