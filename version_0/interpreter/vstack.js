@@ -69,7 +69,8 @@ $(document).ready(function () {
                 var valType = "int";
             } else if (type == "Stack<Float>") {
                 var valType = "float";
-                returnValue = returnValue[0];
+                console.log("POPPING FLOATS", returnValue);
+                returnValue = returnValue;
             }
             return [returnValue, origValue, valType];
         } 
@@ -80,8 +81,28 @@ $(document).ready(function () {
         }
         
         if (method == "search") {
-            var count = 1;
+            console.log("*&#(*$&#(*$&#(*&$#(*&$");
+            console.log("Searching for: ", parameters);
+            
+            if (parameters[0].value.length == 2 && parameters[0].value[1] == "float") {
+                var count = 1;
+                if (type == "Stack<Float>") {
+                    for (var i = origValue.length -1; i > -1; i--) {
+                        if (origValue[i][0] == parameters[0].value[0]) {
+                            returnValue = count;
+                            break;
+                        } else {
+                            count += 1;
+                        }
+                    }
+                } else {
+                    returnValue = -1;
+                }
+                return [returnValue, origValue, "int"];
+            } 
+            
             if (origValue.indexOf(parameters[0].value) >= 0) {
+                var count = 1;
                 for (var i = origValue.length - 1; i > -1; i--) {
                     if (origValue[i] == parameters[0].value) {
                         returnValue = count;

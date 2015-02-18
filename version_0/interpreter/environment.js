@@ -64,6 +64,7 @@ $(document).ready(function () {
         console.log("Origin method type is: ", adtType); 
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
+        this.variables[index].value = newVal;
         if (adtType == "Stack<Float>" || adtType == "List<Float>" || adtType == "Queue<Float>" || adtType == "PriorityQueue<Float>") {
             var slicedValue = [];
             for (var i = 0; i < newVal.length; i++) {
@@ -73,7 +74,7 @@ $(document).ready(function () {
         
         }
         
-		this.variables[index].value = newVal;
+		
         this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT, lineNum-1);
 	}
     
