@@ -57,6 +57,7 @@ $(document).ready(function () {
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
         $("#sampleGraph").hide();
+        $("#sampleWeightedGraph").hide();
         $("#sampleDict").hide();
         $("#sampleList").show();
         $("#sampleTree").hide();
@@ -78,6 +79,7 @@ $(document).ready(function () {
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
         $("#sampleGraph").hide();
+        $("#sampleWeightedGraph").hide();
         $("#sampleDict").hide();
         $("#sampleList").hide();
         $("#sampleTree").hide();
@@ -100,6 +102,7 @@ $(document).ready(function () {
         $("#sampleQueue").show();
         $("#samplePQueue").show();
         $("#sampleGraph").hide();
+        $("#sampleWeightedGraph").hide();
         $("#sampleDict").hide();
         $("#sampleList").hide();
         $("#sampleTree").hide();
@@ -110,8 +113,8 @@ $(document).ready(function () {
         $("#content").empty().append('<h3><center>Graph ADT</center></h3>');
         $("#content").append('<p><h4>Instantiation:</h4>');
         $("#content").append('Graph graphName = new Graph();<br>');
-        $("#content").append('<p><h4>Methods:</h4>');
-        $("#content").append('<b>graphName.addEdge(int x, int y);</b> Adds an edge into the graph from vertex x to vertex y<br>');
+        $("#content").append('WeightedGraph graphName = new WeightedGraph();<br>');
+        $("#content").append('<p><h4>Methods for both graph types:</h4>');
         $("#content").append('<b>graphName.addVertex();</b> Adds an edgeless vertex to the graph<br>');
         $("#content").append('<b>graphName.getInDegree(int x);</b> Returns the number of edges going into vertex x<br>');
         $("#content").append('<b>graphName.getOutDegree(int x);</b> Returns the number of edges coming out of vertex x<br>');
@@ -124,10 +127,17 @@ $(document).ready(function () {
         $("#content").append('<b>graphName.numVerts();</b> Returns the number of vertices in the graph<br>');
         $("#content").append('<b>graphName.removeEdge(int x, int y);</b> Removes from the graph the edge from vertex x to vertex y<br>');
         $("#content").append('<b>graphName.setDirected(boolean x);</b> Sets the graph to be directed if x=<em>true</em>, else sets the graph to be undirected</p>');
+        $("#content").append('<p><h4>Methods for unweighted graphs only:</h4>');
+        $("#content").append('<b>graphName.addEdge(int x, int y);</b> Adds an edge into the graph from vertex x to vertex y</p>');
+        $("#content").append('<p><h4>Methods for weighted graphs only:</h4>');
+        $("#content").append('<b>graphName.addEdge(int x, int y, int z);</b> Adds an edge into the graph from vertex x to vertex y with weight z<br>');
+        $("#content").append('<b>graphName.setWeight(int x, int y, int z);</b> Sets the edge from vertex x to vertex y to be weight z<br>');
+        $("#content").append('<b>graphName.getWeight(int x, int y);</b> Returns the weight of the edge from vertex x to vertex y</p>');
         $("#sampleStack").hide();
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
         $("#sampleGraph").show();
+        $("#sampleWeightedGraph").show();
         $("#sampleDict").hide();
         $("#sampleList").hide();
         $("#sampleTree").hide();
@@ -151,6 +161,7 @@ $(document).ready(function () {
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
         $("#sampleGraph").hide();
+        $("#sampleWeightedGraph").hide();
         $("#sampleDict").show();
         $("#sampleList").hide();
         $("#sampleTree").hide();
@@ -175,6 +186,7 @@ $(document).ready(function () {
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
         $("#sampleGraph").hide();
+        $("#sampleWeightedGraph").hide();
         $("#sampleDict").hide();
         $("#sampleList").hide();
         $("#sampleTree").show();
@@ -205,6 +217,10 @@ $(document).ready(function () {
 
     $("#sampleGraph").click(function() {        
         EVH.onSampleGraph();
+    });
+
+    $("#sampleWeightedGraph").click(function() {        
+        EVH.onSampleWeightedGraph();
     });
 
     $("#sampleTree").click(function() {        
