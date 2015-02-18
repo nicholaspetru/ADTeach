@@ -194,32 +194,26 @@ $(document).ready(function () {
 
     //Grabs the anonymous variable from the named entity, moves it to the proper location
     VisualizerHandler.prototype.getAnonymousVariable = function(name, destX, destY){
-        this.getDelay();
-        var _t = this;
-        setTimeout(function(){
-            var anon = null;
-            for (var i = 0; i < _t.entities.length; i++){
-                if (_t.entities[i].name == name){
-                    //it's an ADT
-                    if (!_t.isPrimitive(_t.entities[i])){
-                        anon = _t.entities[i].anon;
-                    //it's a primitive, create a new DU
-                    }else{
-                        anon = _t.entities[i].createAnonymous();
-                    }
+        var anon = null;
+        for (var i = 0; i < this.entities.length; i++){
+            if (this.entities[i].name == name){
+                //it's an ADT
+                if (!this.isPrimitive(this.entities[i])){
+                    anon = this.entities[i].anon;
+                //it's a primitive, create a new DU
+                }else{
+                    anon = this.entities[i].createAnonymous();
                 }
             }
+        }
 
-            //now move the anon to the new location
-            if (anon != null){
-                var difX, difY;
-                difX = destX - anon.x;
-                difY = destY - anon.y;
-                anon.move(difX,difY,0,500);
-                anon.fadeOut(750);
-            }
-        },(this.delay - this.date.getTime()));
-
+        //now move the anon to the new location
+        if (anon != null){
+            var difX, difY;
+            anon.moveTo(destX,destY,this.setDelay(500),500);
+            this.setDelay(500);
+            anon.destroy();
+        }
     }
 
 

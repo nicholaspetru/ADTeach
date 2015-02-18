@@ -39,13 +39,27 @@ $(document).ready(function () {
 
       };
 
-      //Moves the dataunit to the given position at the specified time
+      //Moves the dataunit by the given amount at the specified time
       DataUnit.prototype.move = function(difX, difY, delay, time) {
           var _t = this;
           setTimeout(function(){
             _t.x += difX;
             _t.y += difY;
-            //console.log(difY);
+            for (var i =0; i < _t.vis.length; i++){
+              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
+              _t.vis[i].animate(anim.delay(0));
+            }
+            _t.VH.setDelay(100);
+          },(delay));
+      };
+
+      //Moves the dataunit to the given position at the specified time
+      DataUnit.prototype.moveTo = function(xx, yy, delay, time) {
+          var _t = this;
+          setTimeout(function(){
+            var difX = xx - _t.x, difY = yy - _t.y;
+            _t.x += difX;
+            _t.y += difY;
             for (var i =0; i < _t.vis.length; i++){
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
               _t.vis[i].animate(anim.delay(0));
