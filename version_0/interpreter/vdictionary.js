@@ -47,12 +47,10 @@ $(document).ready(function () {
     }
     
     VDictionary.prototype.getType = function(val) {
-        if (typeof val == typeof 1) {
-            if (val.toString().indexOf(".") < 0) {
-                return "int";
-            } else {
-                return "float";
-            }
+        if (val.length == 2 && val[1] == "float") {
+            return "float";
+        } else if (typeof val == typeof 1) {
+            return "int";
         } else if (typeof val == typeof "h") {
             return "String";
         } else if  (typeof val == typeof true) {
@@ -242,7 +240,7 @@ $(document).ready(function () {
                 }
                 else if (keyType == "float") {
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    dict[toPush] = 0;
+                    dict[[toPush, "float"]] = 0;
                 }
             }
             for (var j in dict) {
@@ -256,7 +254,7 @@ $(document).ready(function () {
                 }
                 if (valueType == "float") {
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    dict[j] = toPush;
+                    dict[j] = [toPush, "float"];
                 }
                 if (valueType == "bool") {
                     toPush = Math.floor((Math.random() * 2) + 1);

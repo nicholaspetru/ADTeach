@@ -743,7 +743,11 @@ $(document).ready(function () {
                 case('removeVertex'):
                 case('setRoot'):
                     console.log("Going to add: ", cloneParam);
-                    method = method + "." + cloneParam[0].value;
+                    if (cloneParam[0].value.length == 2 && cloneParam[0].value[1] == "float") {
+                        method = method + "." + cloneParam[0].value[0];
+                    } else {
+                        method = method + "." + cloneParam[0].value;
+                    }
                     console.log("method is: ", method);
                     break;
                 case("add"):
@@ -765,6 +769,9 @@ $(document).ready(function () {
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || adtType == "PriorityQueue<Float>" 
                         || adtType == "Queue<String>" || adtType == "Queue<Integer>" || adtType == "Queue<Float>") {
                         method = method + "." + adtCurValue.length;
+                        break;
+                    } else if (adtType == "Dictionary<Float, String>" || adtType == "Dictionary<Float, Integer>" || adtType == "Dictionary<Float, Float>") {
+                        method = method + "." + cloneParam[0].value[0];
                         break;
                     } else {
                         method = method + "." + cloneParam[0].value;
