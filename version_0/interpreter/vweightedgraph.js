@@ -13,12 +13,12 @@ $(document).ready(function () {
     }
     
     VWeightedGraph.prototype.listMethods = function() {
-        var methods = ['hasEdge', 'removeNode', 'addVertex', 'getDegree', 'getNeighbors', 'getEdges', 'getNodes', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+        var methods = ['hasEdge', 'getWeight', 'setWeight', 'addVertex', 'getDegree', 'getInDegree', 'getOutDegree', 'getNeighbors', 'getEdges', 'getVerticies', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         return methods;
     }
     
     VWeightedGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getNodes', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+        var noParam = ['getEdges', 'getVerticies', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("zero parameters needed");
@@ -26,7 +26,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['removeNode', 'getDegree', 'getNeighbors'];
+        var oneParam = ['getDegree', 'getInDegree', 'getOutDegree', 'getNeighbors'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters needed");
@@ -188,7 +188,60 @@ $(document).ready(function () {
             origValue.push([]);
             return [returnValue, [origValue, isDirected]];
         }
+
+        if (method == "getVertices") {
+            returnValue = [];
+            for (var i = 0; i < origValue.length; i++) {
+                returnValue.push(i)[0];
+            }
+            return [returnValue, [origValue, isDirected], "List<Integer>"];
+        }
+
+        if (method == "getDegree") {
+            if (isDirected == true) {
+                env.throwError(root.linenum);
+                console.log("Must Specify in degree or out degree");
+                root.error("Must Specify in degree or out degree");
+                //Throw error
+            }
+            var vertex = parameters[0].value;
+            returnValue = origValue[vertex].length;
+            return [returnValue, [origValue, isDirected], "int"];
+        }
+
         
+
+        if (method == "getOutDegree") {
+            if (isDirected != true) {
+                env.throwError(root.linenum);
+                console.log("No out degree for undirected graph");
+                root.error("No out degree for undirected graph");
+                //Throw error
+            }
+            var vertex = parameters[0].value;
+            returnValue = origValue[vertex].length;
+            return [returnValue, [origValue, isDirected], "int"];
+        }
+
+        if (method == "getInDegree") {
+            if (isDirected != true) {
+                env.throwError(root.linenum);
+                console.log("No in degree for undirected graph");
+                root.error("No in degree for undirected graph");
+                //Throw error
+            }
+            var vertex = parameters[0].value;
+            var degree = 0;
+            for (var i = 0; i < origValue.length; i++) {
+                var neighbors = origValue[i];
+                if (neighbors.indexOf(vertex) >= 0) {
+                    degree += 1;
+                }
+            }
+            returnValue = degree;
+            return [returnValue, [origValue, isDirected], "int"];
+        }
+
         if (method == "hasEdge") {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
