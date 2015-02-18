@@ -71,11 +71,12 @@ $(document).ready(function () {
                     }
                 } else if (type == "List<Float>") {
                     console.log("Parameters are: ", parameters);
-                    if (parameters[0].value.toString().indexOf('.') < 0) {
-                        if (parameters[0].value[1] != "float") {
+                    if (typeof parameters[0].value != typeof []) {
                         env.throwError(root.linenum);
-                        root.error();
-                        }
+                        root.error("Expected float");
+                    } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
+                        env.throwError(root.linenum);
+                        root.error("Expected float");
                     }
                 } else if (type == "List<String>") {
                     if (typeof parameters[0].value != typeof "h") {
@@ -84,7 +85,7 @@ $(document).ready(function () {
                     }
                 }
                 if (type == "List<Float>") {
-                    origValue.push(parameters[0].value[0]);
+                    origValue.push([parameters[0].value[0], "float"]);
                 } else {
                     origValue.push(parameters[0].value);
                 }
@@ -119,6 +120,7 @@ $(document).ready(function () {
                 }
                 var first = origValue.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
+                if (type == "List<Float>") second = [second, "float"];
                 var third = origValue.slice(parameters[0].value);
                 
                 origValue = first.concat(second).concat(third);                
@@ -143,14 +145,47 @@ $(document).ready(function () {
                 console.log("Index out of bounds");
                 root.error("index out of bounds");
             }
+            
             returnValue = origValue[parameters[0].value];
             return [returnValue, origValue, valType];
         }
+
+
         if (method == 'contains') {
+            if (type == "List<Float>") {
+                if (typeof parameters[1].value != typeof []) {
+                    env.throwError(root.linenum);
+                    root.error("Expected float");
+                } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
+                    env.throwError(root.linenum);
+                    root.error("Expected float");
+                }
+                var index = -1;
+                for(var i = 0; i < origValue.length; i++){
+                    if (origValue[i][0] == parameters[0].value) index = i;
+                }
+                if (index >= 0)  return [true, origValue, "boolean"];
+                return [false, origValue, "boolean"];
+            }
             returnValue = (origValue.indexOf(parameters[0].value) >= 0);
             return [returnValue, origValue, "boolean"];
         }
         if (method == 'indexOf') {
+            if (type == "List<Float>") {
+                if (typeof parameters[1].value != typeof []) {
+                    env.throwError(root.linenum);
+                    root.error("Expected float");
+                } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
+                    env.throwError(root.linenum);
+                    root.error("Expected float");
+                }
+                var index = -1;
+                for(var i = 0; i < origValue.length; i++){
+                    if (origValue[i][0] == parameters[0].value) index = i;
+                }
+                returnValue = index;
+                return [returnValue, origValue, "int"];
+            }
             returnValue = origValue.indexOf(parameters[0].value);
             return [returnValue, origValue, "int"];
         }
@@ -193,13 +228,15 @@ $(document).ready(function () {
                     root.error();
                 }
             } else if (type == "List<Float>") {
-                if (typeof parameters[1].value != typeof 2) {
+                if (typeof parameters[1].value != typeof []) {
                     env.throwError(root.linenum);
-                    root.error();
-                } else if (parameters[1].value.toString().indexOf(".") < 0) {
+                    root.error("Expected float");
+                } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
                     env.throwError(root.linenum);
-                    root.error();
+                    root.error("Expected float");
                 }
+                origValue[parameters[0].value] = [parameters[1].value, "float"];
+                return [returnValue, origValue];
             } else if (type == "List<String>") {
                 if (typeof parameters[1].value != typeof "h") {
                     env.throwError(root.linenum);
@@ -217,7 +254,7 @@ $(document).ready(function () {
                     var toPush = Math.floor((Math.random()*100) + 1);
                     value.push(toPush);
                 }
-                return [returnValue, value];  
+                return [returnValue, value, type];  
             }
             if (type == "List<String>") {
                 var value = [];
@@ -227,15 +264,15 @@ $(document).ready(function () {
                     console.log("Going to push: ", options[toPush], typeof options[toPush]);
                     value.push('"' + options[toPush] + '"');
                 }
-                return [returnValue, value];
+                return [returnValue, value, type];
             }
             if (type == "List<Float>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
                     var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    value.push(toPush);
+                    value.push([toPush,  "float"]);
                 }
-                return [returnValue, value];
+                return [returnValue, value, type];
             }
         }
     }
