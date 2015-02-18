@@ -60,11 +60,9 @@ textarea#user_textbox{
 
 #modal {
     position:absolute;
-    height:500px;
-    width:59%;
-    right:0px;
+    width:57%;
+    right:5px;
     background:rgba(0,0,0,1);
-    border-radius:10px;
     padding:8px;
 }
 
