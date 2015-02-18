@@ -16,7 +16,6 @@ $(document).ready(function() {
         $("#pause").hide();
         $("#step").hide();
         $("#stop").hide();
-        $("#sample").show();
         $("#build").show();
         
         return this;
@@ -41,6 +40,7 @@ $(document).ready(function() {
         $("#stackHelp").hide();
         $("#queueHelp").hide();
         $("#graphHelp").hide();
+        $("#treeHelp").hide()
         $("#dictHelp").hide();
         $("#modal").hide();
     };
@@ -78,6 +78,7 @@ $(document).ready(function() {
         $("#stackHelp").show();
         $("#queueHelp").show();
         $("#graphHelp").show();
+        $("#treeHelp").show();
         $("#dictHelp").show();
     };
     
@@ -108,6 +109,12 @@ $(document).ready(function() {
     EventHandler.prototype.onSampleGraph = function() {
        console.log('Event Handler: onSampleGraph()');
        code = this.codeDatabase.getCode('graph'); 
+       this.codeBox.setCode(code);
+    };
+
+    EventHandler.prototype.onSampleTree = function() {
+       console.log('Event Handler: onSampleTree()');
+       code = this.codeDatabase.getCode('tree'); 
        this.codeBox.setCode(code);
     };
 
