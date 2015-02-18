@@ -54,3 +54,4 @@ $(document).ready(function () {
                     console.log("Unknown action for Graphs: " + action);
             }
         }
+});
