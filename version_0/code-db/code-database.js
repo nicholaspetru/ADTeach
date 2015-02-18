@@ -40,6 +40,7 @@ $(document).ready(function () {
             ].join('\n');
         this.database['graph'] =
             ['Graph g = new Graph();',
+             'g.populate(5, 0.5);',
             'g.addEdge(0,1);',
             'g.addEdge(1,2);',
             'g.addEdge(0,2);',
@@ -54,7 +55,7 @@ $(document).ready(function () {
             ['Dictionary<String, Integer> d = new Dictionary<String, Integer>();',
             'd.populate(5);',
             'd.put("hello",4);',
-            'int x = d.get("hello);'
+            'int x = d.get("hello");'
             ].join('\n');
         return this;
     }
