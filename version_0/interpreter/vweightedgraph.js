@@ -90,7 +90,7 @@ $(document).ready(function () {
                     }
                     origValue[currNeighbor] = neighborNeigh;                    
                 }
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [origValue, isDirected], "WeightedGraph"];
             }
             
         } 
@@ -118,7 +118,7 @@ $(document).ready(function () {
             node1Edges.push([node2, weight]);
             if (isDirected != true) node2Edges.push([node1, weight]);
             
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "WeightedGraph"];
             
         } if (method == "populate") {
             var numNodes = parameters[0].value;
@@ -140,7 +140,7 @@ $(document).ready(function () {
                     }
                 }
             }
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "WeightedGraph"];
         }
         
         if (method == "removeEdge") {
@@ -180,13 +180,13 @@ $(document).ready(function () {
                     origValue[node2] = node2Edges;
                 }
                 
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [origValue, isDirected], "WeightedGraph"];
             }
         }
         
         if (method == "addVertex") {
             origValue.push([]);
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "WeightedGraph"];
         }
 
         if (method == "getVertices") {
@@ -222,14 +222,6 @@ $(document).ready(function () {
             returnValue = origValue[vertex].length;
             return [returnValue, [origValue, isDirected], "int"];
         }
-        
-        if (method == "getVertices") {
-            returnValue = [];
-            for (var i = 0; i < origValue.length; i++) {
-                returnValue.push(i);
-            }
-            return [returnValue, [origValue, isDirected], "List<Integer>"];
-        }
 
         if (method == "getInDegree") {
             if (isDirected != true) {
@@ -262,7 +254,7 @@ $(document).ready(function () {
                 if (node1Edges[i][0] == node2) returnValue = true;
             }
             console.log(returnValue);
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "boolean"];
         }
         
         if (method == "getNeighbors") {
@@ -282,7 +274,7 @@ $(document).ready(function () {
             }
             
             returnValue = neighbors;
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "List<Integer>"];
         }
         
         if (method == "numEdges") {
@@ -292,22 +284,22 @@ $(document).ready(function () {
                 length += origValue[i].length;
             }
             returnValue = length / 2;
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
         }
         
         if (method == "numVerts") {
             returnValue = origValue.length;
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
         }
         
         if (method == "isEmpty") {
             returnValue = (origValue.length == 0);
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "boolean"];
         }
         
         if (method == "clear") {
             origValue = [];
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "WeightedGraph"];
         }
         
         if (method == "getWeight") {
@@ -326,7 +318,7 @@ $(document).ready(function () {
                 }
             }
 
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
 
         }
 
@@ -345,7 +337,7 @@ $(document).ready(function () {
                 }
             }
 
-            return [returnValue, [origValue, isDirected]];
+            return [returnValue, [origValue, isDirected], "int"];
 
         }
         
