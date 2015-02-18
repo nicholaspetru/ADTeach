@@ -113,6 +113,12 @@ $(document).ready(function() {
        this.codeBox.setCode(code);
     };
 
+    EventHandler.prototype.onSampleWeightedGraph = function() {
+       console.log('Event Handler: onSampleWeightedGraph()');
+       code = this.codeDatabase.getCode('weightedGraph'); 
+       this.codeBox.setCode(code);
+    };
+
     EventHandler.prototype.onSampleTree = function() {
        console.log('Event Handler: onSampleTree()');
        code = this.codeDatabase.getCode('tree'); 
@@ -124,9 +130,6 @@ $(document).ready(function() {
        code = this.codeDatabase.getCode('dict'); 
        this.codeBox.setCode(code);
     };
-
-
-    //TODO: Actually get this to modify delay appropriately...
 
     //takes in a value from 0-100
     //0 represents slower animation speed
