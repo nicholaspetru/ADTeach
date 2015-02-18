@@ -284,7 +284,8 @@ $(document).ready(function () {
                 return new Queue(this.paper,name,type,value, this);
             case "Stack":
                 return new Stack(this.paper,name,type,value, this);
-            //and more cases....
+            case "Graph":
+                return new Graph(this.paper,name,type,value, this);
             default:
                 console.log("Unknown type for newEntity: " + type);
                 return;
