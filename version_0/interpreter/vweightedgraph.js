@@ -18,7 +18,7 @@ $(document).ready(function () {
     }
     
     VWeightedGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getEdges', 'getVerticies', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+        var noParam = ['getVerticies', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("zero parameters needed");
@@ -222,6 +222,14 @@ $(document).ready(function () {
             returnValue = origValue[vertex].length;
             return [returnValue, [origValue, isDirected], "int"];
         }
+        
+        if (method == "getVertices") {
+            returnValue = [];
+            for (var i = 0; i < origValue.length; i++) {
+                returnValue.push(i);
+            }
+            return [returnValue, [origValue, isDirected], "List<Integer>"];
+        }
 
         if (method == "getInDegree") {
             if (isDirected != true) {
@@ -234,8 +242,8 @@ $(document).ready(function () {
             var degree = 0;
             for (var i = 0; i < origValue.length; i++) {
                 var neighbors = origValue[i];
-                if (neighbors.indexOf(vertex) >= 0) {
-                    degree += 1;
+                for(var j = 0; j<neighbors.length; j++){
+                    if (neighbors[j][0] == vertex) degree++;
                 }
             }
             returnValue = degree;
