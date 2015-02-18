@@ -22,7 +22,7 @@ $(document).ready(function () {
         this.VBORDER = 12;
         this.FONT_HEIGHT = 12;
         this.FONT_SIZE = 18;
-        this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
+        this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER;
         this.ADT_SECTION_TEXT_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
         this.NEXT_PRIM_X = -1;
@@ -237,6 +237,14 @@ $(document).ready(function () {
         }
     }
 
+    //Resets certain values
+    VisualizerHandler.prototype.ResetValues = function() {
+        this.hoADT_count = -1;
+        this.vertADT_count = -1;
+        this.blobADT_count = -1;
+
+    }
+
     //Deletes all Entities
     VisualizerHandler.prototype.DeleteAll = function(string) {
         console.log("Visualizer Handler: DeleteAll()");
@@ -381,52 +389,50 @@ $(document).ready(function () {
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
 
-        var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+        var curX, curY;
 
         for (var i = 0; i < entities.length; i++){
             if (!this.isPrimitive(entities[i])){
-                if (entities[i].x != curX) {
 
-                    // check ADT type to determine general positioning
-                    switch(entities[i].type.split("<")[0]){
-                        // "fall-through" case for horizontal ADTS; to right of vert, and above blob
-                        case "List":
-                        case "Queue":
-                        case "PriorityQueue":
-                            //increment the ADT category count
-                            if (entities[i].x == 0)
-                                this.hoADT_count += 1;
+                // check ADT type to determine general positioning
+                switch(entities[i].type.split("<")[0]){
+                    // "fall-through" case for horizontal ADTS; to right of vert, and above blob
+                    case "List":
+                    case "Queue":
+                    case "PriorityQueue":
+                        //increment the ADT category count
+                        if (entities[i].x == 0) {
                             curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                            curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 20)*this.hoADT_count;
-                            break;
+                            curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12 + entities[i].FONT_SIZE)*this.hoADT_count;
+                        }
+                        break;
 
-                        // Stack is only vertical ADT (?); starts on bottom left
-                        case "Stack":
-                            // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
-                            //increment the ADT category count
-                            if (entities[i].x == 0)
-                                this.vertADT_count += 1;
-                            //if (this.hoADT_count > -1 || this.blobADT_count > -1)
-                            //   i = 0;
-                            curX = this.VBORDER + (entities[i].WIDTH+20)*this.vertADT_count;
-                            curY = parseInt(paper_height, 10) - entities[i].HEIGHT-entities[i].FONT_SIZE-6;
+                    // Stack is only vertical ADT (?); starts on bottom left
+                    case "Stack":
+                        // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
+                        //increment the ADT category count
+                        if (entities[i].x == 0)
+                            this.vertADT_count += 1;
+                        //if (this.hoADT_count > -1 || this.blobADT_count > -1)
+                        //   i = 0;
+                        curX = this.VBORDER + (entities[i].WIDTH+20)*this.vertADT_count;
+                        curY = parseInt(paper_height, 10) - entities[i].HEIGHT-entities[i].FONT_SIZE-6;
 
-                        
-                            break;
+                    
+                        break;
 
-                        //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
-                        case "Graph":
-                        case "Dict":
-                            // bottom right
-                            this.blobADT_count += 1;
-                            break;
-                        
-                        default:
-                            console.log("Unknown ADT type: " + entities[i].type);
-                            return; 
-                    }
-                    entities[i].move(curX, curY);
+                    //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
+                    case "Graph":
+                    case "Dict":
+                        // bottom right
+                        this.blobADT_count += 1;
+                        break;
+                    
+                    default:
+                        console.log("Unknown ADT type: " + entities[i].type);
+                        return; 
                 }
+                entities[i].move(entities[i].x-curX, entities[i].y-curY);
             }
         }
     };
@@ -456,7 +462,7 @@ $(document).ready(function () {
                             if (this.entities[i].x == 0)
                                 this.hoADT_count += 1;
                             curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 20)*this.hoADT_count;
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 12 + this.entities[i].FONT_SIZE)*this.hoADT_count;
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
@@ -493,7 +499,7 @@ $(document).ready(function () {
                     if (this.entities[i].x == 0){
                         this.entities[i].create(curX, curY);
                     }else{
-                        this.entities[i].move(curX, curY);
+                        this.entities[i].move(this.entities[i].x-curX, this.entities[i].y-curY);
                     }
                     console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
 

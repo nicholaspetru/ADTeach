@@ -15,7 +15,7 @@ $(document).ready(function () {
         this.y = 0;
         this.cur_length = 10;
         this.MAX_LENGTH = 10;
-        this.FONT_SIZE = 18;
+        this.FONT_SIZE = 15;
         this.DUNIT_HEIGHT = 45*.85;
         this.DUNIT_WIDTH = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
