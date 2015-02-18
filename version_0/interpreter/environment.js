@@ -53,6 +53,9 @@ $(document).ready(function () {
 		console.log("AFTER CREATION: ", n.value);
 		this.variables.push(n);
 		this.names.push(variable);
+        if (type == "float") {
+            value = value[0];
+        }
 		this.symbolTable.newVariable(type, variable, value, originMethod, originADT, lineNum-1);
 	}
 
