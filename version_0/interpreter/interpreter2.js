@@ -81,7 +81,6 @@ $(document).ready(function () {
         } else if (rootType == "unary" && root == "--") {
             this.evalMinusMinus(block, env);
         } else if (rootType == "binary" && root == "+=") {
-            console.log("Where I wanna be");
             this.evalPlusEqual(block, env);
         } else if (rootType == "binary" && root == "-=") {
             this.evalMinusEqual(block, env);
@@ -115,7 +114,7 @@ $(document).ready(function () {
                         return [front, "float"];
                     }
                     console.log("Parsed float will be: ", typeof parseFloat(root.value));
-                    return parseFloat(root.value);
+                    return [parseFloat(root.value), "float"];
                     break;
                 case 'STR_TYPE':
                     return root.value;
@@ -293,6 +292,11 @@ $(document).ready(function () {
                             console.log("INCOMPATIBLE TYPES!!");
                             root.error("Incompatible types");
                         }
+                        if (value.length = 2) {
+                            if (value[1] == "float") {
+                                value = value[0];
+                            }
+                        }
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                         break;
                 }
@@ -318,6 +322,7 @@ $(document).ready(function () {
                 //returnValue = value[0];
                 //method = value[2];
                 //originMethod = method;
+                console.log("VALUE ISSSSS: ", value);
                 env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
             }
         }
@@ -682,6 +687,8 @@ $(document).ready(function () {
                 case("getChildren"):
                 case('getInDegree'):
                 case('getOutDegree'):
+                case('removeVertex'):
+                case('setRoot'):
                     console.log("Going to add: ", cloneParam);
                     method = method + "." + cloneParam[0].value;
                     console.log("method is: ", method);
@@ -713,11 +720,21 @@ $(document).ready(function () {
                 case("addEdge"):
                 case("removeEdge"):
                 case("hasEdge"):
+                case("getChild"):
+                case("put"):
+                case("removeChild"):
                     method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
                     break;
+                case("addChild"):
+                    if (parameters.length == 2) {
+                        method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + adtCurValue.length;
+                    } else if (parameters.length == 3) {
+                        method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + cloneParam[2].value;
+                    
+                    }
             }
             
-            env.updateVariable(adt, newValue, method, originADT, root.linenum);
+            env.updateVariable(adt, newValue, method, originADT, root.linenum, adtType);
         }
         console.log("IN PERFORM METHOD: ", valueType);
         return [returnValue, newValue, method, valueType];
