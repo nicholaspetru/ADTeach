@@ -423,7 +423,7 @@ $(document).ready(function () {
 
                     //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                     case "Graph":
-                    case "Dict":
+                    case "Dictionary":
                         // bottom right
                         this.blobADT_count += 1;
                         break;
@@ -484,7 +484,7 @@ $(document).ready(function () {
 
                         //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                         case "Graph":
-                        case "Dict":
+                        case "Dictionary":
                             // bottom right
                             this.blobADT_count += 1;
                             break;
