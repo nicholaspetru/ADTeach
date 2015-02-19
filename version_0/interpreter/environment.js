@@ -21,7 +21,10 @@ $(document).ready(function () {
     }
     
 	Environment.prototype.getValue = function(name) {
+        console.log("Looking for: ", name);
 		var index = this.names.indexOf(name);
+        console.log("Looking in the environment: ", this.variables);
+        console.log("Index is: ", index);
 		if (index >= 0) {
 			var v = this.variables.index
 			return this.variables[index].value;
@@ -110,6 +113,7 @@ $(document).ready(function () {
             //new IncompatibleTypes();
         }
 		this.variables.splice(this.variables.indexOf(name), 1);
+        this.names.splice(this.variables.indexOf(name), 1);
         this.symbolTable.removeVariable(type, name, null, null, null, lineNum-1);
 	}
     
