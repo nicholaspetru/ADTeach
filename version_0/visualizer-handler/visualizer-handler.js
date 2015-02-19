@@ -402,7 +402,7 @@ $(document).ready(function () {
                     case "PriorityQueue":
                         //increment the ADT category count
                         curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12 + entities[i].FONT_SIZE)*this.hoADT_count;
+                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 30 + entities[i].FONT_SIZE)*this.hoADT_count;
                         console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
                         entities[i].move(curX, curY);
                         break;
@@ -456,7 +456,9 @@ $(document).ready(function () {
                                 this.hoADT_count += 1;
 
                             curX = this.VBORDER + (90)*(1+this.vertADT_count);
-                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 12 + this.entities[i].FONT_SIZE)*this.hoADT_count;
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*this.hoADT_count;
+                            console.log(this.ADT_SECTION_Y + " and mult of " + ", " + this.entities[i].HEIGHT + ", " + 60 + ", " + this.entities[i].FONT_SIZE + ", " + this.hoADT_count)
+
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
