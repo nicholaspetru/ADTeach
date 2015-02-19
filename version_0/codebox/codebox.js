@@ -30,7 +30,7 @@ $(document).ready(function () {
     CodeBox.prototype.freezeCode = function(){
         console.log("Code Box: freezeCode()");
         $("#user_textbox").prop('disabled', true);
-        $("#user_textbox").css({"background-color": "#E0E0E0"});
+        $("#user_textbox").css({"background-color": "#B6C5BE"});
         // freezecdoe() called if onClick(play/step) called
         // if (this.PLAYING == true) {
         //     grey out the box and prevent user from making changes
