@@ -85,7 +85,7 @@ $(document).ready(function () {
                     }
                 }
                 if (type == "List<Float>") {
-                    origValue.push([parameters[0].value[0], "float"]);
+                    origValue.push([parameters[0].value, "float"]);
                 } else {
                     origValue.push(parameters[0].value);
                 }
@@ -108,7 +108,7 @@ $(document).ready(function () {
                         root.error();
                     }
                 } else if (type == "List<Float>") {
-                    if (parameters[0].value[1] != "float") {
+                    if (parameters[1].value[1] != "float") {
                         env.throwError(root.linenum);
                         root.error();
                     }
@@ -120,7 +120,7 @@ $(document).ready(function () {
                 }
                 var first = origValue.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
-                if (type == "List<Float>") second = [second, "float"];
+                if (type == "List<Float>") second = [[second[0], "float"]];
                 var third = origValue.slice(parameters[0].value);
                 
                 origValue = first.concat(second).concat(third);                
@@ -153,16 +153,16 @@ $(document).ready(function () {
 
         if (method == 'contains') {
             if (type == "List<Float>") {
-                if (typeof parameters[1].value != typeof []) {
+                if (typeof parameters[0].value != typeof []) {
                     env.throwError(root.linenum);
                     root.error("Expected float");
-                } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
+                } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
                     env.throwError(root.linenum);
                     root.error("Expected float");
                 }
                 var index = -1;
                 for(var i = 0; i < origValue.length; i++){
-                    if (origValue[i][0] == parameters[0].value) index = i;
+                    if (origValue[i][0][0] == parameters[0].value[0]) index = i;
                 }
                 if (index >= 0)  return [true, origValue, "boolean"];
                 return [false, origValue, "boolean"];
@@ -172,16 +172,16 @@ $(document).ready(function () {
         }
         if (method == 'indexOf') {
             if (type == "List<Float>") {
-                if (typeof parameters[1].value != typeof []) {
+                if (typeof parameters[0].value != typeof []) {
                     env.throwError(root.linenum);
                     root.error("Expected float");
-                } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
+                } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
                     env.throwError(root.linenum);
                     root.error("Expected float");
                 }
                 var index = -1;
                 for(var i = 0; i < origValue.length; i++){
-                    if (origValue[i][0] == parameters[0].value) index = i;
+                    if (origValue[i][0][0] == parameters[0].value[0]) index = i;
                 }
                 returnValue = index;
                 return [returnValue, origValue, "int"];

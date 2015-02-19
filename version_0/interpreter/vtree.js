@@ -204,30 +204,35 @@ $(document).ready(function () {
                 //Throw error
             }
             
-            if (typeof child != typeof 1 || child.toString().indexOf('.') >= 0
-               || typeof vertex != typeof 1 || vertex.toString().indexOf('.') >= 0) {
+            if (typeof child != typeof 1 || typeof vertex != typeof 1) {
                 env.throwError(root.linenum);
                 root.error();
             }
             
-            if (parameters.length == 2) {
-                for (var i = 0; i < origValue.length; i++) {
-                    var currentTreeNode = origValueCopy[i];
-                    var currValue = currentTreeNode[0];
-                    if (currValue == vertex) {
-                        var currChildrenCopy = [];
-                        for (var j = 0; j < currentTreeNode[2].length; j++) {
-                            var first = currentTreeNode[2].slice(0, child);
-                            var second = currentTreeNode[2].slice(child+1);
-                            currChildrenCopy = first.concat(second);
+            
+            for (var i = 0; i < origValue.length; i++) {
+                var currentTreeNode = origValueCopy[i];
+                var currValue = currentTreeNode[0];
+                if (currValue == vertex) {
+                    var currChildrenCopy = [];
+                    console.log("currentTree Node is: ", currentTreeNode[2]);
+                    
+                    //Remove the children from parent node
+                    for (var j = 0; j < currentTreeNode[2].length; j++) {
+                        if (currentTreeNode[2][j] != child) {
+                            currChildrenCopy.push(currentTreeNode[2][j]);
                         }
-                        origValueCopy[i][2] = currChildrenCopy;
-                        origValueCopy.push([child, currValue, []]);
                     }
+                    
+                    //Remove child and child's children from tree
+                    console.log("Leftover children are: ", currChildrenCopy);
+                    origValueCopy[i][2] = currChildrenCopy;
+                    origValueCopy.push([child, currValue, []]);
                 }
-                origValue = origValueCopy;
-                return [returnValue, origValue];
             }
+            origValue = origValueCopy;
+            return [returnValue, origValue];
+            
          
         }
         

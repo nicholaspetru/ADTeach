@@ -74,7 +74,24 @@ $(document).ready(function () {
                 slicedValue.push(newVal[i][0]);
             }
             newVal = slicedValue;
-        
+        } else if (adtType == "Dictionary<Float><Integer>" || adtType == "Dictionary<Float><String>") {
+            var slicedDictionary = {};
+            for (var i in newVal) {
+                slicedDictionary[i[0]] = newVal[i];
+            }
+            newVal = slicedDictionary;
+        } else if (adtType == "Dictionary<Integer><Float>" || adtType == "Dictionary<String><Float>") {
+            var slicedDictionary = {};
+            for (var i in newVal) {
+                slicedDictionary[i] = newVal[i][0];
+            }
+            newVal = slicedDictionary;
+        } else if (adtType == "Dictionary<Float><Float>") {
+            var slicedDictionary = {};
+            for (var i in newVal) {
+                slicedDictionary[i][0] = newVal[i][0];
+            }
+            newVal = slicedDictionary;
         }
         
 		

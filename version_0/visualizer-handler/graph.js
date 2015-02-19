@@ -32,15 +32,17 @@ $(document).ready(function () {
         this.me = null; 
         }
         
-        List.prototype.create = function(){
-        }
 
-        //use this.me.push(newDU) to move graph as a whole
-        List.prototype.move = function(){
+        Graph.prototype.buildVisual = function() {
+            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+            this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+            this.me = this.paper.set();
+            this.me.push(this.myLabel);
+
         }
 
         // addEdge, addVertex, removeEdge, setDirected, 
-        List.prototype.update = function(action,originADT){
+        Graph.prototype.update = function(action,originADT){
             switch(action.splice("(")[0]) {
                 case "addEdge":
                     break;
@@ -53,5 +55,29 @@ $(document).ready(function () {
                 default:
                     console.log("Unknown action for Graphs: " + action);
             }
+        }
+        Graph.prototype.create = function(newX,newY){
+            this.x = newX;
+            this.y = newY;
+            this.buildVisual();
+
+            //get the delay for outside the loop
+            var delay = this.VH.setDelay(500);
+
+            //Fade in the label and frame
+            var anim = Raphael.animation({opacity:1},500);
+            this.me.animate(anim.delay(delay));
+            /*
+            this.myLabel.animate(anim.delay(delay));
+            this.myFrame.animate(anim.delay(delay));
+            */
+            for (var i = 0; i < this.vis.length; i++){
+                this.vis[i].create();
+            }
+        
+        };
+
+        //use this.me.push(newDU) to move graph as a whole
+        Graph.prototype.move = function(){
         }
 });
