@@ -71,12 +71,12 @@ $(document).ready(function () {
                     root.error("Looking for strings");
                 }   
             } else if (type == "Queue<Float>") {
-                if (typeof parameters[0].value != typeof 1) {
+                if (typeof parameters[0].value != typeof []) {
                     env.throwError(root.linenum);
-                    root.error();
-                } else if (parameters[0].value.toString().indexOf(".") < 0) {
+                    root.error("Expected float");
+                } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
                     env.throwError(root.linenum);
-                    root.error();
+                    root.error("Expected float");
                 }
             }
             var newList = [];
@@ -111,7 +111,7 @@ $(document).ready(function () {
         if (method == 'remove') {
             returnValue = origValue.pop();
             console.log("REturning, ", returnValue, " + ", origValue);
-            return [returnValue, origValue];
+            return [returnValue, origValue, "float"];
         }
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);
@@ -139,10 +139,10 @@ $(document).ready(function () {
             if (type == "Queue<Float>") {
                 for (var i = 0; i < parameters[0].value; i++) {
                     var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    value.push(toPush);
+                    value.push([toPush, "float"]);
                 }
             }
-            return [returnValue, value];
+            return [returnValue, value, "Queue<Float>"];
         }
         
     }
