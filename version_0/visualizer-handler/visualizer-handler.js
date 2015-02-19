@@ -22,7 +22,7 @@ $(document).ready(function () {
         this.VBORDER = 12;
         this.FONT_HEIGHT = 12;
         this.FONT_SIZE = 18;
-        this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER;
+        this.PRIMITIVE_SECTION_Y = this.FONT_HEIGHT + this.VBORDER + 12;
         this.ADT_SECTION_TEXT_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y;
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
         this.NEXT_PRIM_X = -1;
@@ -401,38 +401,34 @@ $(document).ready(function () {
                     case "Queue":
                     case "PriorityQueue":
                         //increment the ADT category count
-                        if (entities[i].x == 0) {
-                            curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                            curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12 + entities[i].FONT_SIZE)*this.hoADT_count;
-                        }
+                        curX = this.VBORDER + (90)*(this.vertADT_count+1);
+                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12 + entities[i].FONT_SIZE)*this.hoADT_count;
+                        console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
+                        entities[i].move(curX, curY);
                         break;
 
-                    // Stack is only vertical ADT (?); starts on bottom left
+                    // Don't do anything. For now, stacks won't get repositioned... that'll change
                     case "Stack":
-                        // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
-                        //increment the ADT category count
-                        if (entities[i].x == 0)
-                            this.vertADT_count += 1;
-                        //if (this.hoADT_count > -1 || this.blobADT_count > -1)
-                        //   i = 0;
-                        curX = this.VBORDER + (entities[i].WIDTH+20)*this.vertADT_count;
-                        curY = parseInt(paper_height, 10) - entities[i].HEIGHT-entities[i].FONT_SIZE-6;
-
-                    
                         break;
 
                     //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                     case "Graph":
+<<<<<<< HEAD
                     case "Dictionary":
                         // bottom right
                         this.blobADT_count += 1;
+=======
+                    case "Dict":
+                        curX = this.VBORDER + (90)*(this.vertADT_count+1);
+                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12)*this.blobADT_count + 60*this.hoADT_count;
+                        entities[i].move(curX, curY);
+>>>>>>> 2cefca40a91dbd61dff42ddfe92f9a88f8fd8f3e
                         break;
                     
                     default:
                         console.log("Unknown ADT type: " + entities[i].type);
                         return; 
                 }
-                entities[i].move(entities[i].x-curX, entities[i].y-curY);
             }
         }
     };
@@ -461,25 +457,22 @@ $(document).ready(function () {
                             //increment the ADT category count
                             if (this.entities[i].x == 0)
                                 this.hoADT_count += 1;
-                            curX = this.VBORDER + (90)*(this.vertADT_count+1);
+
+                            curX = this.VBORDER + (90)*(1+this.vertADT_count);
                             curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 12 + this.entities[i].FONT_SIZE)*this.hoADT_count;
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
                         // Stack is only vertical ADT (?); starts on bottom left
                         case "Stack":
-                            // bottom left TODO: need to make it so that if a stack is drawn, all existing non stack adts must move
                             //increment the ADT category count
                             if (this.entities[i].x == 0)
                                 this.vertADT_count += 1;
                             if (this.hoADT_count > -1 || this.blobADT_count > -1)
                                 this.shiftADT(this.entities.slice(0,i));
 
-
                             curX = this.VBORDER + (this.entities[i].WIDTH+20)*this.vertADT_count;
                             curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
-
-                        
                             break;
 
                         //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
@@ -494,12 +487,13 @@ $(document).ready(function () {
                             return; 
                     }
 
-                    console.log(this.vertADT_count)
+                    console.log("vert increment: " + this.vertADT_count)
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
                         this.entities[i].create(curX, curY);
                     }else{
-                        this.entities[i].move(this.entities[i].x-curX, this.entities[i].y-curY);
+                        console.log("Moving x of " + this.entities[i].name + " to " + curX)
+                        this.entities[i].move(curX, curY);
                     }
                     console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
 
@@ -507,7 +501,7 @@ $(document).ready(function () {
                 //curX +=  this.entities[i].WIDTH*1.2;
             }
         }
-    }
+    };
 
     //Returns whether or not the Entity is a primitive
     VisualizerHandler.prototype.isPrimitive = function(entity) {
