@@ -52,23 +52,33 @@
         <!--Main -->
         <script src="main.js"></script>
         
-		<h2 id="mainheader"> <b> Data Tutor </b>
+		<h2 id="mainheader"> <center><b>ADTeach: Learn Through Visualization</b></center>
 		</h2>
 
 		<link rel="stylesheet" href="codeboxstyle.css">
 		<link rel="stylesheet" href="style.css">
     </head>
 
-    <body>
+    <body bgcolor="#F0F8FF">
     <div class="grid">
         <div class="col-1-2" id="code_env"> 
             <b>Programming Environment </b>
             <br>
-            <button name="build" id="build">Build</button>
-			<button name="play" id="play">Play</button>
-			<button name="pause" id="pause">Pause</button>
-			<button name="step" id="step">Step</button>
-			<button name="stop" id="stop">Stop</button>
+            <button name="build" id="build">
+                <img src="icons/tick.png" alt=""/>
+                Build</button>
+			<button name="play" id="play">
+                <img src="icons/control_fastforward.png" alt=""/>
+                Play</button>
+			<button name="pause" id="pause">
+                <img src="icons/control_pause.png" alt=""/>
+                Pause</button>
+			<button name="step" id="step">
+                <img src="icons/control_play.png" alt=""/>
+                Step</button>
+			<button name="stop" id="stop">
+                <img src="icons/control_stop.png" alt=""/>
+                Stop</button>
 
             
             <h5 id="helptext">Get help with:</h5>
@@ -78,10 +88,10 @@
             <button id="graphHelp">Graphs</button>
             <button id="treeHelp">Trees</button>
             <button id="dictHelp">Dicts</button>
-
+            <p></p>
             
-		    <textarea role="textbox" id="user_textbox" aria-multiline="true">List<Integer>y = new List<Integer>();</textarea>
-            <h4 id="range"> Set animation speed <br> 
+		    <textarea role="textbox" id="user_textbox" aria-multiline="true">Enter your code here!</textarea>
+            <h4 id="range"> Speed <br> 
                 <input type="range" id="slider" min="0" max="100" value="50" />
             </h4>
             
@@ -118,7 +128,10 @@
         <div class="col-2-3" id="vis_paper"></div>
 
         <div id='modal'>
-            <center><button name="exitModal" id="exitModal">Exit</button></center>
+            <center><button name="exitModal" id="exitModal">
+                <img src="icons/cross.png" alt=""/>
+                Exit
+            </button></center>
             <div id='content'></div>
             <center>
                 <button name="sampleList" id="sampleList">Sample List</button>
