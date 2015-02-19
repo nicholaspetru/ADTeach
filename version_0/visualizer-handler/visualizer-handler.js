@@ -484,6 +484,7 @@ $(document).ready(function () {
                     console.log("vert increment: " + this.vertADT_count)
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
+                        console.log(curX + "," + curY);
                         this.entities[i].create(curX, curY);
                     }else{
                         console.log("Moving x of " + this.entities[i].name + " to " + curX)
