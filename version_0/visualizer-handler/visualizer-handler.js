@@ -413,16 +413,13 @@ $(document).ready(function () {
 
                     //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                     case "Graph":
-<<<<<<< HEAD
                     case "Dictionary":
                         // bottom right
                         this.blobADT_count += 1;
-=======
                     case "Dict":
                         curX = this.VBORDER + (90)*(this.vertADT_count+1);
                         curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12)*this.blobADT_count + 60*this.hoADT_count;
                         entities[i].move(curX, curY);
->>>>>>> 2cefca40a91dbd61dff42ddfe92f9a88f8fd8f3e
                         break;
                     
                     default:
