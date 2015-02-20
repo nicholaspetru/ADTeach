@@ -43,9 +43,9 @@ $(document).ready(function () {
         
         // Keep a count of all ADT types to determine positioning
         // There are three categories: vertADT is stacks, hoADT are lists/queues (horizontally oriented), and blobADT is graphs and dicts
-        this.vertADT_count = -1;
-        this.hoADT_count = -1;
-        this.blobADT_count = -1;
+        this.vertADT_count = 0;
+        this.hoADT_count = 0;
+        this.blobADT_count = 0;
 
 
         //Testing new primitive system
@@ -417,7 +417,6 @@ $(document).ready(function () {
                     case "Dictionary":
                         // bottom right
                         this.blobADT_count += 1;
-                    case "Dict":
                         curX = this.VBORDER + (90)*(this.vertADT_count+1);
                         curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12)*this.blobADT_count + 60*this.hoADT_count;
                         entities[i].move(curX, curY);
@@ -431,13 +430,48 @@ $(document).ready(function () {
         }
     };
 
+    VisualizerHandler.prototype.countADT = function(){
+        for (var i = 0; i < this.entities.length; i++){
+            if (!this.isPrimitive(this.entities[i])){
+
+                // count all ADTs present in code.
+                switch(this.entities[i].type.split("<")[0]){
+                    case "List":
+                    case "Queue":
+                    case "PriorityQueue":
+                        if (this.entities[i].x == 0)
+                            this.hoADT_count += 1;
+                        break; 
+
+                    case "Stack":
+                        if (this.entities[i].x == 0)
+                            this.vertADT_count += 1;
+                        break;
+
+                    case "Graph":
+                    case "Dictionary":
+                        if (this.entities[i].x == 0)
+                            this.blobADT_count += 1;
+                        break;
+
+                    default:
+                        console.log("Unknown ADT type: " + entities[i].type);
+                        return; 
+                }
+            }
+        }
+    }
+
     //Arranges ADT
     VisualizerHandler.prototype.arrangeADTs = function() {
+        this.countADT();
+        console.log("adts: " + this.hoADT_count + " and " + this.vertADT_count + " and " + this.blobADT_count)
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
 
         var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+        var temp_hoADT = 0, temp_vertADT, temp_blobADT;
         //var curX = 0, curY = 0;
 
         for (var i = 0; i < this.entities.length; i++){
@@ -452,34 +486,36 @@ $(document).ready(function () {
                         case "List":
                         case "Queue":
                         case "PriorityQueue":
-                            //increment the ADT category count
+                            curX = this.VBORDER + (90)*(this.vertADT_count);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*temp_hoADT;
+
+                            //increment the horizontal ADT category count
                             if (this.entities[i].x == 0)
-                                this.hoADT_count += 1;
-
-                            curX = this.VBORDER + (90)*(1+this.vertADT_count);
-                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*this.hoADT_count;
-                            console.log(this.ADT_SECTION_Y + " and mult of " + ", " + this.entities[i].HEIGHT + ", " + 60 + ", " + this.entities[i].FONT_SIZE + ", " + this.hoADT_count)
-
+                                temp_hoADT += 1;
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
-                        // Stack is only vertical ADT (?); starts on bottom left
+                        // Stack is only vertical ADT; starts on bottom left
                         case "Stack":
-                            //increment the ADT category count
-                            if (this.entities[i].x == 0)
-                                this.vertADT_count += 1;
-                            if (this.hoADT_count > -1 || this.blobADT_count > -1)
-                                this.shiftADT(this.entities.slice(0,i));
-
-                            curX = this.VBORDER + (this.entities[i].WIDTH+20)*this.vertADT_count;
+                            //if (this.hoADT_count > -1 || this.blobADT_count > -1)
+                            //    this.shiftADT(this.entities.slice(0,i));
+                            curX = this.VBORDER + (this.entities[i].WIDTH+20)*temp_vertADT;
                             curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
+
+                            //increment the stack category count
+                            if (this.entities[i].x == 0)
+                                temp_vertADT += 1;
                             break;
 
                         //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                         case "Graph":
                         case "Dictionary":
-                            // bottom right
-                            this.blobADT_count += 1;
+                            // increment graph/dict count
+                            if (this.entities[i].x == 0)
+                                temp_blobADT += 1;
+
+                            curX = this.VBORDER + (90)*(this.vertADT_count);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*(temp_hoADT+temp_blobADT);
                             break;
                         
                         default:
@@ -487,13 +523,11 @@ $(document).ready(function () {
                             return; 
                     }
 
-                    console.log("vert increment: " + this.vertADT_count)
                     //check and see if this is a new entity. if so, fade it in. if not, move it
                     if (this.entities[i].x == 0){
                         console.log(curX + "," + curY);
                         this.entities[i].create(curX, curY);
                     }else{
-                        console.log("Moving x of " + this.entities[i].name + " to " + curX)
                         this.entities[i].move(curX, curY);
                     }
                     console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
