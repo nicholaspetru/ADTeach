@@ -236,6 +236,7 @@ $(document).ready(function () {
         this.hoADT_count = -1;
         this.vertADT_count = -1;
         this.blobADT_count = -1;
+        this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
 
     }
 
