@@ -127,13 +127,39 @@ $(document).ready(function () {
         Graph.prototype.setDirected= function() {
             this.isDirected = true;
         };
+
+
+        Graph.prototype.removeEdge = function(fromNodeID,toNodeID) {
+            for (var i = 0; i < this.edges.length; i++) {
+                if (this.edges[i].from.id == fromNodeID) {
+                    if (this.edges[i].to.id == toNodeID) {
+                        var anim = Raphael.animation({opacity:0},250, function() {
+                            this.edges[i].line.remove();
+                            this.edges[i].splice(i, 1);});
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+                else if (this.edges[i].from.id == toNodeID) {
+                    if (this.edges[i].to.id == fromNodeID) {
+                        var anim = Raphael.animation({opacity:0},250, function() {
+                            this.edges[i].line.remove();
+                            this.edges[i].splice(i, 1);});
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+            }
+        };
+
         Graph.prototype.createNode = function() {
             // create and display the node
             this.getNextPos();
             var nodeID = this.nodes.length;
             var newNode = new DataUnit(this.paper,'Graph',nodeID.toString(),this.VH,this.nextNodeX,this.nextNodeY,this.DUNIT_WIDTH,this.DUNIT_WIDTH,1);
             newNode.create();
-                        newNode.vis[1].attr({'stroke-width':2});
+            newNode.vis[1].attr({'stroke-width':2});
+            newNode.vis[1].id = nodeID;
 
             this.nodes.push(newNode);
 
