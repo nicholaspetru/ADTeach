@@ -455,7 +455,7 @@ $(document).ready(function () {
             case typeof "1":
                 return "String";
             case typeof true:
-                return "Boolean";
+                return "boolean";
                 
             case typeof VStack("int"):
                 return "Stack<int>";
