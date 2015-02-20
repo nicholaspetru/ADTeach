@@ -18,7 +18,7 @@ $(document).ready(function () {
     }
     
     VWeightedGraph.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['getVerticies', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
+        var noParam = ['getVerticies', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 console.log("zero parameters needed");
@@ -26,8 +26,8 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['getDegree', 'getInDegree', 'getOutDegree', 'getNeighbors'];
-        if (noParam.indexOf(method) >= 0) {
+        var oneParam = ['getDegree', 'getInDegree', 'getOutDegree', 'getNeighbors', 'setDirected'];
+        if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters needed");
                 return false;
@@ -35,7 +35,7 @@ $(document).ready(function () {
             }
         }
         var twoParam = ['removeEdge', 'populate', 'hasEdge', 'getWeight', 'setWeight'];
-        if (noParam.indexOf(method) >= 0) {
+        if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("two parameters needed");
                 return false;
@@ -43,7 +43,7 @@ $(document).ready(function () {
             }
         }
         var threeParam = ['addEdge'];
-        if (noParam.indexOf(method) >= 0) {
+        if (threeParam.indexOf(method) >= 0) {
             if (parameters.length != 3) {
                 console.log("three parameters needed");
                 return false;
@@ -305,7 +305,7 @@ $(document).ready(function () {
         if (method == "getWeight") {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
-            if (origValue.indexOf(node1) < 0 || origValue.indexOf(node2) < 0) {
+            if (origValue.length < node1-1 || origValue.length < node2-1) {
                 env.throwError(root.linenum);
                 root.error("Nodes not in graph");
             }
