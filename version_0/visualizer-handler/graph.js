@@ -1,6 +1,17 @@
-//graph.js
-//Represents a graph
-
+/**
+* graph.js
+* Represents a graph
+* ------------------
+* 
+* TODO:
+* ------------------
+* ! setDirected
+* - removeEdge
+* - Highlight nodes/edges for these?? 
+*       getInDegree(nodeID), getOutDegree(nodeID), getNeighbors(nodeID),
+*       hasEdge(fromNodeID,toNodeID), size()/isEmpty(), numEdges(), numVerts()
+* - timing of edge creation/revisit node dragger
+*/
 $(document).ready(function () {
     
     Graph = function(paper,name,type,value,vishandler){
@@ -11,21 +22,22 @@ $(document).ready(function () {
         //this.value = value;
         // each vertex is an index of the list
         // each list is a list of TO neighbors
-        this.value = [[3],[2],[1,3],[0,2]];
+        //this.value = [[3],[2],[1,3],[0,2]];
+        this.value = value;
         //assign the position
         this.x = 0;
         this.y = 0;
-        // dict for edges: key is source node, value is destination nodes
-        this.EDGES_OUT = {};
-        this.EDGES_IN = {};
-        // list of nodes (by id)
-        this.NODES = [];
-        this.TEXTS = [];
+
         this.FONT_SIZE = 15;
         this.DUNIT_WIDTH = 38.25;
         this.DUNIT_BUFFER = .2;
+        this.MAX_LENGTH = 10;
 
+        this.nodes = [];
         this.edges = [];
+
+        this.edgeCheck = {};
+
         //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
         this.HEIGHT = 45;
@@ -35,57 +47,176 @@ $(document).ready(function () {
         // any animation on this.me will affect the entire list, which'll be useful for dragging ADTs
         this.me = null;
         this.myLabel = null;
-        this.vis = [];
-        this.nextX = 0;
-        this.nextY = 0;
+
+        this.nextNodeX = 0;
+        this.nextNodeY = 0;
         this.count = 0;
         }
         
-        Graph.prototype.getNextPos = function() {
-            if (this.count == 0) {
-                this.nextX = this.x;
-                this.nextY = this.y;
+        // populate, addEdge, addVertex, removeEdge, setDirected 
+        Graph.prototype.update = function(action,originADT){
+            //strip the string and get the params from the "Action" str
+            var split = action.split(".");
+            //animate the change
+            switch(split[0]){
+                case "populate":
+                    this.populate();
+                    break;
+                case "addEdge":
+                    this.addEdge(parseInt(split[1]), parseInt(split[2]));
+                    break;
+                case "addVertex":
+                    this.addVertex();
+                    break;
+                case "removeEdge":
+                    this.removeEdge(parseInt(split[1]), parseInt(split[2]));
+                    break;
+                case "setDirected":
+                    this.setDirected(parseInt(split[1]));
+                    break;
+                default:
+                    console.log("Unknown action for Graphs: " + action);
             }
-            if (this.count % 2 == 0) {
-                this.nextX += this.DUNIT_WIDTH*2;
-            } else {
-                this.nextY += this.DUNIT_WIDTH*2;
+        };
+
+        Graph.prototype.addEdge = function(fromNodeID,toNodeID) {
+            console.log("########################");
+            console.log("VH graph addEdge( " + fromNodeID + " , " + toNodeID + " (add an edge from " + fromNodeID + " to " + toNodeID + ")");
+            this.createEdge(fromNodeID,toNodeID);
+        };
+
+        Graph.prototype.addVertex = function() {
+            console.log("########################");
+            console.log("VH graph addVertex()");
+            this.createNode();
+        };
+
+        Graph.prototype.populate = function() {
+            console.log("VH populate graph");
+            var graphVal = this.value[0];
+
+            for (var x = 0; x < graphVal.length; x++) {
+                console.log("graphVal[" + x + "]: " + graphVal[x]);
             }
-            this.count += 1;
-        }
-        Graph.prototype.buildVisual = function() {
-            this.me = this.paper.set();
+            //erase old data
+            this.erase();
 
-            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
-            this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
-            for (var i = 0; i < this.value.length; i++){
-                this.getNextPos();
-                var newDU = new DataUnit(this.paper,'Graph',i.toString(),this.VH,this.nextX,this.nextY,38.25,38.25,1);
-                newDU.create();
-                this.vis.push(newDU);
-                this.NODES.push(newDU.vis[1]);
-                this.TEXTS.push(newDU.vis[0]);
+            // create the nodes
+            for (var i = 0; i < graphVal.length; i++){
+                this.createNode();
             }
+            
+            for (var fromNodeID = 0; fromNodeID < graphVal.length; fromNodeID++) {
+                var toNodes = graphVal[fromNodeID];
+                for (var x = 0; x < toNodes.length; x++) {
+                    console.log(toNodes[x]);
+                    var toNodeID = toNodes[x];
+                    var checking = this.hasEdge(fromNodeID,toNodeID);
+                    console.log(checking);
 
-
-            for (var i = 0; i < this.value.length; i++) {
-                if (this.value[i]) {
-                    for (var j = 0; j < this.value[i].length; j++) {
-                        var fromNode = this.value[i];
-                        var toNode= fromNode[j];
-                        this.edges.push(this.paper.connection(this.NODES[i], this.NODES[toNode], "#000"));
+                    if (this.hasEdge(fromNodeID,toNodeID) == false) {
+                        this.createEdge(fromNodeID,toNodeID);
                     }
                 }
             }
-            
+        };
+
+        Graph.prototype.createNode = function() {
+            // create and display the node
+            this.getNextPos();
+            var nodeID = this.nodes.length;
+            var newNode = new DataUnit(this.paper,'Graph',nodeID.toString(),this.VH,this.nextNodeX,this.nextNodeY,this.DUNIT_WIDTH,this.DUNIT_WIDTH,1);
+            newNode.create();
+            this.nodes.push(newNode);
+
+            // add node id to edge tracker
+            this.edgeCheck[nodeID] = [];
+
             this.nodeDragger();
-            this.me.push(this.myLabel);
-            for (var i = 0; i < this.vis.length; i++) {
-                this.me.push(this.vis[i]);
+        };
+
+        Graph.prototype.createEdge = function(fromNodeID,toNodeID) {
+            console.log("#########!!!!!!!!!#############");
+            console.log("createEdge(" + fromNodeID + " , " + toNodeID + ")");
+            // create an edge connecting fromNodeID to toNodeID
+            var f = this.nodes[fromNodeID];
+            f = f.vis[1];
+            var t = this.nodes[toNodeID];
+            t = t.vis[1];
+            this.edges.push(this.paper.connection(t, f, "#000"));
+
+            // update this.edgeCheck
+            this.edgeCheck[fromNodeID].push(toNodeID);
+            if (this.isDirected == false) {
+                this.edgeCheck[toNodeID].push(fromNodeID);
+            }
+
+            // fade in the new edge
+            var delay = this.VH.setDelay(500); //get the delay for outside the loop
+            var anim = Raphael.animation({opacity:1},500);
+            this.edges[this.edges.length-1].line.animate(anim.delay(delay));
+            // make it draggable
+            this.nodeDragger();
+        };
+
+        // check if an edge from (fromNodeID,toNodeID) is already represented
+        // on the screen
+        Graph.prototype.hasEdge = function(fromNodeID,toNodeID) {
+            //console.log("hasEdge( " + fromNodeID + " , " + toNodeID + " )");
+            var check = this.edgeCheck[fromNodeID];
+            return check.indexOf(toNodeID) !== -1; 
+        };
+
+        Graph.prototype.create = function(newX,newY){
+            this.x = newX;
+            this.y = newY;
+
+            this.buildVisual();
+
+            //get the delay for outside the loop
+            var delay = this.VH.setDelay(500);
+
+            //Fade in the label
+            var anim = Raphael.animation({opacity:1},500);
+            this.myLabel.animate(anim.delay(delay));
+        };
+
+        Graph.prototype.buildVisual = function() {
+            // build the label
+            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+            this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        }
+
+        Graph.prototype.erase = function() {
+            for (var i = 0; i < this.nodes.length; i++){
+                var curNode = this.nodes[i];
+                for (var j = 0; j < curNode.length; j++) {
+                    curNode[j].remove();
+                }
+            }
+
+            for (var i = 0; i < this.edges.length; i++) {
+                this.edges[i].remove();
             }
 
         }
 
+        // not-unintelligent placement of nodes
+        Graph.prototype.getNextPos = function() {
+            if (this.count == 0) {
+                this.nextNodeX = this.x;
+                this.nextNodeY = this.y;
+            }
+            if (this.count % 2 == 0) {
+                this.nextNodeX += this.DUNIT_WIDTH*2;
+            } else {
+                this.nextNodeY += this.DUNIT_WIDTH*2;
+            }
+            this.count += 1;
+        };
+
+        // allows the user to drag the nodes around & arrange them as they like
+        // the edges follow the nodes
         Graph.prototype.nodeDragger = function() {
             var tempS, tempT;
             
@@ -118,62 +249,29 @@ $(document).ready(function () {
             up = function () {
             },
             connections = this.edges;
-            for (var i = 0, ii = this.NODES.length; i < ii; i++) {
-                tempS = this.NODES[i].attr({fill: "blue", stroke: "black", "fill-opacity": 0, "stroke-width": 2, cursor: "move"});
-                tempT = this.TEXTS[i].attr({fill: "black", stroke: "none", "font-size": this.FONT_SIZE, cursor: "move"});
 
-                this.NODES[i].drag(move, dragger, up);
-                this.TEXTS[i].drag(move,dragger,up);
+            for (var i = 0, ii = this.nodes.length; i < ii; i++) {
+                var n = this.nodes[i];
+                tempS = n.vis[1]; // the circle
+                tempT = n.vis[0]; // the node id
+                
+                tempS.attr({cursor: "move"});
+                tempT.attr({cursor: "move"});
+                
+                tempS.drag(move,dragger,up);
+                tempT.drag(move,dragger,up);
 
-                // Associate the elements
+                // associate the circle/id so that dragging one moves the other with it
                 tempS.pair = tempT;
                 tempT.pair = tempS;
             }
-        }
-
-        // addEdge, addVertex, removeEdge, setDirected, 
-        Graph.prototype.update = function(action,originADT){
-            //strip the string and get the params from the "Action" str
-            var split = action.split(".");
-            switch(action.splice("(")[0]) {
-                case "addEdge":
-                    break;
-                case "addVertex":
-                    break;
-                case "removeEdge":
-                    break;
-                case "setDirected":
-                    break;
-                default:
-                    console.log("Unknown action for Graphs: " + action);
-            }
-        }
-        Graph.prototype.create = function(newX,newY){
-            this.x = newX;
-            this.y = newY;
-            this.buildVisual();
-
-            //get the delay for outside the loop
-            var delay = this.VH.setDelay(500);
-
-            //Fade in the label and frame
-            var anim = Raphael.animation({opacity:1},500);
-            this.me.animate(anim.delay(delay));
-            /*
-            this.myLabel.animate(anim.delay(delay));
-            this.myFrame.animate(anim.delay(delay));
-            */
-            /*
-            for (var i = 0; i < this.vis.length; i++){
-                console.log("create " + this.vis[i]);
-                this.vis[i].create();
-            }
-            */
-            
-        
         };
 
+
         //use this.me.push(newDU) to move graph as a whole
+        /*
         Graph.prototype.move = function(){
         }
+        */
+
 });

@@ -1,26 +1,26 @@
 //http://wesleytodd.com/2013/4/drag-n-drop-in-raphael-js.html
-	Raphael.st.draggable = function() {
-		var me = this, // ref to set
-			lx = 0, // where the elements are currently
-			ly = 0,
-			ox = 0, // where the elements started
-			oy = 0,
-			moveFnc = function(dx, dy){
-				lx = dx + ox; // add the new change in x to the drag origin
-				ly = dy + oy; // do the same for y
-				me.transform('t' + lx + ',' + ly);
-			},
-			startFnc = function(){},
-			endFnc = function(){
-				ox = lx;
-				oy = ly;
-			};
-		this.drag(moveFnc, startFnc, endFnc); // loop through all elements in set and attach the three event handlers
-	};
-	
+    Raphael.st.draggable = function() {
+        var me = this, // ref to set
+            lx = 0, // where the elements are currently
+            ly = 0,
+            ox = 0, // where the elements started
+            oy = 0,
+            moveFnc = function(dx, dy){
+                lx = dx + ox; // add the new change in x to the drag origin
+                ly = dy + oy; // do the same for y
+                me.transform('t' + lx + ',' + ly);
+            },
+            startFnc = function(){},
+            endFnc = function(){
+                ox = lx;
+                oy = ly;
+            };
+        this.drag(moveFnc, startFnc, endFnc); // loop through all elements in set and attach the three event handlers
+    };
+    
 // http://raphaeljs.com/graffle.html
 // and http://stackoverflow.com/questions/3679436/how-can-i-combine-objects-in-the-raphael-javascript-library?lq=1
-	Raphael.fn.connection = function (obj1, obj2, line, bg) {
+    Raphael.fn.connection = function (obj1, obj2, line, bg) {
     if (obj1.line && obj1.from && obj1.to) {
         line = obj1;
         obj1 = line.from;
@@ -67,7 +67,7 @@
         var color = typeof line == "string" ? line : "#000";
         return {
             bg: bg && bg.split && this.path(path).attr({stroke: bg.split("|")[0], fill: "none", "stroke-width": bg.split("|")[1] || 3}),
-            line: this.path(path).attr({stroke: color, fill: "none"}),
+            line: this.path(path).attr({stroke: color, fill: "none", opacity:"0"}),
             from: obj1,
             to: obj2
         };
