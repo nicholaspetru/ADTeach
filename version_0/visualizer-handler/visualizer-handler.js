@@ -233,9 +233,9 @@ $(document).ready(function () {
 
     //Resets certain values
     VisualizerHandler.prototype.ResetValues = function() {
-        this.hoADT_count = -1;
-        this.vertADT_count = -1;
-        this.blobADT_count = -1;
+        this.hoADT_count = 0;
+        this.vertADT_count = 0;
+        this.blobADT_count = 0;
         this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
 
     }
@@ -402,7 +402,7 @@ $(document).ready(function () {
                     case "Queue":
                     case "PriorityQueue":
                         //increment the ADT category count
-                        curX = this.VBORDER + (90)*(this.vertADT_count+1);
+                        curX = this.VBORDER + (90)*(this.vertADT_count);
                         curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 30 + entities[i].FONT_SIZE)*this.hoADT_count;
                         console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
                         entities[i].move(curX, curY);
@@ -460,11 +460,13 @@ $(document).ready(function () {
                 }
             }
         }
+        console.log("adts: " + this.hoADT_count + " and " + this.vertADT_count + " and " + this.blobADT_count)
     }
 
     //Arranges ADT
     VisualizerHandler.prototype.arrangeADTs = function() {
         this.countADT();
+
         console.log("adts: " + this.hoADT_count + " and " + this.vertADT_count + " and " + this.blobADT_count)
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
@@ -482,7 +484,6 @@ $(document).ready(function () {
 
                     // check ADT type to determine general positioning
                     switch(this.entities[i].type.split("<")[0]){
-                        // "fall-through" case for horizontal ADTS; to right of vert, and above blob
                         case "List":
                         case "Queue":
                         case "PriorityQueue":
@@ -495,7 +496,6 @@ $(document).ready(function () {
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
-                        // Stack is only vertical ADT; starts on bottom left
                         case "Stack":
                             //if (this.hoADT_count > -1 || this.blobADT_count > -1)
                             //    this.shiftADT(this.entities.slice(0,i));
@@ -507,7 +507,6 @@ $(document).ready(function () {
                                 temp_vertADT += 1;
                             break;
 
-                        //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                         case "Graph":
                         case "Dictionary":
                             // increment graph/dict count
@@ -531,9 +530,7 @@ $(document).ready(function () {
                         this.entities[i].move(curX, curY);
                     }
                     console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
-
                 }
-                //curX +=  this.entities[i].WIDTH*1.2;
             }
         }
     };
