@@ -5,6 +5,10 @@
     background-color:#a8eecc;
 }
 
+/* Much of the following three code blocks pertaining to buttons is from:
+http://usabilitypost.com/2012/01/10/pressed-button-state-with-css3/
+*/
+
 #play, #pause, #step, #stop, #listHelp, #stackHelp, #treeHelp, #graphHelp, #queueHelp, #dictHelp, #build, #sampleList, #sampleStack, #sampleTree, #sampleGraph, #sampleWeightedGraph, #sampleQueue, #samplePQueue, #sampleDict, #exitModal {
     padding: 7px 10px;
     background: #4479BA;
@@ -111,10 +115,14 @@ textarea#user_textbox{
     padding:20px;
 }
 
+/*The following code pertaining to range input is from:
+http://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+*/
+
 input[type=range] {
   -webkit-appearance: none;
   margin: 18px 0;
-  width: 100%;
+  width: 50%;
 }
 input[type=range]:focus {
   outline: none;
