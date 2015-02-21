@@ -187,6 +187,7 @@ $(document).ready(function () {
         if (method == "removeChild") {
             var vertex = parameters[0].value;
             var child = parameters[1].value;
+            var childrenToRemove = [];
             
             var origValueCopy = [];
             var seenVertex = false;
@@ -209,26 +210,53 @@ $(document).ready(function () {
                 root.error();
             }
             
-        
-            
-            
-            for (var i = 0; i < origValue.length; i++) {
+            for (var i = 0; i < origValueCopy.length; i++) {
                 var currentTreeNode = origValueCopy[i];
                 var currValue = currentTreeNode[0];
                 if (currValue == vertex) {
-                    var currChildrenCopy = [];
                     if (currentTreeNode[2].length <= child) {
                         env.throwError(root.linenum);
                         root.error("No child in that position");
                     }
-                    else {
-                        console.log("SPlicing result: ", currentTreeNode[2].splice(0, 1));
-                        currChildrenCopy = currentTreeNode[2].splice(child, 1);
+                    
+                    
+                    var childVertex = currentTreeNode[2][child];
+                    childrenToRemove.push(childVertex);
+                    var currChildrenCopy = [];
+                    
+                    for (var j = 0; j < currentTreeNode[2].length; j++) {
+                        if (currentTreeNode[2][j] != childVertex) {
+                            currChildrenCopy.push(currentTreeNode[2][j]);
+                        }
                     }
+                    
+                    console.log("Leftover children: ", currChildrenCopy);
                     origValueCopy[i][2] = currChildrenCopy;
+                    
+                    while (childrenToRemove.length != 0) {
+                        for (var k = 0; k < origValueCopy.length; k++) {
+                            var currVertex = origValueCopy[k];
+                            console.log("Curr vertex is: ", currVertex);
+                            var value = currVertex[0];
+                            if (value == childrenToRemove[0]) {
+                                for (var m = 0; m < currVertex[2].length; m++) {
+                                    childrenToRemove.push(currVertex[2][m]);
+                                }
+                                origValueCopy[k] = null;
+                                childrenToRemove.splice(0, 1);
+                            }
+                        }
+                    }
+                    break;
                 }
             }
-            origValue = origValueCopy;
+            var cleanUp = [];
+            for (var b = 0; b < origValueCopy.length; b++) {
+                if (origValueCopy[b] != null) {
+                    cleanUp.push(origValueCopy[b]);
+                }
+            }
+            origValue = cleanUp;
             return [returnValue, origValue];
             
          
