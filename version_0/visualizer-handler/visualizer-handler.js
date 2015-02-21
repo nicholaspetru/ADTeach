@@ -94,6 +94,17 @@ $(document).ready(function () {
             }
         }
     };
+
+    // Trying to get play to operate the same as step. This didn't work...
+    VisualizerHandler.prototype.goForthAllNew = function() {
+        console.log("Visualizer Handler: goForthAllNew()");
+
+        while (this.eventQueue.length > 0){
+            this.goForthOnce();
+            this.setDelay(10);
+        }
+    };
+
     
     VisualizerHandler.prototype.goForthOnce = function() {
         console.log("Visualizer Handler: goForthOnce() ");
@@ -451,7 +462,6 @@ $(document).ready(function () {
                                 this.hoADT_count += 1;
                             curX = this.VBORDER + (90)*(1+this.vertADT_count);
                             curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*this.hoADT_count;
-                            console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
                         case "Stack":
