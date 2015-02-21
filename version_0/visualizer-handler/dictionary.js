@@ -46,13 +46,6 @@ $(document).ready(function () {
         this.myFrame[1].attr({"transform" : "s 1, 1.5","opacity": 0,"font-family": "times", "font-size": 60, 'text-anchor': 'start'});
 
         this.Populate();
-
-        /*
-        //here's the visual component's representation of the content of the stack. the "data units"
-        for (var i = 0; i < this.value.length; i++){
-            this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
-                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
-        }*/
     }
 
     //Update the List
@@ -73,21 +66,13 @@ $(document).ready(function () {
                 //erase old data
                 for (var i = 0; i < this.vis.length; i++){
                     this.vis[i].destroy();
-                }              
+                }
                 this.vis = [];  
                 this.stretch();
                 this.Populate();
                 break;
             case "remove":
                 this.Remove(split[1]);                
-                this.stretch();
-                break;
-            case "clear":
-                //erase old data
-                for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].destroy();
-                }
-                this.vis = [];
                 this.stretch();
                 break;
             case "get":

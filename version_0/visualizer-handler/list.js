@@ -77,8 +77,10 @@ $(document).ready(function () {
             case "populate":
                 //erase old data
                 for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].remove();
+                    this.vis[i].destroy();
                 }
+                this.vis = [];
+                
                 this.stretch();
                 //create new data units to match the new dataset
                 for (var i = 0; i < this.value.length; i++){
