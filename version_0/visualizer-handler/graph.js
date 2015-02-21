@@ -153,6 +153,25 @@ $(document).ready(function () {
             }
         };
 
+        Graph.prototype.highlightEdge = function(fromNodeID, toNodeID) {
+            for (var i = 0; i < this.edges.length; i++) {
+                if (this.edges[i].from.id == fromNodeID) {
+                    if (this.edges[i].to.id == toNodeID) {
+                        var anim = Raphael.animation({stroke: "green"},250, function() {
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+                else if (this.edges[i].from.id == toNodeID) {
+                    if (this.edges[i].to.id == fromNodeID) {
+                        var anim = Raphael.animation({stroke: "green"},250, function() {
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+            }
+        };
+
         Graph.prototype.createNode = function() {
             // create and display the node
             this.getNextPos();
