@@ -40,7 +40,7 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     List.prototype.buildVisual = function(){
-        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
@@ -77,8 +77,10 @@ $(document).ready(function () {
             case "populate":
                 //erase old data
                 for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].remove();
+                    this.vis[i].destroy();
                 }
+                this.vis = [];
+
                 this.stretch();
                 //create new data units to match the new dataset
                 for (var i = 0; i < this.value.length; i++){
@@ -153,6 +155,7 @@ $(document).ready(function () {
             _t.myFrame.remove();
             _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
             _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+            _t.WIDTH = _3;
             _t.me.push(_t.myFrame);
         },(this.VH.delay - this.VH.date.getTime()));
     };
@@ -213,8 +216,9 @@ $(document).ready(function () {
 
         //Insert the new data unit in it's proper location
         newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
-        this.VH.setDelay(250);
+        //this.VH.setDelay(250);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
+        //this.VH.setDelay(250);
         this.vis.splice(index, 0, newDU);
 
         // weird stuff happens

@@ -34,7 +34,7 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     Queue.prototype.buildVisual = function(){
-        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
@@ -79,8 +79,9 @@ $(document).ready(function () {
             case "populate":
                 //erase old data
                 for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].remove();
-                }                
+                    this.vis[i].destroy();
+                }              
+                this.vis = [];
                 this.stretch();
                 //create new data units to match the new dataset
                 for (var i = 0; i < this.value.length; i++){
@@ -187,8 +188,14 @@ $(document).ready(function () {
 
     //Adds a new dataunit 
     Queue.prototype.Add = function(index) {
+        //Switch if it's a priority queue or queue
+        if (!(this.type.split("<")[0] = "Queue"))
+            ind = this.value.length - index -1;
+        else
+            ind = 0;
+
         //Create the new data unit
-        var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
+        var newDU = new DataUnit(this.paper,this.type,this.value[ind], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
 
