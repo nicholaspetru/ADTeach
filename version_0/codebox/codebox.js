@@ -13,18 +13,6 @@ $(document).ready(function () {
 	return this;
     }
     
-    //highlight current line of the function
-    CodeBox.prototype.highlightLine = function(line) {
-        console.log("Code Box: highlightLine(" + line + ")");
-        // traverse lines of code in text box
-        // if line in text box == line
-        // draw a marker/highlight current line
-        var code = $("#user_textbox").val();                                 
-        var lines = code.replace(/\r\n/g, "\n").split("\n");
-        var lineToHighlight = lines[line];
-        //console.log(lineToHighlight);
-        //figure out this plugin: http://mistic100.github.io/jquery-highlighttextarea/
-    };
 
     // called when playing/stepping of code begins. prevents user from editing code
     CodeBox.prototype.freezeCode = function(){
@@ -41,7 +29,7 @@ $(document).ready(function () {
     CodeBox.prototype.unfreezeCode = function(){
         console.log("Code Box: unfreezeCode()");
         $("#user_textbox").prop('disabled', false);
-        $("#user_textbox").css({"background-color": "white"});
+        $("#user_textbox").css({"background-color": "#F0F8FF"});
     };
     
     CodeBox.prototype.setCode = function(code){

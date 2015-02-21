@@ -5,7 +5,11 @@
     background-color:#a8eecc;
 }
 
-#play, #pause, #step, #stop, #listHelp, #stackHelp, #treeHelp, #graphHelp, #queueHelp, #dictHelp, #build, #sampleList, #sampleStack, #sampleTree, #sampleGraph, #sampleWeightedGraph, #sampleQueue, #samplePQueue, #sampleDict, #exitModal {
+/* Much of the following three code blocks pertaining to buttons is from:
+http://usabilitypost.com/2012/01/10/pressed-button-state-with-css3/
+*/
+
+#aboutViva, #play, #pause, #step, #stop, #listHelp, #stackHelp, #treeHelp, #graphHelp, #queueHelp, #dictHelp, #build, #sampleList, #sampleStack, #sampleTree, #sampleGraph, #sampleWeightedGraph, #sampleQueue, #samplePQueue, #sampleDict, #exitModal {
     padding: 7px 10px;
     background: #4479BA;
     color: #FFF;
@@ -28,7 +32,7 @@
 }
 
 
-#play:hover, #pause:hover, #step:hover, #stop:hover, #listHelp:hover, #stackHelp:hover, #treeHelp:hover, #graphHelp:hover, #queueHelp:hover, #dictHelp:hover, #build:hover, #sampleList:hover, #sampleStack:hover, #sampleTree:hover, #sampleGraph:hover, #sampleWeightedGraph:hover, #sampleQueue:hover, #samplePQueue:hover, #sampleDict:hover, #exitModal:hover {
+#aboutViva:hover, #play:hover, #pause:hover, #step:hover, #stop:hover, #listHelp:hover, #stackHelp:hover, #treeHelp:hover, #graphHelp:hover, #queueHelp:hover, #dictHelp:hover, #build:hover, #sampleList:hover, #sampleStack:hover, #sampleTree:hover, #sampleGraph:hover, #sampleWeightedGraph:hover, #sampleQueue:hover, #samplePQueue:hover, #sampleDict:hover, #exitModal:hover {
     cursor: pointer;
     cursor: hand;
     background: #356094;
@@ -36,7 +40,7 @@
     text-decoration: none;
 }
 
-#play:active, #pause:active, #step:active, #stop:active, #listHelp:active, #stackHelp:active, #treeHelp:active, #graphHelp:active, #queueHelp:active, #dictHelp:active, #build:active, #sampleList:active, #sampleStack:active, #sampleTree:active, #sampleGraph:active, #sampleWeightedGraph:active, #sampleQueue:active, #samplePQueue:active, #sampleDict:active, #exitModal:active {
+#aboutViva:active, #play:active, #pause:active, #step:active, #stop:active, #listHelp:active, #stackHelp:active, #treeHelp:active, #graphHelp:active, #queueHelp:active, #dictHelp:active, #build:active, #sampleList:active, #sampleStack:active, #sampleTree:active, #sampleGraph:active, #sampleWeightedGraph:active, #sampleQueue:active, #samplePQueue:active, #sampleDict:active, #exitModal:active {
     -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
     -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
@@ -107,14 +111,18 @@ textarea#user_textbox{
 
 #content {
     border-radius:10px;
-    background:#fff;
+    background-color:#F0F8FF;
     padding:20px;
 }
+
+/*The following code pertaining to range input is from:
+http://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+*/
 
 input[type=range] {
   -webkit-appearance: none;
   margin: 18px 0;
-  width: 100%;
+  width: 50%;
 }
 input[type=range]:focus {
   outline: none;
