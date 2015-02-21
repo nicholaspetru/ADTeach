@@ -135,6 +135,7 @@ $(document).ready(function () {
             console.log("LOOKING FOR I");
             var val = env.getValue(root.value);
             var valType = env.getType(root.value);
+            console.log("Found the value: ", val);
             if (val === "no value") {
                 console.log("not in env");
                 env.throwError(root.linenum);
@@ -170,6 +171,7 @@ $(document).ready(function () {
                         return val;
                         break;
                     case "List<Integer>":
+                        console.log("In the correct switch case");
                         return val;
                         break;
                     default:
@@ -268,8 +270,16 @@ $(document).ready(function () {
                     case "PriorityQueue<String>":
                     case "PriorityQueue<Float>":
                     case "Tree":
-                        env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
-                        break;
+                        console.log("Going to create a new ADT: ", root);
+                        if (root.third.arity === "Initialization") {
+                            env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
+                            break;
+                        } else {
+                            console.log("Creating from right spot");
+                            console.log("Stupid git");
+                            env.createVariable(typeString, root.second.value, value, originMethod, originADT, root.linenum);
+                            break;
+                        }
                     case "Dictionary<Integer, Integer>":
                     case "Dictionary<Integer, String>":
                     case "Dictionary<Integer, Float>":
