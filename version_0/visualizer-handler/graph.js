@@ -74,10 +74,10 @@ $(document).ready(function () {
                     this.removeEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
                 case "setDirected":
-                    //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                    //console.log("in update");
-                    //console.log(split);
-                    this.setDirected();
+                    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                    console.log("in update");
+                    console.log(split);
+                    this.setDirected(split[1]);
                     break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
@@ -125,8 +125,14 @@ $(document).ready(function () {
                 }
             }
         };
-        Graph.prototype.setDirected= function() {
-            this.isDirected = true;
+        Graph.prototype.setDirected= function(boolX) {
+            if (boolX == "true") {
+                this.isDirected = true;
+            }
+            else if (boolX == "false") {
+                this.isDirected = false;
+            }
+
         };
 
 
@@ -152,7 +158,7 @@ $(document).ready(function () {
                 }
             }
         };
-
+        /*
         Graph.prototype.highlightEdge = function(fromNodeID, toNodeID) {
             for (var i = 0; i < this.edges.length; i++) {
                 if (this.edges[i].from.id == fromNodeID) {
@@ -171,7 +177,7 @@ $(document).ready(function () {
                 }
             }
         };
-
+        */
         Graph.prototype.createNode = function() {
             // create and display the node
             this.getNextPos();
