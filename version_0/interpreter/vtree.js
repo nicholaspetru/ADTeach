@@ -209,25 +209,23 @@ $(document).ready(function () {
                 root.error();
             }
             
+        
+            
             
             for (var i = 0; i < origValue.length; i++) {
                 var currentTreeNode = origValueCopy[i];
                 var currValue = currentTreeNode[0];
                 if (currValue == vertex) {
                     var currChildrenCopy = [];
-                    console.log("currentTree Node is: ", currentTreeNode[2]);
-                    
-                    //Remove the children from parent node
-                    for (var j = 0; j < currentTreeNode[2].length; j++) {
-                        if (currentTreeNode[2][j] != child) {
-                            currChildrenCopy.push(currentTreeNode[2][j]);
-                        }
+                    if (currentTreeNode[2].length <= child) {
+                        env.throwError(root.linenum);
+                        root.error("No child in that position");
                     }
-                    
-                    //Remove child and child's children from tree
-                    console.log("Leftover children are: ", currChildrenCopy);
+                    else {
+                        console.log("SPlicing result: ", currentTreeNode[2].splice(0, 1));
+                        currChildrenCopy = currentTreeNode[2].splice(child, 1);
+                    }
                     origValueCopy[i][2] = currChildrenCopy;
-                    origValueCopy.push([child, currValue, []]);
                 }
             }
             origValue = origValueCopy;
