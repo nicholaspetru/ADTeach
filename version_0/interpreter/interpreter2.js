@@ -811,6 +811,7 @@ $(document).ready(function () {
                 case('getInDegree'):
                 case('getOutDegree'):
                 case('removeVertex'):
+                case('setDirected'):
                 case('setRoot'):
                     console.log("Going to add: ", cloneParam);
                     if (cloneParam[0].value.length == 2 && cloneParam[0].value[1] == "float") {

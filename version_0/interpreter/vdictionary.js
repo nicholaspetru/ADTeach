@@ -58,6 +58,17 @@ $(document).ready(function () {
         }
     }
     
+    VDictionary.prototype.containsKey = function(key, dict) {
+        console.log("checking for the key: ", key);
+        for (var i in dict) {
+            console.log("Checking against: ", i);
+            if (i == key) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     VDictionary.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
         var keyType;
         var valueJType;
@@ -184,6 +195,10 @@ $(document).ready(function () {
         
         if (method == "put") {
             var key = parameters[0].value;
+            if (this.containsKey(key, origValue) == true) {
+                env.throwError(root.linenum);
+                root.error();
+            }
             var value = parameters[1].value;
             var keyT = this.getType(key);
             var valueT = this.getType(value);
@@ -229,18 +244,29 @@ $(document).ready(function () {
             var dict = {};
             var alph = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             var toPush;
-            for (var i = 0; i < numKeys; i++) {
+            var count = 0;
+            console.log("Size is: ", dict.size);
+            while(count < numKeys) {
                 if (keyType == "int") {
                     toPush = Math.floor((Math.random()*100) + 1);
-                    dict[toPush] = 0;
+                    if (this.containsKey(toPush, dict) != true) {
+                        dict[toPush] = 0;
+                        count += 1;
+                    }
                 }
                 else if (keyType == "String") {
                     toPush = Math.floor((Math.random()*26) + 1);
-                    dict[alph[toPush]] = 0;
+                    if (this.containsKey(alph[toPush], dict) != true) {
+                        dict[alph[toPush]] = 0;
+                        count += 1;
+                    }
                 }
                 else if (keyType == "float") {
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    dict[[toPush, "float"]] = 0;
+                    if (this.containsKey([toPush, "float"], dict) != true) {
+                        dict[[toPush, "float"]] = 0;
+                        count += 1;
+                    }
                 }
             }
             for (var j in dict) {
