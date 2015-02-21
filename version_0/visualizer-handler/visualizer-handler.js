@@ -43,9 +43,9 @@ $(document).ready(function () {
         
         // Keep a count of all ADT types to determine positioning
         // There are three categories: vertADT is stacks, hoADT are lists/queues (horizontally oriented), and blobADT is graphs and dicts
-        this.vertADT_count = 0;
-        this.hoADT_count = 0;
-        this.blobADT_count = 0;
+        this.vertADT_count = -1;
+        this.hoADT_count = -1;
+        this.blobADT_count = -1;
 
 
         //Testing new primitive system
@@ -233,9 +233,9 @@ $(document).ready(function () {
 
     //Resets certain values
     VisualizerHandler.prototype.ResetValues = function() {
-        this.hoADT_count = 0;
-        this.vertADT_count = 0;
-        this.blobADT_count = 0;
+        this.hoADT_count = -1;
+        this.vertADT_count = -1;
+        this.blobADT_count = -1;
         this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
 
     }
@@ -383,7 +383,7 @@ $(document).ready(function () {
     };
 
     //Arrange ADT helper function
-    VisualizerHandler.prototype.shiftADT = function(entities) {
+    VisualizerHandler.prototype.shiftADT = function(entities, type) {
         console.log("Visualizer Handler: shiftADT()")
 
         var element = document.getElementById('vis_paper');
@@ -395,15 +395,18 @@ $(document).ready(function () {
         for (var i = 0; i < entities.length; i++){
             if (!this.isPrimitive(entities[i])){
 
-                // check ADT type to determine general positioning
                 switch(entities[i].type.split("<")[0]){
-                    // "fall-through" case for horizontal ADTS; to right of vert, and above blob
                     case "List":
                     case "Queue":
                     case "PriorityQueue":
                         //increment the ADT category count
-                        curX = this.VBORDER + (90)*(this.vertADT_count);
-                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 30 + entities[i].FONT_SIZE)*this.hoADT_count;
+                        if (type == "Stack"){
+                            curX = entities[i].x + 90;
+                        } else {
+                            curX = entities[i].x;
+                        }
+
+                        curY = entities[i].y;
                         console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
                         entities[i].move(curX, curY);
                         break;
@@ -412,13 +415,15 @@ $(document).ready(function () {
                     case "Stack":
                         break;
 
-                    //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                     case "Graph":
                     case "Dictionary":
-                        // bottom right
-                        this.blobADT_count += 1;
-                        curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12)*this.blobADT_count + 60*this.hoADT_count;
+                        if (type == "Stack"){
+                            curX = entities[i].x + 90;
+                            curY = entities[i].y;
+                        } else {
+                            curX = entities[i].x
+                            curY = entities[i].y + 60;
+                        }
                         entities[i].move(curX, curY);
                         break;
                     
@@ -430,50 +435,16 @@ $(document).ready(function () {
         }
     };
 
-    VisualizerHandler.prototype.countADT = function(){
-        for (var i = 0; i < this.entities.length; i++){
-            if (!this.isPrimitive(this.entities[i])){
 
-                // count all ADTs present in code.
-                switch(this.entities[i].type.split("<")[0]){
-                    case "List":
-                    case "Queue":
-                    case "PriorityQueue":
-                        if (this.entities[i].x == 0)
-                            this.hoADT_count += 1;
-                        break; 
-
-                    case "Stack":
-                        if (this.entities[i].x == 0)
-                            this.vertADT_count += 1;
-                        break;
-
-                    case "Graph":
-                    case "Dictionary":
-                        if (this.entities[i].x == 0)
-                            this.blobADT_count += 1;
-                        break;
-
-                    default:
-                        console.log("Unknown ADT type: " + entities[i].type);
-                        return; 
-                }
-            }
-        }
-        console.log("adts: " + this.hoADT_count + " and " + this.vertADT_count + " and " + this.blobADT_count)
-    }
 
     //Arranges ADT
     VisualizerHandler.prototype.arrangeADTs = function() {
-        this.countADT();
-
-        console.log("adts: " + this.hoADT_count + " and " + this.vertADT_count + " and " + this.blobADT_count)
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
 
         var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
-        var temp_hoADT = 0, temp_vertADT, temp_blobADT;
+        //var temp_hoADT = 0, temp_vertADT = 0, temp_blobADT = 0;
         //var curX = 0, curY = 0;
 
         for (var i = 0; i < this.entities.length; i++){
@@ -487,34 +458,45 @@ $(document).ready(function () {
                         case "List":
                         case "Queue":
                         case "PriorityQueue":
-                            curX = this.VBORDER + (90)*(this.vertADT_count);
-                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*temp_hoADT;
+                            if (this.blobADT_count > -1) {
+                                if (!this.entities[i].shiftPrev) {
+                                    this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
+                                    this.entities[i].shiftPrev = true;
+                                }
+                            }
 
                             //increment the horizontal ADT category count
                             if (this.entities[i].x == 0)
-                                temp_hoADT += 1;
+                                this.hoADT_count += 1;
+                            curX = this.VBORDER + (90)*(1+this.vertADT_count);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*this.hoADT_count;
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
                         case "Stack":
-                            //if (this.hoADT_count > -1 || this.blobADT_count > -1)
-                            //    this.shiftADT(this.entities.slice(0,i));
-                            curX = this.VBORDER + (this.entities[i].WIDTH+20)*temp_vertADT;
-                            curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
+                            if (this.hoADT_count > -1 || this.blobADT_count > -1) {
+                                if (!this.entities[i].shiftPrev) {
+                                    this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
+                                    this.entities[i].shiftPrev = true;
+                                }
+                            }
 
                             //increment the stack category count
-                            if (this.entities[i].x == 0)
-                                temp_vertADT += 1;
+                            if (this.entities[i].x == 0) {
+                                this.vertADT_count += 1;
+                                curX = this.VBORDER + (this.entities[i].WIDTH+30)*this.vertADT_count;
+                                curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-8;
+                            }
                             break;
 
                         case "Graph":
                         case "Dictionary":
                             // increment graph/dict count
                             if (this.entities[i].x == 0)
-                                temp_blobADT += 1;
+                                this.blobADT_count += 1;
 
-                            curX = this.VBORDER + (90)*(this.vertADT_count);
-                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*(temp_hoADT+temp_blobADT);
+                            curX = this.VBORDER + (90)*(1+this.vertADT_count);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*(1+this.hoADT_count+this.blobADT_count);
                             break;
                         
                         default:
@@ -523,11 +505,9 @@ $(document).ready(function () {
                     }
 
                     //check and see if this is a new entity. if so, fade it in. if not, move it
-                    if (this.entities[i].x == 0){
-                        console.log(curX + "," + curY);
+                    if (!this.entities[i].drawn) {
                         this.entities[i].create(curX, curY);
-                    }else{
-                        this.entities[i].move(curX, curY);
+                        this.entities[i].drawn = true;
                     }
                     console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
                 }
@@ -567,3 +547,14 @@ $(document).ready(function () {
         return (100 + this.delay - this.date.getTime());
     }
 });
+
+
+/*
+List<Integer> s = new List<Integer>();
+Stack<String> A = new Stack<String>();
+List<Integer> t = new List<Integer>();
+Stack<String> B = new Stack<String>();
+Stack<String> C = new Stack<String>();
+List<Integer> r = new List<Integer>();
+*/
+

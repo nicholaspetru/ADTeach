@@ -25,6 +25,8 @@ $(document).ready(function () {
         this.myLabel = null;
         this.myFrame = null;
         this.vis = [];
+        this.shiftPrev = false;
+        this.drawn = false;
 
         //anonymous DU
         this.anon = null;
@@ -33,7 +35,7 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     Stack.prototype.buildVisual = function(){
-        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list

@@ -48,6 +48,7 @@ $(document).ready(function () {
         // any animation on this.me will affect the entire list, which'll be useful for dragging ADTs
         this.me = null;
         this.myLabel = null;
+        this.drawn = false;
 
         this.nextNodeX = 0;
         this.nextNodeY = 0;
