@@ -248,13 +248,13 @@ $(document).ready(function () {
 
         switch(type.split("<")[0]){
             case "int":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "String":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "float":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "boolean":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "List":
                 return new List(this.paper,name,type,value, this);
             case "Queue":

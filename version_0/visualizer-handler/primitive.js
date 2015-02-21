@@ -3,13 +3,15 @@
 
 $(document).ready(function () {
     
-    Primitive = function(paper,name,type,value,vishandler){
+    Primitive = function(paper,name,type,value,vishandler,originADT){
         this.paper = paper;
         this.VH = vishandler;
         this.name = name;
         this.type = type;
         this.value = value;
         this.dragged = false;
+        this.originADT = originADT;
+        this.drawn = false; //what purpose does this serve? for destroying/removing prims?
 
         //assign the position
         this.x = 0;
@@ -26,6 +28,10 @@ $(document).ready(function () {
     Primitive.prototype.create = function(newX, newY) {
         this.x = newX;
         this.y = newY;
+
+        if (this.originADT != null){
+             this.VH.getAnonymousVariable(this.originADT,this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length, this.y - this.FONT_SIZE/2);
+        }
 
         //set animation and delay
         var anim = Raphael.animation({opacity:1},250);
