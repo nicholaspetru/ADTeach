@@ -71,7 +71,6 @@ $(document).ready(function () {
     Queue.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
         var split = action.split(".");
-        console.log("XXXXXXXX " + action);
         //animate the change
         switch(split[0]){
             case "add":
@@ -146,7 +145,6 @@ $(document).ready(function () {
         
         //in the timeout, create and assign the actual path
         if (changed){
-            this.VH.setDelay(500);
             setTimeout(function(){
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
