@@ -71,7 +71,6 @@ $(document).ready(function () {
                 var speed = false;
                 if (originADT != null){
                     speed = true;
-                    console.log(originADT);
                     this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 var index = parseInt(split[1]);
@@ -154,7 +153,7 @@ $(document).ready(function () {
         
         //in the timeout, create and assign the actual path
         if (this.WIDTH != _3){
-            this.VH.setDelay(500);
+            //this.VH.setDelay(500);
             setTimeout(function(){
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);

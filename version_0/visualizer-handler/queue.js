@@ -146,7 +146,6 @@ $(document).ready(function () {
         
         //in the timeout, create and assign the actual path
         if (changed){
-            this.VH.setDelay(500);
             setTimeout(function(){
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
