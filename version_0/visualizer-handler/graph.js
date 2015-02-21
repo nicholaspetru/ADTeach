@@ -37,6 +37,7 @@ $(document).ready(function () {
         this.edges = [];
 
         this.edgeCheck = {};
+        this.isDirected = false;
 
         //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
@@ -47,6 +48,7 @@ $(document).ready(function () {
         // any animation on this.me will affect the entire list, which'll be useful for dragging ADTs
         this.me = null;
         this.myLabel = null;
+        this.drawn = false;
 
         this.nextNodeX = 0;
         this.nextNodeY = 0;
@@ -72,7 +74,10 @@ $(document).ready(function () {
                     this.removeEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
                 case "setDirected":
-                    this.setDirected(parseInt(split[1]));
+                    //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                    //console.log("in update");
+                    //console.log(split);
+                    this.setDirected();
                     break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
@@ -120,6 +125,33 @@ $(document).ready(function () {
                 }
             }
         };
+        Graph.prototype.setDirected= function() {
+            this.isDirected = true;
+        };
+
+
+        Graph.prototype.removeEdge = function(fromNodeID,toNodeID) {
+            for (var i = 0; i < this.edges.length; i++) {
+                if (this.edges[i].from.id == fromNodeID) {
+                    if (this.edges[i].to.id == toNodeID) {
+                        var anim = Raphael.animation({opacity:0},250, function() {
+                            this.edges[i].line.remove();
+                            this.edges[i].splice(i, 1);});
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+                else if (this.edges[i].from.id == toNodeID) {
+                    if (this.edges[i].to.id == fromNodeID) {
+                        var anim = Raphael.animation({opacity:0},250, function() {
+                            this.edges[i].line.remove();
+                            this.edges[i].splice(i, 1);});
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+            }
+        };
 
         Graph.prototype.createNode = function() {
             // create and display the node
@@ -127,6 +159,9 @@ $(document).ready(function () {
             var nodeID = this.nodes.length;
             var newNode = new DataUnit(this.paper,'Graph',nodeID.toString(),this.VH,this.nextNodeX,this.nextNodeY,this.DUNIT_WIDTH,this.DUNIT_WIDTH,1);
             newNode.create();
+            newNode.vis[1].attr({'stroke-width':2});
+            newNode.vis[1].id = nodeID;
+
             this.nodes.push(newNode);
 
             // add node id to edge tracker
@@ -143,7 +178,19 @@ $(document).ready(function () {
             f = f.vis[1];
             var t = this.nodes[toNodeID];
             t = t.vis[1];
-            this.edges.push(this.paper.connection(t, f, "#000"));
+            if (this.isDirected == false) {
+                this.edges.push(this.paper.connection(t, f, "#000"));
+            }
+            else {
+                var directedEdge = this.paper.connection(t, f, "#000");
+                //directedEdge.line.attr({'arrow-end': 'block-midium-midium'});
+                directedEdge.line.attr({'arrow-end': 'classic-wide-long'});
+                //directedEdge.line.attr({'arrow-end': 'open-wide-midium'});
+                directedEdge.line.attr({'stroke-width': 2});
+
+
+                this.edges.push(directedEdge);
+            }
 
             // update this.edgeCheck
             this.edgeCheck[fromNodeID].push(toNodeID);

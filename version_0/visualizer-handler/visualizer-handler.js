@@ -383,7 +383,7 @@ $(document).ready(function () {
     };
 
     //Arrange ADT helper function
-    VisualizerHandler.prototype.shiftADT = function(entities) {
+    VisualizerHandler.prototype.shiftADT = function(entities, type) {
         console.log("Visualizer Handler: shiftADT()")
 
         var element = document.getElementById('vis_paper');
@@ -395,15 +395,18 @@ $(document).ready(function () {
         for (var i = 0; i < entities.length; i++){
             if (!this.isPrimitive(entities[i])){
 
-                // check ADT type to determine general positioning
                 switch(entities[i].type.split("<")[0]){
-                    // "fall-through" case for horizontal ADTS; to right of vert, and above blob
                     case "List":
                     case "Queue":
                     case "PriorityQueue":
                         //increment the ADT category count
-                        curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 30 + entities[i].FONT_SIZE)*this.hoADT_count;
+                        if (type == "Stack"){
+                            curX = entities[i].x + 90;
+                        } else {
+                            curX = entities[i].x;
+                        }
+
+                        curY = entities[i].y;
                         console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
                         entities[i].move(curX, curY);
                         break;
@@ -412,14 +415,15 @@ $(document).ready(function () {
                     case "Stack":
                         break;
 
-                    //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                     case "Graph":
                     case "Dictionary":
-                        // bottom right
-                        this.blobADT_count += 1;
-                    case "Dict":
-                        curX = this.VBORDER + (90)*(this.vertADT_count+1);
-                        curY = this.ADT_SECTION_Y + (entities[i].HEIGHT + 12)*this.blobADT_count + 60*this.hoADT_count;
+                        if (type == "Stack"){
+                            curX = entities[i].x + 90;
+                            curY = entities[i].y;
+                        } else {
+                            curX = entities[i].x
+                            curY = entities[i].y + 60;
+                        }
                         entities[i].move(curX, curY);
                         break;
                     
@@ -431,6 +435,8 @@ $(document).ready(function () {
         }
     };
 
+
+
     //Arranges ADT
     VisualizerHandler.prototype.arrangeADTs = function() {
         var element = document.getElementById('vis_paper');
@@ -438,6 +444,7 @@ $(document).ready(function () {
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
 
         var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
+        //var temp_hoADT = 0, temp_vertADT = 0, temp_blobADT = 0;
         //var curX = 0, curY = 0;
 
         for (var i = 0; i < this.entities.length; i++){
@@ -448,38 +455,48 @@ $(document).ready(function () {
 
                     // check ADT type to determine general positioning
                     switch(this.entities[i].type.split("<")[0]){
-                        // "fall-through" case for horizontal ADTS; to right of vert, and above blob
                         case "List":
                         case "Queue":
                         case "PriorityQueue":
-                            //increment the ADT category count
+                            if (this.blobADT_count > -1) {
+                                if (!this.entities[i].shiftPrev) {
+                                    this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
+                                    this.entities[i].shiftPrev = true;
+                                }
+                            }
+
+                            //increment the horizontal ADT category count
                             if (this.entities[i].x == 0)
                                 this.hoADT_count += 1;
-
                             curX = this.VBORDER + (90)*(1+this.vertADT_count);
                             curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*this.hoADT_count;
-                            console.log(this.ADT_SECTION_Y + " and mult of " + ", " + this.entities[i].HEIGHT + ", " + 60 + ", " + this.entities[i].FONT_SIZE + ", " + this.hoADT_count)
-
                             console.log("curX: " + curX + " and curY: " + curY)
                             break;
 
-                        // Stack is only vertical ADT (?); starts on bottom left
                         case "Stack":
-                            //increment the ADT category count
-                            if (this.entities[i].x == 0)
-                                this.vertADT_count += 1;
-                            if (this.hoADT_count > -1 || this.blobADT_count > -1)
-                                this.shiftADT(this.entities.slice(0,i));
+                            if (this.hoADT_count > -1 || this.blobADT_count > -1) {
+                                if (!this.entities[i].shiftPrev) {
+                                    this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
+                                    this.entities[i].shiftPrev = true;
+                                }
+                            }
 
-                            curX = this.VBORDER + (this.entities[i].WIDTH+20)*this.vertADT_count;
-                            curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-6;
+                            //increment the stack category count
+                            if (this.entities[i].x == 0) {
+                                this.vertADT_count += 1;
+                                curX = this.VBORDER + (this.entities[i].WIDTH+30)*this.vertADT_count;
+                                curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-8;
+                            }
                             break;
 
-                        //fall-through case for 'blob' ADTs; to go right of stack and below horizontally oriented ADTs
                         case "Graph":
                         case "Dictionary":
-                            // bottom right
-                            this.blobADT_count += 1;
+                            // increment graph/dict count
+                            if (this.entities[i].x == 0)
+                                this.blobADT_count += 1;
+
+                            curX = this.VBORDER + (90)*(1+this.vertADT_count);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*(1+this.hoADT_count+this.blobADT_count);
                             break;
                         
                         default:
@@ -487,19 +504,13 @@ $(document).ready(function () {
                             return; 
                     }
 
-                    console.log("vert increment: " + this.vertADT_count)
                     //check and see if this is a new entity. if so, fade it in. if not, move it
-                    if (this.entities[i].x == 0){
-                        console.log(curX + "," + curY);
+                    if (!this.entities[i].drawn) {
                         this.entities[i].create(curX, curY);
-                    }else{
-                        console.log("Moving x of " + this.entities[i].name + " to " + curX)
-                        this.entities[i].move(curX, curY);
+                        this.entities[i].drawn = true;
                     }
                     console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
-
                 }
-                //curX +=  this.entities[i].WIDTH*1.2;
             }
         }
     };
@@ -536,3 +547,14 @@ $(document).ready(function () {
         return (100 + this.delay - this.date.getTime());
     }
 });
+
+
+/*
+List<Integer> s = new List<Integer>();
+Stack<String> A = new Stack<String>();
+List<Integer> t = new List<Integer>();
+Stack<String> B = new Stack<String>();
+Stack<String> C = new Stack<String>();
+List<Integer> r = new List<Integer>();
+*/
+

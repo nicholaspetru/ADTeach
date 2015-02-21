@@ -27,6 +27,7 @@ $(document).ready(function () {
         this.myLabel = null;
         this.myFrame = [];
         this.vis = [];
+        this.drawn = false;
 
         //anonymous DU
         this.anon = null;
