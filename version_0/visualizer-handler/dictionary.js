@@ -45,7 +45,7 @@ $(document).ready(function () {
         this.myFrame[1] = this.paper.text(this.x + this.WIDTH - 10, this.y + 40,"}");
         this.myFrame[1].attr({"transform" : "s 1, 1.5","opacity": 0,"font-family": "times", "font-size": 60, 'text-anchor': 'start'});
 
-
+        this.Populate();
 
         /*
         //here's the visual component's representation of the content of the stack. the "data units"
@@ -72,16 +72,11 @@ $(document).ready(function () {
             case "populate":
                 //erase old data
                 for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].remove();
-                }                
+                    this.vis[i].destroy();
+                }              
+                this.vis = [];  
                 this.stretch();
-                //create new data units to match the new dataset
-                for (var i = 0; i < this.value.length; i++){
-                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
-                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-                    this.vis.push(newDU);
-                    newDU.create();
-                }
+                this.Populate();
                 break;
             case "remove":
                 this.Remove(split[1]);                
@@ -124,6 +119,20 @@ $(document).ready(function () {
             this.vis[i].create();
         }
     };
+
+    //Stretches the frame to accomadate the new length of the dict
+    Dictionary.prototype.Populate = function() {
+        var index = 0;
+        var names = Object.getOwnPropertyNames(this.value);
+        for (var val in this.value){
+           //Create the new data unit
+            var newDU = new DataUnit(this.paper,this.type,names[index] + " : " + this.value[val], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + 90*Math.floor(index/this.COL_NUM),
+                                           this.y + (2*this.HEIGHT/this.COL_NUM) +  this.HEIGHT/this.COL_NUM*((index%this.COL_NUM) - this.COL_NUM/2), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+            newDU.create();
+            this.vis.push(newDU);
+            index++;
+        }
+    }
 
     //Stretches the frame to accomadate the new length of the dict
     Dictionary.prototype.stretch = function() {
