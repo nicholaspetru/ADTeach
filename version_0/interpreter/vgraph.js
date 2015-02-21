@@ -13,7 +13,7 @@ $(document).ready(function () {
     }
     
     VGraph.prototype.listMethods = function() {
-        var methods = ['addVertex', 'getNeighbors', 'getVertices', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getOutDegree', 'hasEdge'];
+        var methods = ['addVertex', 'getNeighbors', 'getVertices', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getDegree', 'hasEdge'];
         return methods;
     }
     
@@ -28,7 +28,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var oneParam = ['getNeighbors', 'setDirected', 'getInDegree', 'getOutDegree'];
+        var oneParam = ['getNeighbors', 'setDirected', 'getInDegree', 'getDegree'];
         if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
                 console.log("one parameters");
@@ -284,13 +284,8 @@ $(document).ready(function () {
             return [returnValue, [origValue, isDirected], "List<Integer>"];
         }
         
-        if (method == "getOutDegree") {
-            if (isDirected != true) {
-                env.throwError(root.linenum);
-                console.log("No out degree for undirected graph");
-                root.error("No degree for undirected graph");
-                //Throw error
-            }
+        if (method == "getDegree") {
+            
             var vertex = parameters[0].value;
             returnValue = origValue[vertex].length;
             return [returnValue, [origValue, isDirected], "int"];
