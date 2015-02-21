@@ -187,8 +187,14 @@ $(document).ready(function () {
 
     //Adds a new dataunit 
     Queue.prototype.Add = function(index) {
+        //Switch if it's a priority queue or queue
+        if (!(this.type.split("<")[0] = "Queue"))
+            ind = this.value.length - index -1;
+        else
+            ind = 0;
+
         //Create the new data unit
-        var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
+        var newDU = new DataUnit(this.paper,this.type,this.value[ind], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
 
