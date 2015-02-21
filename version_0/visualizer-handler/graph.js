@@ -5,7 +5,7 @@
 * 
 * TODO:
 * ------------------
-* ! setDirected
+* ! setDirected when edges have already been drawn
 * - removeEdge
 * - Highlight nodes/edges for these?? 
 *       getInDegree(nodeID), getOutDegree(nodeID), getNeighbors(nodeID),
