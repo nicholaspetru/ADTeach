@@ -63,8 +63,10 @@ $(document).ready(function () {
 
         //console.log("xpos: " + xpos + " width: " + w);
         this.codeboxPaper = Raphael(xpos, ypos, w, h);
+        var fontSize = $("#user_textbox").css('font-size');
+        var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.5);
 
-        var highlight = this.codeboxPaper.rect(0,3+(13*lineNumber),w,13);
+        var highlight = this.codeboxPaper.rect(0,3+(lineHeight*lineNumber),w,lineHeight);
         highlight.attr("fill", color);
         highlight.attr("fill-opacity", .2);
         highlight.attr("stroke-width", 0);
