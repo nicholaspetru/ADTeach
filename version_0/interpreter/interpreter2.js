@@ -172,8 +172,29 @@ $(document).ready(function () {
                         return val;
                         break;
                     case "List<Integer>":
-                        console.log("In the correct switch case");
-                        return val;
+                    case "List<String>":
+                    case "List<Float>":
+                    case "Stack<Integer>":
+                    case "Stack<String>":
+                    case "Stack<Float>":
+                    case "Queue<Integer>":
+                    case "Queue<String>":
+                    case "Queue<Float>":
+                    case "PriorityQueue<Integer>":
+                    case "PriorityQueue<String>":
+                    case "PriorityQueue<Float>":
+                    case "Graph":
+                    case "Tree":
+                    case "Dictionary<Integer, Integer>":
+                    case "Dictionary<Integer, String>":
+                    case "Dictionary<Integer, Float>":
+                    case "Dictionary<String, Integer>":
+                    case "Dictionary<String, Float>":
+                    case "Dictionary<String, String>":
+                    case "Dictionary<Float, Integer>":
+                    case "Dictionary<Float, String>":
+                    case "Dictionary<Float, Float>":
+                        return [val, valType];
                         break;
                     default:
                         console.log(valType);
@@ -281,7 +302,11 @@ $(document).ready(function () {
                             env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         } else {
                             console.log("Creating from right spot", root);
-                            env.createVariable(typeString, root.second.value, value, "new", root.third.value, root.linenum);
+                            if (value[1] != typeString) {
+                                env.throwError(root.linenum);
+                                root.error();
+                            }
+                            env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
                         }
                         break;
                     case "Dictionary<Integer, Integer>":
@@ -296,13 +321,37 @@ $(document).ready(function () {
                     case "Dictionary<Float, Integer>":
                     case "Dictionary<Float, Float>":
                     case "Dictionary<Float, Boolean>":
-                        env.createVariable(typeString, root.second.value, {}, "new", originADT, root.linenum);
+                        if (root.third.arity === "Initialization") {
+                            env.createVariable(typeString, root.second.value, {}, "new", originADT, root.linenum);
+                        } else {
+                            if (value[1] != typeString) {
+                                env.throwError(root.linenum);
+                                root.error();
+                            }
+                            env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
+                        }
                         break;
                     case "Graph":
-                        env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        if (root.third.arity === "Initialization") {
+                            env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        } else {
+                            if (value[1] != typeString) {
+                                env.throwError(root.linenum);
+                                root.error();
+                            }
+                            env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
+                        }
                         break;
                     case "WeightedGraph":
-                        env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        if (root.third.arity === "Initialization") {
+                            env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
+                        } else {
+                            if (value[1] != typeString) {
+                                env.throwError(root.linenum);
+                                root.error();
+                            }
+                            env.createVariable(typeStirng, root.second.value, value[0], "new", root.third.value, root.linenum);
+                        }
                         break;
                     
                     default:
@@ -762,6 +811,7 @@ $(document).ready(function () {
                 case('getInDegree'):
                 case('getOutDegree'):
                 case('removeVertex'):
+                case('setDirected'):
                 case('setRoot'):
                     console.log("Going to add: ", cloneParam);
                     if (cloneParam[0].value.length == 2 && cloneParam[0].value[1] == "float") {
