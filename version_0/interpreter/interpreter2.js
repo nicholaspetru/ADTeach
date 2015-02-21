@@ -102,6 +102,7 @@ $(document).ready(function () {
             console.log("NOT GOING TO MATH: ", root);
             switch(root.jtype) {
                 case 'INT_TYPE':
+                    console.log("This is right");
                     return parseInt(root.value);
                     break;
                 case 'FLOAT_TYPE':
@@ -238,7 +239,12 @@ $(document).ready(function () {
         
         //Literals: ints, floats, strings, etc.
         if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
+            console.log("Current root is: ", root);
+            originADT = root.second.value;
             value = this.evalValue(valueRoot, env);
+            //originADT = this.evalValue(valueRoot, env)[1];
+            console.log("Valueeee is: ", value);
+            console.log("Origin ADT is: ", originADT);
         }
         else if (valueRoot.value == "++" || valueRoot.value == "--") {
             value = this.evalStep(valueRoot, env);
@@ -273,13 +279,11 @@ $(document).ready(function () {
                         console.log("Going to create a new ADT: ", root);
                         if (root.third.arity === "Initialization") {
                             env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
-                            break;
                         } else {
-                            console.log("Creating from right spot");
-                            console.log("Stupid git");
-                            env.createVariable(typeString, root.second.value, value, originMethod, originADT, root.linenum);
-                            break;
+                            console.log("Creating from right spot", root);
+                            env.createVariable(typeString, root.second.value, value, "new", root.third.value, root.linenum);
                         }
+                        break;
                     case "Dictionary<Integer, Integer>":
                     case "Dictionary<Integer, String>":
                     case "Dictionary<Integer, Float>":
@@ -304,6 +308,7 @@ $(document).ready(function () {
                     default:
                         var type = this.checkType(value);
                         console.log("Value is: ", value);
+                        console.log("Checking: ", type, "against: ", root.first);
                         if (root.first != type){
                             console.log("root is: ", root);
                             console.log("root.first is: ", root.first, "and type is:", type);
@@ -458,9 +463,11 @@ $(document).ready(function () {
     Interpreter.prototype.checkType = function(value) {
         console.log("**************** Type of value is:", typeof value);
         console.log("Looking at: ", value);
-        if (value.length == 2) {
-            if (value[1] == "float") {
-                return "float";
+        if (typeof value == typeof []) {
+            if (value.length == 2) {
+                if (value[1] == "float") {
+                    return "float";
+                }
             }
         }
         switch (typeof value) {
