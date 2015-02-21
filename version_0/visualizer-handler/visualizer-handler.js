@@ -191,7 +191,7 @@ $(document).ready(function () {
             var difX, difY;
             anon.moveTo(destX,destY,this.setDelay(500),500);
             this.setDelay(500);
-            anon.destroy();
+            anon.fastDestroy();
         }
     }
 

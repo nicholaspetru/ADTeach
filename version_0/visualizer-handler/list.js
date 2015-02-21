@@ -52,6 +52,8 @@ $(document).ready(function () {
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
+        this.stretch();
+
         this.me = this.paper.set();
         this.me.push(this.myLabel,this.myFrame);
         this.me.draggable();
@@ -66,13 +68,15 @@ $(document).ready(function () {
         switch(split[0]){
             case "add":
                 //check if there's an anonymous variable
+                var speed = false;
                 if (originADT != null){
+                    speed = true;
                     console.log(originADT);
                     this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 var index = parseInt(split[1]);
                 this.stretch();
-                this.AddAtPosition(index, this.value[index]);
+                this.AddAtPosition(index, this.value[index],speed);
                 break;
             case "populate":
                 //erase old data
@@ -149,15 +153,16 @@ $(document).ready(function () {
         var _t = this, _0 = this.x, _1 = this.y, _2 = (this.y + this.HEIGHT), _3 = (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + this.value.length*(this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)));
         
         //in the timeout, create and assign the actual path
-        this.VH.setDelay(500);
-
-        setTimeout(function(){
-            _t.myFrame.remove();
-            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
-            _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
-            _t.WIDTH = _3;
-            _t.me.push(_t.myFrame);
-        },(this.VH.delay - this.VH.date.getTime()));
+        if (this.WIDTH != _3){
+            this.VH.setDelay(500);
+            setTimeout(function(){
+                _t.myFrame.remove();
+                _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
+                _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+                _t.WIDTH = _3;
+                _t.me.push(_t.myFrame);
+            },(this.VH.delay - this.VH.date.getTime()));
+        }
     };
 
 
@@ -200,25 +205,31 @@ $(document).ready(function () {
     };
 
     //Adds a new dataunit at the specified index
-    List.prototype.AddAtPosition = function(index, value) {
+    List.prototype.AddAtPosition = function(index, value, speed) {
         this.checkPosition();
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-        newDU.create();
+        if (!speed)
+            newDU.create();
+        else
+            newDU.popIn();
+
         newDU.updateIndex(index);
-        //Scooch down all the other data units
-        var delay = this.VH.setDelay(500);
+        //Scooch down all the other data units if you need to schooch
+        var delay = null;
         for (var i = index; i < this.vis.length; i++){
+            if (delay == null)
+                delay = this.VH.setDelay(500);
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
             this.vis[i].updateIndex(i + 1);
         }
 
         //Insert the new data unit in it's proper location
         newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
-        //this.VH.setDelay(250);
+        this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
-        //this.VH.setDelay(250);
+        this.VH.setDelay(100);
         this.vis.splice(index, 0, newDU);
 
         // weird stuff happens
@@ -243,7 +254,7 @@ $(document).ready(function () {
             yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
 
         var newDU = new DataUnit(this.paper,this.type, this.value[index], this.VH,  xx,
-                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
 
         //Move the new data unit to it's proper location and set as the anonymous variable
