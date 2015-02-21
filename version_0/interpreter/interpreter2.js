@@ -169,7 +169,11 @@ $(document).ready(function () {
                     case "boolean":
                         return val;
                         break;
+                    case "List<Integer>":
+                        return val;
+                        break;
                     default:
+                        console.log(valType);
                         console.log("variable " + root.value + " was initialized with an invalid type...or alternatively, it references an ADT and we haven't implemented that here yet.");
                         env.throwError(token.linenum);
                         root.error("No type");
