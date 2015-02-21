@@ -204,7 +204,7 @@ $(document).ready(function () {
             var difX, difY;
             anon.moveTo(destX,destY,this.setDelay(500),500);
             this.setDelay(500);
-            anon.destroy();
+            anon.fastDestroy();
         }
     }
 
@@ -259,13 +259,13 @@ $(document).ready(function () {
 
         switch(type.split("<")[0]){
             case "int":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "String":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "float":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "boolean":
-                return new Primitive(this.paper,name,type,value,this);
+                return new Primitive(this.paper,name,type,value,this,originADT);
             case "List":
                 return new List(this.paper,name,type,value, this);
             case "Queue":

@@ -47,6 +47,7 @@ $(document).ready(function () {
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
                                        this.y + this.HEIGHT  - this.DUNIT_HEIGHT - (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
+        this.stretch();
     }
 
     //Sets the appropriate width and height for the Queue
@@ -58,8 +59,12 @@ $(document).ready(function () {
         else
             min = this.value.length;
 
-        this.HEIGHT = (this.DUNIT_HEIGHT*this.DUNIT_BUFFER*2) + (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER)*(min));
         this.WIDTH = 65;
+        if (this.HEIGHT != (this.DUNIT_HEIGHT*this.DUNIT_BUFFER*2) + (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER)*(min))){
+            this.HEIGHT = (this.DUNIT_HEIGHT*this.DUNIT_BUFFER*2) + (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER)*(min));
+            return true;
+        }
+        return false;
     }
 
     //Update the List
@@ -136,17 +141,17 @@ $(document).ready(function () {
     //Stretches the frame to accomadate the new length of the list
     Stack.prototype.stretch = function() {
         //variables for list
-        this.setDimensions();
+        var changed = this.setDimensions();
         var _t = this, _0 = this.x, _1 = this.y, _2 = this.y + this.HEIGHT, _3 = this.x+ this.WIDTH;
         
-        //in the timeout, create and assign the actual path
-        this.VH.setDelay(500);
-
-        setTimeout(function(){
-            _t.myFrame.remove();
-            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
-            _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
-        },(this.VH.delay - this.VH.date.getTime()));
+        if (changed){
+            //in the timeout, create and assign the actual path
+            setTimeout(function(){
+                _t.myFrame.remove();
+                _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
+                _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+            },(this.VH.delay - this.VH.date.getTime()));
+        }
     };
 
 
