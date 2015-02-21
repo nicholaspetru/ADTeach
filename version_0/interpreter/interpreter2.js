@@ -276,6 +276,7 @@ $(document).ready(function () {
                             break;
                         } else {
                             console.log("Creating from right spot");
+                            console.log("Stupid git");
                             env.createVariable(typeString, root.second.value, value, originMethod, originADT, root.linenum);
                             break;
                         }
