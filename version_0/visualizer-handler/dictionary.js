@@ -105,7 +105,7 @@ $(document).ready(function () {
         }
     };
 
-    //Stretches the frame to accomadate the new length of the dict
+    //Populates the dict with it's contents
     Dictionary.prototype.Populate = function() {
         var index = 0;
         var names = Object.getOwnPropertyNames(this.value);
@@ -117,6 +117,7 @@ $(document).ready(function () {
             this.vis.push(newDU);
             index++;
         }
+        this.stretch();
     }
 
     //Stretches the frame to accomadate the new length of the dict
@@ -132,9 +133,8 @@ $(document).ready(function () {
         //in the timeout, expand or contract
         var _t = this;
         setTimeout(function(){
-            var xxfsdfsd = _t.WIDTH/100 + " " +  Math.ceil(count/_t.COL_NUM);
             if (_t.WIDTH/100 < Math.ceil(count/_t.COL_NUM)){
-                _t.VH.setDelay(500);
+                //_t.VH.setDelay(500);
                 _t.WIDTH += 100;
                 _t.myFrame[1].animate({transform:'...t 100 0'},250);
             }

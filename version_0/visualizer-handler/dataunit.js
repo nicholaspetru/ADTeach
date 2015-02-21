@@ -39,6 +39,20 @@ $(document).ready(function () {
 
       };
 
+      //Create visual primitve in the specific position with no delay
+      DataUnit.prototype.popIn = function() {
+          //create the container
+          this.buildVisual();
+
+          //fade it in
+          var anim = Raphael.animation({opacity:1},0);
+          var delay = this.VH.setDelay(0);
+          for (var i =0; i < this.vis.length; i++){
+            this.vis[i].animate(anim.delay(delay));
+          }
+
+      };
+
       //Moves the dataunit by the given amount at the specified time
       DataUnit.prototype.move = function(difX, difY, delay, time) {
           var _t = this;
@@ -49,7 +63,7 @@ $(document).ready(function () {
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
               _t.vis[i].animate(anim.delay(0));
             }
-            _t.VH.setDelay(100);
+            //_t.VH.setDelay(100);
           },(delay));
       };
 
@@ -64,8 +78,18 @@ $(document).ready(function () {
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
               _t.vis[i].animate(anim.delay(0));
             }
-            _t.VH.setDelay(100);
           },(delay));
+      };
+
+
+      //Deletes the item (actually, this just fades it out)
+      DataUnit.prototype.fastDestroy = function() {
+          //fade it out
+          var anim = Raphael.animation({opacity:0},10);
+          var delay = this.VH.setDelay(10);
+          for (var i =0; i < this.vis.length; i++){
+            this.vis[i].animate(anim.delay(delay));
+          }
       };
 
       //Deletes the item (actually, this just fades it out)

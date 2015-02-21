@@ -46,9 +46,11 @@ $(document).ready(function () {
             this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
+        this.stretch();
     }
 
     //Sets the appropriate width and height for the Queue
+    //returns true if the width changes
     Queue.prototype.setDimensions = function() {
         //width and height refer to max width and height-- how much room this object takes up on the screen
         var min;
@@ -57,8 +59,12 @@ $(document).ready(function () {
         else
             min = this.value.length;
 
-        this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(min));
         this.HEIGHT = 45;
+        if (this.WIDTH != (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(min))){
+            this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(min));
+            return true;
+        }
+        return false;
     }
 
     //Update the List
@@ -135,17 +141,18 @@ $(document).ready(function () {
     //Stretches the frame to accomadate the new length of the list
     Queue.prototype.stretch = function() {
         //variables for list
-        this.setDimensions();
+        var changed = this.setDimensions();
         var _t = this, _0 = this.x + this.WIDTH, _1 = this.y, _2 = this.x, _3 = this.y + this.HEIGHT;
         
         //in the timeout, create and assign the actual path
-        this.VH.setDelay(500);
-
-        setTimeout(function(){
-            _t.myFrame.remove();
-            _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
-            _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
-        },(this.VH.delay - this.VH.date.getTime()));
+        if (changed){
+            this.VH.setDelay(500);
+            setTimeout(function(){
+                _t.myFrame.remove();
+                _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
+                _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+            },(this.VH.delay - this.VH.date.getTime()));
+        }
     };
 
 
@@ -200,8 +207,10 @@ $(document).ready(function () {
         newDU.create();
 
         //Scooch down all the other data units
-        var delay = this.VH.setDelay(500);
+        var delay = null;
         for (var i = index; i < this.vis.length; i++){
+            if (delay == null)
+                this.VH.setDelay(500);
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
         }
 
