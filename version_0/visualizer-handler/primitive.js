@@ -10,7 +10,6 @@ $(document).ready(function () {
         this.type = type;
         this.value = value;
         this.dragged = false;
-        this.drawn = false; //what purpose does this serve? for destroying/removing prims?
 
         //assign the position
         this.x = 0;
@@ -63,7 +62,11 @@ $(document).ready(function () {
     };
     
     //Modifiy visual primitives
-    Primitive.prototype.update = function() {
+    Primitive.prototype.update = function(action, originADT) {
+        //pull the anonymous variable from the origin
+        if (originADT != null){
+            this.VH.getAnonymousVariable(originADT,this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length, this.y - this.FONT_SIZE/2);
+        }
         // shake it off
         for (var i = 0; i < 21; i++){
             var anim = Raphael.animation({x:8*(-1^i)},25);
@@ -81,8 +84,7 @@ $(document).ready(function () {
     };
 
     //make a data unit near your location and return it 
-    Primitive.prototype.createAnonymous = function() {
-        console.log("ADSADSADASDSADASD")
+    Primitive.prototype.createAnonymous = function() {s
         //Create the new data unit
         var xx = this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length;
             yy = this.y - this.FONT_SIZE/2;
