@@ -47,27 +47,6 @@ $(document).ready(function () {
         this.hoADT_count = -1;
         this.blobADT_count = -1;
 
-
-        //Testing new primitive system
-        
-        /*
-        this.enqueueEvent("new", "int", "a", 1, "int");
-        this.enqueueEvent("new", "int", "b", 2, "int");
-        this.enqueueEvent("new", "int", "c", 3, "int");
-        this.enqueueEvent("new", "int", "d", 4, "int");
-        this.enqueueEvent("update", "int", "c", 10, "int");
-        this.enqueueEvent("update", "int", "d", 11, "int");
-        this.enqueueEvent("new", "int", "e", 5, "int");
-        this.enqueueEvent("delete", "int", "b", 2, "int");
-        this.enqueueEvent("delete", "int", "e", 5, "int");
-        this.enqueueEvent("new", "int", "f", 6, "int");
-        this.enqueueEvent("delete", "int", "f", 6, "int");
-        this.enqueueEvent("new", "int", "g", 7, "int");
-        this.enqueueEvent("delete", "int", "e", 5, "int");   
-        this.enqueueEvent("new", "int", "h", 8, "int");
-        this.enqueueEvent("new", "int", "i", 9, "int");
-        */
-
         return this;
     }
 
@@ -544,17 +523,6 @@ $(document).ready(function () {
     VisualizerHandler.prototype.setDelay = function(t) {
         this.getDelay();
         this.delay += t;
-        return (100 + this.delay - this.date.getTime());
+        return (this.delay - this.date.getTime());
     }
 });
-
-
-/*
-List<Integer> s = new List<Integer>();
-Stack<String> A = new Stack<String>();
-List<Integer> t = new List<Integer>();
-Stack<String> B = new Stack<String>();
-Stack<String> C = new Stack<String>();
-List<Integer> r = new List<Integer>();
-*/
-
