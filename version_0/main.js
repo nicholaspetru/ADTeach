@@ -60,25 +60,25 @@ $(document).ready(function () {
     $("#listHelp").click(function() {
         $("#content").empty().append('<h3><center>List ADT</center></h3>');
         $("#content").append('<p><h4>Instantiation:</h4>');
-        $("#content").append('List&lt;list_type&gt; listName = new List&lt;list_type&gt;();</p>');
-        $("#content").append('list_type = String || Integer || Float');
+        $("#content").append('List&lt;*type&gt; listName = new List&lt;*type&gt;();</p>');
+        $("#content").append('*type = String || Integer || Float');
         $("#content").append('<p><h4>Methods:</h4>');
         $("#content").append("<p>");
         $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
-                        th {font-size:12px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
-                        tr {background-color:#d4e3e5;}.tftable \
-                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;}.tftable</style><table class="tftable" border="1"> \
-                    <tr><th>add(list_type x)</th><td>Adds element x to the end of the list</td></tr> \
-                    <tr><th>add(int x, list_type y)</th><td>Adds element y to the list at index x</td></tr> \
-                    <tr><th>contains(list_type x)</th><td>Returns a boolean true if the list contains element x, false if it does not</td></tr>\
+                        th {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>add(*type x)</th><td>Adds element x to the end of the list</td></tr> \
+                    <tr><th>add(int x, *type y)</th><td>Adds element y to the list at index x</td></tr> \
+                    <tr><th>contains(*type x)</th><td>Returns a boolean true if the list contains element x, false if it does not</td></tr>\
                     <tr><th>get(int x)</th><td>Returns the element at index x</td></tr> \
-                    <tr><th>indexOf(list_type x)</th><td>Returns the index of element x</td></tr> \
+                    <tr><th>indexOf(*type x)</th><td>Returns the index of element x</td></tr> \
                     <tr><th>isEmpty()</th><td>Returns a boolean true if the list is empty, false if the list contains at least one element</td></tr>\
-                    <tr><th>populate(int x)</th><td>Empties the list, then adds x randomly generated elements of appropriate type of the list</td></tr> \
                     <tr><th>size()</th><td>Returns the size of the list</td></tr> \
                     <tr><th>remove(int x)</th><td>Removes the element at index x in the list</td></tr> \
-                    <tr><th>set(int x, list_type y)</th><td>Replaces the element at index x in the list with element y</td></tr> \
-                    <tr><th>clear()</th><td>Empties the list</td></tr></table>');
+                    <tr><th>set(int x, *type y)</th><td>Replaces the element at index x in the list with element y</td></tr> \
+                    <tr><th>clear()</th><td>Empties the list</td></tr>\
+                    <tr><th>populate(int x)</th><td>Empties the list, then adds x randomly generated elements of appropriate type to the list</td></tr> \</table>');
         $("#content").append("</p>");
         $("#sampleStack").hide();
         $("#sampleQueue").hide();
@@ -93,49 +93,24 @@ $(document).ready(function () {
     });
     
     
-    
-    /*
-    $("#listHelp").click(function() {
-        $("#content").empty().append('<h3><center>List ADT</center></h3>');
-        $("#content").append('<p><h4>Instantiation:</h4>');
-        $("#content").append('List&lt;list_type&gt; listName = new List&lt;list_type&gt;();</p>');
-        $("#content").append('list_type = String || Integer || Float');
-        $("#content").append('<p><h4>Methods:</h4>');
-        
-        $("#content").append('<b>add(</b><i>list_type</i> x<b>)</b>; Adds element x to the end of the list<br>');
-        $("#content").append('<b>add</b>(<i>int</i> x, <i>listType</i> y); Adds element y to the list at index x<br>');
-        $("#content").append('<b>contains</b>(<i>listType</i> x); Returns a boolean <em>true</em> if the list contains element x, <em>false</em> if it does not<br>');
-        $("#content").append('<b>get</b>(<i>int</i> x); Returns the element at index x<br>');
-        $("#content").append('<b>indexOf</b>(<i>listType</i> x); Returns the index of element x<br>');
-        $("#content").append('<b>isEmpty</b>(); Returns a boolean <em>true</em> if the list is empty, <em>false</em> if the list contains at least one element<br>');
-        $("#content").append('<b>populate</b>(<i>int</i> x); Empties the list, then adds x randomly generated elements of appropriate type to the list<br>');        
-        $("#content").append("<b>size</b>(); Returns the size of the list<br>");
-        $("#content").append('<b>remove</b>(<i>int</i> x); Removes the element at index x in the list<br>');
-        $("#content").append('<b>set</b>(<i>int</i> x, <i>listType</i> y); Replaces the element at index x in the list with element y<br>');
-        $("#content").append('<b>clear</b>(); Empties the list</p>');
-        $("#sampleStack").hide();
-        $("#sampleQueue").hide();
-        $("#samplePQueue").hide();
-        $("#sampleGraph").hide();
-        $("#sampleWeightedGraph").hide();
-        $("#sampleDict").hide();
-        $("#sampleList").show();
-        $("#sampleTree").hide();
-        $("#modal").show();   
-    });   
-    */
-
     $("#stackHelp").click(function() {
         $("#content").empty().append('<h3><center>Stack ADT</center></h3>');
         $("#content").append('<p><h4>Instantiation:</h4>');
-        $("#content").append('Stack&lt;type&gt; stackName = new Stack&lt;type&gt;();</p>');
+        $("#content").append('Stack&lt;*type&gt; stackName = new Stack&lt;*type&gt;();</p>');
+        $("#content").append('*type = String || Integer || Float');
         $("#content").append('<p><h4>Methods:</h4>');
-        $("#content").append('<b>stackName.peek();</b> Returns the top item in the stack, but does not remove it<br>');
-        $("#content").append('<b>stackName.push(stackType x);</b> Adds element x to the top of the stack<br>');
-        $("#content").append('<b>stackName.pop();</b> Removes and returns the top item in the stack<br>');
-        $("#content").append('<b>stackName.isEmpty();</b> Returns a boolean <em>true</em> if the stack is empty, <em>false</em> if the stack contains at least one element<br>');
-        $("#content").append('<b>stackName.populate(int x);</b> Empties the stack, then adds x randomly generated elements of appropriate type to the stack<br>');
-        $("#content").append('<b>stackName.search(stackType x);</b> Returns the index of value x in the stack, where an index of 1 represents the top of the stack</p>');
+        $("#content").append("<p>");
+        $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
+                        th {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>push(*type x)</th><td>Adds element x to the top of the stack</td></tr> \
+                    <tr><th>pop()</th><td>Removes and returns the top item in the stack</td></tr>\
+                    <tr><th>peek()</th><td>Returns the top item in the stack, but does not remove it</td></tr> \
+                    <tr><th>isEmpty()</th><td>Returns a boolean true if the stack is empty, false if the stack contains at least one element</td></tr>\
+                    <tr><th>search(*type x)</th><td>Returns the index of value x in the stack, where an index 1 represents the top of the stack</td></tr>\
+                    <tr><th>populate(int x)</th><td>Empties the stack, then adds x randomly generated elements of appropriate type to the stack</td></tr></table>');
+        $("#content").append("</p>");
         $("#sampleStack").show();
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
@@ -145,20 +120,28 @@ $(document).ready(function () {
         $("#sampleList").hide();
         $("#sampleTree").hide();
         $("#modal").show();
-    });    
-
+        
+    });
+    
     $("#queueHelp").click(function() {
         $("#content").empty().append('<h3><center>Queue ADT</center></h3>');
         $("#content").append('<p><h4>Instantiation:</h4>');
-        $("#content").append('Queue&lt;type&gt; queueName = new Queue&lt;type&gt;();<br>');
-        $("#content").append('PriorityQueue&lt;type&gt; queueName = new PriorityQueue&lt;type&gt;();</p>');
+        $("#content").append('Queue&lt;*type&gt; queueName = new Queue&lt;*type&gt;();<br></p>');
+        $("#content").append('<p>PriorityQueue&lt;*type&gt; queueName = new PriorityQueue&lt;*type&gt;();</p>');
+        $("#content").append('*type = String || Integer || Float');
         $("#content").append('<p><h4>Methods:</h4>');
-        $("#content").append('<b>queueName.peek();</b> Returns the first item in the queue, but does not remove it<br>');
-        $("#content").append('<b>queueName.add(queueType x);</b> Adds element x to the end of the queue<br>');
-        $("#content").append('<b>queueName.remove();</b> Removes and returns the first item in the queue<br>');
-        $("#content").append('<b>queueName.isEmpty();</b> Returns a boolean <em>true</em> if the queue is empty, <em>false</em> if the queue contains at least one element<br>');
-        $("#content").append('<b>queueName.populate(int x);</b> Empties the queue, then adds x randomly generated elements of appropriate type to the queue<br>');     
-        $("#content").append('<b>queueName.size();</b> Returns the size of the queue</p>');        
+        $("#content").append("<p>");
+        $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
+                        th {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>add(*type x)</th><td>Adds element x to the end of the queue (and then sorts for a priority queue)</td></tr> \
+                    <tr><th>remove()</th><td>Removes and returns the first item in the queue</td></tr>\
+                    <tr><th>peek()</th><td>Returns the first item in the queue, but does not remove it</td></tr> \
+                    <tr><th>isEmpty()</th><td>Returns a boolean true if the queue is empty, false if the queue contains at least one element</td></tr>\
+                    <tr><th>size()</th><td>Returns the size of the queue</td></tr> \
+                    <tr><th>populate(int x)</th><td>Empties the queue, then adds x randomly generated elements of appropriate type to the queue</td></tr></table>');
+        $("#content").append("</p>");
         $("#sampleStack").hide();
         $("#sampleQueue").show();
         $("#samplePQueue").show();
@@ -168,8 +151,70 @@ $(document).ready(function () {
         $("#sampleList").hide();
         $("#sampleTree").hide();
         $("#modal").show();
-    });    
+    });
 
+    $("#graphHelp").click(function() {
+        $("#content").empty().append('<h3><center>Graph ADT</center></h3>');
+        $("#content").append('<p><h4>Instantiation:</h4>');
+        $("#content").append('Graph graphName = new Graph();<br>');
+        $("#content").append('WeightedGraph graphName = new WeightedGraph();<br>');
+        $("#content").append('<p><h4>Methods for both graph types:</h4>');
+        
+        $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
+                        th {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>add(*type x)</th><td>Adds element x to the end of the queue (and then sorts for a priority queue)</td></tr> \
+                    <tr><th>remove()</th><td>Removes and returns the first item in the queue</td></tr>\
+                    <tr><th>peek()</th><td>Returns the first item in the queue, but does not remove it</td></tr> \
+                    <tr><th>isEmpty()</th><td>Returns a boolean true if the queue is empty, false if the queue contains at least one element</td></tr>\
+                    <tr><th>size()</th><td>Returns the size of the queue</td></tr> \
+                    <tr><th>populate(int x)</th><td>Empties the queue, then adds x randomly generated elements of appropriate type to the queue</td></tr></table>');
+        $("#content").append("</p>");
+        
+        $("#content").append('<p><h4>Methods for unweighted graphs only:</h4>');
+        $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
+                        th {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>add(*type x)</th><td>Adds element x to the end of the queue (and then sorts for a priority queue)</td></tr> \
+                    <tr><th>remove()</th><td>Removes and returns the first item in the queue</td></tr>\
+                    <tr><th>peek()</th><td>Returns the first item in the queue, but does not remove it</td></tr> \
+                    <tr><th>isEmpty()</th><td>Returns a boolean true if the queue is empty, false if the queue contains at least one element</td></tr>\
+                    <tr><th>size()</th><td>Returns the size of the queue</td></tr> \
+                    <tr><th>populate(int x)</th><td>Empties the queue, then adds x randomly generated elements of appropriate type to the queue</td></tr></table>');
+        $("#content").append("</p>");
+        
+        
+        $("#content").append('<p><h4>Methods for weighted graphs only:</h4>');
+        $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
+                        th {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>add(*type x)</th><td>Adds element x to the end of the queue (and then sorts for a priority queue)</td></tr> \
+                    <tr><th>remove()</th><td>Removes and returns the first item in the queue</td></tr>\
+                    <tr><th>peek()</th><td>Returns the first item in the queue, but does not remove it</td></tr> \
+                    <tr><th>isEmpty()</th><td>Returns a boolean true if the queue is empty, false if the queue contains at least one element</td></tr>\
+                    <tr><th>size()</th><td>Returns the size of the queue</td></tr> \
+                    <tr><th>populate(int x)</th><td>Empties the queue, then adds x randomly generated elements of appropriate type to the queue</td></tr></table>');
+        $("#content").append("</p>");
+        
+
+
+        
+        $("#sampleStack").hide();
+        $("#sampleQueue").hide();
+        $("#samplePQueue").hide();
+        $("#sampleGraph").show();
+        $("#sampleWeightedGraph").show();
+        $("#sampleDict").hide();
+        $("#sampleList").hide();
+        $("#sampleTree").hide();
+        $("#modal").show();
+        
+    });
+
+    /*
     $("#graphHelp").click(function() {
         $("#content").empty().append('<h3><center>Graph ADT</center></h3>');
         $("#content").append('<p><h4>Instantiation:</h4>');
@@ -204,6 +249,7 @@ $(document).ready(function () {
         $("#sampleTree").hide();
         $("#modal").show();
     });    
+    */
 
     $("#dictHelp").click(function() {
         $("#content").empty().append('<h3><center>Dictionary ADT</center></h3>');
