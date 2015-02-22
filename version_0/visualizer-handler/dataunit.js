@@ -31,7 +31,7 @@ $(document).ready(function () {
           this.buildVisual();
 
           //fade it in
-          var anim = Raphael.animation({opacity:1},250);
+          var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(250));
           var delay = this.VH.setDelay(250);
           for (var i =0; i < this.vis.length; i++){
           	this.vis[i].animate(anim.delay(delay));
@@ -61,7 +61,7 @@ $(document).ready(function () {
             _t.x += difX;
             _t.y += difY;
             for (var i =0; i < _t.vis.length; i++){
-              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
+              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(time));
               _t.vis[i].animate(anim.delay(0));
             }
             //_t.VH.setDelay(100);
@@ -76,7 +76,7 @@ $(document).ready(function () {
             _t.x += difX;
             _t.y += difY;
             for (var i =0; i < _t.vis.length; i++){
-              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},time);
+              var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(time));
               _t.vis[i].animate(anim.delay(0));
             }
           },(delay));
@@ -95,11 +95,11 @@ $(document).ready(function () {
 
       //Deletes the item (actually, this just fades it out)
       DataUnit.prototype.destroy = function() {
-          var preAnim = Raphael.animation({stroke: "red"}, 500);
+          var preAnim = Raphael.animation({stroke: "red"}, this.VH.getAnimTime(500));
           this.vis[1].animate(preAnim.delay(this.VH.setDelay(500)));
 
           //fade it out
-          var anim = Raphael.animation({opacity:0},500);
+          var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(500));
           var delay = this.VH.setDelay(500);
           for (var i =0; i < this.vis.length; i++){
             this.vis[i].animate(anim.delay(delay));
@@ -109,7 +109,7 @@ $(document).ready(function () {
       //Deletes the item with a provided delay
       DataUnit.prototype.fadeOut = function(delay) {
           //fade it out
-          var anim = Raphael.animation({opacity:0},250);
+          var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(250));
           for (var i =0; i < this.vis.length; i++){
             this.vis[i].animate(anim.delay(delay));
           }
@@ -173,17 +173,17 @@ $(document).ready(function () {
         this.vis[2].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size - 3, 'text-anchor': 'center'});
 
      };
-
+     
      //Highlight
      DataUnit.prototype.highLight = function() {
-     		var anim = Raphael.animation({stroke: "green"}, 250)
-     		this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
+     		var anim = Raphael.animation({stroke: "green"}, this.VH.getAnimTime(250));
+     		this.vis[1].animate(anim.delay(this.VH.setDelay(250)));
      };
 
       //Highlight
      DataUnit.prototype.lowLight = function() {
-        var anim = Raphael.animation({stroke: "#4b4b4b"}, 1000)
-        this.vis[1].animate(anim.delay(this.VH.setDelay(1000)))
+        var anim = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(1000));
+        this.vis[1].animate(anim.delay(this.VH.setDelay(1000)));
      };
 });
 

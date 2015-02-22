@@ -11,6 +11,7 @@ $(document).ready(function () {
         //used to delay animations
         this.date = new Date();
         this.delay = this.date.getTime();
+        this.animSpeed = 1;
 
         //define constants
         this.PRIMITIVE_NUM_COLS= 8;
@@ -523,6 +524,11 @@ $(document).ready(function () {
     }
 
 
+    //Returns the animation times the constant
+    VisualizerHandler.prototype.getAnimTime = function(t) {
+        return t*this.animSpeed;
+    }
+
     //Finds the delay
     VisualizerHandler.prototype.getDelay = function() {
         if (this.date.getTime() > this.delay){
@@ -534,7 +540,7 @@ $(document).ready(function () {
     //Sets the delay
     VisualizerHandler.prototype.setDelay = function(t) {
         this.getDelay();
-        this.delay += t;
+        this.delay += t*this.animSpeed;
         return (this.delay - this.date.getTime());
     }
 });

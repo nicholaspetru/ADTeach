@@ -28,6 +28,10 @@ $(document).ready(function () {
     
     // Evaluates an array of statements or a single statement
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
+        console.log("Evaling: ", arrayOfBlocks);
+        if (arrayOfBlocks == null) {
+            return null;
+        }
         var count = 0;
         if (typeof arrayOfBlocks[count] === "undefined") {
             var block = arrayOfBlocks;
