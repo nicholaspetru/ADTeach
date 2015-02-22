@@ -136,7 +136,7 @@ $(document).ready(function() {
     //100 represents higher animation speed
     EventHandler.prototype.onSlider = function(newDelay) {
         console.log('Event Handler: onSlider(' + newDelay + ');');
-        var delayMod = (10+newDelay)/50;
-        this.visualizerHandler.setDelay(delayMod);
+        var delayMod = .25 + 1.75*((100 - newDelay)/100);
+        this.visualizerHandler.animSpeed = delayMod;
     }
 });

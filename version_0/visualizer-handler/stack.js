@@ -130,7 +130,7 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(500);
 
         //Fade in the label and frame
-        var anim = Raphael.animation({opacity:1},500);
+        var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(500));
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
         for (var i = 0; i < this.vis.length; i++){
@@ -184,7 +184,7 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(1000);
 
         //Fade out the label and frame
-        var anim = Raphael.animation({opacity:0},1000);
+        var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(1000));
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
         for (var i = this.vis.length-1; i >= 0; i--){
