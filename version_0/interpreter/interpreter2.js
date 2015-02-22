@@ -28,6 +28,10 @@ $(document).ready(function () {
     
     // Evaluates an array of statements or a single statement
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
+        console.log("Evaling: ", arrayOfBlocks);
+        if (arrayOfBlocks == null) {
+            return null;
+        }
         var count = 0;
         if (typeof arrayOfBlocks[count] === "undefined") {
             var block = arrayOfBlocks;
@@ -210,7 +214,7 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalWhileBlock = function(block, env) {
         var condition = block.Test;
-        
+        console.log("Test is: ", condition);
         var isTrue = this.evalCondition(condition, env);
         var endTime = (new Date().getTime()/1000)+21;
         while (isTrue == true) {
@@ -468,6 +472,12 @@ $(document).ready(function () {
                 rightValue = rightValue[0];
             }
             switch (root.value) {
+                case "&&":
+                    return (leftValue && rightValue);
+                    break;
+                case "||":
+                    return (leftValue || rightValue);
+                    break;
                 case "<":
                     return (leftValue < rightValue);
                     break;
