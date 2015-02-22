@@ -159,6 +159,8 @@ $(document).ready(function () {
 
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
+                var oldVal = this.entities[i].value;i
+                this.entities[i].oldValue = oldVal;
                 this.entities[i].value = value;
                 this.entities[i].update(action, originADT);
             }
