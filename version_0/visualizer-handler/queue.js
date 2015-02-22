@@ -24,6 +24,8 @@ $(document).ready(function () {
         //visual component
         this.myLabel = null;
         this.myFrame = null;
+        this.frontText = null;
+        this.backText = null;
         this.vis = [];
         this.drawn = false;
 
@@ -34,7 +36,12 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     Queue.prototype.buildVisual = function(){
-        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type.split("<")[0] + " " + this.name);
+        this.myLabel = this.paper.text(this.x + this.WIDTH/2.5, this.y + this.HEIGHT + 13, this.type.split("<")[0] + " " + this.name);
+        this.frontText = this.paper.text(this.x, this.y + this.HEIGHT + 13, "Front");
+        this.backText = this.paper.text(this.x + this.WIDTH, this.y + this.HEIGHT + 13, "Back");
+
+        this.frontText.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.backText.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
@@ -129,7 +136,13 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(500);
 
         //Fade in the label and frame
+<<<<<<< HEAD
         var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(500));
+=======
+        var anim = Raphael.animation({opacity:1},500);
+        this.frontText.animate(anim.delay(delay));
+        this.backText.animate(anim.delay(delay));
+>>>>>>> 1a33a8b3570a03814417e95f9d6de1ab58c572cb
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
         for (var i = 0; i < this.vis.length; i++){
@@ -149,6 +162,8 @@ $(document).ready(function () {
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
                 _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+                _t.backText.attr({"x": _0 - 28});
+                _t.myLabel.attr({"x": _t.x + _t.WIDTH/4});
             },(this.VH.delay - this.VH.date.getTime()));
         }
     };
@@ -166,6 +181,8 @@ $(document).ready(function () {
         //Set timeout and move the data structure at the proper delay
         var _t = this;
         setTimeout(function(){
+            _t.frontText.animate({transform:'...t' + difX + ' ' + difY},500);
+            _t.backText.animate({transform:'...t' + difX + ' ' + difY},500);
             _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
             _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},500);
 
@@ -186,6 +203,8 @@ $(document).ready(function () {
         var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(1000));
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
+        this.frontText.animate(anim.delay(delay));
+        this.backText.animate(anim.delay(dealy));
         for (var i = this.vis.length-1; i >= 0; i--){
             this.vis[i].fadeOut(delay);
         }
@@ -204,6 +223,8 @@ $(document).ready(function () {
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
 
+        newDU.highLight();
+
         //Scooch down all the other data units
         var delay = null;
         for (var i = index; i < this.vis.length; i++){
@@ -217,6 +238,8 @@ $(document).ready(function () {
         this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.vis.splice(index, 0, newDU);
+
+        newDU.lowLight();
     }
 
     //Gets a new dataunit at the specified index
@@ -229,10 +252,14 @@ $(document).ready(function () {
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
 
+        newDU.highLight();
+
         //Move the new data unit to it's proper location and set as the anonymous variable
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.VH.setDelay(250);
         this.anon = newDU;
+
+        //newDU.lowLight();
     }
 
     //Removes a  dataunit at the specified index
@@ -244,6 +271,9 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type, this.vis[0].value, this.VH,  xx,
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
+
+        newDU.highLight();
+
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.anon = newDU;
         this.vis[0].destroy();
