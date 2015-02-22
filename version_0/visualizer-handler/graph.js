@@ -76,6 +76,9 @@ $(document).ready(function () {
                 case "setDirected":
                     this.SetDirected();
                     break;
+                case "hasEdge":
+                    this.HasEdge(parseInt(split[1]), parseInt(split[2]));
+                    break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
             }
@@ -127,13 +130,14 @@ $(document).ready(function () {
                 var toNodes = graphVal[fromNodeID];
                 for (var x = 0; x < toNodes.length; x++) {
                     var toNodeID = toNodes[x];
-                    var checking = this.hasEdge(fromNodeID,toNodeID);
+                    var checking = this.hasDrawnEdge(fromNodeID,toNodeID);
 
-                    if (this.hasEdge(fromNodeID,toNodeID) == false) {
+                    if (this.hasDrawnEdge(fromNodeID,toNodeID) == false) {
                         this.createEdge(fromNodeID,toNodeID);
                     }
                 }
             }
+            this.graphDragger();
         };
 
         Graph.prototype.SetDirected= function() {
@@ -180,7 +184,18 @@ $(document).ready(function () {
                 }
             }
         };
-        Graph.prototype.highlightEdge = function(fromNodeID,toNodeID,color) {
+
+
+        Graph.prototype.HasEdge = function(fromNodeID,toNodeID) {
+            if (this.hasDrawnEdge(fromNodeID,toNodeID) == true) {
+                this.highLightEdge(fromNodeID,toNodeID,"green");
+            } else if ((this.isDirected == false) && (this.hasDrawnEdge(toNodeID,fromNodeID) == true)) {
+                this.highLightEdge(toNodeID,fromNodeID,"green");
+            }
+        };
+
+        Graph.prototype.highLightEdge = function(fromNodeID,toNodeID,color) {
+            console.log("highLightEdge( " + fromNodeID + "," + toNodeID + ")" );
             for (var i = 0; i < this.edges.length; i++) {
                 if (this.edges[i].from.id == fromNodeID) {
                     if (this.edges[i].to.id == toNodeID) {
@@ -208,11 +223,14 @@ $(document).ready(function () {
             newNode.vis[1].attr({'stroke-width':2});
             newNode.vis[1].id = nodeID;
 
+            // add to set
+            this.me.push(newNode.vis[0]);
+            this.me.push(newNode.vis[1]);
+
             this.nodes.push(newNode);
 
             // add node id to edge tracker
             this.edgeCheck[nodeID] = [];
-
             this.nodeDragger();
         };
 
@@ -243,8 +261,8 @@ $(document).ready(function () {
 
         // check if an edge from (fromNodeID,toNodeID) is already represented
         // on the screen
-        Graph.prototype.hasEdge = function(fromNodeID,toNodeID) {
-            //console.log("hasEdge( " + fromNodeID + " , " + toNodeID + " )");
+        Graph.prototype.hasDrawnEdge = function(fromNodeID,toNodeID) {
+            //console.log("hasDrawnEdge( " + fromNodeID + " , " + toNodeID + " )");
             var check = this.edgeCheck[fromNodeID];
             return check.indexOf(toNodeID) !== -1; 
         };
@@ -264,9 +282,12 @@ $(document).ready(function () {
         };
 
         Graph.prototype.buildVisual = function() {
+            // create the set
+            this.me = this.paper.set();
             // build the label
             this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
             this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+            this.me.push(this.myLabel);
         }
 
         Graph.prototype.erase = function() {
@@ -358,11 +379,30 @@ $(document).ready(function () {
             }
         };
 
-
         //use this.me.push(newDU) to move graph as a whole
-        /*
-        Graph.prototype.move = function(){
-        }
-        */
+        //Moves the graph to the specific positon
+        Graph.prototype.move = function(newX,newY){
+            var difX, difY;
+            difX = newX - this.x;
+            difY = newY - this.y;
+            this.x = newX;
+            this.y = newY;
+
+            var delay = this.VH.setDelay(500);
+            //Set timeout and move the data structure at the proper delay
+            var _t = this;
+            setTimeout(function(){
+                _t.me.animate({transform:'...t' + difX + ' ' + difY},500);
+                //_t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
+
+                //move the dataunits
+                /*
+                for (var i =0; i < _t.vis.length; i++){
+                    _t.vis[i].move(difX,difY,0,500);
+                }
+                */
+            },(this.VH.delay - this.VH.date.getTime())); 
+        };
+        
 
 });
