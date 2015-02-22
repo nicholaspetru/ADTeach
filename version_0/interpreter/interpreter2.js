@@ -473,6 +473,7 @@ $(document).ready(function () {
             }
             switch (root.value) {
                 case "&&":
+                    console.log("DOing aaaand");
                     return (leftValue && rightValue);
                     break;
                 case "||":
