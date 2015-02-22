@@ -55,6 +55,7 @@ $(document).ready(function () {
 
       //Moves the dataunit by the given amount at the specified time
       DataUnit.prototype.move = function(difX, difY, delay, time) {
+
           var _t = this;
           setTimeout(function(){
             _t.x += difX;
@@ -94,9 +95,12 @@ $(document).ready(function () {
 
       //Deletes the item (actually, this just fades it out)
       DataUnit.prototype.destroy = function() {
+          var preAnim = Raphael.animation({stroke: "red"}, 500);
+          this.vis[1].animate(preAnim.delay(this.VH.setDelay(500)));
+
           //fade it out
-          var anim = Raphael.animation({opacity:0},250);
-          var delay = this.VH.setDelay(250);
+          var anim = Raphael.animation({opacity:0},500);
+          var delay = this.VH.setDelay(500);
           for (var i =0; i < this.vis.length; i++){
             this.vis[i].animate(anim.delay(delay));
           }
@@ -178,8 +182,8 @@ $(document).ready(function () {
 
       //Highlight
      DataUnit.prototype.lowLight = function() {
-        var anim = Raphael.animation({stroke: "#4b4b4b"}, 250)
-        this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
+        var anim = Raphael.animation({stroke: "#4b4b4b"}, 1000)
+        this.vis[1].animate(anim.delay(this.VH.setDelay(1000)))
      };
 });
 

@@ -209,10 +209,14 @@ $(document).ready(function () {
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+
         if (!speed)
             newDU.create();
         else
             newDU.popIn();
+
+        newDU.highLight();
+
 
         newDU.updateIndex(index);
         //Scooch down all the other data units if you need to schooch
@@ -220,6 +224,7 @@ $(document).ready(function () {
         for (var i = index; i < this.vis.length; i++){
             if (delay == null)
                 delay = this.VH.setDelay(500);
+
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
             this.vis[i].updateIndex(i + 1);
         }
@@ -231,12 +236,14 @@ $(document).ready(function () {
         this.VH.setDelay(100);
         this.vis.splice(index, 0, newDU);
 
+        newDU.lowLight();
+
         // weird stuff happens
         this.me = this.paper.set();
         this.me.push(this.myFrame, this.myLabel, newDU.vis[0],newDU.vis[1]);
         this.me.draggable();
-
     }
+
     List.prototype.checkPosition = function() {
         var curX = this.myFrame.getBBox().x;
         var curY = this.myFrame.getBBox().y;
@@ -255,7 +262,7 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type, this.value[index], this.VH,  xx,
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
-
+        newDU.highLight();
         //Move the new data unit to it's proper location and set as the anonymous variable
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.anon = newDU;
