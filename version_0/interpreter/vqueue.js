@@ -80,17 +80,17 @@ $(document).ready(function () {
                 }
             }
             var newList = [];
-            newList.push(parameters[0].value);
+            
             var lengthOfList = origValue.length;
             for (var i = 0; i < lengthOfList; i++) {
                 newList.push(origValue[i]);
             }
+            newList.push(parameters[0].value);
             origValue = newList;
             return [returnValue, origValue];
         }
         if (method == "peek") {
-            var length = origValue.length;
-            returnValue = origValue[length-1];
+            returnValue = origValue[0];
             var valType;
             switch (type) {
                 case "Queue<Integer>":
@@ -109,7 +109,8 @@ $(document).ready(function () {
             return [returnValue, origValue, valType];
         }
         if (method == 'remove') {
-            returnValue = origValue.pop();
+            returnValue = origValue[0];
+            origValue.splice(0, 1);
             console.log("REturning, ", returnValue, " + ", origValue);
             return [returnValue, origValue, "float"];
         }

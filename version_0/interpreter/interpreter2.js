@@ -544,10 +544,13 @@ $(document).ready(function () {
                 
             case typeof VStack("int"):
                 return "Stack<int>";
+                break;
             case typeof VStack("float"):
                 return "Stack<Float>";
+                break;
             case typeof VStack("String"):
                 return "Stack<String>";
+                break;
                 
             case typeof VList("int"):
                 return "List<Integer>";
@@ -751,13 +754,22 @@ $(document).ready(function () {
         }
         env.updateVariable(name, newVal, "-=", "new", root.linenum);
     }
-    
+    Interpreter.prototype.isActuallyADT = function(type) {
+        var adt = ["int", "float", "String", "boolean"];
+        if (adt.indexOf(type) >= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
         console.log("Env is: ", env);
         var adtIndex = env.getIndex(adt);
         console.log("HERE: ", env.getVariables()[adtIndex]);
         var adtType = env.getVariables()[adtIndex].type;
+        
+        console.log("Adt type is: ", adtType);
         var adtCurValue = env.getVariables()[adtIndex].value;
         console.log(env.getVariables()[adtIndex]);
         console.log("ADT CURRENT VALUE IS: ", adtCurValue);
@@ -765,7 +777,12 @@ $(document).ready(function () {
         var parameters = root.Arguments;
         var originADT = null;
         
+        var isADT = this.isActuallyADT(adtType);
+        if (!isADT) {
+            env.throwError(root.linenum);
+            root.error();
         
+        }
         var adtMethods = this.findMethods(adtType);
         var paramCheck = this.checkParameters(adtType, method, parameters);
         var newValue, returnValue;
@@ -1153,6 +1170,9 @@ $(document).ready(function () {
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
+            default:
+                env.throwError(root.linenum);
+                root.error();
         }
     }
     
