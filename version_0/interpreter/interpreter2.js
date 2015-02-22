@@ -465,6 +465,7 @@ $(document).ready(function () {
 
             if (root.value == "&&" || root.value == "||"){
                 var leftValue = this.evalCondition(root.first, env);
+                if(root.value == "&&" && !this.evalCondition(root.first, env)) return false;
                 var rightValue = this.evalCondition(root.second, env);
 
             } else {
