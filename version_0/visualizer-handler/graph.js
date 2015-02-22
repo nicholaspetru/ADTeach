@@ -84,7 +84,22 @@ $(document).ready(function () {
         Graph.prototype.AddEdge = function(fromNodeID,toNodeID) {
             console.log("########################");
             console.log("VH graph addEdge( " + fromNodeID + " , " + toNodeID + " (add an edge from " + fromNodeID + " to " + toNodeID + ")");
+            var f = this.nodes[fromNodeID];
+            f = f.vis[1];
+            var t = this.nodes[toNodeID];
+            t = t.vis[1];
+
+            var delay1 = this.VH.setDelay(500);
+            var anim1 = Raphael.animation({stroke: "green"}, 500);
+            f.animate(anim1.delay(delay1));
+            t.animate(anim1.delay(delay1));
+
             this.createEdge(fromNodeID,toNodeID);
+
+            var delay2 = this.VH.setDelay(500);
+            var anim2 = Raphael.animation({stroke: "#4b4b4b"}, 500);
+            f.animate(anim2.delay(delay2));
+            t.animate(anim2.delay(delay2));
         };
 
         Graph.prototype.AddVertex = function() {
@@ -220,10 +235,8 @@ $(document).ready(function () {
             var anim = Raphael.animation({opacity:1},250);
             edge.line.animate(anim.delay(delay));
 
-
             this.edges.push(edge);
 
-            
             // make it draggable
             this.nodeDragger();
         };
