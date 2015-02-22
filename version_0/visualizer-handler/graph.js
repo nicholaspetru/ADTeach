@@ -62,41 +62,38 @@ $(document).ready(function () {
             //animate the change
             switch(split[0]){
                 case "populate":
-                    this.populate();
+                    this.Populate();
                     break;
                 case "addEdge":
-                    this.addEdge(parseInt(split[1]), parseInt(split[2]));
+                    this.AddEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
                 case "addVertex":
-                    this.addVertex();
+                    this.AddVertex();
                     break;
                 case "removeEdge":
-                    this.removeEdge(parseInt(split[1]), parseInt(split[2]));
+                    this.RemoveEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
                 case "setDirected":
-                    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                    console.log("in update");
-                    console.log(split);
-                    this.setDirected(split[1]);
+                    this.SetDirected();
                     break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
             }
         };
 
-        Graph.prototype.addEdge = function(fromNodeID,toNodeID) {
+        Graph.prototype.AddEdge = function(fromNodeID,toNodeID) {
             console.log("########################");
             console.log("VH graph addEdge( " + fromNodeID + " , " + toNodeID + " (add an edge from " + fromNodeID + " to " + toNodeID + ")");
             this.createEdge(fromNodeID,toNodeID);
         };
 
-        Graph.prototype.addVertex = function() {
+        Graph.prototype.AddVertex = function() {
             console.log("########################");
             console.log("VH graph addVertex()");
             this.createNode();
         };
 
-        Graph.prototype.populate = function() {
+        Graph.prototype.Populate = function() {
             console.log("VH populate graph");
             var graphVal = this.value[0];
 
@@ -114,10 +111,8 @@ $(document).ready(function () {
             for (var fromNodeID = 0; fromNodeID < graphVal.length; fromNodeID++) {
                 var toNodes = graphVal[fromNodeID];
                 for (var x = 0; x < toNodes.length; x++) {
-                    console.log(toNodes[x]);
                     var toNodeID = toNodes[x];
                     var checking = this.hasEdge(fromNodeID,toNodeID);
-                    console.log(checking);
 
                     if (this.hasEdge(fromNodeID,toNodeID) == false) {
                         this.createEdge(fromNodeID,toNodeID);
@@ -125,18 +120,30 @@ $(document).ready(function () {
                 }
             }
         };
-        Graph.prototype.setDirected= function(boolX) {
-            if (boolX == "true") {
-                this.isDirected = true;
-            }
-            else if (boolX == "false") {
-                this.isDirected = false;
-            }
 
+        Graph.prototype.SetDirected= function() {
+            if (this.value[1] !== this.isDirected) {
+                this.isDirected = this.value[1];
+
+                // erase old edges
+                for (var i = 0; i < this.edges.length; i++)  {
+                    this.edges[i].line.remove();
+                }
+                this.nodeDragger();            
+                
+                var graphVal = this.value[0];
+
+                for (var fromNodeID = 0; fromNodeID < graphVal.length; fromNodeID++) {
+                    var toNodes = graphVal[fromNodeID];
+                    for (var x = 0; x < toNodes.length; x++) {
+                        var toNodeID = toNodes[x];
+                        this.createEdge(fromNodeID,toNodeID);
+                    }
+                }
+            }
         };
 
-
-        Graph.prototype.removeEdge = function(fromNodeID,toNodeID) {
+        Graph.prototype.RemoveEdge = function(fromNodeID,toNodeID) {
             for (var i = 0; i < this.edges.length; i++) {
                 if (this.edges[i].from.id == fromNodeID) {
                     if (this.edges[i].to.id == toNodeID) {
@@ -158,26 +165,25 @@ $(document).ready(function () {
                 }
             }
         };
-        /*
-        Graph.prototype.highlightEdge = function(fromNodeID, toNodeID) {
+        Graph.prototype.highlightEdge = function(fromNodeID,toNodeID,color) {
             for (var i = 0; i < this.edges.length; i++) {
                 if (this.edges[i].from.id == fromNodeID) {
                     if (this.edges[i].to.id == toNodeID) {
-                        var anim = Raphael.animation({stroke: "green"},250, function() {
+                        var anim = Raphael.animation({stroke:color},250);
                         var delay = this.VH.setDelay(250);
                         this.edges[i].line.animate(anim.delay(delay));
                     }
                 }
                 else if (this.edges[i].from.id == toNodeID) {
                     if (this.edges[i].to.id == fromNodeID) {
-                        var anim = Raphael.animation({stroke: "green"},250, function() {
+                        var anim = Raphael.animation({stroke:color},250);
                         var delay = this.VH.setDelay(250);
                         this.edges[i].line.animate(anim.delay(delay));
                     }
                 }
             }
         };
-        */
+
         Graph.prototype.createNode = function() {
             // create and display the node
             this.getNextPos();
@@ -203,30 +209,21 @@ $(document).ready(function () {
             f = f.vis[1];
             var t = this.nodes[toNodeID];
             t = t.vis[1];
-            if (this.isDirected == false) {
-                this.edges.push(this.paper.connection(t, f, "#000"));
+
+            var edge = this.paper.connection(f, t, "#000");
+            if (this.isDirected == true) {
+                edge.line.attr({'arrow-end': 'classic-wide-long'});
             }
-            else {
-                var directedEdge = this.paper.connection(t, f, "#000");
-                //directedEdge.line.attr({'arrow-end': 'block-midium-midium'});
-                directedEdge.line.attr({'arrow-end': 'classic-wide-long'});
-                //directedEdge.line.attr({'arrow-end': 'open-wide-midium'});
-                directedEdge.line.attr({'stroke-width': 2});
+            edge.line.attr({'stroke-width': 1.5});
+            // fade in the new edges
+            var delay = this.VH.setDelay(250); //get the delay for outside the loop
+            var anim = Raphael.animation({opacity:1},250);
+            edge.line.animate(anim.delay(delay));
 
 
-                this.edges.push(directedEdge);
-            }
+            this.edges.push(edge);
 
-            // update this.edgeCheck
-            this.edgeCheck[fromNodeID].push(toNodeID);
-            if (this.isDirected == false) {
-                this.edgeCheck[toNodeID].push(fromNodeID);
-            }
-
-            // fade in the new edge
-            var delay = this.VH.setDelay(500); //get the delay for outside the loop
-            var anim = Raphael.animation({opacity:1},500);
-            this.edges[this.edges.length-1].line.animate(anim.delay(delay));
+            
             // make it draggable
             this.nodeDragger();
         };
@@ -270,6 +267,9 @@ $(document).ready(function () {
             for (var i = 0; i < this.edges.length; i++) {
                 this.edges[i].remove();
             }
+            this.count = 0;
+            this.nextNodeX = 0;
+            this.nextNodeY = 0;
 
         }
 
@@ -291,7 +291,13 @@ $(document).ready(function () {
         // the edges follow the nodes
         Graph.prototype.nodeDragger = function() {
             var tempS, tempT;
-            
+            for (var i = 0, ii = this.nodes.length; i < ii; i++) {
+                var n = this.nodes[i];
+                tempS = n.vis[1]; // the circle
+                tempT = n.vis[0]; // the node id
+                tempS.undrag();
+                tempT.undrag();
+            }
 
             var dragger = function () {
                 // Original coords for main element
