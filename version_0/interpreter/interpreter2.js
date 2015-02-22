@@ -214,7 +214,7 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalWhileBlock = function(block, env) {
         var condition = block.Test;
-        
+        console.log("Test is: ", condition);
         var isTrue = this.evalCondition(condition, env);
         var endTime = (new Date().getTime()/1000)+21;
         while (isTrue == true) {

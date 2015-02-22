@@ -277,8 +277,6 @@ $(document).ready(function () {
         $("#sampleList").hide();
         $("#sampleTree").show();
         $("#modal").show();
-        
-        
     });
     
     $("#exitModal").click(function() {
@@ -322,6 +320,11 @@ $(document).ready(function () {
     $("#slider").change(function() {
         var newDelay = $("#slider").val();
         EVH.onSlider(newDelay);
+    });
+
+    $("#user_textbox").on('change keyup paste', function() {
+        var scrollHeight = document.getElementById('user_textbox').scrollHeight;
+        $("#user_textbox").height( scrollHeight-4+'px' );
     });
     
 });
