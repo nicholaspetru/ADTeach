@@ -56,22 +56,63 @@ $(document).ready(function () {
         $("#modal").show();
     });
 
+    
     $("#listHelp").click(function() {
         $("#content").empty().append('<h3><center>List ADT</center></h3>');
         $("#content").append('<p><h4>Instantiation:</h4>');
-        $("#content").append('List&lt;type&gt; listName = new List&lt;type&gt;();</p>');
+        $("#content").append('List&lt;list_type&gt; listName = new List&lt;list_type&gt;();</p>');
+        $("#content").append('list_type = String || Integer || Float');
         $("#content").append('<p><h4>Methods:</h4>');
-        $("#content").append('<b>listName.add(listType x);</b> Adds element x to the end of the list<br>');
-        $("#content").append('<b>listName.add(int x, listType y);</b> Adds element y to the list at index x<br>');
-        $("#content").append('<b>listName.contains(listType x);</b> Returns a boolean <em>true</em> if the list contains element x, <em>false</em> if it does not<br>');
-        $("#content").append('<b>listName.get(int x);</b> Returns the element at index x<br>');
-        $("#content").append('<b>listName.indexOf(listType x);</b> Returns the index of element x<br>');
-        $("#content").append('<b>listName.isEmpty();</b> Returns a boolean <em>true</em> if the list is empty, <em>false</em> if the list contains at least one element<br>');
-        $("#content").append('<b>listName.populate(int x);</b> Empties the list, then adds x randomly generated elements of appropriate type to the list<br>');        
-        $("#content").append('<b>listName.size();</b> Returns the size of the list<br>');
-        $("#content").append('<b>listName.remove(int x);</b> Removes the element at index x in the list<br>');
-        $("#content").append('<b>listName.set(int x, listType y);</b> Replaces the element at index x in the list with element y<br>');
-        $("#content").append('<b>listName.clear();</b> Empties the list</p>');
+        $("#content").append("<p>");
+        $("#content").append('<style type="text/css">.tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color:#000000;border-collapse: collapse;}.tftable \
+                        th {font-size:12px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;text-align:left;}.tftable \
+                        tr {background-color:#d4e3e5;}.tftable \
+                        td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #000000;}.tftable</style><table class="tftable" border="1"> \
+                    <tr><th>add(list_type x)</th><td>Adds element x to the end of the list</td></tr> \
+                    <tr><th>add(int x, list_type y)</th><td>Adds element y to the list at index x</td></tr> \
+                    <tr><th>contains(list_type x)</th><td>Returns a boolean true if the list contains element x, false if it does not</td></tr>\
+                    <tr><th>get(int x)</th><td>Returns the element at index x</td></tr> \
+                    <tr><th>indexOf(list_type x)</th><td>Returns the index of element x</td></tr> \
+                    <tr><th>isEmpty()</th><td>Returns a boolean true if the list is empty, false if the list contains at least one element</td></tr>\
+                    <tr><th>populate(int x)</th><td>Empties the list, then adds x randomly generated elements of appropriate type of the list</td></tr> \
+                    <tr><th>size()</th><td>Returns the size of the list</td></tr> \
+                    <tr><th>remove(int x)</th><td>Removes the element at index x in the list</td></tr> \
+                    <tr><th>set(int x, list_type y)</th><td>Replaces the element at index x in the list with element y</td></tr> \
+                    <tr><th>clear()</th><td>Empties the list</td></tr></table>');
+        $("#content").append("</p>");
+        $("#sampleStack").hide();
+        $("#sampleQueue").hide();
+        $("#samplePQueue").hide();
+        $("#sampleGraph").hide();
+        $("#sampleWeightedGraph").hide();
+        $("#sampleDict").hide();
+        $("#sampleList").show();
+        $("#sampleTree").hide();
+        $("#modal").show();
+    
+    });
+    
+    
+    
+    /*
+    $("#listHelp").click(function() {
+        $("#content").empty().append('<h3><center>List ADT</center></h3>');
+        $("#content").append('<p><h4>Instantiation:</h4>');
+        $("#content").append('List&lt;list_type&gt; listName = new List&lt;list_type&gt;();</p>');
+        $("#content").append('list_type = String || Integer || Float');
+        $("#content").append('<p><h4>Methods:</h4>');
+        
+        $("#content").append('<b>add(</b><i>list_type</i> x<b>)</b>; Adds element x to the end of the list<br>');
+        $("#content").append('<b>add</b>(<i>int</i> x, <i>listType</i> y); Adds element y to the list at index x<br>');
+        $("#content").append('<b>contains</b>(<i>listType</i> x); Returns a boolean <em>true</em> if the list contains element x, <em>false</em> if it does not<br>');
+        $("#content").append('<b>get</b>(<i>int</i> x); Returns the element at index x<br>');
+        $("#content").append('<b>indexOf</b>(<i>listType</i> x); Returns the index of element x<br>');
+        $("#content").append('<b>isEmpty</b>(); Returns a boolean <em>true</em> if the list is empty, <em>false</em> if the list contains at least one element<br>');
+        $("#content").append('<b>populate</b>(<i>int</i> x); Empties the list, then adds x randomly generated elements of appropriate type to the list<br>');        
+        $("#content").append("<b>size</b>(); Returns the size of the list<br>");
+        $("#content").append('<b>remove</b>(<i>int</i> x); Removes the element at index x in the list<br>');
+        $("#content").append('<b>set</b>(<i>int</i> x, <i>listType</i> y); Replaces the element at index x in the list with element y<br>');
+        $("#content").append('<b>clear</b>(); Empties the list</p>');
         $("#sampleStack").hide();
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
@@ -82,6 +123,7 @@ $(document).ready(function () {
         $("#sampleTree").hide();
         $("#modal").show();   
     });   
+    */
 
     $("#stackHelp").click(function() {
         $("#content").empty().append('<h3><center>Stack ADT</center></h3>');
