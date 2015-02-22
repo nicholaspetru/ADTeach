@@ -212,12 +212,19 @@ $(document).ready(function () {
         var condition = block.Test;
         
         var isTrue = this.evalCondition(condition, env);
+        var timer = new Date();
+        var endTime = (timer.getSeconds()+21) % 60;
         while (isTrue == true) {
             var body = block.Body;
             var condition2 = block.Test;
 
             this.eval(body, env);
             isTrue = this.evalCondition(condition2, env);
+
+            if (new Date().getSeconds() >= endTime){
+                isTrue = false;
+                console.log("Interpreter Timed out, check while loop for infinite loop");
+            }
         }
     }
     
@@ -1213,8 +1220,6 @@ $(document).ready(function () {
                 default:
                     break;
             }
-            console.log("*****");
-            console.log("Looking at current token", currentToken);
             if (currentToken.type != null) {
                 tokens.push(currentToken);
 
