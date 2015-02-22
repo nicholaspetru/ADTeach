@@ -84,6 +84,10 @@ $(document).ready(function () {
         }
         
         if (method == "addEdge"){ 
+            if (parameters[0].value > origValue.length - 1 || parameters[1].value > origValue.length - 1) {
+                env.throwError(root.linenum);
+                root.error();
+            }
             if (isDirected != true) {
                 console.log("ADDING EDGE WHEN FALSE");
                 var node1 = parameters[0].value;
