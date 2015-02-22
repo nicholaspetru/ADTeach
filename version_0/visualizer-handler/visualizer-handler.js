@@ -526,7 +526,6 @@ $(document).ready(function () {
 
     //Returns the animation times the constant
     VisualizerHandler.prototype.getAnimTime = function(t) {
-        console.log("XXXXXXXXXXXXXXXXXXXXX:: " + this.animSpeed);
         return t*this.animSpeed;
     }
 

@@ -25,7 +25,6 @@ $(document).ready(function () {
         this.myLabel = null;
         this.myFrame = null;
         this.frontText = null;
-        this.backText = null;
         this.vis = [];
         this.drawn = false;
 
@@ -38,10 +37,8 @@ $(document).ready(function () {
     Queue.prototype.buildVisual = function(){
         this.myLabel = this.paper.text(this.x + this.WIDTH/2.5, this.y + this.HEIGHT + 13, this.type.split("<")[0] + " " + this.name);
         this.frontText = this.paper.text(this.x, this.y + this.HEIGHT + 13, "Front");
-        this.backText = this.paper.text(this.x + this.WIDTH, this.y + this.HEIGHT + 13, "Back");
 
         this.frontText.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
-        this.backText.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
@@ -136,13 +133,8 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(500);
 
         //Fade in the label and frame
-<<<<<<< HEAD
         var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(500));
-=======
-        var anim = Raphael.animation({opacity:1},500);
         this.frontText.animate(anim.delay(delay));
-        this.backText.animate(anim.delay(delay));
->>>>>>> 1a33a8b3570a03814417e95f9d6de1ab58c572cb
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
         for (var i = 0; i < this.vis.length; i++){
@@ -162,7 +154,6 @@ $(document).ready(function () {
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
                 _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
-                _t.backText.attr({"x": _0 - 28});
                 _t.myLabel.attr({"x": _t.x + _t.WIDTH/4});
             },(this.VH.delay - this.VH.date.getTime()));
         }
@@ -182,7 +173,6 @@ $(document).ready(function () {
         var _t = this;
         setTimeout(function(){
             _t.frontText.animate({transform:'...t' + difX + ' ' + difY},500);
-            _t.backText.animate({transform:'...t' + difX + ' ' + difY},500);
             _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
             _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},500);
 
@@ -204,7 +194,6 @@ $(document).ready(function () {
         this.myLabel.animate(anim.delay(delay));
         this.myFrame.animate(anim.delay(delay));
         this.frontText.animate(anim.delay(delay));
-        this.backText.animate(anim.delay(dealy));
         for (var i = this.vis.length-1; i >= 0; i--){
             this.vis[i].fadeOut(delay);
         }
@@ -219,7 +208,7 @@ $(document).ready(function () {
             ind = 0;
 
         //Create the new data unit
-        var newDU = new DataUnit(this.paper,this.type,this.value[ind], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
+        var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
 
