@@ -468,6 +468,12 @@ $(document).ready(function () {
                 rightValue = rightValue[0];
             }
             switch (root.value) {
+                case "&&":
+                    return (leftValue && rightValue);
+                    break;
+                case "||":
+                    return (leftValue || rightValue);
+                    break;
                 case "<":
                     return (leftValue < rightValue);
                     break;

@@ -24,7 +24,7 @@ Dijkstra's!!!
 
 WeightedGraph g = new WeightedGraph();
 for (int i = 0; i < 7; i++){
-	g.addVertex();
+        g.addVertex();
 }
 g.addEdge(0,2,1);
 g.addEdge(0,4,3);
@@ -35,3 +35,50 @@ g.addEdge(1,6,10);
 g.addEdge(1,3,3);
 g.addEdge(3,6,1);
 
+List<Integer> distances = new List<Integer>();
+List<Integer> visited = new List<Integer>();
+List<Integer> neighbors = new List<Integer>();
+
+for (int j = 0; j < 7; j++){
+        distances.add(999);
+        visited.add(0);
+}
+visited.set(0,1);
+distances.set(0,0);
+
+int curNode = 0;
+int d = 0;
+int dd = 0;
+int next = 1000;
+
+while(visited.indexOf(0) >= 0){
+    neighbors = g.getNeighbors(curNode);
+    for(int n = 0; n<neighbors.size(); n++){
+            if(visited.contains(neighbors.get(n)) == true){
+                    neighbors.remove(n);
+            }
+    }
+    for(int m = 0; m<neighbors.size(); m++){
+        d = (distances.get(curNode) + g.getWeight(curNode, neighbors.get(m)));
+        dd = distances.get(neighbors.get(m));
+        if(d <dd){
+                distances.set(neighbors.get(m), d);
+        }
+            
+    }
+
+    visited.set(curNode, 1);
+    for (int o = 0; o<visited.size(); o++){
+            if(visited.get(o) == 0){
+                    if (distances.get(o) < next){
+                            curNode = o;
+                            next = distances.get(o);
+                
+                    }
+            }
+    }
+    d = 0;
+    dd = 0;
+    next = 1000;
+
+}
