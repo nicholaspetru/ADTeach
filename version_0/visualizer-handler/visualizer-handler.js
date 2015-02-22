@@ -281,6 +281,8 @@ $(document).ready(function () {
                 return new Dictionary(this.paper,name,type,value, this);
             case "Graph":
                 return new Graph(this.paper,name,type,value, this);
+            case "WeightedGraph":
+                return new WeightedGraph(this.paper,name,type,value,this);
             default:
                 console.log("Unknown type for newEntity: " + type);
                 return;
@@ -411,6 +413,7 @@ $(document).ready(function () {
                         break;
 
                     case "Graph":
+                    case "WeightedGraph":
                     case "Dictionary":
                         if (type == "Stack"){
                             curX = entities[i].x + 90;
@@ -484,6 +487,7 @@ $(document).ready(function () {
                             break;
 
                         case "Graph":
+                        case "WeightedGraph":
                         case "Dictionary":
                             // increment graph/dict count
                             if (this.entities[i].x == 0)

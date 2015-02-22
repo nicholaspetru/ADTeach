@@ -137,7 +137,7 @@ $(document).ready(function () {
                     }
                 }
             }
-            this.graphDragger();
+            //this.graphDragger();
         };
 
         Graph.prototype.SetDirected= function() {
