@@ -281,34 +281,6 @@ $(document).ready(function () {
         
     });
     
-    
-    /*
-    $("#treeHelp").click(function() {
-        $("#content").empty().append('<h3><center>Tree ADT</center></h3>');
-        $("#content").append('<p><h4>Instantiation:</h4>');
-        $("#content").append('Tree treeName = new Tree();');
-        $("#content").append('<p><h4>Methods:</h4>');
-        $("#content").append('<b>treeName.setRoot(int x);</b> Sets vertex x to be the root of the tree<br>');
-        $("#content").append('<b>treeName.populate(int x);</b> Empties the tree, then populates it with x nodes<br>');
-        $("#content").append('<b>treeName.removeVertex(int x);</b> Removes vertex x from the tree<br>');
-        $("#content").append('<b>treeName.removeChild(int x, int y);</b> Removes the y<sup>th</sup> child of vertex x from the tree<br>');
-        $("#content").append('<b>treeName.getChild(int x, int y);</b> Returns the y<sup>th</sup> child of vertex x in the tree<br>');
-        $("#content").append('<b>treeName.getChildren(int x);</b> Returns a list of all children of vertex x in the tree<br>');
-        $("#content").append('<b>treeName.getParent(int x);</b> Returns the parent of vertex x in the tree<br>');
-        $("#content").append('<b>treeName.addChild(int x, int y);</b> Sets vertex y to be the child of vertex x<br>');
-        $("#content").append('<b>treeName.addChild(int x, int y, int z);</b> Sets vertex y to be the z<sup>th</sup> child of vertex x, where z is either 0 or 1</p>');
-        $("#sampleStack").hide();
-        $("#sampleQueue").hide();
-        $("#samplePQueue").hide();
-        $("#sampleGraph").hide();
-        $("#sampleWeightedGraph").hide();
-        $("#sampleDict").hide();
-        $("#sampleList").hide();
-        $("#sampleTree").show();
-        $("#modal").show();
-    });    
-    */
-
     $("#exitModal").click(function() {
         $("#modal").hide();
     });
