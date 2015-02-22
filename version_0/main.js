@@ -38,7 +38,7 @@ $(document).ready(function () {
     });
 
     $("#aboutViva").click(function() {
-        $("#content").empty().append('<h3><center>About Viva</center></h3>');
+        $("#content").empty().append('<h3><center>Programming in ADTeach</center></h3>');
         $("#content").append('<p>"Viva", or <em>Visual Java</em>, is a simplified version of Java supported by ADTeach. It uses the same syntax as Java, but is built around the idea of visualizing ADTs. To this end, users will notice the following differences between Java and Viva:</p>');
         $("#content").append('<p><li>Unlike Java, users may not create their own classes or methods in Viva. For a list of supported classes and their corresponding methods, explore the help buttons above the code box.</li>');
         $("#content").append('<li>Users may not import Java libraries in Viva. This helps to ensure your code will run smoothly and quickly.</li>');
