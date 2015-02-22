@@ -1175,6 +1175,7 @@ $(document).ready(function () {
         t.input(this.code);
 
         var currentToken = t.token();
+        console.log("Returning current token: ", currentToken);
         while (currentToken) {
             switch (currentToken.type) {
                 case 'OPEN_PAREN':
@@ -1192,9 +1193,14 @@ $(document).ready(function () {
                 default:
                     break;
             }
+            console.log("*****");
+            console.log("Looking at current token", currentToken);
+            if (currentToken.type != null) {
+                tokens.push(currentToken);
 
-            tokens.push(currentToken);
+            }
             currentToken = t.token(env);
+
         }
 
         if (parenLevel > 0) {
