@@ -462,14 +462,21 @@ $(document).ready(function () {
         }
         
         if (root.arity === "binary") {
-        
-            var leftValue = this.evalValue(root.first, env);
-            var rightValue = this.evalValue(root.second, env);
-            if (leftValue.length == 2 && leftValue[1] == "float") {
-                leftValue = leftValue[0];
-            } 
-            if (rightValue.length == 2 && rightValue[1] == "float") {
-                rightValue = rightValue[0];
+
+            if (root.value == "&&" || root.value == "||"){
+                var leftValue = this.evalCondition(root.first, env);
+                var rightValue = this.evalCondition(root.second, env);
+
+            } else {
+
+                var leftValue = this.evalValue(root.first, env);
+                var rightValue = this.evalValue(root.second, env);
+                if (leftValue.length == 2 && leftValue[1] == "float") {
+                    leftValue = leftValue[0];
+                } 
+                if (rightValue.length == 2 && rightValue[1] == "float") {
+                    rightValue = rightValue[0];
+                }
             }
             switch (root.value) {
                 case "&&":
