@@ -212,7 +212,7 @@ $(document).ready(function () {
         var condition = block.Test;
         
         var isTrue = this.evalCondition(condition, env);
-        var endTime = (new Date().getTime()/1000)+2;
+        var endTime = (new Date().getTime()/1000)+21;
         while (isTrue == true) {
             var body = block.Body;
             var condition2 = block.Test;
