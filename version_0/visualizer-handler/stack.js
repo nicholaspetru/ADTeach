@@ -212,6 +212,7 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type, this.value[this.value.length - 1], this.VH, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
                                        this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.vis.length - 1), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
+        newDU.highLight();
 
         //Move the new data unit to it's proper location and set as the anonymous variable
         newDU.move(0,-(this.HEIGHT - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(-1 + this.value.length)), this.VH.setDelay(500),500);
