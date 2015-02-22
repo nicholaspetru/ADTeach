@@ -198,10 +198,13 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type,this.value[this.value.length-1], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
+        newDU.highLight();
 
         //Insert the new data unit in it's proper location
         newDU.move(0, this.HEIGHT - (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.value.length - 1),this.VH.setDelay(500),500);
         this.vis.splice(this.value.length, 0, newDU);
+
+        newDU.lowLight();
     }
 
 
@@ -223,6 +226,7 @@ $(document).ready(function () {
     //Removes a  dataunit at the specified index
     Stack.prototype.Remove = function() {
         //move the top item to the stack and fade it out
+        this.vis[this.vis.length - 1].highLight();
         this.vis[this.vis.length - 1].move(0,-(this.HEIGHT - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.value.length)), this.VH.setDelay(500),500);
         this.VH.setDelay(400);
         this.vis[this.vis.length - 1].fadeOut(this.VH.setDelay(250));
@@ -234,6 +238,7 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type, this.vis[this.vis.length - 1].value, this.VH,  xx,
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
+        newDU.highLight();
         this.vis.splice(this.vis.length - 1, 1);
         this.anon = newDU;
     }
