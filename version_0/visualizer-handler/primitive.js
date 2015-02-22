@@ -90,7 +90,7 @@ $(document).ready(function () {
     };
 
     //make a data unit near your location and return it 
-    Primitive.prototype.createAnonymous = function() {s
+    Primitive.prototype.createAnonymous = function() {
         //Create the new data unit
         var xx = this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length;
             yy = this.y - this.FONT_SIZE/2;

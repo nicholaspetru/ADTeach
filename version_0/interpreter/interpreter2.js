@@ -458,6 +458,12 @@ $(document).ready(function () {
                 case ">":
                     return (leftValue > rightValue);
                     break;
+                case ">=":
+                    return (leftValue >= rightValue);
+                    break;
+                case "<=":
+                    return (leftValue <= rightValue);
+                    break;
                 case "==":
                     return (leftValue == rightValue);
                     break;
