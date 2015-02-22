@@ -211,7 +211,6 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
-
         newDU.highLight();
 
         //Scooch down all the other data units
@@ -223,10 +222,12 @@ $(document).ready(function () {
         }
 
         //Insert the new data unit in it's proper location
-        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
+        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500,function(){
+            //splice it in
+            this.vis.splice(index, 0, newDU);
+        });
         this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
-        this.vis.splice(index, 0, newDU);
 
         newDU.lowLight();
     }
@@ -247,8 +248,6 @@ $(document).ready(function () {
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.VH.setDelay(250);
         this.anon = newDU;
-
-        //newDU.lowLight();
     }
 
     //Removes a  dataunit at the specified index
@@ -257,22 +256,24 @@ $(document).ready(function () {
         var xx = this.x + (this.DUNIT_WIDTH*.2),
             yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
 
-        var newDU = new DataUnit(this.paper,this.type, this.vis[0].value, this.VH,  xx,
+        var newDU = new DataUnit(this.paper,this.type, this.oldValue[0], this.VH,  xx,
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
-
         newDU.highLight();
 
-        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
+        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500,
+            function() {
+                this.vis.splice(0, 1);
+            });
         this.anon = newDU;
         this.vis[0].destroy();
 
+        //schooch everything down
         var delay = this.VH.setDelay(500);
         for (var i = 0; i < this.vis.length; i++){
             this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
         }
 
-        this.vis.splice(0, 1);
     }
 
     //Changes the value of the data unit at the given index
