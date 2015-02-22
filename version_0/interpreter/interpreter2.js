@@ -212,8 +212,7 @@ $(document).ready(function () {
         var condition = block.Test;
         
         var isTrue = this.evalCondition(condition, env);
-        var timer = new Date();
-        var endTime = (timer.getSeconds()+21) % 60;
+        var endTime = (new Date().getTime()/1000)+2;
         while (isTrue == true) {
             var body = block.Body;
             var condition2 = block.Test;
@@ -221,7 +220,9 @@ $(document).ready(function () {
             this.eval(body, env);
             isTrue = this.evalCondition(condition2, env);
 
-            if (new Date().getSeconds() >= endTime){
+            if (new Date().getTime()/1000 > endTime){
+                console.log(endTime);
+                console.log(new Date().getTime());
                 isTrue = false;
                 console.log("Interpreter Timed out, check while loop for infinite loop");
             }
