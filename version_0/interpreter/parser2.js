@@ -102,6 +102,7 @@ var make_parse = function (env) {
         token_nr += 1;
         v = t.value;
         a = t.type;
+        console.log("Looking at t: ", t);
         if (a === "name") {
             o = scope.find(v);
         } else if (a === "operator") {
@@ -115,6 +116,7 @@ var make_parse = function (env) {
             o = symbol_table["(literal)"];
             a = "literal";
         } else {
+            console.log("Error with: ", token);
             console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             t.error("Unexpected token.");

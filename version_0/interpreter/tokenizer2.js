@@ -113,6 +113,12 @@ Tokenizer.prototype._process_number = function() {
 	}
 	var x = this.buf.charAt(endpos);
 	var y = this.buf.charAt(endpos + 1);
+    var sign = "";
+    //console.log(this.bug.charAt(this.pos));
+    
+    if (this.buf.charAt(this.pos - 1) == '-') {
+        sign = "-";
+    }
 	if (x === '.' && this._isdigit(y)) {
 		while (endpos < this.buflen && this._isdigit(y)) {
 			endpos++;
@@ -122,7 +128,7 @@ Tokenizer.prototype._process_number = function() {
 		var tok = {
 			type: "number",
 			jtype: 'FLOAT_TYPE',
-			value: this.buf.substring(this.pos, endpos),
+			value: sign + this.buf.substring(this.pos, endpos),
 			pos: this.pos,
 			linenum: this.linenum
 		};
@@ -134,7 +140,7 @@ Tokenizer.prototype._process_number = function() {
 		var tok = {
 			type: "number",
 			jtype: 'INT_TYPE',
-			value: this.buf.substring(this.pos, endpos),
+			value: sign + this.buf.substring(this.pos, endpos),
 			pos: this.pos,
 			linenum: this.linenum
 		};
@@ -149,7 +155,15 @@ Tokenizer.prototype._process_symbol = function(env) {
 	var endpos = this.pos + 1;
 	var op1 = this.operators.indexOf(this.buf.charAt(this.pos));
 	var op2 = this.operators.indexOf(this.buf.charAt(endpos));
-
+    
+    if (this._isdigit(this.buf.charAt(this.pos + 1))) {
+        console.log("Correct if statement");
+        this.pos = endpos;
+        var tok = {
+        };
+        console.log("thing at end pos it: ", this.buf.charAt(endpos));
+        return tok;
+    }
 	if (op1 !== -1) {
 		if (op2 !== -1) {
 			endpos++;

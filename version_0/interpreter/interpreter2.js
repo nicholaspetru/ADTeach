@@ -212,12 +212,19 @@ $(document).ready(function () {
         var condition = block.Test;
         
         var isTrue = this.evalCondition(condition, env);
+        var timer = new Date();
+        var endTime = (timer.getSeconds()+21) % 60;
         while (isTrue == true) {
             var body = block.Body;
             var condition2 = block.Test;
 
             this.eval(body, env);
             isTrue = this.evalCondition(condition2, env);
+
+            if (new Date().getSeconds() >= endTime){
+                isTrue = false;
+                console.log("Interpreter Timed out, check while loop for infinite loop");
+            }
         }
     }
     
@@ -1175,6 +1182,7 @@ $(document).ready(function () {
         t.input(this.code);
 
         var currentToken = t.token();
+        console.log("Returning current token: ", currentToken);
         while (currentToken) {
             switch (currentToken.type) {
                 case 'OPEN_PAREN':
@@ -1192,9 +1200,12 @@ $(document).ready(function () {
                 default:
                     break;
             }
+            if (currentToken.type != null) {
+                tokens.push(currentToken);
 
-            tokens.push(currentToken);
+            }
             currentToken = t.token(env);
+
         }
 
         if (parenLevel > 0) {
