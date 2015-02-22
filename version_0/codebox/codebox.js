@@ -19,6 +19,7 @@ $(document).ready(function () {
         console.log("Code Box: freezeCode()");
         $("#user_textbox").prop('disabled', true);
         $("#user_textbox").css({"background-color": "#B6C5BE"});
+        $("#vis_paper").css({"background-color": "#DBE6E0"});
         // freezecdoe() called if onClick(play/step) called
         // if (this.PLAYING == true) {
         //     grey out the box and prevent user from making changes
@@ -30,6 +31,7 @@ $(document).ready(function () {
         console.log("Code Box: unfreezeCode()");
         $("#user_textbox").prop('disabled', false);
         $("#user_textbox").css({"background-color": "#F0F8FF"});
+        $("#vis_paper").css({"background-color": "#B6C5BE"});
     };
     
     CodeBox.prototype.setCode = function(code){
