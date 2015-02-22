@@ -381,6 +381,7 @@ var make_parse = function (env) {
     infix("(", 150, function (left) {
         var a = [];
         console.log(left.id);
+        console.log("IN open paren: ", left);
         if (left.id === "." || left.id === "[") {
             this.arity = "FunCall";
             this.Caller = left.first;
@@ -388,6 +389,8 @@ var make_parse = function (env) {
             this.Arguments = a;
         } else if (left.id == "new") {
             this.arity = "Initialization";
+            this.Arguments = a;
+            console.log("Arguments are: ", this.Arguments);
         }else {
             this.arity = "binary";
             this.first = left;
@@ -401,6 +404,7 @@ var make_parse = function (env) {
             }
         }
         if (token.id !== ")") {
+            console.log("Looking for closed paren");
             while (true) {
                 a.push(expression(0));
                 if (token.id !== ",") {
@@ -409,6 +413,14 @@ var make_parse = function (env) {
                 advance(",");
             }
         }
+        if (left.id == "new") {
+            console.log("Arguments are: ", a, "Comparing to: ", []);
+            if (this.Arguments.length != 0) {
+                envir.throwError(token.linenum);
+                left.error();
+            }
+        }
+        console.log("The arguments are: ", a);
         advance(")");
         return this;
     });
@@ -520,11 +532,14 @@ var make_parse = function (env) {
             scope.define(n);
             advance();
             if (token.id === "=") {
+                console.log("token is: ", token);
                 t = token;
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
                 t.third = expression(0, "Stack<Integer>");
+                console.log("Third is: ", t);
+                
                 t.second = n;
                 t.arity = "Initialization";
                 a.push(t);

@@ -16,6 +16,8 @@ $(document).ready(function () {
 	}
     
     Environment.prototype.getIndex = function(name) {
+        console.log("Looking for ", name);
+        console.log("looking in ", this.names);
         var index = this.names.indexOf(name);
         return index;
     }

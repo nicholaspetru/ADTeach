@@ -42,6 +42,8 @@ $(document).ready(function () {
         $("#content").append('<p>"Viva", or <em>Visual Java</em>, is a simplified version of Java supported by ADTeach. It uses the same syntax as Java, but is built around the idea of visualizing ADTs. To this end, users will notice the following differences between Java and Viva:</p>');
         $("#content").append('<p><li>Unlike Java, users may not create their own classes or methods in Viva. For a list of supported classes and their corresponding methods, explore the help buttons above the code box.</li>');
         $("#content").append('<li>Users may not import Java libraries in Viva. This helps to ensure your code will run smoothly and quickly.</li>');
+        $("#content").append('<li>Pointers do not work the same in Viva as they do in Java.  For instance, you may initialize a List to be equal to an already existing List, but changing one will not change the other as it does in Java.</li>');
+        $("#content").append('<li>Primitives may or may not be initialized when instantiated, but every ADT must be intialized.</li>');
         $("#content").append('</p>');
         $("#sampleStack").hide();
         $("#sampleQueue").hide();
@@ -134,7 +136,7 @@ $(document).ready(function () {
         $("#content").append('<p><h4>Methods for both graph types:</h4>');
         $("#content").append('<b>graphName.addVertex();</b> Adds an edgeless vertex to the graph<br>');
         $("#content").append('<b>graphName.getInDegree(int x);</b> Returns the number of edges going into vertex x<br>');
-        $("#content").append('<b>graphName.getOutDegree(int x);</b> Returns the number of edges coming out of vertex x<br>');
+        $("#content").append('<b>graphName.getDegree(int x);</b> Returns the number of edges coming out of vertex x<br>');
         $("#content").append('<b>graphName.getNeighbors(int x);</b> Returns a list of vertices with edges connecting them to vertex x<br>');
         $("#content").append('<b>graphName.hasEdge(int x, int y);</b> Returns a boolean <em>true</em> if there exists an edge from vertex x to vertex y, <em>false</em> otherwise<br>');
         $("#content").append('<b>graphName.populate(int x, float y);</b> Empties the graph, adds x vertices to the graph, and adds y edges from each vertex to other random vertices<br>');

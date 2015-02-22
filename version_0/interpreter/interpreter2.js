@@ -234,8 +234,14 @@ $(document).ready(function () {
                 //valueRoot = root.second
                 //value = root.first
             } else {
-                console.log("Saying right side is: ", root.third);
-                valueRoot = root.third;
+                if (root.third != null) {
+                    console.log("Saying right side is: ", root);
+                    valueRoot = root.third;
+                } else {
+                    valueRoot = null;
+                    env.createVariable(root.first, root.second.value, null, null, null, root.linenum);
+                    return;
+                }
             }
         }
         else {
@@ -402,20 +408,22 @@ $(document).ready(function () {
         else {
             var type = this.checkType(value);
             var val = this.evalValue(root.first, env);
+            var valType = this.checkType(val);
+            console.log(root.first);
+            if (val == null && root.first.arity == "name") {
+                console.log("In correct if statement");
+                console.log(env.getType(root.first.value));
+                val = env.getType(root.first.value);
+            }
             console.log("VAL IS: ", val);
             console.log("Root.first type is: ", typeof val, " and type is: ", type);
-            if (typeof val == "string") {
-                if (type != "String") {
-                    env.throwError(root.linenum);
-                    root.error();
-                }
-            }/*
-            else if (typeof val != type){
+            
+            if (valType != type){
                 console.log(val, typeof val, type);
                 env.throwError(root.linenum);
                 console.log("INCOMPATIBLE TYPES!!");   
                 root.error("INcompatible types");
-            }*/
+            }
             console.log("root is: ", root);
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
@@ -527,6 +535,7 @@ $(document).ready(function () {
         }
         switch (typeof value) {
             case typeof 1:
+                console.log("Returning whaaaat we want");
                 return "int";
             case typeof "1":
                 return "String";

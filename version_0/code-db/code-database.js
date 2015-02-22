@@ -45,7 +45,7 @@ $(document).ready(function () {
              'g.addEdge(0,1);',
              'g.addEdge(1,2);',
              'g.addEdge(0,2);',
-             'int x = g.getOutDegree(0);'
+             'int x = g.getDegree(0);'
             ].join('\n');
         this.database['weightedGraph'] =
             ['WeightedGraph g = new WeightedGraph();',
