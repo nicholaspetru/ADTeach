@@ -29,7 +29,7 @@ $(document).ready(function () {
         this.drawn = false;
 
         //anonymous DU
-        this.anon = null;
+        this.anon = [];
     }
 
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
@@ -180,7 +180,7 @@ $(document).ready(function () {
             for (var i =0; i < _t.vis.length; i++){
                 _t.vis[i].move(difX,difY,0,500);
             }
-        },(this.VH.delay - this.VH.date.getTime()));
+        },(this.VH.delay - this.VH.getAnimTime(500) -  this.VH.date.getTime()));
 
     };
 
@@ -247,7 +247,7 @@ $(document).ready(function () {
         //Move the new data unit to it's proper location and set as the anonymous variable
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.VH.setDelay(250);
-        this.anon = newDU;
+        this.anon.push(newDU);
     }
 
     //Removes a  dataunit at the specified index
@@ -265,7 +265,7 @@ $(document).ready(function () {
             function() {
                 this.vis.splice(0, 1);
             });
-        this.anon = newDU;
+        this.anon.push(newDU);
         this.vis[0].destroy();
 
         //schooch everything down

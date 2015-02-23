@@ -152,9 +152,7 @@ $(document).ready(function () {
         }
 
         this.entities.push(this.getNewEntity(name,type,value, action, originADT));
-
         this.arrangeEntities();
-        //this.ClearAnonymous();
     };
 
     //Updates the value of an Entity
@@ -202,7 +200,7 @@ $(document).ready(function () {
             if (this.entities[i].name == name){
                 //it's an ADT
                 if (!this.isPrimitive(this.entities[i])){
-                    anon = this.entities[i].anon;
+                    anon = this.entities[i].anon[0];
                 //it's a primitive, create a new DU
                 }else{
                     anon = this.entities[i].createAnonymous();
@@ -213,8 +211,8 @@ $(document).ready(function () {
         //now move the anon to the new location
         if (anon != null){
             var difX, difY;
-            anon.moveTo(destX,destY,this.setDelay(500),500);
-            this.setDelay(500);
+            anon.moveTo(destX,destY,this.setDelay(500),this.getAnimTime(500));
+            this.setDelay(this.getAnimTime(500));
             anon.fastDestroy();
         }
     }
@@ -226,9 +224,11 @@ $(document).ready(function () {
             if (!this.isPrimitive(this.entities[i])){
                 var adt = this.entities[i];
                 //if it has an anonymous variable, clear it
-                if (adt.anon != null ){
-                    adt.anon.destroy();
-                    adt.anon = null;
+                if (adt.anon.length != 0){
+                    for (var ii = 0; ii < adt.anon.length; ii++){
+                        adt.anon[ii].fastDestroy();
+                    }
+                    adt.anon = [];
                 }
             }
         }
