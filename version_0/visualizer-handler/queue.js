@@ -180,7 +180,7 @@ $(document).ready(function () {
             for (var i =0; i < _t.vis.length; i++){
                 _t.vis[i].move(difX,difY,0,500);
             }
-        },(this.VH.delay - this.VH.getAnimTime(500) -  this.VH.date.getTime()));
+        },(this.VH.delay - this.VH.date.getTime()));
 
     };
 

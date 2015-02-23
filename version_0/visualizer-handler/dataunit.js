@@ -63,7 +63,7 @@ $(document).ready(function () {
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(time));
               _t.vis[i].animate(anim.delay(0));
             }
-          },(delay - this.VH.getAnimTime(time)));
+          },(delay));
       };
 
       //Moves the dataunit to the given position at the specified time
@@ -77,7 +77,7 @@ $(document).ready(function () {
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(time));
               _t.vis[i].animate(anim.delay(0));
             }
-          },(delay - this.VH.getAnimTime(time)));
+          },(delay));
       };
 
 
@@ -175,22 +175,25 @@ $(document).ready(function () {
      //Highlight
      DataUnit.prototype.highLight = function() {
      		var anim = Raphael.animation({stroke: "green"}, this.VH.getAnimTime(250));
-        this.vis[0].animate(anim.delay(this.VH.setDelay(250)));
-     		this.vis[1].animate(anim.delay(this.VH.setDelay(250)));
+        var delay = this.VH.setDelay(250);
+        this.vis[0].animate(anim.delay(delay));
+        this.vis[1].animate(anim.delay(delay));
      };
 
      //turn red
      DataUnit.prototype.turnRed = function() {
         var anim = Raphael.animation({stroke: "red"}, this.VH.getAnimTime(250));
-        this.vis[0].animate(anim.delay(this.VH.setDelay(250)))
-        this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
+        var delay = this.VH.setDelay(250);
+        this.vis[0].animate(anim.delay(delay));
+        this.vis[1].animate(anim.delay(delay));
      };
 
       //Highlight
      DataUnit.prototype.lowLight = function() {
-        var anim = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(1000));
-        this.vis[0].animate(anim.delay(this.VH.setDelay(1000)));
-        this.vis[1].animate(anim.delay(this.VH.setDelay(1000)));
+        var anim = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(250));
+        var delay = this.VH.setDelay(250);
+        this.vis[0].animate(anim.delay(delay));
+        this.vis[1].animate(anim.delay(delay));
      };
 });
 

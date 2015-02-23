@@ -56,8 +56,15 @@ $(document).ready(function() {
     };
     
     EventHandler.prototype.onPlay = function() {
-        console.log('Event Handler: onPlay()');
-        this.visualizerHandler.goForthAll();
+      console.log('Event Handler: onPlay()');
+      if (this.visualizerHandler.goForthOnce()){
+        var _t = this;
+        console.log("I will wait for: " + (this.visualizerHandler.delay - this.visualizerHandler.date.getTime()));
+        setTimeout(function(){
+            _t.visualizerHandler.delay = _t.visualizerHandler.date.getTime();
+            _t.onPlay();
+        },(this.visualizerHandler.delay - this.visualizerHandler.date.getTime()));
+      }
     };
     
 

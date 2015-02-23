@@ -138,7 +138,7 @@ $(document).ready(function () {
                 _t.WIDTH += 100;
                 _t.myFrame[1].animate({transform:'...t 100 0'},_t.VH.getAnimTime(250));
             }
-        },(this.VH.delay - _t.VH.getAnimTime(250) - this.VH.date.getTime()));
+        },(this.VH.delay - this.VH.date.getTime()));
     };
 
 
@@ -162,7 +162,7 @@ $(document).ready(function () {
             for (var i =0; i < _t.vis.length; i++){
                 _t.vis[i].move(difX,difY,0,500);
             }
-        },(this.VH.delay - this.VH.getAnimTime(500) - this.VH.date.getTime()));
+        },(this.VH.delay - this.VH.date.getTime()));
 
     };
 

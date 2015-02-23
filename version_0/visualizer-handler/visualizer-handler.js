@@ -81,9 +81,6 @@ $(document).ready(function () {
         highlight.attr("stroke-width", 0);
     }
 
-    //TODO: Dudes, this is just not the right way to do this.
-    //We gotta fix this up, so that it waits to do a new event
-    //Dequeue all the events from the event queue, execute them, and render
     VisualizerHandler.prototype.goForthAll = function() {
         console.log("Visualizer Handler: goForthAll()");
         while (this.eventQueue.length > 0) {
@@ -133,7 +130,9 @@ $(document).ready(function () {
             else {
                 console.log('unrecognized event: ' + curEvent[0]);
             }
+            return true;
         }
+        return false;
     };
     
     //Enqueue an event onto the event queue
@@ -257,7 +256,7 @@ $(document).ready(function () {
         this.eventQueue = [];
         this.symbolTable = null;
         this.date = new Date();
-        this.delay = this.date.getTime();
+        //this.delay = this.date.getTime();
         if (this.codeboxPaper != null) {
             this.codeboxPaper.remove();
         }
@@ -553,8 +552,10 @@ $(document).ready(function () {
 
     //Sets the delay
     VisualizerHandler.prototype.setDelay = function(t) {
+        console.log("DEEEEELAY: " + " + " + t + " " + this.delay);
         this.getDelay();
+        var startDelay = this.delay - this.date.getTime();
         this.delay += t*this.animSpeed;
-        return (this.delay - this.date.getTime());
+        return startDelay;
     }
 });
