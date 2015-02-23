@@ -223,12 +223,14 @@ $(document).ready(function () {
             if (!this.isPrimitive(this.entities[i])){
                 var adt = this.entities[i];
                 //if it has an anonymous variable, clear it
+				if (adt.anon) {
                 if (adt.anon.length != 0){
                     for (var ii = 0; ii < adt.anon.length; ii++){
                         adt.anon[ii].fastDestroy();
                     }
                     adt.anon = [];
                 }
+				}
             }
         }
     }
