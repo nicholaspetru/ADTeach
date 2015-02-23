@@ -83,19 +83,10 @@ $(document).ready(function () {
                 this.Add();
                 break;
             case "populate":
-                //erase old data
-                for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].destroy();
-                }                
-                this.vis = [];
-                this.stretch();
-                //create new data units to match the new dataset
-                for (var i = 0; i < this.value.length; i++){
-                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
-                                       this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-                    this.vis.push(newDU);
-                    newDU.create();
-                }
+                this.populate();
+                break;
+            case "new":
+                this.populate();
                 break;
             case "pop":
                 this.Remove();                
@@ -151,6 +142,22 @@ $(document).ready(function () {
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
                 _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
             },(this.VH.delay - this.VH.date.getTime()));
+        }
+    };
+
+    //Stretches the frame to accomadate the new length of the list
+    Stack.prototype.populate = function() {
+        for (var i = 0; i < this.vis.length; i++){
+            this.vis[i].destroy();
+        }                
+        this.vis = [];
+        this.stretch();
+        //create new data units to match the new dataset
+        for (var i = 0; i < this.value.length; i++){
+            var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
+                               this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+            this.vis.push(newDU);
+            newDU.create();
         }
     };
 

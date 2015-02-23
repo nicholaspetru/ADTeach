@@ -63,6 +63,15 @@ $(document).ready(function () {
                 this.stretch();
                 this.Add(split[1],split[2]);
                 break;
+            case "new":
+                //erase old data
+                for (var i = 0; i < this.vis.length; i++){
+                    this.vis[i].destroy();
+                }
+                this.vis = [];  
+                this.stretch();
+                this.Populate();
+                break;
             case "populate":
                 //erase old data
                 for (var i = 0; i < this.vis.length; i++){
