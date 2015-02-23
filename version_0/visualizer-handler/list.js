@@ -81,7 +81,6 @@ $(document).ready(function () {
                 this.populate();
                 break;        
             case "new":
-                console.log("ASDSADASDASD " + this.value);
                 this.populate();
                 break;
             case "remove":
@@ -215,20 +214,23 @@ $(document).ready(function () {
         var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
 
-        if (!speed)
+        if (!speed){
             newDU.create();
-        else
+            newDU.highLight();
+        }else{
             newDU.popIn();
+            newDU.vis[0].attr({stroke: "green"});
+            newDU.vis[1].attr({stroke: "green"});
+        }
 
-        newDU.highLight();
         newDU.updateIndex(index);
 
         //Scooch down all the other data units if you need to schooch
         var delay = null;
         for (var i = index; i < this.vis.length; i++){
-            if (delay == null)
+            if (delay == null){
                 delay = this.VH.setDelay(500);
-
+            }
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
             this.vis[i].updateIndex(i + 1);
         }

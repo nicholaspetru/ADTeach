@@ -79,11 +79,13 @@ $(document).ready(function () {
         switch(split[0]){
             case "add":
                 //check if there's an anonymous variable
+                var speed = false;
                 if (originADT != null){
+                    speed = true;
                     this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 this.stretch();
-                this.Add(parseInt(split[1]));
+                this.Add(parseInt(split[1]),speed);
                 break;
             case "populate":
                 this.populate();
@@ -207,7 +209,7 @@ $(document).ready(function () {
     };
 
     //Adds a new dataunit 
-    Queue.prototype.Add = function(index) {
+    Queue.prototype.Add = function(index, speed) {
         //Switch if it's a priority queue or queue
         if (!(this.type.split("<")[0] = "Queue"))
             ind = this.value.length - index -1;
@@ -217,8 +219,15 @@ $(document).ready(function () {
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-        newDU.create();
-        newDU.highLight();
+       
+        if (speed){
+            newDU.create();
+            newDU.highLight();
+        }else{
+            newDU.popIn();
+            newDU.vis[0].attr({stroke: "green"});
+            newDU.vis[1].attr({stroke: "green"});
+        }
 
         //Scooch down all the other data units
         var delay = null;
