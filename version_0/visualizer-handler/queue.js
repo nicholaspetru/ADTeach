@@ -86,19 +86,10 @@ $(document).ready(function () {
                 this.Add(parseInt(split[1]));
                 break;
             case "populate":
-                //erase old data
-                for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].destroy();
-                }              
-                this.vis = [];
-                this.stretch();
-                //create new data units to match the new dataset
-                for (var i = 0; i < this.value.length; i++){
-                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
-                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-                    this.vis.push(newDU);
-                    newDU.create();
-                }
+                this.populate();
+                break;
+            case "new":
+                this.populate();
                 break;
             case "remove":
                 this.Remove();                
@@ -183,6 +174,22 @@ $(document).ready(function () {
         },(this.VH.delay - this.VH.date.getTime()));
 
     };
+
+    //Remove visual primitives
+    Queue.prototype.populate = function() {
+        for (var i = 0; i < this.vis.length; i++){
+            this.vis[i].destroy();
+        }              
+        this.vis = [];
+        this.stretch();
+        //create new data units to match the new dataset
+        for (var i = 0; i < this.value.length; i++){
+            var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
+                               this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+            this.vis.push(newDU);
+            newDU.create();
+        }
+    }
 
     //Remove visual primitives
     Queue.prototype.destroy = function() {
