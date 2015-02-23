@@ -38,6 +38,7 @@ $(document).ready(function () {
 
         this.edgeCheck = {};
         this.isDirected = false;
+        this.edgeLines = [];
 
         //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
@@ -80,7 +81,9 @@ $(document).ready(function () {
                     this.HasEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
                 case "getDegree":
-                    this.GetDegree(parseInt(split[1]));
+                    //this.GetDegree(parseInt(split[1]));
+                    this.GetDegree(0);
+
                     break;
                 case "getInDegree":
                     this.GetInDegree(parseInt(split[1]));
@@ -100,19 +103,81 @@ $(document).ready(function () {
             for (var x = 0; x < graphVal.length; x++) {
                 console.log("graphVal[" + x + "]: " + graphVal[x]);
             }
+
+            // get nodes that fromNodeID has an edge to
             var toNodes = graphVal[fromNodeID];
             console.log(toNodes);
+            var allEdges = [];
+
+            // get a reference to the lines of these edges on the paper
             for (var x = 0; x < toNodes.length; x++) {
                 var toNodeID = toNodes[x];
-                var checking = this.hasDrawnEdge(fromNodeID,toNodeID);
 
-                if (this.hasDrawnEdge(fromNodeID,toNodeID) == true) {
-                    this.VH.setDelay(500);
-                    this.highLightEdge(fromNodeID,toNodeID,"green");
+                var edge = this.getEdgeLine(fromNodeID,toNodeID);
+                if (edge !== false) {
+                    console.log(edge);
+                    allEdges.push(edge);
+                    edge.toFront();
                 }
+            }
+
+            // highlight each line, with a 1000 ms delay between each animation
+            var anim = Raphael.animation({stroke:"green", "stroke-width":2},1000);
+            for (var y=0; y<allEdges.length;y++) {
+                allEdges[y].animate(anim.delay(this.VH.setDelay(1000)));
+            }
+
+            // show all the highlighted lines for 2000ms
+            this.VH.setDelay(2000);
+
+            // then fade them all back to black (at the same time)
+            var delay2 = this.VH.setDelay(1000);
+            var anim2 = Raphael.animation({stroke: "black", "stroke-width":1.5}, 1000);
+
+            for (var z=0; z<allEdges.length;z++) {
+                allEdges[z].animate(anim2.delay(delay2));
             }
         };
 
+        Graph.prototype.getEdgeLine = function(fromNodeID,toNodeID) {
+            console.log("####################&&&&&&&&&&&&&&&&&&&&&###############");
+            console.log("getEdgeLine( " + fromNodeID  + ")" );
+            //console.log(this.edgeLines);
+            for (var i = 0; i < this.edgeLines.length; i++) {
+                var edgeLine = this.edgeLines[i];
+                console.log(edgeLine[0]);
+
+                if (edgeLine[0] === fromNodeID) {
+                    var toLine = edgeLine[1];
+                    if (toLine[0] === toNodeID) {
+                        return toLine[2];
+                    }
+                }
+            }
+            return false;
+        };
+
+        Graph.prototype.highLightEdge = function(fromNodeID,toNodeID,color) {
+            console.log("highLightEdge( " + fromNodeID + "," + toNodeID + ")" );
+            for (var i = 0; i < this.edges.length; i++) {
+                if (this.edges[i].from.id == fromNodeID) {
+                    if (this.edges[i].to.id == toNodeID) {
+                        var anim = Raphael.animation({stroke:color},this.VH.getAnimTime(250));
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.toFront();
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+                else if (this.edges[i].from.id == toNodeID) {
+                    if (this.edges[i].to.id == fromNodeID) {
+                        var anim = Raphael.animation({stroke:color},this.VH.getAnimTime(250));
+                        var delay = this.VH.setDelay(250);
+                        this.edges[i].line.toFront();
+                        this.edges[i].line.animate(anim.delay(delay));
+                    }
+                }
+            }
+        };
         Graph.prototype.GetInDegree = function(toNodeID) {   
         };
         Graph.prototype.GetNeighbors = function(nodeID) {
@@ -238,26 +303,6 @@ $(document).ready(function () {
             }
         };
 
-        Graph.prototype.highLightEdge = function(fromNodeID,toNodeID,color) {
-            console.log("highLightEdge( " + fromNodeID + "," + toNodeID + ")" );
-            for (var i = 0; i < this.edges.length; i++) {
-                if (this.edges[i].from.id == fromNodeID) {
-                    if (this.edges[i].to.id == toNodeID) {
-                        var anim = Raphael.animation({stroke:color},this.VH.getAnimTime(250));
-                        var delay = this.VH.setDelay(250);
-                        this.edges[i].line.animate(anim.delay(delay));
-                    }
-                }
-                else if (this.edges[i].from.id == toNodeID) {
-                    if (this.edges[i].to.id == fromNodeID) {
-                        var anim = Raphael.animation({stroke:color},this.VH.getAnimTime(250));
-                        var delay = this.VH.setDelay(250);
-                        this.edges[i].line.animate(anim.delay(delay));
-                    }
-                }
-            }
-        };
-
         Graph.prototype.createNode = function() {
             // create and display the node
             this.getNextPos();
@@ -298,6 +343,15 @@ $(document).ready(function () {
             edge.line.animate(anim.delay(delay));
 
             this.edges.push(edge);
+
+            var edgeLine = [];
+            edgeLine.push(fromNodeID);
+            var toLine = [];
+            toLine.push(toNodeID);
+            toLine.push(edge);
+            toLine.push(edge.line);
+            edgeLine.push(toLine);
+            this.edgeLines.push(edgeLine);
 
             // make it draggable
             this.nodeDragger();
