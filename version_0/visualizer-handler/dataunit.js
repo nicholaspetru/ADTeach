@@ -176,14 +176,33 @@ $(document).ready(function () {
      
      //Highlight
      DataUnit.prototype.highLight = function() {
+<<<<<<< HEAD
+     		var anim = Raphael.animation({stroke: "green"}, 250)
+        this.vis[0].animate(anim.delay(this.VH.setDelay(250)))
+     		this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
+=======
      		var anim = Raphael.animation({stroke: "green"}, this.VH.getAnimTime(250));
      		this.vis[1].animate(anim.delay(this.VH.setDelay(250)));
+>>>>>>> ae9c7851a8b074dacd71f4e1b682d9a10da8207e
+     };
+
+     //turn red
+     DataUnit.prototype.turnRed = function() {
+        var anim = Raphael.animation({stroke: "red"}, 250)
+        this.vis[0].animate(anim.delay(this.VH.setDelay(250)))
+        this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
      };
 
       //Highlight
      DataUnit.prototype.lowLight = function() {
+<<<<<<< HEAD
+        var anim = Raphael.animation({stroke: "#4b4b4b"}, 1000)
+        this.vis[0].animate(anim.delay(this.VH.setDelay(1000)))
+        this.vis[1].animate(anim.delay(this.VH.setDelay(1000)))
+=======
         var anim = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(1000));
         this.vis[1].animate(anim.delay(this.VH.setDelay(1000)));
+>>>>>>> ae9c7851a8b074dacd71f4e1b682d9a10da8207e
      };
 });
 
