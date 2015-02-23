@@ -172,9 +172,9 @@ $(document).ready(function () {
         //Set timeout and move the data structure at the proper delay
         var _t = this;
         setTimeout(function(){
-            _t.frontText.animate({transform:'...t' + difX + ' ' + difY},500);
-            _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
-            _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},500);
+            _t.frontText.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
+            _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
+            _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
 
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
