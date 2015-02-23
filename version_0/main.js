@@ -15,12 +15,22 @@ $(document).ready(function () {
     */
     //Listen to buttonz
     $("#modal").hide();
-    var os = navigator.platform;
-    console.log(os);
+
 
     var EVH = new EventHandler();
     $("#build").click(function() {
         EVH.onBuild();
+    });
+    
+    $("#help").click(function() {
+        $("#helptext").show();
+        $("#listHelp").show();
+        $("#stackHelp").show();
+        $("#queueHelp").show();
+        $("#graphHelp").show();
+        $("#treeHelp").show();
+        $("#dictHelp").show();
+        $("#help").hide();
     });
     
     $("#play").click(function() {
