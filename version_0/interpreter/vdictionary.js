@@ -60,13 +60,15 @@ $(document).ready(function () {
     
     VDictionary.prototype.containsKey = function(key, dict) {
         //console.log("checking for the key: ", key);
+        var keys = [];
         for (var i in dict) {
-            //console.log("Checking against: ", i);
-            if (i == key) {
-                return true;
-            }
+            keys.push(i);
         }
-        return false;
+        if (keys.indexOf('"' + key + '"') >= 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     VDictionary.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
@@ -250,7 +252,16 @@ $(document).ready(function () {
         if (method == "populate") {
             var numKeys = parameters[0].value;
             var dict = {};
-            var alph = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            
+            var alph;
+            //Generate alph
+            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            
+            
+            
+            
+            var alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
             var toPush;
             var count = 0;
             console.log("Size is: ", dict.size);
@@ -265,9 +276,13 @@ $(document).ready(function () {
                     }
                 }
                 else if (keyType == "String") {
-                    toPush = Math.floor((Math.random()*26) + 1);
-                    if (this.containsKey(alph[toPush], dict) != true) {
-                        dict['"' + alph[toPush] + '"'] = 0;
+                    var word = '';
+                    for (var n = 0; n < 3; n++) {
+                        toPush = Math.floor((Math.random()*alph.length-1) + 1);
+                        word += alph[toPush];
+                    }
+                    if (this.containsKey('"' + word + '"', dict) != true) {
+                        dict['"' + word + '"'] = 0;
                         count += 1;
                     }
                     
