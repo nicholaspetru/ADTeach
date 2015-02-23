@@ -29,7 +29,7 @@ while(list.isEmpty() == false){
 	list.remove(0);
 }
 while(stack.isEmpty() == false){
-	list.add(stack.pop())
+	list.add(stack.pop());
 }
 
 

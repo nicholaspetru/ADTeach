@@ -445,7 +445,6 @@ $(document).ready(function () {
                 }
             }
             console.log("root is: ", root);
-            console.log("DO THESE MATCH???", methodValue[3], val[1]);
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
     }
