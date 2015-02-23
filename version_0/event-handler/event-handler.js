@@ -85,8 +85,9 @@ $(document).ready(function() {
 
     // hidden until INTERPRETED = true
     EventHandler.prototype.onStep = function() {
-       console.log("Event Handler: onStep()");
-       this.visualizerHandler.goForthOnce();
+      console.log("Event Handler: onStep()");
+      this.visualizerHandler.delay = this.visualizerHandler.date.getTime();
+      this.visualizerHandler.goForthOnce();
     };
     
     // hidden until INTERPRETED = true

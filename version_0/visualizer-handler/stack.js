@@ -76,11 +76,13 @@ $(document).ready(function () {
         switch(split[0]){
             case "push":
                 //check if there's an anonymous variable
+                var speed = false;
                 if (originADT != null){
+                    speed = true;
                     this.VH.getAnonymousVariable(originADT, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2, this.y - this.DUNIT_HEIGHT);
                 }
                 this.stretch();
-                this.Add();
+                this.Add(speed);
                 break;
             case "populate":
                 this.populate();
@@ -200,12 +202,19 @@ $(document).ready(function () {
     };
 
     //Adds a new dataunit 
-    Stack.prototype.Add = function(value) {
+    Stack.prototype.Add = function(value, speed) {
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,this.value[this.value.length-1], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-        newDU.create();
-        newDU.highLight();
+        
+        if (speed){
+            newDU.create();
+            newDU.highLight();
+        }else{
+            newDU.popIn();
+            newDU.vis[0].attr({stroke: "green"});
+            newDU.vis[1].attr({stroke: "green"});
+        }
 
         //Insert the new data unit in it's proper location
         newDU.move(0, this.HEIGHT - (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.value.length - 1),this.VH.setDelay(500),500);
