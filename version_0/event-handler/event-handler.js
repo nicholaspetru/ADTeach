@@ -9,6 +9,7 @@ $(document).ready(function() {
         this.codeBox = new CodeBox();
         this.codeDatabase = new CodeDatabase();
         this.visualizerHandler = new VisualizerHandler();
+        this.paused = false;
 
         
         //for now, put this code here
@@ -57,13 +58,19 @@ $(document).ready(function() {
     
     EventHandler.prototype.onPlay = function() {
       console.log('Event Handler: onPlay()');
-      if (this.visualizerHandler.goForthOnce()){
-        var _t = this;
-        console.log("I will wait for: " + (this.visualizerHandler.delay - this.visualizerHandler.date.getTime()));
-        setTimeout(function(){
-            _t.visualizerHandler.delay = _t.visualizerHandler.date.getTime();
-            _t.onPlay();
-        },(this.visualizerHandler.delay - this.visualizerHandler.date.getTime()));
+      console.log('Paused: ' + this.paused);
+      if (this.paused == false) {
+        if (this.visualizerHandler.goForthOnce()){
+          var _t = this;
+          console.log("I will wait for: " + (this.visualizerHandler.delay - this.visualizerHandler.date.getTime()));
+          setTimeout(function(){
+              _t.visualizerHandler.delay = _t.visualizerHandler.date.getTime();
+              _t.onPlay();
+          },(this.visualizerHandler.delay - this.visualizerHandler.date.getTime()));
+        }
+      }
+      else {
+        this.paused = false;
       }
     };
     
@@ -71,6 +78,7 @@ $(document).ready(function() {
     // hidden until INTERPRETED = true
     EventHandler.prototype.onPause = function() {
         console.log('Event Handler: onPause()');
+        this.paused = true;
     };
 
     // hidden until INTERPRETED = true
