@@ -336,7 +336,9 @@ $(document).ready(function () {
 
     $("#user_textbox").on('change keyup paste', function() {
         var scrollHeight = document.getElementById('user_textbox').scrollHeight;
-        $("#user_textbox").height( scrollHeight-4+'px' );
+        if (scrollHeight > 340) {
+            $("#user_textbox").height( scrollHeight-4+'px' );
+        }
     });
     
 });
