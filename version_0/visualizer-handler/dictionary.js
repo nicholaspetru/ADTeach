@@ -36,7 +36,7 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     Dictionary.prototype.buildVisual = function(){
-        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type.split("<")[0] + " " + this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
@@ -45,6 +45,7 @@ $(document).ready(function () {
         this.myFrame[1] = this.paper.text(this.x + this.WIDTH - 10, this.y + 40,"}");
         this.myFrame[1].attr({"transform" : "s 1, 1.5","opacity": 0,"font-family": "times", "font-size": 60, 'text-anchor': 'start'});
 
+        this.stretch();
         this.Populate();
     }
 
@@ -114,10 +115,10 @@ $(document).ready(function () {
             var newDU = new DataUnit(this.paper,this.type,names[index] + " : " + this.value[val], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + 90*Math.floor(index/this.COL_NUM),
                                            this.y + (2*this.HEIGHT/this.COL_NUM) +  this.HEIGHT/this.COL_NUM*((index%this.COL_NUM) - this.COL_NUM/2), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
             newDU.create();
+            this.stretch();
             this.vis.push(newDU);
             index++;
         }
-        this.stretch();
     }
 
     //Stretches the frame to accomadate the new length of the dict
@@ -134,9 +135,8 @@ $(document).ready(function () {
         var _t = this;
         setTimeout(function(){
             if (_t.WIDTH/100 < Math.ceil(count/_t.COL_NUM)){
-                //_t.VH.setDelay(500);
                 _t.WIDTH += 100;
-                _t.myFrame[1].animate({transform:'...t 100 0'},250);
+                _t.myFrame[1].animate({transform:'...t 100 0'},_t.VH.getAnimTime(250));
             }
         },(this.VH.delay - this.VH.date.getTime()));
     };
@@ -154,9 +154,9 @@ $(document).ready(function () {
         //Set timeout and move the data structure at the proper delay
         var _t = this;
         setTimeout(function(){
-            _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},500);
-            _t.myFrame[0].animate({transform:'...t' + difX + ' ' + difY},500);
-            _t.myFrame[1].animate({transform:'...t' + difX + ' ' + difY},500);
+            _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
+            _t.myFrame[0].animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
+            _t.myFrame[1].animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
 
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
