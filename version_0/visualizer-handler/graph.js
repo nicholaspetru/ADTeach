@@ -82,7 +82,7 @@ $(document).ready(function () {
                     break;
                 case "getDegree":
                     //this.GetDegree(parseInt(split[1]));
-                    this.GetDegree(0);
+                    this.GetDegree(parseInt(split[1]));
 
                     break;
                 case "getInDegree":
@@ -150,7 +150,8 @@ $(document).ready(function () {
                 if (edgeLine[0] === fromNodeID) {
                     var toLine = edgeLine[1];
                     if (toLine[0] === toNodeID) {
-                        return toLine[2];
+						console.log("LINE FROM " + edgeLine[0] + " TO: " + toLine[0]);
+                        return toLine[1].line;
                     }
                 }
             }
@@ -178,7 +179,51 @@ $(document).ready(function () {
                 }
             }
         };
-        Graph.prototype.GetInDegree = function(toNodeID) {   
+        
+		
+		Graph.prototype.GetInDegree = function(toNodeID) {   
+            console.log("VH GetInDegree(" + toNodeID + ")");
+            var graphVal = this.value[0];
+            console.log(graphVal);
+			var fromNodes = [];
+			
+			// get the nodes that have an edge going to toNodeID
+            for (var x = 0; x < graphVal.length; x++) {
+                console.log("graphVal[" + x + "]: " + graphVal[x]);
+				var toNodes = graphVal[x];
+				console.log("toNodes: " + graphVal[x]);
+				if (toNodes.indexOf(toNodeID) !== -1) {
+					fromNodes.push(x);
+				}
+            }
+            var allEdges = [];
+			console.log("fromNodes: " + fromNodes);
+			for (var y = 0; y < fromNodes.length; y++) {
+                var fromNodeID = fromNodes[y];
+
+                var edge = this.getEdgeLine(fromNodeID,toNodeID);
+                if (edge !== false) {
+                    console.log(edge);
+                    allEdges.push(edge);
+                    edge.toFront();
+                }
+			}
+			
+            // highlight each line, with a 500 ms delay between each animation
+            var anim = Raphael.animation({stroke:"green", "stroke-width":2},500);
+            for (var y=0; y<allEdges.length;y++) {
+                allEdges[y].animate(anim.delay(this.VH.setDelay(500)));
+            }
+			// show all the highlighted lines for 2000ms
+            this.VH.setDelay(2000);
+
+            // then fade them all back to black (at the same time)
+            var delay2 = this.VH.setDelay(1000);
+            var anim2 = Raphael.animation({stroke: "black", "stroke-width":1.5}, 1000);
+
+            for (var z=0; z<allEdges.length;z++) {
+                allEdges[z].animate(anim2.delay(delay2));
+            }
         };
 		
         Graph.prototype.GetNeighbors = function(fromNodeID) {
@@ -404,7 +449,7 @@ $(document).ready(function () {
             var toLine = [];
             toLine.push(toNodeID);
             toLine.push(edge);
-            toLine.push(edge.line);
+            //toLine.push(edge.line);
             edgeLine.push(toLine);
             this.edgeLines.push(edgeLine);
 
