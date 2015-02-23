@@ -78,21 +78,11 @@ $(document).ready(function () {
                 this.AddAtPosition(index, this.value[index],speed);
                 break;
             case "populate":
-                //erase old data
-                for (var i = 0; i < this.vis.length; i++){
-                    this.vis[i].destroy();
-                }
-                this.vis = [];
-
-                this.stretch();
-                //create new data units to match the new dataset
-                for (var i = 0; i < this.value.length; i++){
-                    var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
-                                       this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
-                    this.vis.push(newDU);
-                    newDU.create();
-                    newDU.updateIndex(i);
-                }
+                this.populate();
+                break;        
+            case "new":
+                console.log("ASDSADASDASD " + this.value);
+                this.populate();
                 break;
             case "remove":
                 var index = parseInt(split[1]);
@@ -117,7 +107,6 @@ $(document).ready(function () {
                 break;
         }
     };
-
 
     /*
     ANIMATIONS
@@ -161,6 +150,25 @@ $(document).ready(function () {
         }
     };
 
+
+    //Fills the list
+    List.prototype.populate = function() {
+        //erase old data
+        for (var i = 0; i < this.vis.length; i++){
+            this.vis[i].destroy();
+        }
+        this.vis = [];
+
+        this.stretch();
+        //create new data units to match the new dataset
+        for (var i = 0; i < this.value.length; i++){
+            var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
+                               this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
+            this.vis.push(newDU);
+            newDU.create();
+            newDU.updateIndex(i);
+        }
+    };
 
     //Moves the visual primitve to the specific positon
     List.prototype.move = function(newX, newY) {
