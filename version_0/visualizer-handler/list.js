@@ -213,9 +213,8 @@ $(document).ready(function () {
             newDU.popIn();
 
         newDU.highLight();
-
-
         newDU.updateIndex(index);
+
         //Scooch down all the other data units if you need to schooch
         var delay = null;
         for (var i = index; i < this.vis.length; i++){
@@ -231,7 +230,11 @@ $(document).ready(function () {
         this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.VH.setDelay(100);
-        this.vis.splice(index, 0, newDU);
+
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(index, 0, newDU);
+        },(this.VH.delay - this.VH.date.getTime()));
 
         newDU.lowLight();
 
@@ -275,8 +278,10 @@ $(document).ready(function () {
             this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
             this.vis[i].updateIndex(i - 1);
         }
-
-        this.vis.splice(index, 1);
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(index, 1);
+        },(this.VH.delay - this.VH.date.getTime()));
     }
 
     //Changes the value of the data unit at the given index

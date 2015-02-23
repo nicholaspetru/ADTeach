@@ -202,7 +202,11 @@ $(document).ready(function () {
 
         //Insert the new data unit in it's proper location
         newDU.move(0, this.HEIGHT - (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.value.length - 1),this.VH.setDelay(500),500);
-        this.vis.splice(this.value.length, 0, newDU);
+
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(this.value.length, 0, newDU);
+        },(this.VH.delay - this.VH.date.getTime()));
 
         newDU.lowLight();
     }
@@ -239,7 +243,12 @@ $(document).ready(function () {
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
         newDU.highLight();
-        this.vis.splice(this.vis.length - 1, 1);
+
+
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(this.vis.length - 1, 1);
+        },(this.VH.delay - this.VH.date.getTime()));
         this.anon.push(newDU);
     }
 
