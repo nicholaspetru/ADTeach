@@ -100,7 +100,7 @@ while(visited.indexOf(0) >= 0){
 
 }
 
-
+------------------------------------------------------
 
 FIND CONNECTED COMPONENTS TO VERTEX S
 
@@ -135,3 +135,18 @@ while (q.isEmpty() != true) {
 }
 }
 List<Integer> final = d;
+
+------------------------------------------------------
+
+Dictionary<Integer, String> dict = new Dictionary<Integer, String>();
+List<Integer> keys1 = new List<Integer>();
+List<String> values = new List<String>();
+keys1.populate(12);
+values.populate(12);
+
+for(int i = 0; i<keys1.size(); i++){
+	dict.put(keys1.get(i), values.get(i));
+}
+
+List<Integer> f = new List<Integer>();
+f = dict.keys();
