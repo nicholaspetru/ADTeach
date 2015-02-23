@@ -55,7 +55,6 @@ $(document).ready(function () {
 
       //Moves the dataunit by the given amount at the specified time
       DataUnit.prototype.move = function(difX, difY, delay, time) {
-
           var _t = this;
           setTimeout(function(){
             _t.x += difX;
@@ -64,8 +63,7 @@ $(document).ready(function () {
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(time));
               _t.vis[i].animate(anim.delay(0));
             }
-            //_t.VH.setDelay(100);
-          },(delay));
+          },(delay - this.VH.getAnimTime(time)));
       };
 
       //Moves the dataunit to the given position at the specified time
@@ -79,15 +77,15 @@ $(document).ready(function () {
               var anim = Raphael.animation({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(time));
               _t.vis[i].animate(anim.delay(0));
             }
-          },(delay));
+          },(delay - this.VH.getAnimTime(time)));
       };
 
 
       //Deletes the item (actually, this just fades it out)
       DataUnit.prototype.fastDestroy = function() {
           //fade it out
-          var anim = Raphael.animation({opacity:0},0);
-          var delay = this.VH.setDelay(0);
+          var anim = Raphael.animation({opacity:0},10);
+          var delay = this.VH.setDelay(10);
           for (var i =0; i < this.vis.length; i++){
             this.vis[i].animate(anim.delay(delay));
           }
@@ -118,7 +116,7 @@ $(document).ready(function () {
   	//Modifiy data unit value
     //Orientation determines whether the dataunit is shaking up and down (0) or left to right (1)
       DataUnit.prototype.update = function(newValue, orientation) {
-
+        var oldx = this.x, oldy = this.y;
           for (var i = 0; i < 20; i++){
               //console.log("y val: " + 8*Math.pow(-1,i));
               this.move(8*Math.pow(-1,i)*orientation,8*Math.pow(-1,i)*(!orientation), this.VH.setDelay(50),25);
