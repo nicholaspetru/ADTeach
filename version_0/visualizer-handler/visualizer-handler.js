@@ -537,7 +537,7 @@ $(document).ready(function () {
     }
 
 
-    //Returns the animation times the constant
+    //Returns the animation times the current speed
     VisualizerHandler.prototype.getAnimTime = function(t) {
         return t*this.animSpeed;
     }
@@ -552,7 +552,6 @@ $(document).ready(function () {
 
     //Sets the delay
     VisualizerHandler.prototype.setDelay = function(t) {
-        console.log("DEEEEELAY: " + " + " + t + " " + this.delay);
         this.getDelay();
         var startDelay = this.delay - this.date.getTime();
         this.delay += t*this.animSpeed;

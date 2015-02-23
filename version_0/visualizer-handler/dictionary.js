@@ -138,7 +138,7 @@ $(document).ready(function () {
                 _t.WIDTH += 100;
                 _t.myFrame[1].animate({transform:'...t 100 0'},_t.VH.getAnimTime(250));
             }
-        },(this.VH.delay - this.VH.date.getTime()));
+        },(this.VH.delay - _t.VH.getAnimTime(250) - this.VH.date.getTime()));
     };
 
 
@@ -155,8 +155,8 @@ $(document).ready(function () {
         var _t = this;
         setTimeout(function(){
             _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
-            _t.myFrame[0].animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
-            _t.myFrame[1].animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
+            _t.myFrame[0].animate({transform:'...t' + difX + ' ' + difY*.75},_t.VH.getAnimTime(500));
+            _t.myFrame[1].animate({transform:'...t' + difX + ' ' + difY*.75},_t.VH.getAnimTime(500));
 
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
@@ -172,7 +172,6 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(1000);
 
         //Fade out the label and frame
-
         var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(1000));
         this.myLabel.animate(anim.delay(delay));
         this.myFrame[0].animate(anim.delay(delay));
