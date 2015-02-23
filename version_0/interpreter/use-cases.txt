@@ -6,9 +6,14 @@ List<Integer> s = new List<Integer>();
 s.populate(6);
 boolean sorted = false;
 int temp = 0;
+int count = 0;
 while(sorted == false){
 	sorted = true;
+<<<<<<< HEAD
+	for (int i = 1; i<s.size() - count; i++){
+=======
 	for (int i = 1; i<s.size(); i++){
+>>>>>>> 6cdfd3793922a08cf2b202eb7b5a7af2c7bcf92a
 		if (s.get(i - 1) > s.get(i)){
 			temp = s.get(i - 1);
 			s.set((i - 1), s.get(i));
@@ -16,6 +21,7 @@ while(sorted == false){
 			sorted = false;
 		}
 	}
+	count++;
 }
 
 ------------------------------------------------------
