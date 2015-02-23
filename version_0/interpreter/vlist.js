@@ -132,12 +132,15 @@ $(document).ready(function () {
             switch (type) {
                 case "List<Integer>":
                     valType = "int";
+                    returnValue = parseInt(origValue[parameters[0].value]);
                     break;
                 case "List<Float>":
                     valType = "float";
+                    returnValue = parseFloat(origValue[parameters[0].value]);
                     break;
                 case "List<String>":
                     valType = "String";
+                    returnValue = origValue[parameters[0].value];
                     break;
             }
             if (parameters[0].value > origValue.length || parameters[0].value < 0) {
@@ -146,7 +149,8 @@ $(document).ready(function () {
                 root.error("index out of bounds");
             }
             
-            returnValue = origValue[parameters[0].value];
+            //returnValue = origValue[parameters[0].value];
+            console.log("Type of: ", returnValue, "is", typeof returnValue);
             return [returnValue, origValue, valType];
         }
 
