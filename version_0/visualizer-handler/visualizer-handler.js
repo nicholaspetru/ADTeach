@@ -223,12 +223,14 @@ $(document).ready(function () {
             if (!this.isPrimitive(this.entities[i])){
                 var adt = this.entities[i];
                 //if it has an anonymous variable, clear it
+				if (adt.anon) {
                 if (adt.anon.length != 0){
                     for (var ii = 0; ii < adt.anon.length; ii++){
                         adt.anon[ii].fastDestroy();
                     }
                     adt.anon = [];
                 }
+				}
             }
         }
     }
@@ -537,7 +539,7 @@ $(document).ready(function () {
     }
 
 
-    //Returns the animation times the constant
+    //Returns the animation times the current speed
     VisualizerHandler.prototype.getAnimTime = function(t) {
         return t*this.animSpeed;
     }
@@ -552,7 +554,6 @@ $(document).ready(function () {
 
     //Sets the delay
     VisualizerHandler.prototype.setDelay = function(t) {
-        console.log("DEEEEELAY: " + " + " + t + " " + this.delay);
         this.getDelay();
         var startDelay = this.delay - this.date.getTime();
         this.delay += t*this.animSpeed;
