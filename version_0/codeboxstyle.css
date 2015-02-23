@@ -115,6 +115,28 @@ textarea#user_textbox{
     padding:20px;
 }
 
+.table {
+    display:table;
+    width:100%;
+}
+
+.left {
+    display:table-cell;
+    width:25%;
+}
+
+.center {
+    display:table-cell;
+    text-align:center;
+    width:50%;
+}
+
+.right {
+    display:table-cell;
+    text-align:right;
+    width:25%;
+}
+
 /*The following code pertaining to range input is from:
 http://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
 */
