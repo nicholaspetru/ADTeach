@@ -228,7 +228,7 @@ $(document).ready(function () {
         //Scooch down all the other data units if you need to schooch
         var delay = null;
         for (var i = index; i < this.vis.length; i++){
-            if (delay == null){}
+            if (delay == null){
                 delay = this.VH.setDelay(500);
             }
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);

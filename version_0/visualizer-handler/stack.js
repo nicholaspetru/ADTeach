@@ -221,7 +221,7 @@ $(document).ready(function () {
 
         var _t = this;
         setTimeout(function(){
-            _t.vis.splice(this.value.length, 0, newDU);
+            _t.vis.splice(_t.value.length, 0, newDU);
         },(this.VH.delay - this.VH.date.getTime()));
 
         newDU.lowLight();
