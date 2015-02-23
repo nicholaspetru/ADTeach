@@ -228,7 +228,10 @@ $(document).ready(function () {
                 console.log(endTime);
                 console.log(new Date().getTime());
                 isTrue = false;
+                env.throwError(block.linenum);
                 console.log("Interpreter Timed out, check while loop for infinite loop");
+                block.error();
+
             }
         }
     }
@@ -438,7 +441,7 @@ $(document).ready(function () {
                 root.error("INcompatible types");
             }
             if(type == null) {
-                if (typeof val == typeof [] && methodValue[3] != val[1]){
+                if (typeof val == typeof [] && val.length == 4 && methodValue[3] != val[1]){
                     console.log("INCOMPATIBLE TYPES!!! Expected", methodValue[3], "found", val[1]);
                     env.throwError(root.linenum);
                     root.error("INcompatible types");
