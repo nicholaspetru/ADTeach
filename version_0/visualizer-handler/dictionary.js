@@ -57,11 +57,13 @@ $(document).ready(function () {
         switch(split[0]){
             case "put":
                 //check if there's an anonymous variable
+                var speed = false;
                 if (originADT != null){
+                    speed = true;
                     this.VH.getAnonymousVariable(originADT, this.x + (this.DUNIT_WIDTH*.2), this.y - this.DUNIT_HEIGHT);
                 }
                 this.stretch();
-                this.Add(split[1],split[2]);
+                this.Add(split[1],split[2],speed);
                 break;
             case "new":
                 //erase old data
@@ -191,11 +193,19 @@ $(document).ready(function () {
     };
 
     //Adds a new dataunit 
-    Dictionary.prototype.Add = function(key, value) {
+    Dictionary.prototype.Add = function(key, value, speed) {
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,key + " : " + value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
-        newDU.create();
+        
+        if (speed){
+            newDU.create();
+            newDU.highLight();
+        }else{
+            newDU.popIn();
+            newDU.vis[0].attr({stroke: "green"});
+            newDU.vis[1].attr({stroke: "green"});
+        }
 
         //find the next available spot
         for (var i = 0; i < this.vis.length; i++){
@@ -211,6 +221,7 @@ $(document).ready(function () {
         setTimeout(function(){
             _t.vis.splice(i, 0, newDU);
         },(this.VH.delay - this.VH.date.getTime()));
+        newDU.lowLight();
     }
 
     //Gets a new dataunit at the specified index
