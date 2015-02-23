@@ -17,6 +17,15 @@ $(document).ready(function() {
         $("#step").hide();
         $("#stop").hide();
         $("#build").show();
+        $("#helptext").hide();
+        $("#listHelp").hide();
+        $("#stackHelp").hide();
+        $("#queueHelp").hide();
+        $("#graphHelp").hide();
+        $("#treeHelp").hide();
+        $("#dictHelp").hide();
+        $("#help").show();
+
         
         return this;
     }
@@ -35,6 +44,7 @@ $(document).ready(function() {
         $("#step").show();
         $("#stop").show();
         $("#build").hide();
+        $("#help").hide();
         $("#helptext").hide();
         $("#listHelp").hide();
         $("#stackHelp").hide();
@@ -74,13 +84,8 @@ $(document).ready(function() {
         $("#step").hide();
         $("#stop").hide();
         $("#build").show();
-        $("#helptext").show();
-        $("#listHelp").show();
-        $("#stackHelp").show();
-        $("#queueHelp").show();
-        $("#graphHelp").show();
-        $("#treeHelp").show();
-        $("#dictHelp").show();
+        $("#help").show();
+
     };
     
     EventHandler.prototype.onSampleList = function() {
