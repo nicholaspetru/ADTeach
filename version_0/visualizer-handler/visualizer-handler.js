@@ -489,7 +489,8 @@ $(document).ready(function () {
                             if (this.entities[i].x == 0) {
                                 this.vertADT_count += 1;
                                 curX = this.VBORDER + (this.entities[i].WIDTH+30)*this.vertADT_count;
-                                curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-8;
+                                //curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-8;
+                                curY = this.ADT_SECTION_Y;
                             }
                             break;
 

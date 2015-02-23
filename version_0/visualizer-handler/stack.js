@@ -10,6 +10,13 @@ $(document).ready(function () {
         this.type = type;
         this.value = value;
 
+        //visual component
+        this.myLabel = null;
+        this.myFrame = null;
+        this.vis = [];
+        this.shiftPrev = false;
+        this.drawn = false;
+
         //assign the position
         this.x = 0;
         this.y = 0;
@@ -20,13 +27,6 @@ $(document).ready(function () {
         this.DUNIT_HEIGHT = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
         this.setDimensions();
-
-        //visual component
-        this.myLabel = null;
-        this.myFrame = null;
-        this.vis = [];
-        this.shiftPrev = false;
-        this.drawn = false;
 
         //anonymous DU
         this.anon = [];
@@ -54,10 +54,10 @@ $(document).ready(function () {
     Stack.prototype.setDimensions = function() {
         //width and height refer to max width and height-- how much room this object takes up on the screen
         var min;
-        if (this.value.length < 11)
+        if (this.vis.length < 11)
             min = 10;
         else
-            min = this.value.length;
+            min = this.vis.length;
 
         this.WIDTH = 65;
         if (this.HEIGHT != (this.DUNIT_HEIGHT*this.DUNIT_BUFFER*2) + (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER)*(min))){
@@ -81,8 +81,8 @@ $(document).ready(function () {
                     speed = true;
                     this.VH.getAnonymousVariable(originADT, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2, this.y - this.DUNIT_HEIGHT);
                 }
-                this.stretch();
                 this.Add(speed);
+                this.stretch();
                 break;
             case "populate":
                 this.populate();
@@ -134,7 +134,9 @@ $(document).ready(function () {
     //Stretches the frame to accomadate the new length of the list
     Stack.prototype.stretch = function() {
         //variables for list
+        var oldHeight = this.HEIGHT;
         var changed = this.setDimensions();
+        var deltaH = this.HEIGHT - oldHeight;
         var _t = this, _0 = this.x, _1 = this.y, _2 = this.y + this.HEIGHT, _3 = this.x+ this.WIDTH;
         
         if (changed){
@@ -143,6 +145,11 @@ $(document).ready(function () {
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
                 _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
+                _t.myLabel.transform('...t0 ' + (deltaH));
+                for (var i = 0; i < _t.vis.length; i++){
+                    _t.vis[i].move(0,deltaH,0,10);
+                }
+                //move down all the other data units
             },(this.VH.delay - this.VH.date.getTime()));
         }
     };
@@ -153,13 +160,13 @@ $(document).ready(function () {
             this.vis[i].destroy();
         }                
         this.vis = [];
-        this.stretch();
         //create new data units to match the new dataset
         for (var i = 0; i < this.value.length; i++){
             var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
                                this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
             this.vis.push(newDU);
             newDU.create();
+            this.stretch();
         }
     };
 
@@ -201,6 +208,7 @@ $(document).ready(function () {
         }
     };
 
+    //TODO STACK RESIZING
     //Adds a new dataunit 
     Stack.prototype.Add = function(value, speed) {
         //Create the new data unit
