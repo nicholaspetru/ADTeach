@@ -31,6 +31,19 @@ $(document).ready(function () {
         $("#treeHelp").show();
         $("#dictHelp").show();
         $("#help").hide();
+        $("#exitHelp").show();
+    });
+
+    $("#exitHelp").click(function() {
+        $("#helptext").hide();
+        $("#listHelp").hide();
+        $("#stackHelp").hide();
+        $("#queueHelp").hide();
+        $("#graphHelp").hide();
+        $("#treeHelp").hide();
+        $("#dictHelp").hide();
+        $("#help").show();
+        $("#exitHelp").hide();
     });
     
     $("#play").click(function() {
