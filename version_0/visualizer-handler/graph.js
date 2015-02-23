@@ -88,21 +88,31 @@ $(document).ready(function () {
             console.log("########################");
             console.log("VH graph addEdge( " + fromNodeID + " , " + toNodeID + " (add an edge from " + fromNodeID + " to " + toNodeID + ")");
             var f = this.nodes[fromNodeID];
-            f = f.vis[1];
+            //f = f.vis[1];
             var t = this.nodes[toNodeID];
-            t = t.vis[1];
+            //t = t.vis[1];
+
+            /*
 
             var delay1 = this.VH.setDelay(500);
-            var anim1 = Raphael.animation({stroke: "green"}, 500);
+            var anim1 = Raphael.animation({stroke: "green"}, this.VH.getAnimTime(500));
             f.animate(anim1.delay(delay1));
             t.animate(anim1.delay(delay1));
+            */
+            f.highLight();
+            this.VH.setDelay(500);
+            t.highLight();
+            this.VH.setDelay(500);
 
             this.createEdge(fromNodeID,toNodeID);
-
-            var delay2 = this.VH.setDelay(500);
-            var anim2 = Raphael.animation({stroke: "#4b4b4b"}, 500);
+            f = f.vis[1];
+            t = t.vis[1];
+            
+            var delay2 = this.VH.setDelay(1000);
+            var anim2 = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(1000));
             f.animate(anim2.delay(delay2));
             t.animate(anim2.delay(delay2));
+            
         };
 
         Graph.prototype.AddVertex = function() {
@@ -137,7 +147,7 @@ $(document).ready(function () {
                     }
                 }
             }
-            this.graphDragger();
+            //this.graphDragger();
         };
 
         Graph.prototype.SetDirected= function() {
@@ -166,7 +176,7 @@ $(document).ready(function () {
             for (var i = 0; i < this.edges.length; i++) {
                 if (this.edges[i].from.id == fromNodeID) {
                     if (this.edges[i].to.id == toNodeID) {
-                        var anim = Raphael.animation({opacity:0},250, function() {
+                        var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(250), function() {
                             this.edges[i].line.remove();
                             this.edges[i].splice(i, 1);});
                         var delay = this.VH.setDelay(250);
@@ -175,7 +185,7 @@ $(document).ready(function () {
                 }
                 else if (this.edges[i].from.id == toNodeID) {
                     if (this.edges[i].to.id == fromNodeID) {
-                        var anim = Raphael.animation({opacity:0},250, function() {
+                        var anim = Raphael.animation({opacity:0},this.VH.getAnimTime(250), function() {
                             this.edges[i].line.remove();
                             this.edges[i].splice(i, 1);});
                         var delay = this.VH.setDelay(250);
@@ -199,14 +209,14 @@ $(document).ready(function () {
             for (var i = 0; i < this.edges.length; i++) {
                 if (this.edges[i].from.id == fromNodeID) {
                     if (this.edges[i].to.id == toNodeID) {
-                        var anim = Raphael.animation({stroke:color},250);
+                        var anim = Raphael.animation({stroke:color},this.VH.getAnimTime(250));
                         var delay = this.VH.setDelay(250);
                         this.edges[i].line.animate(anim.delay(delay));
                     }
                 }
                 else if (this.edges[i].from.id == toNodeID) {
                     if (this.edges[i].to.id == fromNodeID) {
-                        var anim = Raphael.animation({stroke:color},250);
+                        var anim = Raphael.animation({stroke:color},this.VH.getAnimTime(250));
                         var delay = this.VH.setDelay(250);
                         this.edges[i].line.animate(anim.delay(delay));
                     }
@@ -250,7 +260,7 @@ $(document).ready(function () {
             edge.line.attr({'stroke-width': 1.5});
             // fade in the new edges
             var delay = this.VH.setDelay(250); //get the delay for outside the loop
-            var anim = Raphael.animation({opacity:1},250);
+            var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(250));
             edge.line.animate(anim.delay(delay));
 
             this.edges.push(edge);
@@ -277,7 +287,7 @@ $(document).ready(function () {
             var delay = this.VH.setDelay(500);
 
             //Fade in the label
-            var anim = Raphael.animation({opacity:1},500);
+            var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(500));
             this.myLabel.animate(anim.delay(delay));
         };
 

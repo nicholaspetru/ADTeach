@@ -13,7 +13,7 @@ Tokenizer = function() {
 	this.buf = null;
 	this.buflen = 0;
 	this.operators = ['=', '>','<','!',':','+','-','*','/' ,'^','%',
-		'==', '!=', '+=', '-=', '++', '--', '&&', '||'];
+		'==', '!=', '+=', '-=', '++', '--', '&&', '||', '&', '|'];
 	this.separators = {
 		';': 'SEMI', 
 		',': 'COMMA',
@@ -157,13 +157,13 @@ Tokenizer.prototype._process_symbol = function(env) {
 	var op2 = this.operators.indexOf(this.buf.charAt(endpos));
     
     if (this._isdigit(this.buf.charAt(this.pos + 1))) {
-        console.log("Correct if statement");
         this.pos = endpos;
         var tok = {
         };
-        console.log("thing at end pos it: ", this.buf.charAt(endpos));
         return tok;
     }
+    console.log("Looking at the thing: ", this.buf.charAt(this.pos));
+    console.log("op1 is: ", op1, "op2 is: ", op2);
 	if (op1 !== -1) {
 		if (op2 !== -1) {
 			endpos++;
@@ -174,6 +174,7 @@ Tokenizer.prototype._process_symbol = function(env) {
 				pos: this.pos,
 				linenum: this.linenum
 			};
+            console.log("Token is: ", tok);
 			this.pos = endpos;
 			return tok;
 		}

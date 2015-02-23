@@ -28,6 +28,10 @@ $(document).ready(function () {
     
     // Evaluates an array of statements or a single statement
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
+        console.log("Evaling: ", arrayOfBlocks);
+        if (arrayOfBlocks == null) {
+            return null;
+        }
         var count = 0;
         if (typeof arrayOfBlocks[count] === "undefined") {
             var block = arrayOfBlocks;
@@ -210,7 +214,7 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalWhileBlock = function(block, env) {
         var condition = block.Test;
-        
+        console.log("Test is: ", condition);
         var isTrue = this.evalCondition(condition, env);
         var endTime = (new Date().getTime()/1000)+21;
         while (isTrue == true) {
@@ -458,16 +462,30 @@ $(document).ready(function () {
         }
         
         if (root.arity === "binary") {
-        
-            var leftValue = this.evalValue(root.first, env);
-            var rightValue = this.evalValue(root.second, env);
-            if (leftValue.length == 2 && leftValue[1] == "float") {
-                leftValue = leftValue[0];
-            } 
-            if (rightValue.length == 2 && rightValue[1] == "float") {
-                rightValue = rightValue[0];
+
+            if (root.value == "&&" || root.value == "||"){
+                var leftValue = this.evalCondition(root.first, env);
+                if(root.value == "&&" && !this.evalCondition(root.first, env)) return false;
+                var rightValue = this.evalCondition(root.second, env);
+
+            } else {
+
+                var leftValue = this.evalValue(root.first, env);
+                var rightValue = this.evalValue(root.second, env);
+                if (leftValue.length == 2 && leftValue[1] == "float") {
+                    leftValue = leftValue[0];
+                } 
+                if (rightValue.length == 2 && rightValue[1] == "float") {
+                    rightValue = rightValue[0];
+                }
             }
             switch (root.value) {
+                case "&&":
+                    return (leftValue && rightValue);
+                    break;
+                case "||":
+                    return (leftValue || rightValue);
+                    break;
                 case "<":
                     return (leftValue < rightValue);
                     break;
