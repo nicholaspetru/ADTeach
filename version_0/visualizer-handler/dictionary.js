@@ -172,6 +172,7 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(1000);
 
         //Fade out the label and frame
+
         var anim = Raphael.animation({opacity:0},1000);
         this.myLabel.animate(anim.delay(delay));
         this.myFrame[0].animate(anim.delay(delay));
@@ -226,6 +227,7 @@ $(document).ready(function () {
         //Destroy the data unit
         for (var i = 0; i < this.vis.length; i++){
             if (this.vis[i].value.split(" :")[0] == key){
+                this.vis[i].turnRed();
                 this.vis[i].destroy();
                 this.vis[i] = null;
             }

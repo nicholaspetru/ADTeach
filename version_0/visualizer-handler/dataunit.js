@@ -177,12 +177,21 @@ $(document).ready(function () {
      //Highlight
      DataUnit.prototype.highLight = function() {
      		var anim = Raphael.animation({stroke: "green"}, 250)
+        this.vis[0].animate(anim.delay(this.VH.setDelay(250)))
      		this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
+     };
+
+     //turn red
+     DataUnit.prototype.turnRed = function() {
+        var anim = Raphael.animation({stroke: "red"}, 250)
+        this.vis[0].animate(anim.delay(this.VH.setDelay(250)))
+        this.vis[1].animate(anim.delay(this.VH.setDelay(250)))
      };
 
       //Highlight
      DataUnit.prototype.lowLight = function() {
         var anim = Raphael.animation({stroke: "#4b4b4b"}, 1000)
+        this.vis[0].animate(anim.delay(this.VH.setDelay(1000)))
         this.vis[1].animate(anim.delay(this.VH.setDelay(1000)))
      };
 });
