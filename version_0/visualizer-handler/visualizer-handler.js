@@ -458,8 +458,6 @@ $(document).ready(function () {
             if (!this.isPrimitive(this.entities[i])){
                 if (this.entities[i].x != curX) {
 
-                    console.log("Before " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
-
                     // check ADT type to determine general positioning
                     switch(this.entities[i].type.split("<")[0]){
                         case "List":
@@ -516,7 +514,6 @@ $(document).ready(function () {
                         this.entities[i].create(curX, curY);
                         this.entities[i].drawn = true;
                     }
-                    console.log("After " + this.entities[i].x + " and " + this.entities[i].y + " for " + this.entities[i].name)
                 }
             }
         }

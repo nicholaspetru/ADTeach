@@ -142,6 +142,12 @@ $(document).ready(function () {
 
      // build the visual rep for the dataunit
      DataUnit.prototype.buildVisual = function() {
+        
+        // rework dataunit text/value if bigger than DU
+        // while (this.value.width > this.width) {
+        //   this.font_size = this.font_size -1;
+        // }
+ 
         //value
         this.vis[0] = this.paper.text(this.x+this.width/2, this.y+this.height/2, this.value);
         this.vis[0].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size, 'text-anchor': 'center'});
