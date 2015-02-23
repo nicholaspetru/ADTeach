@@ -263,7 +263,7 @@ $(document).ready(function () {
 
         var _t = this;
         setTimeout(function(){
-            _t.vis.splice(this.vis.length - 1, 1);
+            _t.vis.splice(_t.vis.length - 1, 1);
         },(this.VH.delay - this.VH.date.getTime()));
         this.anon.push(newDU);
     }
