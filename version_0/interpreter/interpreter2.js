@@ -448,6 +448,10 @@ $(document).ready(function () {
                 }
             }
             console.log("root is: ", root);
+            console.log("Value is: ", value);
+            if (value.length == 2) {
+                value = value[0];
+            }
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
     }
