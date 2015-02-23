@@ -199,7 +199,10 @@ $(document).ready(function () {
         //Insert the new data unit in it's proper location
         newDU.move(90*Math.floor(i/this.COL_NUM),this.DUNIT_HEIGHT + (2*this.HEIGHT/this.COL_NUM) +  this.HEIGHT/this.COL_NUM*((i%this.COL_NUM) - this.COL_NUM/2),this.VH.setDelay(500),500);
         this.VH.setDelay(250);
-        this.vis.splice(i, 0, newDU);
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(i, 0, newDU);
+        },(this.VH.delay - this.VH.date.getTime()));
     }
 
     //Gets a new dataunit at the specified index

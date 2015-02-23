@@ -222,14 +222,16 @@ $(document).ready(function () {
         }
 
         //Insert the new data unit in it's proper location
-        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500,function(){
-            //splice it in
-            this.vis.splice(index, 0, newDU);
-        });
+        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
         this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
-
         newDU.lowLight();
+
+        //after the delay, splice in the new addition =) nu baby
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(index, 0, newDU);
+        },(this.VH.delay - this.VH.date.getTime()));
     }
 
     //Gets a new dataunit at the specified index
@@ -261,12 +263,16 @@ $(document).ready(function () {
         newDU.create();
         newDU.highLight();
 
-        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500,
-            function() {
-                this.vis.splice(0, 1);
-            });
+        newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.anon.push(newDU);
         this.vis[0].destroy();
+
+        //remove the visual unit AT THE KRITICAL MOMENT
+        var _t = this;
+        setTimeout(function(){
+            _t.vis.splice(0, 1);
+        },(this.VH.delay - this.VH.date.getTime()));
+
 
         //schooch everything down
         var delay = this.VH.setDelay(500);
