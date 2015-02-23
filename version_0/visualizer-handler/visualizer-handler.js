@@ -65,8 +65,16 @@ $(document).ready(function () {
         //console.log("xpos: " + xpos + " width: " + w);
         this.codeboxPaper = Raphael(xpos, ypos, w, h);
         var fontSize = $("#user_textbox").css('font-size');
-        var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.2);
-
+        var os = navigator.platform;
+        if (os == 'MacIntel') {
+            var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.2);
+        }
+        else if (os == 'Win32') {
+            var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.3);
+        }
+        else {
+            var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.2);
+        }
         var highlight = this.codeboxPaper.rect(0,3+(lineHeight*lineNumber),w,lineHeight);
         highlight.attr("fill", color);
         highlight.attr("fill-opacity", .2);
@@ -159,6 +167,8 @@ $(document).ready(function () {
 
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
+                var oldVal = this.entities[i].value;i
+                this.entities[i].oldValue = oldVal;
                 this.entities[i].value = value;
                 this.entities[i].update(action, originADT);
             }
