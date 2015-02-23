@@ -9,9 +9,9 @@ int temp = 0;
 while(sorted == false){
 	sorted = true;
 	for (int i = 1; i<s.size(); i++){
-		if (s.get(i-1) > s.get(i)){
-			temp = s.get(i-1);
-			s.set((i-1), s.get(i));
+		if (s.get(i - 1) > s.get(i)){
+			temp = s.get(i - 1);
+			s.set((i - 1), s.get(i));
 			s.set(i, temp);
 			sorted = false;
 		}
