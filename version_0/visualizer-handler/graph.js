@@ -396,7 +396,9 @@ $(document).ready(function () {
             edge.line.animate(anim.delay(delay));
 
             this.edges.push(edge);
-
+			
+			// track the edge's representation on the screen
+			// [fromNodeID, [toNodeID,connection,connection.line]]
             var edgeLine = [];
             edgeLine.push(fromNodeID);
             var toLine = [];
