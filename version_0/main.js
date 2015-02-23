@@ -64,11 +64,17 @@ $(document).ready(function () {
 
     $("#aboutViva").click(function() {
         $("#content").empty().append('<h3><center>Programming in ADTeach</center></h3>');
-        $("#content").append('<p>"Viva", or <em>Visual Java</em>, is a simplified version of Java supported by ADTeach. It uses the same syntax as Java, but is built around the idea of visualizing ADTs. To this end, users will notice the following differences between Java and Viva:</p>');
+        $("#content").append('<p>"Viva", or <em>Visual Java</em>, is a simplified version of Java supported by ADTeach. It uses the same syntax as Java, but is built around the idea of visualizing ADTs.</p>');
+        $("#content").append('<p><b>Primitives</b>: String, int, float, boolean</p>');
+        $("#content").append('<p><b>ADTs</b>: List, Stack, Queue, PriorityQueue, Tree, Graph, Dictionary.</p>');
+        $("#content").append('<hr>');
+        $("#content").append('<p>Users will notice the following differences between Java and Viva:</p>');
         $("#content").append('<p><li>Unlike Java, users may not create their own classes or methods in Viva. For a list of supported classes and their corresponding methods, explore the help buttons above the code box.</li>');
         $("#content").append('<li>Users may not import Java libraries in Viva. This helps to ensure your code will run smoothly and quickly.</li>');
         $("#content").append('<li>Pointers do not work the same in Viva as they do in Java.  For instance, you may initialize a List to be equal to an already existing List, but changing one will not change the other as it does in Java.</li>');
+        $("#content").append('<li>There needs to be a space between a minus sign and the number being subtracted, or else the number being subtracted will be seen as a negative number.</li>');
         $("#content").append('<li>Primitives may or may not be initialized when instantiated, but every ADT must be intialized.</li>');
+        $("#content").append('<hr>');
         $("#content").append('</p><p>For more help getting started with programming in Viva, check out the sample code for each ADT contained in the help buttons above the code box!</p><p>Bring your code to life with Viva!</p>');
         $("#sampleStack").hide();
         $("#sampleQueue").hide();
