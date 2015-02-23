@@ -269,6 +269,7 @@ $(document).ready(function () {
             returnedValue = methodValue[1];
             value = methodValue[0];
             valueType = methodValue[3];
+            var ADTType = methodValue[3];
             console.log("BEING RETURNED: ", methodValue);
             originMethod = methodValue[2];
             //originMethod = valueRoot.MethodName.value;
@@ -436,7 +437,15 @@ $(document).ready(function () {
                 console.log("INCOMPATIBLE TYPES!!");   
                 root.error("INcompatible types");
             }
+            if(type == null) {
+                if (typeof val == typeof [] && methodValue[3] != val[1]){
+                    console.log("INCOMPATIBLE TYPES!!! Expected", methodValue[3], "found", val[1]);
+                    env.throwError(root.linenum);
+                    root.error("INcompatible types");
+                }
+            }
             console.log("root is: ", root);
+            console.log("DO THESE MATCH???", methodValue[3], val[1]);
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
     }
