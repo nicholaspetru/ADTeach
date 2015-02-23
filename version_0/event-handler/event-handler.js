@@ -26,6 +26,7 @@ $(document).ready(function() {
         $("#treeHelp").hide();
         $("#dictHelp").hide();
         $("#help").show();
+        $("#exitHelp").hide();
 
         
         return this;
@@ -46,6 +47,7 @@ $(document).ready(function() {
         $("#stop").show();
         $("#build").hide();
         $("#help").hide();
+        $("#exitHelp").hide();
         $("#helptext").hide();
         $("#listHelp").hide();
         $("#stackHelp").hide();
