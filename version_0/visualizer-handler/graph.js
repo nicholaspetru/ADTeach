@@ -79,9 +79,43 @@ $(document).ready(function () {
                 case "hasEdge":
                     this.HasEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
+                case "getDegree":
+                    this.GetDegree(parseInt(split[1]));
+                    break;
+                case "getInDegree":
+                    this.GetInDegree(parseInt(split[1]));
+                    break;
+                case "getNeighbors":
+                    this.GetNeighbors(parseInt(split[1]));
+                    break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
             }
+        };
+
+        Graph.prototype.GetDegree = function(fromNodeID) {
+            console.log("VH GetDegree(" + fromNodeID + ")");
+            var graphVal = this.value[0];
+            console.log(graphVal);
+            for (var x = 0; x < graphVal.length; x++) {
+                console.log("graphVal[" + x + "]: " + graphVal[x]);
+            }
+            var toNodes = graphVal[fromNodeID];
+            console.log(toNodes);
+            for (var x = 0; x < toNodes.length; x++) {
+                var toNodeID = toNodes[x];
+                var checking = this.hasDrawnEdge(fromNodeID,toNodeID);
+
+                if (this.hasDrawnEdge(fromNodeID,toNodeID) == true) {
+                    this.VH.setDelay(500);
+                    this.highLightEdge(fromNodeID,toNodeID,"green");
+                }
+            }
+        };
+
+        Graph.prototype.GetInDegree = function(toNodeID) {   
+        };
+        Graph.prototype.GetNeighbors = function(nodeID) {
         };
 
         Graph.prototype.AddEdge = function(fromNodeID,toNodeID) {

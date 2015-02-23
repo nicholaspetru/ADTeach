@@ -15,7 +15,9 @@ $(document).ready(function () {
     */
     //Listen to buttonz
     $("#modal").hide();
-    
+    var os = navigator.platform;
+    console.log(os);
+
     var EVH = new EventHandler();
     $("#build").click(function() {
         EVH.onBuild();
