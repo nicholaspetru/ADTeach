@@ -269,7 +269,7 @@ $(document).ready(function () {
             returnedValue = methodValue[1];
             value = methodValue[0];
             valueType = methodValue[3];
-            console.log("BEING RETURNED: ", typeof value);
+            console.log("BEING RETURNED: ", methodValue);
             originMethod = methodValue[2];
             //originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
@@ -427,9 +427,9 @@ $(document).ready(function () {
                 console.log(env.getType(root.first.value));
                 val = env.getType(root.first.value);
             }
-            console.log("VAL IS: ", val);
+            console.log("VAL IS: ", value);
             console.log("Root.first type is: ", typeof val, " and type is: ", type);
-            
+            console.log("val type is: ", valType, "and type is: ", type);
             if (valType != type){
                 console.log(val, typeof val, type);
                 env.throwError(root.linenum);
@@ -860,7 +860,7 @@ $(document).ready(function () {
                 case("getParent"):
                 case("getChildren"):
                 case('getInDegree'):
-                case('getOutDegree'):
+                case('getDegree'):
                 case('removeVertex'):
                 case('setDirected'):
                 case('setRoot'):

@@ -59,9 +59,9 @@ $(document).ready(function () {
     }
     
     VDictionary.prototype.containsKey = function(key, dict) {
-        console.log("checking for the key: ", key);
+        //console.log("checking for the key: ", key);
         for (var i in dict) {
-            console.log("Checking against: ", i);
+            //console.log("Checking against: ", i);
             if (i == key) {
                 return true;
             }
@@ -127,6 +127,8 @@ $(document).ready(function () {
         if (method == 'get') {
             var key = parameters[0].value;
             var getType = this.getType(key);
+            console.log("Getting: ", key);
+            console.log("Against: ", getType);
             if (getType != keyType) {
                 env.throwError(root.linenum);
                 console.log("Incompatible Types!");
@@ -175,8 +177,12 @@ $(document).ready(function () {
                     valType = "List<Float>";
                     break;
             }
+            console.log("IN HEREEEEEEEE");
             var keys = [];
+            console.log("Orig value is: ", origValue);
             for (i in origValue) {
+                console.log("i is: ", i);
+                console.log(typeof i);
                 keys.push(i);
             }
             returnValue = keys;
@@ -215,6 +221,8 @@ $(document).ready(function () {
         
         if (method == "remove") {
             var keyToRemove = parameters[0].value;
+            console.log("Key to remove: ", keyToRemove, typeof keyToRemove);
+            console.log("Looking at: ", keyType, "against ", this.getType(keyToRemove));
             if (this.getType(keyToRemove) != keyType) {
                 env.throwError(root.linenum);
                 console.log("Incompatible key types");
@@ -247,8 +255,10 @@ $(document).ready(function () {
             var count = 0;
             console.log("Size is: ", dict.size);
             while(count < numKeys) {
+                
                 if (keyType == "int") {
                     toPush = Math.floor((Math.random()*100) + 1);
+                    console.log("Going to push: ", typeof toPush);
                     if (this.containsKey(toPush, dict) != true) {
                         dict[toPush] = 0;
                         count += 1;
@@ -260,6 +270,7 @@ $(document).ready(function () {
                         dict['"' + alph[toPush] + '"'] = 0;
                         count += 1;
                     }
+                    
                 }
                 else if (keyType == "float") {
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
@@ -268,8 +279,12 @@ $(document).ready(function () {
                         count += 1;
                     }
                 }
+                //console.log("After count: ", count);
             }
+            console.log("Count is: ", count);
+            console.log("Dictionary to start is: ", dict);
             for (var j in dict) {
+                console.log("j is: ", typeof j);
                 if (valueType == "int") {
                     toPush = Math.floor((Math.random()*100) + 1);
                     dict[j] = toPush;

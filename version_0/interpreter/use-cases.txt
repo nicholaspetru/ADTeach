@@ -82,3 +82,39 @@ while(visited.indexOf(0) >= 0){
     next = 1000;
 
 }
+
+
+
+FIND CONNECTED COMPONENTS TO VERTEX S
+
+Graph g = new Graph();
+g.populate(9, 0);
+g.addEdge(2, 4);
+g.addEdge(2, 5);
+g.addEdge(4, 8);
+g.addEdge(8, 5);
+g.addEdge(8, 3);
+int n = g.numVerts();
+int s = 4;
+Queue<Integer> q = new Queue<Integer>();
+List<Integer> d = new List<Integer>();
+for (int i = 0; i < n; i++) {
+	d.add(-1);
+}
+d.set(s, 0);
+q.add(s);
+int v;
+int neigh;
+List<Integer> neighbors = new List<Integer>();
+while (q.isEmpty() != true) {
+	v = q.remove();
+	neighbors = g.getNeighbors(v);
+	for (int j = 0; j < neighbors.size(); j++) {
+		neigh = neighbors.get(j);
+		if (d.get(neigh) == -1) {
+			d.set(neigh, d.get(v) + 1);
+			q.add(neigh);
+}
+}
+}
+List<Integer> final = d;
