@@ -11,7 +11,7 @@ $(document).ready(function () {
         this.value = value;
         this.dragged = false;
         this.originADT = originADT;
-        this.drawn = false; //what purpose does this serve? for destroying/removing prims?
+        this.drawn = false;
 
         //assign the position
         this.x = 0;
@@ -29,7 +29,7 @@ $(document).ready(function () {
         this.x = newX;
         this.y = newY;
 
-        if (this.originADT != null){
+        if (this.originADT != null && this.originADT != this.name){
              this.VH.getAnonymousVariable(this.originADT,this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length, this.y - this.FONT_SIZE/2);
         }
 

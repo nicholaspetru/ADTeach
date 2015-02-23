@@ -18,8 +18,23 @@ while(sorted == false){
 	}
 }
 
-Algorithms
+------------------------------------------------------
+Reversing a List
 
+List<Integer> list = new List<Integer>();
+Stack<Integer> stack = new Stack<Integer>();
+list.populate(10);
+while(list.isEmpty() == false){
+	stack.push(list.get(0));
+	list.remove(0);
+}
+while(stack.isEmpty() == false){
+	list.add(stack.pop())
+}
+
+
+------------------------------------------------------
+Algorithms
 Dijkstra's!!!
 
 WeightedGraph g = new WeightedGraph();

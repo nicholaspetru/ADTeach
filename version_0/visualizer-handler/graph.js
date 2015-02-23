@@ -79,30 +79,74 @@ $(document).ready(function () {
                 case "hasEdge":
                     this.HasEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
+                case "getDegree":
+                    this.GetDegree(parseInt(split[1]));
+                    break;
+                case "getInDegree":
+                    this.GetInDegree(parseInt(split[1]));
+                    break;
+                case "getNeighbors":
+                    this.GetNeighbors(parseInt(split[1]));
+                    break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
             }
+        };
+
+        Graph.prototype.GetDegree = function(fromNodeID) {
+            console.log("VH GetDegree(" + fromNodeID + ")");
+            var graphVal = this.value[0];
+            console.log(graphVal);
+            for (var x = 0; x < graphVal.length; x++) {
+                console.log("graphVal[" + x + "]: " + graphVal[x]);
+            }
+            var toNodes = graphVal[fromNodeID];
+            console.log(toNodes);
+            for (var x = 0; x < toNodes.length; x++) {
+                var toNodeID = toNodes[x];
+                var checking = this.hasDrawnEdge(fromNodeID,toNodeID);
+
+                if (this.hasDrawnEdge(fromNodeID,toNodeID) == true) {
+                    this.VH.setDelay(500);
+                    this.highLightEdge(fromNodeID,toNodeID,"green");
+                }
+            }
+        };
+
+        Graph.prototype.GetInDegree = function(toNodeID) {   
+        };
+        Graph.prototype.GetNeighbors = function(nodeID) {
         };
 
         Graph.prototype.AddEdge = function(fromNodeID,toNodeID) {
             console.log("########################");
             console.log("VH graph addEdge( " + fromNodeID + " , " + toNodeID + " (add an edge from " + fromNodeID + " to " + toNodeID + ")");
             var f = this.nodes[fromNodeID];
-            f = f.vis[1];
+            //f = f.vis[1];
             var t = this.nodes[toNodeID];
-            t = t.vis[1];
+            //t = t.vis[1];
+
+            /*
 
             var delay1 = this.VH.setDelay(500);
             var anim1 = Raphael.animation({stroke: "green"}, this.VH.getAnimTime(500));
             f.animate(anim1.delay(delay1));
             t.animate(anim1.delay(delay1));
+            */
+            f.highLight();
+            this.VH.setDelay(500);
+            t.highLight();
+            this.VH.setDelay(500);
 
             this.createEdge(fromNodeID,toNodeID);
-
-            var delay2 = this.VH.setDelay(500);
-            var anim2 = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(500));
+            f = f.vis[1];
+            t = t.vis[1];
+            
+            var delay2 = this.VH.setDelay(1000);
+            var anim2 = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(1000));
             f.animate(anim2.delay(delay2));
             t.animate(anim2.delay(delay2));
+            
         };
 
         Graph.prototype.AddVertex = function() {
@@ -137,7 +181,7 @@ $(document).ready(function () {
                     }
                 }
             }
-            this.graphDragger();
+            //this.graphDragger();
         };
 
         Graph.prototype.SetDirected= function() {
