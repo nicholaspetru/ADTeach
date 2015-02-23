@@ -56,7 +56,7 @@ $(document).ready(function () {
         $("#content").append('<li>Users may not import Java libraries in Viva. This helps to ensure your code will run smoothly and quickly.</li>');
         $("#content").append('<li>Pointers do not work the same in Viva as they do in Java.  For instance, you may initialize a List to be equal to an already existing List, but changing one will not change the other as it does in Java.</li>');
         $("#content").append('<li>Primitives may or may not be initialized when instantiated, but every ADT must be intialized.</li>');
-        $("#content").append('</p><p>For more help getting started with programming in Viva, check out the sample code for each ADT contained in the help buttons above the code box!</p>');
+        $("#content").append('</p><p>For more help getting started with programming in Viva, check out the sample code for each ADT contained in the help buttons above the code box.</p><p>Bring your code to life with Viva!</p>');
         $("#sampleStack").hide();
         $("#sampleQueue").hide();
         $("#samplePQueue").hide();
