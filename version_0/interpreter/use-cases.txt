@@ -138,8 +138,8 @@ List<Integer> final = d;
 
 ------------------------------------------------------
 
-Dictionary<Integer, String> dict = new Dictionary<Integer, String>();
 List<Integer> keys1 = new List<Integer>();
+Dictionary<Integer, String> dict = new Dictionary<Integer, String>();
 List<String> values = new List<String>();
 keys1.populate(12);
 values.populate(12);
@@ -150,3 +150,29 @@ for(int i = 0; i<keys1.size(); i++){
 
 List<Integer> f = new List<Integer>();
 f = dict.keys();
+
+--------------------------------------------------------
+Stack<String> s = new Stack<String>();
+Stack<String> t = new Stack<String>();
+s.populate(5);
+while (s.isEmpty() != true) {
+	t.push(s.pop());
+}
+while (t.isEmpty() != true) {
+	s.push(t.pop());
+}
+Queue<String> u = new Queue<String>();
+while (s.isEmpty() != true) {
+	u.add(s.pop());
+}
+
+----------------------------------------------------------
+Queue<Integer> q = new Queue<Integer>();
+Stack<Integer> p = new Stack<Integer>();
+q.populate(7);
+p.populate(7);
+Dictionary<Integer, Integer> u = new Dictionary<Integer, Integer>();
+while (q.isEmpty() == false) {
+	u.put(q.remove(), p.pop());
+}
+List<Integer> v = u.keys();
