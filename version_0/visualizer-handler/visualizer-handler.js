@@ -15,7 +15,7 @@ $(document).ready(function () {
 
         //define constants
         this.PRIMITIVE_NUM_COLS= 8;
-        this.PRIMITIVE_COL_LEN = 5;
+        this.PRIMITIVE_COL_LEN = 4;
         this.PRIMITIVE_COLUMNWIDTH = 140;
         this.ADT_COLUMNWIDTH = 140;
         this.PRIMITIVE_SECTION_HEIGHT = 100;

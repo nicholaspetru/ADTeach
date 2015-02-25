@@ -76,7 +76,7 @@ textarea#user_textbox:hover {
 
 textarea#user_textbox{
     height: 60%;
-    width: 87%;
+    width: 95%;
     font-size:1em;
     background-color:#F0F8FF;
     resize:none;
@@ -92,7 +92,7 @@ textarea#user_textbox{
 
 #vis_paper {
     height:560px;
-    width:57%;
+    width:59%;
     float:right;
     border-style: solid;
     border-width: thin;
@@ -102,7 +102,7 @@ textarea#user_textbox{
 
 #modal {
     position:absolute;
-    width:56.2%;
+    width:59%;
     right:8px;
     background:rgba(182,197,190,1);
     padding:8px;

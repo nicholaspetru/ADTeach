@@ -74,9 +74,9 @@ $(document).ready(function () {
             this.VH.getAnonymousVariable(originADT,this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length, this.y - this.FONT_SIZE/2);
         }
         // shake it off
-        for (var i = 0; i < 21; i++){
-            var anim = Raphael.animation({x:8*(-1^i)},this.VH.getAnimTime(25));
-            this.vis.animate(anim.delay(this.VH.setDelay(25)));
+        for (var i = 0; i < 11; i++){
+            var anim = Raphael.animation({x:4*Math.pow(-1,i)},this.VH.getAnimTime(50));
+            this.vis.animate(anim.delay(this.VH.setDelay(100)));
         }
         var _t = this, _val = this.value;
         setTimeout(function(){

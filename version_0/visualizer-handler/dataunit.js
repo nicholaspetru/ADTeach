@@ -116,9 +116,9 @@ $(document).ready(function () {
   	//Modifiy data unit value
     //Orientation determines whether the dataunit is shaking up and down (0) or left to right (1)
       DataUnit.prototype.update = function(newValue, orientation) {
-          for (var i = 0; i < 20; i++){
+          for (var i = 0; i < 10; i++){
               //console.log("y val: " + 8*Math.pow(-1,i));
-              this.move(8*Math.pow(-1,i)*orientation,8*Math.pow(-1,i)*(!orientation), this.VH.setDelay(50),25);
+              this.move(4*Math.pow(-1,i)*orientation,4*Math.pow(-1,i)*(!orientation), this.VH.setDelay(100),50);
               this.VH.setDelay(40);
           }
 

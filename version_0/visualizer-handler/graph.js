@@ -43,6 +43,7 @@ $(document).ready(function () {
         //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
         this.HEIGHT = 45;
+        this.anon = [];
 
         //visual component
         // this.me is a Raphael set containing the name, frame, and data units of the list. 
@@ -81,9 +82,7 @@ $(document).ready(function () {
                     this.HasEdge(parseInt(split[1]), parseInt(split[2]));
                     break;
                 case "getDegree":
-                    //this.GetDegree(parseInt(split[1]));
                     this.GetDegree(parseInt(split[1]));
-
                     break;
                 case "getInDegree":
                     this.GetInDegree(parseInt(split[1]));

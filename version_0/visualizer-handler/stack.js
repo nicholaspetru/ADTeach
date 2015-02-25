@@ -241,7 +241,7 @@ $(document).ready(function () {
     Stack.prototype.Get = function() {
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type, this.value[this.value.length - 1], this.VH, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
-                                       this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.vis.length - 1), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+                                       this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(this.vis.length - 1), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
         newDU.highLight();
 
