@@ -4,25 +4,31 @@ $(document).ready(function () {
         this.database = new Object();
         this.database['list'] = 
             ['List<Integer> s = new List<Integer>();',
-             'List<Integer> t = new List<Integer>();',
-             's.populate(4);',
-             's.add(2);',
-             'for (int i = 0; i < s.size(); i++) {',
-             '\t t.add(s.get(i));',
+             's.populate(6);',
+             'boolean sorted = false;',
+             'int temp = 0;',
+             'int count = 0;',
+             'while(sorted == false) {',
+             '  sorted = true;',
+             '  for (int i = 1; i < s.size() - count; i++) {',
+             '      if (s.get(i - 1) > s.get(i)) {',
+             '          temp = s.get(i - 1);',
+             '          s.set((i - 1), s.get(i));',
+             '          s.set(i, temp);',
+             '          sorted = false;',
+             '      }',
+             '  }',
+             '  count++;',
              '}'
             ].join('\n');
         this.database['stack'] = 
-            ['Stack<String> s = new Stack<String>();',
-            's.push("hello");',
-            's.push("world");',
-            'String curItem = s.peek();',
-            'while (s.isEmpty() == false) {',
-            '\t s.pop();',
-            '\t curItem = s.peek();',
-            '}',
-            's.populate(5);',
-            's.push("item");',
-            'int x = s.search("item");'
+            ['Stack<Integer> s = new Stack<Integer>();',
+             'Stack<Integer> t = new Stack<Integer>();',
+             's.populate(4);',
+             's.push(2);', 
+             'while (s.isEmpty() == false) {',
+             '  t.push(s.pop());',
+             '}'
             ].join('\n');
         this.database['queue'] =
             ['Queue<Integer> q = new Queue<Integer>();',
@@ -39,13 +45,12 @@ $(document).ready(function () {
             'q.remove();'
             ].join('\n');
         this.database['graph'] =
-            ['Graph g = new Graph();',
-             'g.setDirected(true);',
-             'g.populate(5, 0);',
-             'g.addEdge(0,1);',
-             'g.addEdge(1,2);',
-             'g.addEdge(0,2);',
-             'int x = g.getDegree(0);'
+            ['List<Integer> y = new List<Integer>();',
+             'Graph g = new Graph();',
+             'g.populate(5, 0.5);',
+             'for (int i = 0; i < g.numVerts(); i++) {',
+             '  y.add(g.getDegree(i));',
+             '}'
             ].join('\n');
         this.database['weightedGraph'] =
             ['WeightedGraph g = new WeightedGraph();',
@@ -61,10 +66,19 @@ $(document).ready(function () {
             't.populate(6);'
             ].join('\n');
         this.database['dict'] =
-            ['Dictionary<String, Integer> d = new Dictionary<String, Integer>();',
-            'd.populate(5);',
-            'd.put("hello",4);',
-            'int x = d.get("hello");'
+            ['List<String> firstLetters = new List<String>();',
+             'Dictionary<String, Integer> d = new Dictionary<String, Integer>();',
+             'List<Integer> values = new List<Integer>();',
+             'firstLetters.add("S");',
+             'firstLetters.add("C");',
+             'firstLetters.add("E");',
+             'firstLetters.add("N");',
+             'firstLetters.add("B");',
+             'firstLetters.add("L");',
+             'values.populate(6);',
+             'for (int i = 0; i < firstLetters.size(); i++) {',
+             '  d.put(firstLetters.get(i), values.get(i));',
+             '}'
             ].join('\n');
         return this;
     }
