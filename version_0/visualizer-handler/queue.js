@@ -19,6 +19,7 @@ $(document).ready(function () {
         this.DUNIT_HEIGHT = 45*.85;
         this.DUNIT_WIDTH = (45*.85)*.5;
         this.DUNIT_BUFFER = .2;
+        this.WIDTH = 0;
         this.setDimensions();
 
         //visual component
@@ -36,18 +37,20 @@ $(document).ready(function () {
     //that is then animated piecewise
     Queue.prototype.buildVisual = function(){
         this.myLabel = this.paper.text(this.x + this.WIDTH/2.5, this.y + this.HEIGHT + 13, this.type.split("<")[0] + " " + this.name);
-        this.frontText = this.paper.text(this.x, this.y + this.HEIGHT + 13, "Front");
+        this.frontText = this.paper.text(this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + this.DUNIT_WIDTH*(1.5 + this.DUNIT_BUFFER + this.value.length),this.y + this.HEIGHT/2,"front");
+        //"M " + this.x + ", " + () + " V " + (this.y + this.HEIGHT) + " H " +  + " V " + (this.y + this.HEIGHT/2)), this.y + this.HEIGHT/2, "  front");
 
-        this.frontText.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
+        this.frontText.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE - 4, 'text-anchor': 'start'});
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
-        this.myFrame = this.paper.path("M " + (this.x + this.WIDTH) + ", " + this.y + " H " + (this.x) + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH));
+        //this.myFrame = this.paper.path("M " + (this.x + this.WIDTH) + ", " + this.y + " H " + (this.x) + " V " + (this.y + this.HEIGHT) + " H " + (this.x + this.WIDTH));
+        this.myFrame = this.paper.path("M " + this.x + ", " + (this.y  + this.HEIGHT/2) + " V " + (this.y + this.HEIGHT) + " H " + (this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)) + " V " + (this.y + this.HEIGHT/2)));
         this.myFrame.attr({"opacity": 0,"stroke": "black", "stroke-width": 2.25});
 
         //here's the visual component's representation of the content of the stack. the "data units"
         for (var i = 0; i < this.value.length; i++){
-            this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*this.DUNIT_BUFFER) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
+            this.vis.push(new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + this.WIDTH - (this.DUNIT_WIDTH*this.DUNIT_BUFFER) - (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER))*(i),
                                        this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0));
         }
         this.stretch();
@@ -56,16 +59,9 @@ $(document).ready(function () {
     //Sets the appropriate width and height for the Queue
     //returns true if the width changes
     Queue.prototype.setDimensions = function() {
-        //width and height refer to max width and height-- how much room this object takes up on the screen
-        var min;
-        if (this.value.length < 11)
-            min = 10;
-        else
-            min = this.value.length;
-
         this.HEIGHT = 45;
-        if (this.WIDTH != (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(min))){
-            this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(min));
+        if (this.WIDTH < (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(1 + this.value.length))){
+            this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(1 + this.value.length));
             return true;
         }
         return false;
@@ -139,15 +135,21 @@ $(document).ready(function () {
     Queue.prototype.stretch = function() {
         //variables for list
         var changed = this.setDimensions();
-        var _t = this, _0 = this.x + this.WIDTH, _1 = this.y, _2 = this.x, _3 = this.y + this.HEIGHT;
-        
+        var _t = this, _0 = this.x, _1 = this.y  + this.HEIGHT/2, _2 = this.y  + this.HEIGHT, _3 = this.x + this.WIDTH;
+        //"M " + this.x + ", " + () + " V " + (this.y + this.HEIGHT) + " H " +  + " V " + (this.y + this.HEIGHT/2))
         //in the timeout, create and assign the actual path
         if (changed){
             setTimeout(function(){
                 _t.myFrame.remove();
-                _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " H " + _2 + " V " + _3 + " H " + _0);
+                _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);4
+                _t.frontText.attr({"x": (_3 + (_t.DUNIT_WIDTH*_t.DUNIT_BUFFER))});
                 _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
                 _t.myLabel.attr({"x": _t.x + _t.WIDTH/4});
+                //you also have to schooch down all the data units
+                for (var i = 0; i < _t.vis.length; i ++){
+                    _t.vis[i].moveTo(_t.x + _t.WIDTH - (_t.DUNIT_WIDTH*_t.DUNIT_BUFFER) - (_t.DUNIT_WIDTH*(1 + _t.DUNIT_BUFFER))*(i + 1),
+                                       _t.y + (_t.HEIGHT - _t.DUNIT_HEIGHT)/2,0,10);
+                }
             },(this.VH.delay - this.VH.date.getTime()));
         }
     };
@@ -171,7 +173,7 @@ $(document).ready(function () {
 
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
-                _t.vis[i].move(difX,difY,0,500);
+                _t.vis[i].moveTo(difX,difY,0,500);
             }
         },(this.VH.delay - this.VH.date.getTime()));
 
@@ -186,7 +188,7 @@ $(document).ready(function () {
         this.stretch();
         //create new data units to match the new dataset
         for (var i = 0; i < this.value.length; i++){
-            var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.DUNIT_WIDTH*.2) + (this.DUNIT_WIDTH*1.2)*(i),
+            var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH, this.x + this.WIDTH - (this.DUNIT_WIDTH*.2) - (this.DUNIT_WIDTH*1.2)*(i + 1),
                                this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
             this.vis.push(newDU);
             newDU.create();
@@ -210,16 +212,11 @@ $(document).ready(function () {
 
     //Adds a new dataunit 
     Queue.prototype.Add = function(index, speed) {
-        //Switch if it's a priority queue or queue
-        if (!(this.type.split("<")[0] = "Queue"))
-            ind = this.value.length - index -1;
-        else
-            ind = 0;
-
         //Create the new data unit
-        var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2),
+        var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2) ,
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
        
+       //if you're going quickly (and not generating a new DU, )
         if (speed){
             newDU.create();
             newDU.highLight();
@@ -229,18 +226,10 @@ $(document).ready(function () {
             newDU.vis[1].attr({stroke: "green"});
         }
 
-        //Scooch down all the other data units
-        var delay = null;
-        for (var i = index; i < this.vis.length; i++){
-            if (delay == null)
-                this.VH.setDelay(500);
-            this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
-        }
-
         //Insert the new data unit in it's proper location
-        newDU.move(this.DUNIT_WIDTH*1.2*index,0,this.VH.setDelay(500),500);
-        this.VH.setDelay(100);
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
+        this.VH.setDelay(100);
+        newDU.move(this.WIDTH - 2*(this.DUNIT_WIDTH*.2) - (this.DUNIT_WIDTH*1.2)*(index + 1),0,this.VH.setDelay(500),500);
         newDU.lowLight();
 
         //after the delay, splice in the new addition =) nu baby
@@ -253,13 +242,12 @@ $(document).ready(function () {
     //Gets a new dataunit at the specified index
     Queue.prototype.Get = function() {
         //Create the new data unit
-        var xx = this.x + (this.DUNIT_WIDTH*.2),
+        var xx = this.x + this.WIDTH - (this.DUNIT_WIDTH*.2) - (this.DUNIT_WIDTH*1.2),
             yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
 
         var newDU = new DataUnit(this.paper,this.type, this.value[0], this.VH,  xx,
                                         yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
         newDU.create();
-
         newDU.highLight();
 
         //Move the new data unit to it's proper location and set as the anonymous variable
@@ -271,17 +259,17 @@ $(document).ready(function () {
     //Removes a  dataunit at the specified index
     Queue.prototype.Remove = function() {
         //Create the new data unit
-        var xx = this.x + (this.DUNIT_WIDTH*.2),
+        var xx = this.x + this.WIDTH - (this.DUNIT_WIDTH*.2) - (this.DUNIT_WIDTH*1.2),
             yy = this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2;
 
         var newDU = new DataUnit(this.paper,this.type, this.oldValue[0], this.VH,  xx,
-                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, -1);
+                                        yy, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
         newDU.create();
         newDU.highLight();
 
+        this.vis[0].fastDestroy();
         newDU.move(0,-(this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2),this.VH.setDelay(500),500);
         this.anon.push(newDU);
-        this.vis[0].destroy();
 
         //remove the visual unit AT THE KRITICAL MOMENT
         var _t = this;
@@ -289,11 +277,10 @@ $(document).ready(function () {
             _t.vis.splice(0, 1);
         },(this.VH.delay - this.VH.date.getTime()));
 
-
         //schooch everything down
         var delay = this.VH.setDelay(500);
         for (var i = 0; i < this.vis.length; i++){
-            this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
+            this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
         }
 
     }
