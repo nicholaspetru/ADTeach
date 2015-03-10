@@ -56,6 +56,21 @@ $(document).ready(function () {
         for (var i = 0; i<origValue1.length; i++){
             origValue[i]=(origValue1[i]);   
         }
+        var valType;
+        switch (type) {
+            case "Queue<Integer>":
+                valType = "int";
+                break;
+            case "Queue<String>":
+                valType = "String";
+                break;
+            case "Queue<Float>":
+                valType = "float";
+                break;
+        }
+        if (type == "Queue<Integer>") {
+            valType = "int";
+        }
         if (method == 'add') {
             if (type == "Queue<Integer>") {
                 if (typeof parameters[0].value != typeof 1) {
@@ -91,28 +106,15 @@ $(document).ready(function () {
         }
         if (method == "peek") {
             returnValue = origValue[0];
-            var valType;
-            switch (type) {
-                case "Queue<Integer>":
-                    valType = "int";
-                    break;
-                case "Queue<String>":
-                    valType = "String";
-                    break;
-                case "Queue<Float>":
-                    valType = "float";
-                    break;
-            }
-            if (type == "Queue<Integer>") {
-                valType = "int";
-            }
             return [returnValue, origValue, valType];
         }
         if (method == 'remove') {
             returnValue = origValue[0];
+            console.log(origValue, "##!#");
             origValue.splice(0, 1);
+            console.log(origValue);
             console.log("REturning, ", returnValue, " + ", origValue);
-            return [returnValue, origValue, "float"];
+            return [returnValue, origValue, valType];
         }
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);

@@ -282,9 +282,16 @@ $(document).ready(function () {
         
         //Literals: ints, floats, strings, etc.
         if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
+            console.log("%%%%% Literal", valueRoot);
             console.log("Current root is: ", root);
             originADT = root.second.value;
+
             value = this.evalValue(valueRoot, env);
+
+            if (value[1].indexOf("<") >=0) {
+                console.log("Tryna set a variable equal to an ADT with a <");
+                //Throw the flag!!
+            }
             //originADT = this.evalValue(valueRoot, env)[1];
             console.log("Valueeee is: ", value);
             console.log("Origin ADT is: ", originADT);
@@ -406,6 +413,7 @@ $(document).ready(function () {
                     console.log("Root first: ", root.first);
                     console.log("Want type: ", valueType);
                     if (root.first != valueType) {
+                        console.log(root.first, valueType);
                         env.throwError(root.linenum);
                         root.error();
                     }
