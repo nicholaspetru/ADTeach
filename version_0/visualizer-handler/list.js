@@ -31,6 +31,7 @@ $(document).ready(function () {
         this.myLabel = null;
         this.myFrame = null;
         this.vis = [];
+        this.indices = [];
         this.drawn = false;
 
         //anonymous DU
@@ -40,7 +41,7 @@ $(document).ready(function () {
     //BuildVisual is different for stacks, it adds all the visual components of the stack to an array
     //that is then animated piecewise
     List.prototype.buildVisual = function(){
-        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type.split("<")[0] + " " + this.name);
+        this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 20, this.type.split("<")[0] + " " + this.name);
         this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
 
         //new: scale the frame's length to the length of the list
@@ -140,6 +141,16 @@ $(document).ready(function () {
         if (this.WIDTH != _3){
             //this.VH.setDelay(500);
             setTimeout(function(){
+                //clear all items of the indices
+                for (var i = 0; i < _t.indices.length; i++){     
+                    _t.indices[i].remove();
+                } 
+                //create indices for the list
+                for (var i = 0; i < _t.value.length; i++){            
+                    var index = _t.paper.text(_t.x + (_t.DUNIT_WIDTH*_t.DUNIT_BUFFER) + (_t.DUNIT_WIDTH*(1 + _t.DUNIT_BUFFER))*(i) + _t.DUNIT_WIDTH/2, _t.y + _t.HEIGHT + _t.FONT_SIZE/2,"" + i);
+                    _t.myLabel.attr({"opacity": 1,"font-family": "times", "font-size": this.FONT_SIZE/2, 'text-anchor': 'start'});
+                    _t.indices.push(index);
+                }
                 _t.myFrame.remove();
                 _t.myFrame = _t.paper.path("M " + _0 + ", " + _1 + " V " + _2 + " H " + _3 + " V " + _1);
                 _t.myFrame.attr({"opacity": 1,"stroke": "black", "stroke-width": 2.25});
@@ -165,7 +176,7 @@ $(document).ready(function () {
                                this.y + (this.HEIGHT - this.DUNIT_HEIGHT)/2, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
             this.vis.push(newDU);
             newDU.create();
-            newDU.updateIndex(i);
+            //newDU.updateIndex(i);
         }
     };
 
@@ -184,7 +195,10 @@ $(document).ready(function () {
         setTimeout(function(){
             _t.myLabel.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
             _t.myFrame.animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
-
+            //move the indices
+            for (var i =0; i < _t.indices.length; i++){
+                _t.indices[i].animate({transform:'...t' + difX + ' ' + difY},_t.VH.getAnimTime(500));
+            }
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
                 _t.vis[i].move(difX,difY,0,500);
@@ -223,7 +237,7 @@ $(document).ready(function () {
             newDU.vis[1].attr({stroke: "green"});
         }
 
-        newDU.updateIndex(index);
+        //newDU.updateIndex(index);
 
         //Scooch down all the other data units if you need to schooch
         var delay = null;
@@ -232,7 +246,7 @@ $(document).ready(function () {
                 delay = this.VH.setDelay(500);
             }
             this.vis[i].move(this.DUNIT_WIDTH*1.2,0,delay,500);
-            this.vis[i].updateIndex(i + 1);
+            //this.vis[i].updateIndex(i + 1);
         }
 
         //Insert the new data unit in it's proper location
@@ -286,7 +300,7 @@ $(document).ready(function () {
         var delay = this.VH.setDelay(500);
         for (var i = index; i < this.vis.length; i++){
             this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
-            this.vis[i].updateIndex(i - 1);
+            //this.vis[i].updateIndex(i - 1);
         }
         var _t = this;
         setTimeout(function(){
