@@ -430,15 +430,32 @@ $(document).ready(function () {
             }
         }
         else {
+            var lsitOfADT = ["List<Integer>", "List<String>", "Stack<Integer>", "Stack<String>", "List<Float>", "Stack<Float>",
+                                "Queue<String>", "Queue<Integer>", "Queue<Float>", "PriorityQueue<String>", "PriorityQueue<Integer>"];
+            console.log("Updating variable!!!!!!!!!!!!", root);
             var type = this.checkType(value);
             var val = this.evalValue(root.first, env);
             var valType = this.checkType(val);
+            
             console.log(root.first);
+            console.log("232323232323", root.first, val);
+            if (typeof val == typeof [] && val[1] != "float") {
+                if (root.second.arity != "FunCall") {
+                    env.throwError(root.linenum);
+                }
+            }
             if (val == null && root.first.arity == "name") {
                 console.log("In correct if statement");
                 console.log(env.getType(root.first.value));
                 val = env.getType(root.first.value);
+                if (val.size() > 1) {
+                    if (root.second.arity != "FunCall") {
+                        env.throwError(root.linenum);
+                    }
+                }
             }
+            console.log("*((*(**(*(*(*Valtype is: ", val);
+            
             console.log("VAL IS: ", value);
             console.log("Root.first type is: ", typeof val, " and type is: ", type);
             console.log("val type is: ", valType, "and type is: ", type);

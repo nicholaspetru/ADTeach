@@ -150,7 +150,7 @@ $(document).ready(function () {
  
         //value
         this.vis[0] = this.paper.text(this.x+this.width/2, this.y+this.height/2, this.value);
-        this.vis[0].attr({"opacity": 0,"font-family": "times", "font-size": this.font_size, 'text-anchor': 'center'});
+        this.vis[0].attr({"stroke": "#4b4b4b","opacity": 0,"font-family": "times", "font-size": this.font_size, 'text-anchor': 'center'});
 
      		// which container type is it? (0 is box, 1 is circle, -1 is nothing)
      		if (this.shape == -1) {
