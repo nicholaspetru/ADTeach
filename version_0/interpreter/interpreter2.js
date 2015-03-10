@@ -288,7 +288,7 @@ $(document).ready(function () {
 
             value = this.evalValue(valueRoot, env);
 
-            if (value[1].indexOf("<") >=0) {
+            if (typeof value == typeof [] && value.length >= 1 && value[1].indexOf("<") >=0) {
                 console.log("Tryna set a variable equal to an ADT with a <");
                 //Throw the flag!!
             }
