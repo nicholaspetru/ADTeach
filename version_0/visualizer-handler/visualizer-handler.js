@@ -81,6 +81,10 @@ $(document).ready(function () {
         highlight.attr("stroke-width", 0);
     }
 
+    VisualizerHandler.prototype.displayError = funtion(error) {
+        //TO-DO: fill this in
+    };
+
     VisualizerHandler.prototype.goForthAll = function() {
         console.log("Visualizer Handler: goForthAll()");
         while (this.eventQueue.length > 0) {
