@@ -86,8 +86,9 @@ $(document).ready(function () {
         return false;
     };
 
-    SymbolTable.prototype.throwError = function(lineNum) {
+    SymbolTable.prototype.throwError = function(lineNum, error) {
         this.visualizerHandler.highlightLine(lineNum, "red");
+        this.visualizerHandler.displayError(error);
         $("#build").hide();
         $("#sample").hide();
         $("#stop").show();
