@@ -18,32 +18,32 @@ $(document).ready(function () {
         var noParam = ['isEmpty', 'size', 'clear'];
         var oneParam = ['get', 'contains', 'indexOf', 'remove', 'populate'];
         var twoParam = ['set'];
-        console.log("Checking parameters of: ", method, "with parameters: ", parameters);
+        //console.log("Checking parameters of: ", method, "with parameters: ", parameters);
         if (method == 'add'){
             if (parameters.length > 2){
                 return false;
-                console.log("Need 2 params or one sometimes...");
+                //console.log("Need 2 params or one sometimes...");
             }
         }
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 return false;
-                console.log("no parameters");
+                //console.log("no parameters");
                 //new IncorrectParameters();
             }
         }
         if (oneParam.indexOf(method) >= 0) {
-            console.log("Checking for one parameter");
+            //console.log("Checking for one parameter");
             if (parameters.length != 1) {
                 return false;
-                console.log("One parameters!");
+                //console.log("One parameters!");
                 //new IncorrectParameters();
             }
         }
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 return false;
-                console.log("Two parameters!");
+                //console.log("Two parameters!");
                 //new IncorrectParameters();
             }
         }
@@ -60,7 +60,7 @@ $(document).ready(function () {
         if (method == 'add') {
             
             if (parameters.length == 1){
-                console.log("Parameters are: ", parameters);
+                //console.log("Parameters are: ", parameters);
                 if (type == "List<Integer>") {
                     if (typeof parameters[0].value != typeof 2) {
                         env.throwError(root.linenum);
@@ -70,7 +70,7 @@ $(document).ready(function () {
                         root.error();
                     }
                 } else if (type == "List<Float>") {
-                    console.log("Parameters are: ", parameters);
+                    //console.log("Parameters are: ", parameters);
                     if (typeof parameters[0].value != typeof []) {
                         env.throwError(root.linenum);
                         root.error("Expected float");
@@ -94,13 +94,13 @@ $(document).ready(function () {
             else {
                 if (parameters[0].value > origValue.length-1) {
                     env.throwError(root.linenum);
-                    console.log("Index out of bounds");
+                    //console.log("Index out of bounds");
                     root.error("Index out of bounds");
                 } 
                 
                 if (type == "List<Integer>") {
                     if (typeof parameters[1].value != typeof 2) {
-                        console.log("THIS IS TRUE");
+                        //console.log("THIS IS TRUE");
                         env.throwError(root.linenum);
                         root.error();
                     } else if (parameters[1].value.toString().indexOf('.') >= 0) {
@@ -145,12 +145,12 @@ $(document).ready(function () {
             }
             if (parameters[0].value > origValue.length || parameters[0].value < 0) {
                 env.throwError(root.linenum);
-                console.log("Index out of bounds");
+                //console.log("Index out of bounds");
                 root.error("index out of bounds");
             }
             
             //returnValue = origValue[parameters[0].value];
-            console.log("Type of: ", returnValue, "is", typeof returnValue);
+            //console.log("Type of: ", returnValue, "is", typeof returnValue);
             return [returnValue, origValue, valType];
         }
 
@@ -199,7 +199,7 @@ $(document).ready(function () {
                 origValue.splice(index, 1);
             } else {
                 env.throwError(root.linenum);
-                console.log("Not in list");
+                //console.log("Not in list");
                 root.error("Not in list");
             }
             return [returnValue, origValue];
@@ -219,7 +219,7 @@ $(document).ready(function () {
         if (method == 'set') {
             if (parameters[0].value > origValue.length-1) {
                 env.throwError(root.linenum);
-                console.log("Index out of bounds");
+                //console.log("Index out of bounds");
                 root.error("Index out of bounds");
             } 
             
@@ -265,7 +265,7 @@ $(document).ready(function () {
                 for (i = 0; i < parameters[0].value; i++) {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
-                    console.log("Going to push: ", options[toPush], typeof options[toPush]);
+                    //console.log("Going to push: ", options[toPush], typeof options[toPush]);
                     value.push('"' + options[toPush] + '"');
                 }
                 return [returnValue, value, type];
@@ -293,7 +293,7 @@ $(document).ready(function () {
     VList.prototype.get = function(i) {
         if (i > (this.vals.length -1)) {
             env.throwError(root.linenum);
-            console.log("Index out of bounds");
+            //console.log("Index out of bounds");
             root.error("Index out of bounds");
             //new IndexOutOfBoundsException();
         }
@@ -325,7 +325,7 @@ $(document).ready(function () {
     VList.prototype.set = function(i, e) {
         if (i > this.vals.length) {
             env.throwError(root.linenum);
-            console.log("Index out of bounds");
+            //console.log("Index out of bounds");
             root.error("Index out of bounds");
             //new IndexOutOfBoundException();
         }

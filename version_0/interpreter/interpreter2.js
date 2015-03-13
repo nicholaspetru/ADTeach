@@ -28,7 +28,7 @@ $(document).ready(function () {
     
     // Evaluates an array of statements or a single statement
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
-        console.log("Evaling: ", arrayOfBlocks);
+        //console.log("Evaling: ", arrayOfBlocks);
         if (arrayOfBlocks == null) {
             return null;
         }
@@ -93,34 +93,34 @@ $(document).ready(function () {
         } else if (rootType == "FunCall") {
             this.evalMethod(block, env);
         }
-        console.log("Didn't find anything");
+        //console.log("Didn't find anything");
     }
 
     Interpreter.prototype.evalValue = function(root, env) {
         if (root.arity == "FunCall") {
-            console.log("ROOOOOOOT is: ", root);
-            console.log("ENV1 IS: ", env);
+            //console.log("ROOOOOOOT is: ", root);
+            //console.log("ENV1 IS: ", env);
             return this.evalMethod(root, env)[0];
         }
         if (root.arity != "name") {
-            console.log("NOT GOING TO MATH: ", root);
+            //console.log("NOT GOING TO MATH: ", root);
             switch(root.jtype) {
                 case 'INT_TYPE':
-                    console.log("This is right");
+                    //console.log("This is right");
                     return parseInt(root.value);
                     break;
                 case 'FLOAT_TYPE':
                     /*
-                    console.log("<><><>", root.value);
+                    //console.log("<><><>", root.value);
                     if (parseFloat(root.value).toString().indexOf('.') < 0) {
                         var precNumber = parseFloat(root.value).toString().length + 1;
-                        console.log("Parsed float will be: ", typeof parseFloat(root.value).toPrecision(precNumber));
+                        //console.log("Parsed float will be: ", typeof parseFloat(root.value).toPrecision(precNumber));
                         var front = Number(root.value);
                         //var returning = front.0;
                         return [front, "float"];
                     }
                     */
-                    console.log("Parsed float will be: ", typeof parseFloat(root.value));
+                    //console.log("Parsed float will be: ", typeof parseFloat(root.value));
                     return [parseFloat(root.value), "float"];
                     break;
                 case 'STR_TYPE':
@@ -137,20 +137,20 @@ $(document).ready(function () {
                     break;
             }
         } else {
-            console.log("LOOKING FOR I");
+            //console.log("LOOKING FOR I");
             var val = env.getValue(root.value);
             var valType = env.getType(root.value);
-            console.log("Found the value: ", val);
+            //console.log("Found the value: ", val);
             if (val === "no value") {
-                console.log("not in env");
-                env.throwError(root.linenum);
+                //console.log("not in env");
+                env.throwError(root.linenum, "Error no value");
                 root.error("Error no value");
                 //new UnidentifiedVariable();
             } 
 
             else if (valType === "no type") {
-                env.throwError(root.linenum);
-                console.log("variable " + root.value + " is in env, but does not have a type associated with it");
+                env.throwError(root.linenum, "No type");
+                //console.log("variable " + root.value + " is in env, but does not have a type associated with it");
                 root.error("No type");
             }
 
@@ -201,9 +201,9 @@ $(document).ready(function () {
                         return [val, valType];
                         break;
                     default:
-                        console.log(valType);
-                        console.log("variable " + root.value + " was initialized with an invalid type...or alternatively, it references an ADT and we haven't implemented that here yet.");
-                        env.throwError(token.linenum);
+                        //console.log(valType);
+                        //console.log("variable " + root.value + " was initialized with an invalid type...or alternatively, it references an ADT and we haven't implemented that here yet.");
+                        env.throwError(token.linenum, "No type");
                         root.error("No type");
                         
                         break;
@@ -214,21 +214,30 @@ $(document).ready(function () {
 
     Interpreter.prototype.evalWhileBlock = function(block, env) {
         var condition = block.Test;
-        console.log("Test is: ", condition);
+        //console.log("Test is: ", condition);
         var isTrue = this.evalCondition(condition, env);
         var endTime = (new Date().getTime()/1000)+21;
+        var count = 0;
         while (isTrue == true) {
+            
             var body = block.Body;
             var condition2 = block.Test;
 
             this.eval(body, env);
             isTrue = this.evalCondition(condition2, env);
-
-            if (new Date().getTime()/1000 > endTime){
-                console.log(endTime);
-                console.log(new Date().getTime());
+            count++;
+            if (count > 1243) {
                 isTrue = false;
-                env.throwError(block.linenum);
+                env.throwError(block.linenum, "Interpreter Timed out, check while loop for infinite loop");
+                console.log("Interpreter Timed out, check while loop for infinite loop");
+                block.error();
+                
+            }
+            if (new Date().getTime()/1000 > endTime){
+                //console.log(endTime);
+                ////console.log(new Date().getTime());
+                isTrue = false;
+                env.throwError(block.linenum, "Interpreter Timed out, check while loop for infinite loop");
                 console.log("Interpreter Timed out, check while loop for infinite loop");
                 block.error();
 
@@ -242,15 +251,15 @@ $(document).ready(function () {
         var originADT = "";
         
         if (root.arity === "Initialization") {
-            console.log("ROOT IS: ", root);
+            ////console.log("ROOT IS: ", root);
             if (root.second.arity == "FunCall") {
-                console.log("Right side of equal side is function call", root.second);
+                ////console.log("Right side of equal side is function call", root.second);
                 valueRoot = root.second;
                 //valueRoot = root.second
                 //value = root.first
             } else {
                 if (root.third != null) {
-                    console.log("Saying right side is: ", root);
+                    ////console.log("Saying right side is: ", root);
                     valueRoot = root.third;
                 } else {
                     valueRoot = null;
@@ -262,18 +271,18 @@ $(document).ready(function () {
         else {
             variable = root.first.value;
             valueRoot = root.second;
-            console.log("VALUE ROOT IS: ", valueRoot);
+            ////console.log("VALUE ROOT IS: ", valueRoot);
         }
                 
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
-            console.log("CALLING A FUNCTION");
+            ////console.log("CALLING A FUNCTION");
             var methodValue = this.evalMethod(valueRoot, env);
             returnedValue = methodValue[1];
             value = methodValue[0];
             valueType = methodValue[3];
             var ADTType = methodValue[3];
-            console.log("BEING RETURNED: ", methodValue);
+            ////console.log("BEING RETURNED: ", methodValue);
             originMethod = methodValue[2];
             //originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
@@ -282,19 +291,19 @@ $(document).ready(function () {
         
         //Literals: ints, floats, strings, etc.
         if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
-            console.log("%%%%% Literal", valueRoot);
-            console.log("Current root is: ", root);
+            ////console.log("%%%%% Literal", valueRoot);
+            ////console.log("Current root is: ", root);
             originADT = root.second.value;
 
             value = this.evalValue(valueRoot, env);
 
             if (typeof value == typeof [] && value.length >= 1 && value[1].indexOf("<") >=0) {
-                console.log("Tryna set a variable equal to an ADT with a <");
+                ////console.log("Tryna set a variable equal to an ADT with a <");
                 //Throw the flag!!
             }
             //originADT = this.evalValue(valueRoot, env)[1];
-            console.log("Valueeee is: ", value);
-            console.log("Origin ADT is: ", originADT);
+            ////console.log("Valueeee is: ", value);
+            ////console.log("Origin ADT is: ", originADT);
         }
         else if (valueRoot.value == "++" || valueRoot.value == "--") {
             value = this.evalStep(valueRoot, env);
@@ -302,9 +311,9 @@ $(document).ready(function () {
         }
         
         else if (['%', '+', '-', '*', '/', '**'].indexOf(valueRoot.value) >= 0) {
-                console.log("Passing in: ", valueRoot);
+                ////console.log("Passing in: ", valueRoot);
                 value = this.evalMaths(valueRoot, env);
-                console.log("VVVValue is: ", value);
+                ////console.log("VVVValue is: ", value);
                 
         } 
 
@@ -326,13 +335,13 @@ $(document).ready(function () {
                     case "PriorityQueue<String>":
                     case "PriorityQueue<Float>":
                     case "Tree":
-                        console.log("Going to create a new ADT: ", root);
+                        ////console.log("Going to create a new ADT: ", root);
                         if (root.third.arity === "Initialization") {
                             env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         } else {
-                            console.log("Creating from right spot", root);
+                            ////console.log("Creating from right spot", root);
                             if (value[1] != typeString) {
-                                env.throwError(root.linenum);
+                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
                                 root.error();
                             }
                             env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
@@ -354,7 +363,7 @@ $(document).ready(function () {
                             env.createVariable(typeString, root.second.value, {}, "new", originADT, root.linenum);
                         } else {
                             if (value[1] != typeString) {
-                                env.throwError(root.linenum);
+                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
                                 root.error();
                             }
                             env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
@@ -365,7 +374,7 @@ $(document).ready(function () {
                             env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         } else {
                             if (value[1] != typeString) {
-                                env.throwError(root.linenum);
+                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
                                 root.error();
                             }
                             env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
@@ -376,7 +385,7 @@ $(document).ready(function () {
                             env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
                         } else {
                             if (value[1] != typeString) {
-                                env.throwError(root.linenum);
+                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
                                 root.error();
                             }
                             env.createVariable(typeStirng, root.second.value, value[0], "new", root.third.value, root.linenum);
@@ -385,13 +394,13 @@ $(document).ready(function () {
                     
                     default:
                         var type = this.checkType(value);
-                        console.log("Value is: ", value);
-                        console.log("Checking: ", type, "against: ", root.first);
+                        ////console.log("Value is: ", value);
+                        ////console.log("Checking: ", type, "against: ", root.first);
                         if (root.first != type){
-                            console.log("root is: ", root);
-                            console.log("root.first is: ", root.first, "and type is:", type);
-                            env.throwError(root.linenum);
-                            console.log("INCOMPATIBLE TYPES!!");
+                            ////console.log("root is: ", root);
+                            ////console.log("root.first is: ", root.first, "and type is:", type);
+                            env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + type);
+                            ////console.log("INCOMPATIBLE TYPES!!");
                             root.error("Incompatible types");
                         }/*
                         if (value.length = 2) {
@@ -402,78 +411,78 @@ $(document).ready(function () {
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                         break;
                 }
-            console.log("HERE AND ROOT IS: ", root);
+            ////console.log("HERE AND ROOT IS: ", root);
             } else {
-                console.log("Creating variable: ", root);
-                console.log("Value is: ", typeof value);
-                //console.log("Type is: ", valueType);
-                //console.log("Of type: ", this.checkType(value));
+                ////console.log("Creating variable: ", root);
+                ////console.log("Value is: ", typeof value);
+                //////console.log("Type is: ", valueType);
+                //////console.log("Of type: ", this.checkType(value));
                 if (root.third.arity == "FunCall") {
-                    console.log("IS A FUNCALL");
-                    console.log("Root first: ", root.first);
-                    console.log("Want type: ", valueType);
+                    ////console.log("IS A FUNCALL");
+                    ////console.log("Root first: ", root.first);
+                    ////console.log("Want type: ", valueType);
                     if (root.first != valueType) {
-                        console.log(root.first, valueType);
-                        env.throwError(root.linenum);
+                        ////console.log(root.first, valueType);
+                        env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + type);
                         root.error();
                     }
                 }
                  else if (root.first != this.checkType(value)) {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + this.checkType(value));
                     root.error();
                 }
                 //returnValue = value[0];
                 //method = value[2];
                 //originMethod = method;
-                console.log("VALUE ISSSSS: ", value);
+                ////console.log("VALUE ISSSSS: ", value);
                 env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
             }
         }
         else {
             var lsitOfADT = ["List<Integer>", "List<String>", "Stack<Integer>", "Stack<String>", "List<Float>", "Stack<Float>",
                                 "Queue<String>", "Queue<Integer>", "Queue<Float>", "PriorityQueue<String>", "PriorityQueue<Integer>"];
-            console.log("Updating variable!!!!!!!!!!!!", root);
+            ////console.log("Updating variable!!!!!!!!!!!!", root);
             var type = this.checkType(value);
             var val = this.evalValue(root.first, env);
             var valType = this.checkType(val);
             
-            console.log(root.first);
-            console.log("232323232323", root.first, val);
-            if (typeof val == typeof [] && val[1] != "float") {
+            ////console.log(root.first);
+            ////console.log("232323232323", root.first, val);
+            if (typeof val == typeof [] && val.length >= 2 && val[1] != "float") {
                 if (root.second.arity != "FunCall") {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "expected a function call");
                 }
             }
             if (val == null && root.first.arity == "name") {
-                console.log("In correct if statement");
-                console.log(env.getType(root.first.value));
+                ////console.log("In correct if statement");
+                ////console.log(env.getType(root.first.value));
                 val = env.getType(root.first.value);
                 if (val.size() > 1) {
                     if (root.second.arity != "FunCall") {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "expected a function call");
                     }
                 }
             }
-            console.log("*((*(**(*(*(*Valtype is: ", val);
+            ////console.log("*((*(**(*(*(*Valtype is: ", val);
             
-            console.log("VAL IS: ", value);
-            console.log("Root.first type is: ", typeof val, " and type is: ", type);
-            console.log("val type is: ", valType, "and type is: ", type);
+            ////console.log("VAL IS: ", value);
+            ////console.log("Root.first type is: ", typeof val, " and type is: ", type);
+            ////console.log("val type is: ", valType, "and type is: ", type);
             if (valType != type){
-                console.log(val, typeof val, type);
-                env.throwError(root.linenum);
-                console.log("INCOMPATIBLE TYPES!!");   
+                ////console.log(val, typeof val, type);
+                env.throwError(root.linenum, "incompatible types! expected " + valType + ", received " + type);
+                ////console.log("INCOMPATIBLE TYPES!!");   
                 root.error("INcompatible types");
             }
             if(type == null) {
                 if (typeof val == typeof [] && val.length == 4 && methodValue[3] != val[1]){
-                    console.log("INCOMPATIBLE TYPES!!! Expected", methodValue[3], "found", val[1]);
-                    env.throwError(root.linenum);
+                    ////console.log("INCOMPATIBLE TYPES!!! Expected", methodValue[3], "found", val[1]);
+                    env.throwError(root.linenum, "incompatible types! expected " + methodValue[3] + ", received " + val[1]);
                     root.error("INcompatible types");
                 }
             }
-            console.log("root is: ", root);
-            console.log("Value is: ", value);
+            ////console.log("root is: ", root);
+            ////console.log("Value is: ", value);
             if (value.length == 2) {
                 if (typeof value[0] == typeof []) {
                     value = value[0];
@@ -489,12 +498,12 @@ $(document).ready(function () {
         } else if (root.value == false) {
             return false;
         } else if (root.arity == "literal") {
-            console.log("Can't do literals");
+            ////console.log("Can't do literals");
         } else if (root.arity == "name") {
             var variable = this.evalValue(root, env);
             if (typeof variable != typeof true) {
-                env.throwError(root.linenum);
-                console.log("No literals");
+                env.throwError(root.linenum, "expected boolean, found " + typeof variable + " (" + variable+ ")");
+                ////console.log("No literals");
                 root.error("No literals");
             } else {
                 return variable;
@@ -523,7 +532,7 @@ $(document).ready(function () {
             }
             switch (root.value) {
                 case "&&":
-                    console.log("DOing aaaand");
+                    ////console.log("DOing aaaand");
                     return (leftValue && rightValue);
                     break;
                 case "||":
@@ -548,7 +557,7 @@ $(document).ready(function () {
                     return (leftValue != rightValue);
                     break;
                 default:
-                    console.log("unrecognized operator: " + root.value);
+                    ////console.log("unrecognized operator: " + root.value);
                     return undefined;
                     break;
             }
@@ -572,7 +581,7 @@ $(document).ready(function () {
             this.evalSemiColonBlock(step, env);
             isTrue = this.evalCondition(condition, env);
         }
-        console.log(initialization);
+        ////console.log(initialization);
         env.removeVariable(initialization.second.value, initialization.linenum);
         
     }
@@ -593,8 +602,8 @@ $(document).ready(function () {
         }
     }
     Interpreter.prototype.checkType = function(value) {
-        console.log("**************** Type of value is:", typeof value);
-        console.log("Looking at: ", value);
+        ////console.log("**************** Type of value is:", typeof value);
+        ////console.log("Looking at: ", value);
         if (typeof value == typeof []) {
             if (value.length == 2) {
                 if (value[1] == "float") {
@@ -604,7 +613,7 @@ $(document).ready(function () {
         }
         switch (typeof value) {
             case typeof 1:
-                console.log("Returning whaaaat we want");
+                ////console.log("Returning whaaaat we want");
                 return "int";
             case typeof "1":
                 return "String";
@@ -683,7 +692,7 @@ $(document).ready(function () {
     
     
     Interpreter.prototype.evalMaths = function(root, env) {      
-        console.log("root is:::::", root);
+        ////console.log("root is:::::", root);
         if (['%', '+', '-', '*', '/', '**'].indexOf(root.value) < 0) {
             value = this.evalValue(root, env);
             return value;
@@ -718,15 +727,15 @@ $(document).ready(function () {
                     rightValue = this.evalMaths(root.second, env);
                 }
                 if (typeof leftValue === "String" || typeof rightValue === "String") {
-                    env.throwError(root.linenum);
-                    console.log("Incompatible types");
+                    env.throwError(root.linenum, "can't maths numbers with strings");
+                    ////console.log("Incompatible types");
                     root.error("Incompatible types");
                 } else {
                     switch (root.value) {
                         case "%":
                             return leftValue % rightValue;
                         case "-":
-                            console.log(leftValue + "-" + rightValue);
+                            ////console.log(leftValue + "-" + rightValue);
                             return leftValue - rightValue;
                         case "*":
                             return leftValue * rightValue;
@@ -774,7 +783,7 @@ $(document).ready(function () {
         var name = root.first.value;
         var index = env.getIndex(name);
         var adding = root.second.value;
-        console.log("Want to add: ", root);
+        ////console.log("Want to add: ", root);
         if (adding.jtype != "INT_TYPE" || adding.jtype != "STRING_TYPE" || adding.jtype != "FLOAT_TYPE") {
             adding = this.evalValue(root.second, env);
         }
@@ -784,13 +793,13 @@ $(document).ready(function () {
         }
         if (index < 0) {
             env.throwError(root.linenum);
-            console.log("Variable not declared");
+            ////console.log("Variable not declared");
             root.error("Variable not declared");
             //Throw error
         }
         var value = env.getValue(name);
         if (value.length == 2 && value[1] == "float") {
-            console.log("ADDING: ", value[0], "and", adding);
+            ////console.log("ADDING: ", value[0], "and", adding);
             newVal = [value[0] + adding, "float"];
         } else {
             var newVal = value + adding;
@@ -802,7 +811,7 @@ $(document).ready(function () {
         var name = root.first.value;
         var index = env.getIndex(name);
         var subtracting = root.second.value;
-        console.log("Want to add: ", root);
+        ////console.log("Want to add: ", root);
         if (subtracting.jtype != "INT_TYPE" || subtracting.jtype != "STRING_TYPE" || subtracting.jtype != "FLOAT_TYPE") {
             subtracting = this.evalValue(root.second, env);
         }
@@ -811,7 +820,7 @@ $(document).ready(function () {
         }
         if (index < 0) {
             env.throwError(root.linenum);
-            console.log("Variable not declared");
+            ////console.log("Variable not declared");
             root.error("Variable not declared");
             //Throw error
         }
@@ -833,15 +842,15 @@ $(document).ready(function () {
     }
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
-        console.log("Env is: ", env);
+        ////console.log("Env is: ", env);
         var adtIndex = env.getIndex(adt);
-        console.log("HERE: ", env.getVariables()[adtIndex]);
+        ////console.log("HERE: ", env.getVariables()[adtIndex]);
         var adtType = env.getVariables()[adtIndex].type;
         
-        console.log("Adt type is: ", adtType);
+        ////console.log("Adt type is: ", adtType);
         var adtCurValue = env.getVariables()[adtIndex].value;
-        console.log(env.getVariables()[adtIndex]);
-        console.log("ADT CURRENT VALUE IS: ", adtCurValue);
+        ////console.log(env.getVariables()[adtIndex]);
+        ////console.log("ADT CURRENT VALUE IS: ", adtCurValue);
         var method = root.MethodName.value;
         var parameters = root.Arguments;
         var originADT = null;
@@ -856,25 +865,25 @@ $(document).ready(function () {
         var paramCheck = this.checkParameters(adtType, method, parameters);
         var newValue, returnValue;
         var cloneParam = [];
-        console.log("Evaluating the method: ", root);
-        console.log("adtMethod: ", method);
-        console.log("Adt methods are: ", adtMethods);
-        console.log("Adt type: ", adtType);
+        ////console.log("Evaluating the method: ", root);
+        ////console.log("adtMethod: ", method);
+        ////console.log("Adt methods are: ", adtMethods);
+        ////console.log("Adt type: ", adtType);
         if (adtMethods.indexOf(method) < 0) {
             env.throwError(root.linenum);
-            console.log("Invalid Method");
+            ////console.log("Invalid Method");
             root.error("Invalid method");
             //new InvalidMethod();
         }
         if (paramCheck != true) {
-            console.log("Incorrect parameters");
+            ////console.log("Incorrect parameters");
             env.throwError(root.linenum);
-            console.log("incorrect parameters");
+            ////console.log("incorrect parameters");
             root.error("Incorrect parameters");
             //new IncorrectParameters();
         } else {
             if (parameters.length != 0) {
-                console.log("PARAMETERS ARE: ", parameters);
+                ////console.log("PARAMETERS ARE: ", parameters);
                 if (parameters[0].arity == "FunCall") {
                     originADT = parameters[0].Caller.value;
                 }
@@ -882,24 +891,24 @@ $(document).ready(function () {
                     originADT = parameters[parameters.length-1].value;
                 }
                 for (var i = 0; i < parameters.length; i++){
-                    console.log("Parameter is: ", parameters[i]);
-                    console.log("ENV2 IS: ", env);
+                    ////console.log("Parameter is: ", parameters[i]);
+                    ////console.log("ENV2 IS: ", env);
                     var varValue = this.evalValue(parameters[i], env);
-                    console.log("Value of parameter is: ", varValue);
-                    console.log("VAR VALUE IS: ", varValue);
+                    ////console.log("Value of parameter is: ", varValue);
+                    ////console.log("VAR VALUE IS: ", varValue);
                     var cloneVar = {value:varValue};
                     cloneParam[i] = cloneVar;
                 }
             }
             methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam, env, root);
-            console.log("returned value is *******: ", methodValue, "From method: ", method);
+            //console.log("returned value is *******: ", methodValue, "From method: ", method);
             returnValue = methodValue[0];
             
             newValue = methodValue[1];
             var valueType = methodValue[2];
-            console.log("Return value is: ", newValue);
-            console.log("THe parameters are: ", cloneParam);
-            //console.log("Adding to method: ", cloneParam[0].value);
+            //console.log("Return value is: ", newValue);
+            //console.log("THe parameters are: ", cloneParam);
+            ////console.log("Adding to method: ", cloneParam[0].value);
             switch(method) {
                 case("set"):
                 case("get"):
@@ -914,13 +923,13 @@ $(document).ready(function () {
                 case('removeVertex'):
                 case('setDirected'):
                 case('setRoot'):
-                    console.log("Going to add: ", cloneParam);
+                    //console.log("Going to add: ", cloneParam);
                     if (cloneParam[0].value.length == 2 && cloneParam[0].value[1] == "float") {
                         method = method + "." + cloneParam[0].value[0];
                     } else {
                         method = method + "." + cloneParam[0].value;
                     }
-                    console.log("method is: ", method);
+                    //console.log("method is: ", method);
                     break;
                 case("add"):
                 case("addVertex"):
@@ -973,7 +982,7 @@ $(document).ready(function () {
             
             env.updateVariable(adt, newValue, method, originADT, root.linenum, adtType);
         }
-        console.log("IN PERFORM METHOD: ", valueType);
+        //console.log("IN PERFORM METHOD: ", valueType);
         return [returnValue, newValue, method, valueType];
     }
     
@@ -1016,7 +1025,7 @@ $(document).ready(function () {
             case "Dictionary<Float, String>":
             case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
-                console.log("111111111111");
+                //console.log("111111111111");
                 y = new VDictionary("int");
                 return y.listMethods();
                 break;
@@ -1074,7 +1083,7 @@ $(document).ready(function () {
             case "Dictionary<Float, String>":
             case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
-                console.log("2222222222222");
+                //console.log("2222222222222");
                 y = new VDictionary("String");
                 return y.checkParameters(method, parameters);
                 break;
@@ -1158,73 +1167,73 @@ $(document).ready(function () {
                 return value;
                 break;
             case "Dictionary<Integer, Integer>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("int", "int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Integer, String>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("int", "String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Integer, Boolean>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("int", "bool");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Integer, Float>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("int", "float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<String, Integer>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("String", "int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<String, String>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("String", "String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<String, Boolean>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("String", "bool");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<String, Float>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("String", "float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Float, Integer>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("float", "int");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Float, String>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("float", "String");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Float, Boolean>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("float", "bool");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
                 break;
             case "Dictionary<Float, Float>":
-                console.log("333333333");
+                //console.log("333333333");
                 y = new VDictionary("float", "float");
                 value = y.performMethod(type, origValue, method, parameters, env, root);
                 return value;
@@ -1269,7 +1278,7 @@ $(document).ready(function () {
         t.input(this.code);
 
         var currentToken = t.token();
-        console.log("Returning current token: ", currentToken);
+        //console.log("Returning current token: ", currentToken);
         while (currentToken) {
             switch (currentToken.type) {
                 case 'OPEN_PAREN':

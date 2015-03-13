@@ -114,7 +114,7 @@ Tokenizer.prototype._process_number = function() {
 	var x = this.buf.charAt(endpos);
 	var y = this.buf.charAt(endpos + 1);
     var sign = "";
-    //console.log(this.bug.charAt(this.pos));
+    ////console.log(this.bug.charAt(this.pos));
     
     if (this.buf.charAt(this.pos - 1) == '-') {
         sign = "-";
@@ -162,8 +162,8 @@ Tokenizer.prototype._process_symbol = function(env) {
         };
         return tok;
     }
-    console.log("Looking at the thing: ", this.buf.charAt(this.pos));
-    console.log("op1 is: ", op1, "op2 is: ", op2);
+    //console.log("Looking at the thing: ", this.buf.charAt(this.pos));
+    //console.log("op1 is: ", op1, "op2 is: ", op2);
 	if (op1 !== -1) {
 		if (op2 !== -1) {
 			endpos++;
@@ -174,7 +174,7 @@ Tokenizer.prototype._process_symbol = function(env) {
 				pos: this.pos,
 				linenum: this.linenum
 			};
-            console.log("Token is: ", tok);
+            //console.log("Token is: ", tok);
 			this.pos = endpos;
 			return tok;
 		}

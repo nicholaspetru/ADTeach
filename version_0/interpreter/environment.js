@@ -16,17 +16,17 @@ $(document).ready(function () {
 	}
     
     Environment.prototype.getIndex = function(name) {
-        console.log("Looking for ", name);
-        console.log("looking in ", this.names);
+        //console.log("Looking for ", name);
+        //console.log("looking in ", this.names);
         var index = this.names.indexOf(name);
         return index;
     }
     
 	Environment.prototype.getValue = function(name) {
-        console.log("Looking for: ", name);
+        //console.log("Looking for: ", name);
 		var index = this.names.indexOf(name);
-        console.log("Looking in the environment: ", this.variables);
-        console.log("Index is: ", index);
+        //console.log("Looking in the environment: ", this.variables);
+        //console.log("Index is: ", index);
 		if (index >= 0) {
 			var v = this.variables.index
 			return this.variables[index].value;
@@ -48,14 +48,14 @@ $(document).ready(function () {
 	}
 
 	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT, lineNum) {
-        console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
-        console.log("Origin method is: ", originMethod);
-        console.log("Value is: ", value);
-        console.log("Line number: ", lineNum);
+        //console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
+        //console.log("Origin method is: ", originMethod);
+        //console.log("Value is: ", value);
+        //console.log("Line number: ", lineNum);
 		var n = {type: type,
 			name: variable, 
 			value: value};
-		console.log("AFTER CREATION: ", n.value);
+		//console.log("AFTER CREATION: ", n.value);
 		this.variables.push(n);
 		this.names.push(variable);
         if (type == "float") {
@@ -65,11 +65,11 @@ $(document).ready(function () {
 	}
 
 	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT, lineNum, adtType) {
-		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
-        console.log("Line number: ", lineNum);
-        console.log("Value is: ", newVal);
-		console.log("Origin method is: ", originMethod);
-        console.log("Origin method type is: ", adtType); 
+		//console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
+        //console.log("Line number: ", lineNum);
+        //console.log("Value is: ", newVal);
+		//console.log("Origin method is: ", originMethod);
+        //console.log("Origin method type is: ", adtType); 
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
         this.variables[index].value = newVal;
@@ -104,14 +104,14 @@ $(document).ready(function () {
 	}
     
     Environment.prototype.removeVariable = function(name, lineNum) {
-		console.log("-------removeVariable( " + name + ")");
-        console.log("Line number: ", lineNum);
+		//console.log("-------removeVariable( " + name + ")");
+        //console.log("Line number: ", lineNum);
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
          
         //CHECK TYPE
         if (type != "int") {
-            console.log("Incompatible types");
+            //console.log("Incompatible types");
             //new IncompatibleTypes();
         }
 		this.variables.splice(this.variables.indexOf(name), 1);
@@ -119,9 +119,9 @@ $(document).ready(function () {
         this.symbolTable.removeVariable(type, name, null, null, null, lineNum-1);
 	}
     
-    Environment.prototype.throwError = function(lineNum) {
-        console.log("THROWING ERROR AT LINE: ", lineNum);
-        this.symbolTable.throwError(lineNum-1);
+    Environment.prototype.throwError = function(lineNum, error) {
+        //console.log("THROWING ERROR AT LINE: ", lineNum);
+        this.symbolTable.throwError(lineNum-1, error);
     }
     
 });

@@ -52,7 +52,7 @@ $(document).ready(function () {
     }
 
     VisualizerHandler.prototype.highlightLine = function(lineNumber, color) {
-        console.log("Visualizer Handler: highlightLine(" + lineNumber + ")");
+        //console.log("Visualizer Handler: highlightLine(" + lineNumber + ")");
         //paper for highlight line
         if (this.codeboxPaper != null) {
             this.codeboxPaper.remove();
@@ -62,7 +62,7 @@ $(document).ready(function () {
         var w = $("#code_env").width() - ($("#code_env").width() - $("#user_textbox").width());
         var h = $("#code_env").height() - ($("#code_env").height() - $("#user_textbox").height());
 
-        //console.log("xpos: " + xpos + " width: " + w);
+        ////console.log("xpos: " + xpos + " width: " + w);
         this.codeboxPaper = Raphael(xpos, ypos, w, h);
         var fontSize = $("#user_textbox").css('font-size');
         var os = navigator.platform;
@@ -82,12 +82,12 @@ $(document).ready(function () {
     }
 
     VisualizerHandler.prototype.displayError = function(error) {
-        console.log(error);
+        //console.log(error);
         this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y+50, "Error: " + error).attr({"font-family": "times", "font-size": this.FONT_SIZE + 8, "stroke" : "red", 'text-anchor': 'start'});
     };
 
     VisualizerHandler.prototype.goForthAll = function() {
-        console.log("Visualizer Handler: goForthAll()");
+        //console.log("Visualizer Handler: goForthAll()");
         while (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
             this.highlightLine(curEvent[6], "yellow");
@@ -101,14 +101,14 @@ $(document).ready(function () {
                 this.DeleteEntity(curEvent[1]);
             }
             else {
-                console.log('unrecognized event: ' + curEvent[0]);
+                //console.log('unrecognized event: ' + curEvent[0]);
             }
         }
     };
 
     // Trying to get play to operate the same as step. This didn't work...
     VisualizerHandler.prototype.goForthAllNew = function() {
-        console.log("Visualizer Handler: goForthAllNew()");
+        //console.log("Visualizer Handler: goForthAllNew()");
 
         while (this.eventQueue.length > 0){
             this.goForthOnce();
@@ -118,10 +118,10 @@ $(document).ready(function () {
 
     
     VisualizerHandler.prototype.goForthOnce = function() {
-        console.log("Visualizer Handler: goForthOnce() ");
+        //console.log("Visualizer Handler: goForthOnce() ");
         if (this.eventQueue.length > 0) {
             curEvent = this.eventQueue.shift();
-            console.log("CUR5: " + curEvent[5]);
+            //console.log("CUR5: " + curEvent[5]);
             this.highlightLine(curEvent[6], "yellow");
             if (curEvent[0] == 'new') {
                 this.NewEntity(curEvent[1], curEvent[2], curEvent[3], curEvent[4], curEvent[5]);
@@ -133,7 +133,7 @@ $(document).ready(function () {
                 this.DeleteEntity(curEvent[1]);
             }
             else {
-                console.log('unrecognized event: ' + curEvent[0]);
+                //console.log('unrecognized event: ' + curEvent[0]);
             }
             return true;
         }
@@ -142,14 +142,14 @@ $(document).ready(function () {
     
     //Enqueue an event onto the event queue
     VisualizerHandler.prototype.enqueueEvent = function(event, type, name, value, action, originADT, lineNum) {
-        console.log("Visualizer Handler: enqueueEvent(" + event + ',' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ',' + lineNum + ')');
+        //console.log("Visualizer Handler: enqueueEvent(" + event + ',' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ',' + lineNum + ')');
         this.eventQueue.push([event, name, type, value, action, originADT, lineNum]);
         this.ClearAnonymous();
     };
 
     //Pushes a new Entity onto the list
     VisualizerHandler.prototype.NewEntity = function(name, type, value, action, originADT) {
-        console.log("Visualizer Handler: newEntity("+ name + ',' + type + ',' + value + ',' + action + ',' + originADT + ')');
+        //console.log("Visualizer Handler: newEntity("+ name + ',' + type + ',' + value + ',' + action + ',' + originADT + ')');
         
         if (originADT == null){
             this.ClearAnonymous();
@@ -161,7 +161,7 @@ $(document).ready(function () {
 
     //Updates the value of an Entity
     VisualizerHandler.prototype.UpdateEntity = function(name, value, action, originADT) {
-        console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ', ' +  action + ', ' + originADT + ')');
+        //console.log("Visualizer Handler: updateEntity(" + name + ',' + value + ', ' +  action + ', ' + originADT + ')');
 
         if (originADT == null){
             this.ClearAnonymous();
@@ -179,7 +179,7 @@ $(document).ready(function () {
 
     //Deletes the named Entity
     VisualizerHandler.prototype.DeleteEntity = function(name) {
-        console.log("Visualizer Handler: deleteEntity(" + name + ")");
+        //console.log("Visualizer Handler: deleteEntity(" + name + ")");
         for (var i = 0; i < this.entities.length; i++){
             if (this.entities[i] != null && this.entities[i].name == name){
                 this.entities[i].destroy();
@@ -251,7 +251,7 @@ $(document).ready(function () {
 
     //Deletes all Entities
     VisualizerHandler.prototype.DeleteAll = function(string) {
-        console.log("Visualizer Handler: DeleteAll()");
+        //console.log("Visualizer Handler: DeleteAll()");
         this.paper.clear();
         this.paper.text(this.HBORDER, this.VBORDER, "Primitives:").attr({"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
         this.paper.path("M " + this.HBORDER + "," + (this.VBORDER + this.FONT_HEIGHT) + " L " + (this.HBORDER + 200) + "," + (this.VBORDER + this.FONT_HEIGHT));
@@ -298,7 +298,7 @@ $(document).ready(function () {
             case "WeightedGraph":
                 return new WeightedGraph(this.paper,name,type,value,this);
             default:
-                console.log("Unknown type for newEntity: " + type);
+                //console.log("Unknown type for newEntity: " + type);
                 return;
         }
     };
@@ -328,7 +328,7 @@ $(document).ready(function () {
     
     //Arranges entities
     VisualizerHandler.prototype.arrangeEntities = function() {
-        console.log("Visualizer Handler: arrangeEntities()")
+        //console.log("Visualizer Handler: arrangeEntities()")
         this.arrangePrimitives();
         this.arrangeADTs();
         return;
@@ -354,7 +354,7 @@ $(document).ready(function () {
 
                     this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] = this.entities[i];
 
-                    console.log(this.NEXT_PRIM_X, this.NEXT_PRIM_Y)
+                    //console.log(this.NEXT_PRIM_X, this.NEXT_PRIM_Y)
                     var difX = (this.NEXT_PRIM_X * this.PRIMITIVE_COLUMNWIDTH + this.HBORDER) - this.entities[i].x;
                     var difY = (this.NEXT_PRIM_Y*this.FONT_HEIGHT*1.7 + this.PRIMITIVE_SECTION_Y) - this.entities[i].y;
                     this.entities[i].move(difX, difY);
@@ -395,7 +395,7 @@ $(document).ready(function () {
 
     //Arrange ADT helper function
     VisualizerHandler.prototype.shiftADT = function(entities, type) {
-        console.log("Visualizer Handler: shiftADT()")
+        //console.log("Visualizer Handler: shiftADT()")
 
         var element = document.getElementById('vis_paper');
         var paper_width = document.defaultView.getComputedStyle(element,null).getPropertyValue("width");
@@ -418,7 +418,7 @@ $(document).ready(function () {
                         }
 
                         curY = entities[i].y;
-                        console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
+                        //console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
                         entities[i].move(curX, curY);
                         break;
 
@@ -440,7 +440,7 @@ $(document).ready(function () {
                         break;
                     
                     default:
-                        console.log("Unknown ADT type: " + entities[i].type);
+                        //console.log("Unknown ADT type: " + entities[i].type);
                         return; 
                 }
             }
@@ -511,7 +511,7 @@ $(document).ready(function () {
                             break;
                         
                         default:
-                            console.log("Unknown ADT type: " + this.entities[i].type);
+                            //console.log("Unknown ADT type: " + this.entities[i].type);
                             return; 
                     }
 
