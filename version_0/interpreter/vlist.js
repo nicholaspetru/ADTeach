@@ -195,6 +195,22 @@ $(document).ready(function () {
         }
         if (method == "remove") {
             var index = parameters[0].value;
+
+            switch (type) {
+                case "List<Integer>":
+                    valType = "int";
+                    returnValue = parseInt(origValue[parameters[0].value]);
+                    break;
+                case "List<Float>":
+                    valType = "float";
+                    returnValue = parseFloat(origValue[parameters[0].value]);
+                    break;
+                case "List<String>":
+                    valType = "String";
+                    returnValue = origValue[parameters[0].value];
+                    break;
+            }
+
             if (index > -1 && index < origValue.length) {
                 origValue.splice(index, 1);
             } else {
@@ -202,7 +218,11 @@ $(document).ready(function () {
                 //console.log("Not in list");
                 root.error("Not in list");
             }
-            return [returnValue, origValue];
+
+
+            
+
+            return [returnValue, origValue, valType];
         }
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);

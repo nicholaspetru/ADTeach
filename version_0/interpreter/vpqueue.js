@@ -51,7 +51,7 @@ $(document).ready(function () {
     }
     
     VPQueue.prototype.compareNumbers = function(a, b) {
-        return a - b;
+        return b - a;
     }
     
     VPQueue.prototype.compareFloats = function(a, b) {
@@ -68,8 +68,21 @@ $(document).ready(function () {
         for (var i = 0; i<origValue1.length; i++){
             origValue[i]=(origValue1[i]);   
         }
+        var valType;
+        switch (type) {
+            case "PriorityQueue<Integer>":
+                valType = "int";
+                break;
+            case "PriorityQueue<String>":
+                valType = "String";
+                break;
+            case "PriorityQueue<Float>":
+                valType = "float";
+                break;
+        }
         if (method == 'add') {
             if (type == "PriorityQueue<Integer>") {
+                console.log(parameters[0].value, typeof parameters[0].value);
                 if (typeof parameters[0].value != typeof 1) {
                     env.throwError(root.linenum);
                     root.error("Looking for ints");
@@ -88,11 +101,12 @@ $(document).ready(function () {
                 }
             }
             var newList = [];
-            newList.push(parameters[0].value);
+            
             var lengthOfList = origValue.length;
             for (var i = 0; i < lengthOfList; i++) {
                 newList.push(origValue[i]);
             }
+            newList.push(parameters[0].value);
             origValue = newList;
             if (type == "PriorityQueue<Integer>") {
                 origValue.sort(this.compareNumbers);
@@ -117,14 +131,17 @@ $(document).ready(function () {
                     valType = "float";
                     break;
             }
+
             var length = origValue.length;
             returnValue = origValue[length-1];
             return [returnValue, origValue, valType];
         }
         if (method == 'remove') {
-            returnValue = origValue.pop();
-            console.log("REturning, ", returnValue, " + ", origValue);
-            return [returnValue, origValue];
+            returnValue = origValue[0];
+            //console.log(origValue, "##!#");
+            origValue.splice(0, 1);
+            //console.log("REturning, ", returnValue, " + ", origValue);
+            return [returnValue, origValue, valType];
         }
         if (method == 'isEmpty') {
             returnValue = (origValue.length == 0);
