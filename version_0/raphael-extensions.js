@@ -101,7 +101,24 @@ Raphael.fn.connect = function(fromNode, toNode, isDirected, isWeighted, w, wAttr
                         + " L" + c2x + "," + c2y);
 
     if (isDirected) {
-
+        p.isDirected = true;
+        var totalLen = p.getTotalLength();
+        var intLen = totalLen - obj2.attr("r");
+        var intersect = p.getPointAtLength(intLen);
+        /*
+        var pathString = "M" + c1x + "," + c1y
+                        + "M" + intersect.x + "," + intersect.y
+                        + "l 0 -5 l 10 0 l 0 5"
+                        + " L" + c2x + "," + c2y;
+        */
+        var pathString = p.getSubpath(0,intLen);
+        p.attr({
+            path : pathString,
+            'arrow-end': 'classic-wide-long'
+        });
+    }
+    else {
+        p.isDirected = false;
     }
 
     p.attr({"stroke-width": 1.5, "opacity":0});

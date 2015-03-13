@@ -515,13 +515,9 @@ $(document).ready(function () {
                 var temp, x1, y1, x2, y2;
                 if (this.type == "circle") {
                     temp = this;
-                    x1 = this.ox + dx;
-                    y1 = this.oy + dy;
                 }
                 else {
                     temp = this.pair;
-                    x1 = this.pair.ox + dx;
-                    y1 = this.pair.oy + dy;
                 }
                 if (temp.connections) {
                     for (var i=0; i<temp.connections.length; i++) {
@@ -533,22 +529,34 @@ $(document).ready(function () {
                                             + (this.oy + dy).toString() + "L " 
                                             + tempPath.to.attr("cx") + ","
                                             + tempPath.to.attr("cy");
-                            x2 = tempPath.to.attr("cx");
-                            y2 = tempPath.to.attr("cy");
-
+                            tempPath.attr({ path : pathString });
+                            if (tempPath.isDirected) {
+                                var totalLen = tempPath.getTotalLength();
+                                var intLen = totalLen - temp.attr("r");
+                                var intersect = tempPath.getPointAtLength(intLen);
+                                var pathString2 = tempPath.getSubpath(0,intLen);
+                                tempPath.attr({
+                                    path : pathString2,
+                                    'arrow-end': 'classic-wide-long'
+                                });
+                            }
                         } else {
                             pathString = "M " + tempPath.from.attr("cx") + ","
                                         + tempPath.from.attr("cy") + " L"
                                         + (this.ox + dx).toString() + ","
                                         + (this.oy + dy).toString();
-                            x2 = tempPath.from.attr("cx");
-                            y2 = tempPath.from.attr("cy");
+                            tempPath.attr({ path : pathString });
+                            if (tempPath.isDirected) {
+                                var totalLen = tempPath.getTotalLength();
+                                var intLen = totalLen - temp.attr("r");
+                                var intersect = tempPath.getPointAtLength(intLen);
+                                var pathString2 = tempPath.getSubpath(0,intLen);
+                                tempPath.attr({
+                                    path : pathString2,
+                                    'arrow-end': 'classic-wide-long'
+                                });
+                            }
                         }
-                        tempPath.attr({ path : pathString });
-
-                        var totalLen = tempPath.getTotalLength();
-                        var mid = tempPath.getPointAtLength((totalLen / 2));
-
 
                         tempPath.toBack();
                     }
