@@ -65,7 +65,7 @@ $(document).ready(function () {
 	}
 
 	Environment.prototype.updateVariable = function(name, newVal, originMethod, originADT, lineNum, adtType) {
-		//console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
+		console.log("-------updateVariable( " + name + " , " + newVal + " , " + originMethod + " , " + originADT + ")");
         //console.log("Line number: ", lineNum);
         //console.log("Value is: ", newVal);
 		//console.log("Origin method is: ", originMethod);

@@ -10,7 +10,7 @@ $(document).ready(function () {
     //returns false if variable was not in the table, else returns true
     //if false, updateVariable does not create a new symbolTable, nor does it call enqueueEvent.
     SymbolTable.prototype.updateVariable = function(type, name, value, action, originADT, lineNum) {
-        //console.log('Symbol Table: updateVariable(' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ',' + lineNum + ')');
+        console.log('Symbol Table: updateVariable(' + type + ',' + name + ',' + value + ',' + action + ',' + originADT + ',' + lineNum + ')');
         var curTable = this.table[this.table.length-1];
         var newTable = curTable.slice(0);
         for (var i = 0; i < newTable.length; i++) {

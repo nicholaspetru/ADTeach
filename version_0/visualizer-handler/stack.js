@@ -81,8 +81,8 @@ $(document).ready(function () {
                     speed = true;
                     this.VH.getAnonymousVariable(originADT, this.x + (this.WIDTH - this.DUNIT_WIDTH)/2, this.y - this.DUNIT_HEIGHT);
                 }
-                this.Add(speed);
                 this.stretch();
+                this.Add(speed);
                 break;
             case "populate":
                 this.populate();
@@ -162,11 +162,11 @@ $(document).ready(function () {
         this.vis = [];
         //create new data units to match the new dataset
         for (var i = 0; i < this.value.length; i++){
+            this.stretch();
             var newDU = new DataUnit(this.paper,this.type,this.value[i], this.VH,  this.x + (this.WIDTH - this.DUNIT_WIDTH)/2,
                                this.y  + this.HEIGHT - this.DUNIT_HEIGHT- (this.DUNIT_HEIGHT*this.DUNIT_BUFFER) - (this.DUNIT_HEIGHT*(1 + this.DUNIT_BUFFER))*(i), this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);
             this.vis.push(newDU);
             newDU.create();
-            this.stretch();
         }
     };
 

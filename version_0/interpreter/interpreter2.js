@@ -14,6 +14,7 @@ $(document).ready(function () {
         this.ParseTree = undefined;
         this.Error = null;
         this.env = undefined;
+        this.inLoop = false;
         return this;
     }
     Interpreter.prototype.interpret = function(code, vh) {
@@ -219,7 +220,7 @@ $(document).ready(function () {
         var endTime = (new Date().getTime()/1000)+21;
         var count = 0;
         while (isTrue == true) {
-            
+            this.inLoop = true;
             var body = block.Body;
             var condition2 = block.Test;
 
@@ -243,6 +244,7 @@ $(document).ready(function () {
 
             }
         }
+        this.inLoop = false;
     }
     
     Interpreter.prototype.evalAssignment = function(root, env) {
@@ -251,6 +253,9 @@ $(document).ready(function () {
         var originADT = "";
         
         if (root.arity === "Initialization") {
+            if (this.inLoop) {
+                env.throwError(root.linenum, "Please do not intialize variables inside a loop");
+            }
             ////console.log("ROOT IS: ", root);
             if (root.second.arity == "FunCall") {
                 ////console.log("Right side of equal side is function call", root.second);
@@ -577,10 +582,12 @@ $(document).ready(function () {
         this.evalAssignment(initialization, env);
         var isTrue = this.evalCondition(condition, env);
         while (isTrue == true) {
+            this.inLoop = true;
             this.eval(body, env);
             this.evalSemiColonBlock(step, env);
             isTrue = this.evalCondition(condition, env);
         }
+        this.inLoop = false;
         ////console.log(initialization);
         env.removeVariable(initialization.second.value, initialization.linenum);
         
@@ -761,6 +768,10 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
+            console.log("Value is: ", value);
+            if (value == null) {
+                env.throwError(root.linenum, "This variable is not yet initialized");
+            }
             if (value.length == 2 && value[1] == "float") {
                 env.updateVariable(name, [value[0]+1, "float"], "Step", "new", root.linenum);
             } else {
@@ -775,6 +786,9 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
+            if (value == null) {
+                env.throwError(root.linenum, "This variable is not yet initialized");
+            }
             if (value.length == 2 && value[1] == "float") {
                 env.updateVariable(name, [value[0]-1, "float"], "Step", "new", root.linenum);
             } else {
