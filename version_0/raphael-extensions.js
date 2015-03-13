@@ -20,6 +20,7 @@
     
 // http://raphaeljs.com/graffle.html
 // and http://stackoverflow.com/questions/3679436/how-can-i-combine-objects-in-the-raphael-javascript-library?lq=1
+/*
     Raphael.fn.connection = function (obj1, obj2, line, bg) {
     if (obj1.line && obj1.from && obj1.to) {
         line = obj1;
@@ -73,73 +74,58 @@
         };
     }
 };
+*/
 
-
-function textOnPath( r, message, path, align, fontSize, letterSpacing, kerning, geckoKerning) {
-    // if fontSize or letterSpacing are undefined, they are calculated to fill the path
-    // 10% of fontSize is usually good for manual letterspacing
-
-    // Gecko, i.e. Firefox etc, inflates and alters the letter spacing
-    var align = align || 'left';
-  
-    var gecko = /rv:([^\)]+)\) Gecko\/\d{8}/.test(navigator.userAgent||'') ? true : false;
-
-    var letters = [], places = [], messageLength = 0;
-    for (var c=0; c < message.length; c++) {
-        var letter = r.text(0, 0, message[c]).attr({"text-anchor" : "middle"});
-        var character = letter.attr('text'), kern = 0;
-        letters.push(letter);
-
-        if (kerning) {
-            if(gecko && geckoKerning) {
-                kerning = geckoKerning;
-            }
-            var predecessor = letters[c-1] ? letters[c-1].attr('text') : '';
-            if (kerning[c]) {
-                kern = kerning[c];
-            } else if (kerning[character]) {
-                if( typeof kerning[character] === 'object' ) {
-                    kern = kerning[character][predecessor] || kerning[character]['default'] || 0;
-                } else {
-                    kern = kerning[character];
-                }
-            }
-            if(kerning['default'] ) {
-                kern = kern + (kerning['default'][predecessor] || 0);
-            }            
-        }
-
-        messageLength += kern;
-        places.push(messageLength);
-        //spaces get a width of 0, so set min at 4px
-        messageLength += Math.max(4.5, letter.getBBox().width);
+// from, to, radius
+Raphael.fn.connect = function(obj1, obj2, isDirected, isWeighted, w, wAttr) {
+    // list of paths each object has
+    if (!obj1.connections) obj1.connections = []
+    if (!obj2.connections) obj2.connections = []
+    // get the (x,y) center of each node
+    var c1x, c1y, c2x, c2y;
+    if (obj1.type === "circle") {
+        c1x = obj1.attr("cx");
+        c1y = obj1.attr("cy");
+    }
+    if (obj2.type === "circle") {
+        c2x = obj2.attr("cx");
+        c2y = obj2.attr("cy");
     }
 
-    var len = path.getTotalLength();
+    // create a line/path from object 1 to object 2
 
-  
-    if( letterSpacing ){
-        if (gecko) {
-            letterSpacing = letterSpacing * 0.83;
-        }
-    } else {
-        letterSpacing = letterSpacing || len /  messageLength;
-    }
-    fontSize = fontSize || 10 * letterSpacing;
+    var p = this.path("M" + c1x + "," + c1y
+                        + " L" + c2x + "," + c2y);
 
-      
-    for (c = 0; c < letters.length; c++) {
-        letters[c].attr("font-size", fontSize + "px");
-      var adjust = '';
-      if(align!='left'){
-        adjust = align=='right' ? len-messageLength : len/2-messageLength/2;
-      }
 
-      console.log(align,adjust);
-      p = path.getPointAtLength(places[c] * letterSpacing + adjust);
-        
-        var rotate = 'R' + (p.alpha < 180 ? p.alpha + 180 : p.alpha > 360 ? p.alpha - 360 : p.alpha )+','+p.x+','+p.y;
-    letters[c].attr({ x: p.x, y: p.y, transform: rotate });
+
+    //console.log(p.weight);
+    if (isDirected) {
 
     }
+
+    p.attr({"stroke-width": 1.5, "opacity":0});
+    p.toBack();
+
+
+    if (isWeighted) {
+
+        var totalLen = p.getTotalLength();
+        var mid = p.getPointAtLength((totalLen / 2));
+        p.weight = this.text(mid.x,mid.y,(w.toString()));
+        p.weight.attr(wAttr);
+        //console.log("total: " + totalLen);
+        console.log("mid: (" + mid.x + "," + mid.y + ")   " + mid.alpha);
+        //p.data("weight",w);
+        //console.log(p.data("weight"));
+    }
+    // set the from and to node for this edge
+    p.from = obj1;
+    p.to = obj2;
+
+    // add the path to each of the objects
+    obj1.connections.push(p)
+    obj2.connections.push(p)
+
+    return p;
 };

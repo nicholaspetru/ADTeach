@@ -81,7 +81,7 @@ $(document).ready(function () {
         highlight.attr("stroke-width", 0);
     }
 
-    VisualizerHandler.prototype.displayError = funtion(error) {
+    VisualizerHandler.prototype.displayError = function(error) {
         //TO-DO: fill this in
     };
 

@@ -16,13 +16,14 @@ $(document).ready(function () {
         this.y = 0;
 
         this.FONT_SIZE = 15;
-        this.DUNIT_WIDTH = 38.25;
+        this.DUNIT_WIDTH = 25;
         this.DUNIT_BUFFER = .2;
         this.MAX_LENGTH = 10;
 
         this.nodes = [];
         this.edges = [];
 
+        this.backgroundColor = "#B6C5BE";
         this.edgeCheck = {};
         this.isDirected = false;
         this.edgeLines = [];
@@ -43,7 +44,7 @@ $(document).ready(function () {
         this.nextNodeY = 0;
         this.count = 0;
 
-        this.edgeFont = this.paper.getFont("Open Sans Regular");
+        this.edgeFontSize = 13;
         }
 
         WeightedGraph.prototype.update = function(action,originADT){
@@ -89,6 +90,48 @@ $(document).ready(function () {
             }
         };
 
+        WeightedGraph.prototype.Populate = function() {
+            var graphVal = this.value[0];
+            this.erase();
+
+            // create the nodes
+            for (var i = 0; i < graphVal.length; i++){
+                this.createNode();
+            }
+
+            for (var fromNodeID = 0; fromNodeID < graphVal.length; fromNodeID++) {
+                var toNodes = graphVal[fromNodeID];
+                for (var x = 0; x < toNodes.length; x++) {
+                    var toNode = toNodes[x]; // pair [to,weight]
+                    var toNodeID = toNode[0];
+                    var weight = toNode[1];
+                    console.log("from: " + fromNodeID + " to: " + toNodeID + " weight: " + weight);
+                    var f = this.nodes[fromNodeID];
+                    var t = this.nodes[toNodeID];
+                    this.createEdge(f,t,weight);
+                }
+            }
+        };
+
+        WeightedGraph.prototype.createEdge = function(fromNode,toNode,weight) {
+            
+            var delay = this.VH.setDelay(250);
+            var anim = Raphael.animation({opacity:1},this.VH.getAnimTime(250));
+            
+            var f = fromNode.vis[1];
+            var t = toNode.vis[1];
+
+            var newEdge = this.paper.connect(f,t, this.isDirected, true, weight, 
+                {"font-size": this.edgeFontSize, "font-family": "times", "opacity": 0});
+
+            this.dragNode(fromNode);
+            this.dragNode(toNode);
+
+            newEdge.animate(anim.delay(delay));
+            newEdge.weight.animate(anim.delay(delay));
+
+        };
+
         WeightedGraph.prototype.create = function(newX,newY){
             this.x = newX;
             this.y = newY;
@@ -110,10 +153,7 @@ $(document).ready(function () {
             this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
             this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
             this.me.push(this.myLabel);
-
-
-            this.paper.print(100,100,"420",this.edgeFont, 15);
-        }
+        };
 
         WeightedGraph.prototype.createNode = function() {
             // create and display the node
@@ -121,9 +161,9 @@ $(document).ready(function () {
             var nodeID = this.nodes.length;
             var newNode = new DataUnit(this.paper,'WeightedGraph',nodeID.toString(),this.VH,this.nextNodeX,this.nextNodeY,this.DUNIT_WIDTH,this.DUNIT_WIDTH,1);
             newNode.create();
-            newNode.vis[1].attr({'stroke-width':2, 'fill-opacity':1});
+            newNode.vis[1].attr({'stroke-width':2, 'fill': this.backgroundColor, 'fill-opacity':1});
             newNode.vis[0].toFront();
-            newNode.vis[1].id = nodeID;
+            newNode.vis[1].data("nodeID", nodeID);
 
             // add to set
             this.me.push(newNode.vis[0]);
@@ -133,20 +173,10 @@ $(document).ready(function () {
 
             // add node id to edge tracker
             this.edgeCheck[nodeID] = [];
-            this.nodeDragger();
+            this.dragNode(newNode);
         };
-        // allows the user to drag the nodes around & arrange them as they like
-        // the edges follow the nodes
-        WeightedGraph.prototype.nodeDragger = function() {
-            var tempS, tempT;
-            for (var i = 0, ii = this.nodes.length; i < ii; i++) {
-                var n = this.nodes[i];
-                tempS = n.vis[1]; // the circle
-                tempT = n.vis[0]; // the node id
-                tempS.undrag();
-                tempT.undrag();
-            }
 
+        WeightedGraph.prototype.dragNode = function(n) {
             var dragger = function () {
                 // Original coords for main element
                 this.ox = this.type == "circle" ? this.attr("cx") : this.attr("x");
@@ -157,6 +187,7 @@ $(document).ready(function () {
                 this.pair.oy = this.pair.type == "circle" ? this.pair.attr("cy") : this.pair.attr("y");
             },
             move = function (dx, dy) {
+
                 // Move main element
                 var att = this.type == "circle" ? {cx: this.ox + dx, cy: this.oy + dy} : 
                                                {x: this.ox + dx, y: this.oy + dy};
@@ -168,29 +199,70 @@ $(document).ready(function () {
                 this.pair.attr(att);            
             
                 // Move connections
-                for (i = connections.length; i--;) {
-                    this.paper.connection(connections[i]);
+                var temp, x1, y1, x2, y2;
+                if (this.type == "circle") {
+                    temp = this;
+                    x1 = this.ox + dx;
+                    y1 = this.oy + dy;
+                }
+                else {
+                    temp = this.pair;
+                    x1 = this.pair.ox + dx;
+                    y1 = this.pair.oy + dy;
+                }
+                if (temp.connections) {
+                    for (var i=0; i<temp.connections.length; i++) {
+                        var tempPath = temp.connections[i];
+
+                        var pathString;
+                        if (tempPath.from.data("nodeID") == temp.data("nodeID") ) {
+                            pathString = "M " + (this.ox + dx).toString() + ","
+                                            + (this.oy + dy).toString() + "L " 
+                                            + tempPath.to.attr("cx") + ","
+                                            + tempPath.to.attr("cy");
+                            x2 = tempPath.to.attr("cx");
+                            y2 = tempPath.to.attr("cy");
+
+                        } else {
+                            pathString = "M " + tempPath.from.attr("cx") + ","
+                                        + tempPath.from.attr("cy") + " L"
+                                        + (this.ox + dx).toString() + ","
+                                        + (this.oy + dy).toString();
+                            x2 = tempPath.from.attr("cx");
+                            y2 = tempPath.from.attr("cy");
+                        }
+                        tempPath.attr({ path : pathString });
+
+                        var totalLen = tempPath.getTotalLength();
+                        var mid = tempPath.getPointAtLength((totalLen / 2));
+
+                        tempPath.weight.attr({"x": mid.x, "y": mid.y});
+
+                        tempPath.toBack();
+                    }
                 }
             },
             up = function () {
-            },
-            connections = this.edges;
+            };
 
-            for (var i = 0, ii = this.nodes.length; i < ii; i++) {
-                var n = this.nodes[i];
-                tempS = n.vis[1]; // the circle
-                tempT = n.vis[0]; // the node id
-                
-                tempS.attr({cursor: "move"});
-                tempT.attr({cursor: "move"});
-                
-                tempS.drag(move,dragger,up);
-                tempT.drag(move,dragger,up);
+            var tempS = n.vis[1]; // the circle
+            var tempT = n.vis[0]; // the node id
 
-                // associate the circle/id so that dragging one moves the other with it
-                tempS.pair = tempT;
-                tempT.pair = tempS;
-            }
+            // remove old dragger if it exists
+            tempS.undrag();
+            tempT.undrag();
+
+            // cursor on hover
+            tempS.attr({cursor: "move"});
+            tempT.attr({cursor: "move"});
+            
+            // add drag handler
+            tempS.drag(move,dragger,up);
+            tempT.drag(move,dragger,up);
+
+            // associate the circle/id so that dragging one moves the other with it
+            tempS.pair = tempT;
+            tempT.pair = tempS;
         };
 
         WeightedGraph.prototype.erase = function() {
@@ -222,4 +294,5 @@ $(document).ready(function () {
             }
             this.count += 1;
         };
+    
 });
