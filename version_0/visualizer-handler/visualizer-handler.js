@@ -82,7 +82,8 @@ $(document).ready(function () {
     }
 
     VisualizerHandler.prototype.displayError = function(error) {
-        //TO-DO: fill this in
+        console.log(error);
+        this.paper.text(this.HBORDER, this.ADT_SECTION_TEXT_Y+50, "Error: " + error).attr({"font-family": "times", "font-size": this.FONT_SIZE + 8, "stroke" : "red", 'text-anchor': 'start'});
     };
 
     VisualizerHandler.prototype.goForthAll = function() {
