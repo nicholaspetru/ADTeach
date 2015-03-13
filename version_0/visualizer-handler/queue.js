@@ -173,7 +173,7 @@ $(document).ready(function () {
 
             //move the dataunits
             for (var i =0; i < _t.vis.length; i++){
-                _t.vis[i].moveTo(difX,difY,0,500);
+                _t.vis[i].move(difX,difY,0,500);
             }
         },(this.VH.delay - this.VH.date.getTime()));
 

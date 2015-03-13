@@ -24,7 +24,7 @@ var make_parse = function (env) {
         define: function (n) {
             var t = this.def[n.value];
             if (typeof t === "object") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error(t.reserved ? "Already reserved." : "Already defined.");
             }
@@ -64,7 +64,7 @@ var make_parse = function (env) {
                     return;
                 }
                 if (t.arity === "name") {
-                    console.log("Syntax error: ", token.linenum);
+                    //console.log("Syntax error: ", token.linenum);
                     envir.throwError(token.linenum);
                     n.error("Already defined.");
                 }
@@ -90,7 +90,7 @@ var make_parse = function (env) {
     var advance = function (id) {
         var a, o, t, v;
         if (id && token.id !== id) {
-            console.log("Syntax error: ", token.linenum-1);
+            //console.log("Syntax error: ", token.linenum-1);
             envir.throwError(token.linenum);
             token.error("Expected '" + id + "'.");
         }
@@ -102,13 +102,13 @@ var make_parse = function (env) {
         token_nr += 1;
         v = t.value;
         a = t.type;
-        console.log("Looking at t: ", t);
+        //console.log("Looking at t: ", t);
         if (a === "name") {
             o = scope.find(v);
         } else if (a === "operator") {
             o = symbol_table[v];
             if (!o) {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 t.error("Unknown operator.");
             }
@@ -116,8 +116,8 @@ var make_parse = function (env) {
             o = symbol_table["(literal)"];
             a = "literal";
         } else {
-            console.log("Error with: ", token);
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Error with: ", token);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             t.error("Unexpected token.");
         }
@@ -136,7 +136,7 @@ var make_parse = function (env) {
         var left;
         var t = token;
         advance();
-        //console.log("T nud is: ", t.nud());
+        ////console.log("T nud is: ", t.nud());
         left = t.nud(passing);
         while (rbp < token.lbp) {
             t = token;
@@ -192,12 +192,12 @@ var make_parse = function (env) {
 
     var original_symbol = {
         nud: function () {
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             this.error("Undefined.");
         },
         led: function (left) {
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             this.error("Missing operator.");
         }
@@ -369,7 +369,7 @@ var make_parse = function (env) {
     infix(".", 150, function (left) {
         this.first = left;
         if (token.arity !== "name") {
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             token.error("Expected a property name.");
         }
@@ -382,8 +382,8 @@ var make_parse = function (env) {
 
     infix("(", 150, function (left) {
         var a = [];
-        console.log(left.id);
-        console.log("IN open paren: ", left);
+        //console.log(left.id);
+        //console.log("IN open paren: ", left);
         if (left.id === "." || left.id === "[") {
             this.arity = "FunCall";
             this.Caller = left.first;
@@ -392,7 +392,7 @@ var make_parse = function (env) {
         } else if (left.id == "new") {
             this.arity = "Initialization";
             this.Arguments = a;
-            console.log("Arguments are: ", this.Arguments);
+            //console.log("Arguments are: ", this.Arguments);
         }else {
             this.arity = "binary";
             this.first = left;
@@ -400,13 +400,13 @@ var make_parse = function (env) {
             if ((left.arity !== "unary" || left.id !== "function") &&
                     left.arity !== "name" && left.id !== "(" &&
                     left.id !== "&&" && left.id !== "||" && left.id !== "?") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 left.error("Expected a variable name.");
             }
         }
         if (token.id !== ")") {
-            console.log("Looking for closed paren");
+            //console.log("Looking for closed paren");
             while (true) {
                 a.push(expression(0));
                 if (token.id !== ",") {
@@ -416,13 +416,13 @@ var make_parse = function (env) {
             }
         }
         if (left.id == "new") {
-            console.log("Arguments are: ", a, "Comparing to: ", []);
+            //console.log("Arguments are: ", a, "Comparing to: ", []);
             if (this.Arguments.length != 0) {
                 envir.throwError(token.linenum);
                 left.error();
             }
         }
-        console.log("The arguments are: ", a);
+        //console.log("The arguments are: ", a);
         advance(")");
         return this;
     });
@@ -450,12 +450,12 @@ var make_parse = function (env) {
 
     prefix("new", function (passed) {
         if (token.value != passed) {
-            console.log("ERROR ERROR ERROR");
+            //console.log("ERROR ERROR ERROR");
             envir.throwError(token.linenum);
             envir.error();
         }
         if (token.arity !== "name") {
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             token.error("Expected a property name.");
         }
@@ -483,7 +483,7 @@ var make_parse = function (env) {
             var a = [], n, t;
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -522,25 +522,25 @@ var make_parse = function (env) {
     primitiveInit("String");
 
     stmt("Stack<Integer>", function () {
-        console.log("IN HERE IN HEREI N HERE");
+        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
             scope.define(n);
             advance();
             if (token.id === "=") {
-                console.log("token is: ", token);
+                //console.log("token is: ", token);
                 t = token;
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
                 t.third = expression(0, "Stack<Integer>");
-                console.log("Third is: ", t);
+                //console.log("Third is: ", t);
                 
                 t.second = n;
                 t.arity = "Initialization";
@@ -568,7 +568,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -606,7 +606,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -644,7 +644,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -682,7 +682,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -720,7 +720,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -754,12 +754,12 @@ var make_parse = function (env) {
     });
 
     stmt("Queue<Integer>", function () {
-        console.log("IN HERE IN HEREI N HERE");
+        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -797,7 +797,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -835,7 +835,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -869,12 +869,12 @@ var make_parse = function (env) {
     });
     
     stmt("PriorityQueue<Integer>", function () {
-        console.log("IN HERE IN HEREI N HERE");
+        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -908,12 +908,12 @@ var make_parse = function (env) {
     });
     
     stmt("PriorityQueue<String>", function () {
-        console.log("IN HERE IN HEREI N HERE");
+        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -951,7 +951,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -989,7 +989,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1027,7 +1027,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1065,7 +1065,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1103,7 +1103,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1141,7 +1141,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1179,7 +1179,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1217,7 +1217,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1255,7 +1255,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1293,7 +1293,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1331,7 +1331,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1369,7 +1369,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1407,7 +1407,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1445,7 +1445,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1483,7 +1483,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1521,7 +1521,7 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                console.log("Syntax error: ", token.linenum);
+                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum);
                 n.error("Expected a new variable name.");
             }
@@ -1585,7 +1585,7 @@ var make_parse = function (env) {
         }
         advance(";");
         if (token.id !== "}") {
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             token.error("Unreachable statement.");
         }
@@ -1596,7 +1596,7 @@ var make_parse = function (env) {
     stmt("break", function () {
         advance(";");
         if (token.id !== "}") {
-            console.log("Syntax error: ", token.linenum);
+            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum);
             token.error("Unreachable statement.");
         }
