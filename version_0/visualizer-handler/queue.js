@@ -226,6 +226,16 @@ $(document).ready(function () {
             newDU.vis[1].attr({stroke: "green"});
         }
 
+        //schooch all the previous ones down
+        var delay = null;
+        for (var i = index; i < this.vis.length; i++){
+            if (delay == null){
+                delay = this.VH.setDelay(500);
+            }
+            this.vis[i].move(-this.DUNIT_WIDTH*1.2,0,delay,500);
+        }
+
+
         //Insert the new data unit in it's proper location
         newDU.move(0,this.DUNIT_HEIGHT + (this.HEIGHT - this.DUNIT_HEIGHT)/2,this.VH.setDelay(500),500);
         this.VH.setDelay(100);
