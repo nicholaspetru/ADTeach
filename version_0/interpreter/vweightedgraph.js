@@ -34,7 +34,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var twoParam = ['removeEdge', 'populate', 'hasEdge', 'getWeight', 'setWeight'];
+        var twoParam = ['removeEdge', 'populate', 'hasEdge', 'getWeight'];
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 console.log("two parameters needed");
@@ -42,7 +42,7 @@ $(document).ready(function () {
                 //new IncorrectParameters();
             }
         }
-        var threeParam = ['addEdge'];
+        var threeParam = ['addEdge', 'setWeight'];
         if (threeParam.indexOf(method) >= 0) {
             if (parameters.length != 3) {
                 console.log("three parameters needed");

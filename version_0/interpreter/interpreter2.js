@@ -955,7 +955,12 @@ $(document).ready(function () {
                 case("getChild"):
                 case("put"):
                 case("removeChild"):
+                case('getWeight'):
+                case('setWeight'):
                     method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
+                    if (cloneParam.length == 3) {
+                        method = method + "." + cloneParam[2].value;
+                    }
                     break;
                 case("addChild"):
                     if (parameters.length == 2) {

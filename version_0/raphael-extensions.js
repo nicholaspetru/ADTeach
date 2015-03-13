@@ -77,7 +77,10 @@
 */
 
 // from, to, radius
-Raphael.fn.connect = function(obj1, obj2, isDirected, isWeighted, w, wAttr) {
+Raphael.fn.connect = function(fromNode, toNode, isDirected, isWeighted, w, wAttr) {
+
+    var obj1 = fromNode.vis[1];
+    var obj2 = toNode.vis[1];
     // list of paths each object has
     if (!obj1.connections) obj1.connections = []
     if (!obj2.connections) obj2.connections = []
@@ -97,9 +100,6 @@ Raphael.fn.connect = function(obj1, obj2, isDirected, isWeighted, w, wAttr) {
     var p = this.path("M" + c1x + "," + c1y
                         + " L" + c2x + "," + c2y);
 
-
-
-    //console.log(p.weight);
     if (isDirected) {
 
     }
@@ -115,13 +115,15 @@ Raphael.fn.connect = function(obj1, obj2, isDirected, isWeighted, w, wAttr) {
         p.weight = this.text(mid.x,mid.y,(w.toString()));
         p.weight.attr(wAttr);
         //console.log("total: " + totalLen);
-        console.log("mid: (" + mid.x + "," + mid.y + ")   " + mid.alpha);
+        //console.log("mid: (" + mid.x + "," + mid.y + ")   " + mid.alpha);
         //p.data("weight",w);
         //console.log(p.data("weight"));
     }
     // set the from and to node for this edge
     p.from = obj1;
     p.to = obj2;
+    p.fromNodeID = fromNode.id;
+    p.toNodeID = toNode.id;
 
     // add the path to each of the objects
     obj1.connections.push(p)
