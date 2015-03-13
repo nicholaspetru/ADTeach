@@ -703,6 +703,11 @@ $(document).ready(function () {
                         return [parseFloat(root.first.value) + parseFloat(root.second.value), "float"];
                     }
                 }
+                if (root.first.jtype == "STR_TYPE") {
+                    if (root.second.jtype == "STR_TYPE") {
+                        return root.first.value.substring(0, root.first.value.length-1) + root.second.value.substring(1, root.second.value.length);
+                    }
+                }
                 return this.evalMaths(root.first, env) + this.evalMaths(root.second, env);
             } else {
                 var leftValue, rightValue;
@@ -726,8 +731,8 @@ $(document).ready(function () {
                     leftValue = this.evalMaths(root.first, env);
                     rightValue = this.evalMaths(root.second, env);
                 }
-                if (typeof leftValue === "String" || typeof rightValue === "String") {
-                    env.throwError(root.linenum, "can't maths numbers with strings");
+                if (typeof leftValue === typeof "String" || typeof rightValue === typeof "String") {
+                    env.throwError(root.linenum, "Incompatible types! expected Number, found String");
                     ////console.log("Incompatible types");
                     root.error("Incompatible types");
                 } else {
@@ -792,7 +797,7 @@ $(document).ready(function () {
             adding = adding[0];
         }
         if (index < 0) {
-            env.throwError(root.linenum);
+            env.throwError(root.linenum, "Variable, " + name + " has not been declared");
             ////console.log("Variable not declared");
             root.error("Variable not declared");
             //Throw error
@@ -819,7 +824,7 @@ $(document).ready(function () {
             subtracting = subtracting[0];
         }
         if (index < 0) {
-            env.throwError(root.linenum);
+            env.throwError(root.linenum, "Variable, " + name + " has not been declared");
             ////console.log("Variable not declared");
             root.error("Variable not declared");
             //Throw error
@@ -857,7 +862,7 @@ $(document).ready(function () {
         
         var isADT = this.isActuallyADT(adtType);
         if (!isADT) {
-            env.throwError(root.linenum);
+            env.throwError(root.linenum, "Type " + adtType + " has no method \"" + method + "\"");
             root.error();
         
         }
@@ -870,14 +875,14 @@ $(document).ready(function () {
         ////console.log("Adt methods are: ", adtMethods);
         ////console.log("Adt type: ", adtType);
         if (adtMethods.indexOf(method) < 0) {
-            env.throwError(root.linenum);
+            env.throwError(root.linenum, "Type " + adtType + " has no method \"" + method + "\"");
             ////console.log("Invalid Method");
             root.error("Invalid method");
             //new InvalidMethod();
         }
         if (paramCheck != true) {
             ////console.log("Incorrect parameters");
-            env.throwError(root.linenum);
+            env.throwError(root.linenum, "Incorrect Parameters for method " + method);
             ////console.log("incorrect parameters");
             root.error("Incorrect parameters");
             //new IncorrectParameters();
@@ -1254,7 +1259,7 @@ $(document).ready(function () {
                 return value;
                 break;
             default:
-                env.throwError(root.linenum);
+                env.throwError(root.linenum, "Invalid ADT Type: " + type);
                 root.error();
         }
     }
@@ -1305,19 +1310,19 @@ $(document).ready(function () {
         }
 
         if (parenLevel > 0) {
-            env.throwError(1);
+            env.throwError(1, "Syntax error: Missing close parenthesis");
             this.Error = "Syntax error: Missing close parenthesis";
         }
         else if (parenLevel < 0) {
-            env.throwError(1);
+            env.throwError(1, "Syntax error: Missing open parenthesis");
             this.Error = "Syntax error: Missing open parenthesis";
         }
         else if (braceLevel > 0) {
-            env.throwError(1);
+            env.throwError(1, "Syntax error: Missing close brace");
             this.Error = "Syntax error: Missing close brace";
         }
         else if (braceLevel < 0) {
-            env.throwError(1);
+            env.throwError(1, "Syntax error: Missing open brace");
             this.Error = "Syntax error: Missing open brace";
         }
 
