@@ -79,6 +79,8 @@ $(document).ready(function () {
     *
     **/
     VGraph.prototype.performMethod = function(type, method, parameters, env, root, adt) {
+
+        //Get the current value for the ADT from the environment and make a copy of it
         var returnValue = null;
         var origValue = env.getVariables()[env.getIndex(adt)].value;
         var valueCopy = [];
