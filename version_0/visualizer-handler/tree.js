@@ -159,7 +159,25 @@ $(document).ready(function () {
 
 	// returns the yth child of vertex x in the tree
 	Tree.prototype.GetChild = function(x,y) {
+		var parentTNode = this.tnodes[x];
+		var childTNode = parentTNode.ChildTNodes[y];
 
+		console.log("parent val: " + parentTNode.value);
+		console.log("child val: " + childTNode.value);
+		console.log("child position: " + childTNode.position);
+
+		parentTNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(500);
+		childTNode.highlightInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(500);
+		childTNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(1000);
+
+		var delay = this.VH.setDelay(500);
+		var time = this.VH.getAnimTime(500);
+		parentTNode.lowLight(delay,time);
+		childTNode.lowlightInBranch(delay,time);
+		childTNode.lowLight(delay,time);
 	};
 
 	// returns a List<Integer> of all children of vertex x in the tree

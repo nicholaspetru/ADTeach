@@ -73,11 +73,8 @@ $(document).ready(function () {
 		if (this.parent === null) {
 			this.buildVisual();
 		}
-		var anim = Raphael.animation({opacity:1,stroke:"green"},this.VH.getAnimTime(250));
-		var delay = this.VH.setDelay(250);
 
-		this.DU.vis[0].animate(anim.delay(delay));
-		this.DU.vis[1].animate(anim.delay(delay));
+		this.highLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
 		this.VH.setDelay(1000);
 		this.lowLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
 	};
@@ -92,6 +89,9 @@ $(document).ready(function () {
 
 	TreeNode.prototype.highLight = function(delay,time) {
 		var anim = Raphael.animation({stroke: "green"},time);
+		if (this.DU.vis[0].attr("opacity") == 0) {
+			anim = Raphael.animation({stroke: "green",opacity:1},time);
+		}
 		this.DU.vis[0].animate(anim.delay(delay));
 		this.DU.vis[1].animate(anim.delay(delay));
 	};
@@ -114,12 +114,15 @@ $(document).ready(function () {
 		else {
 			var tempConnection = this.paper.connect(this.DU,child.DU,true,false);
 			child.inBranch = tempConnection;
-			child.highlightInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+			child.highlightInBranch(this.VH.setDelay(250),this.VH.getAnimTime(250));
 			//this.highlightConnection(tempConnection,this.VH.setDelay(500),this.VH.getAnimTime(500));
 			this.VH.setDelay(1000);
 
-			child.create();
-			this.lowlightConnection(tempConnection,this.VH.setDelay(250),this.VH.getAnimTime(250));
+			child.buildVisual();
+			child.highLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
+			this.VH.setDelay(500);
+			child.lowLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
+			child.lowlightInBranch(this.VH.setDelay(250),this.VH.getAnimTime(250));
 
 
 			this.children.push(child.value);
@@ -138,15 +141,9 @@ $(document).ready(function () {
 		}
 		this.inBranch.animate(anim.delay(delay));
 	};
-
-	TreeNode.prototype.highlightConnection = function(connection,delay,time) {
-		var anim = Raphael.animation({opacity:1,stroke:"green"},time);
-		connection.animate(anim.delay(delay));
-	}
-
-	TreeNode.prototype.lowlightConnection = function(connection,delay,time) {
+	TreeNode.prototype.lowlightInBranch = function(delay,time) {
 		var anim = Raphael.animation({stroke:"#4b4b4b"},time);
-		connection.animate(anim.delay(delay));
-	}
+		this.inBranch.animate(anim.delay(delay));
+	};
 
 });
