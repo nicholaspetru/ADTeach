@@ -89,23 +89,42 @@ $(document).ready(function () {
         for (var i = 0; i<origValue[0].length; i++){
             valueCopy[i]=(origValue[0][i]);   
         }
+
+        //Decide which method to perform
         
+        //SetDirected method
+        //Parameters:   setDirected(boolean) - make graph directed or undirected
+        //Returns:      nothing
+        //              Changes format of graph depending on what it was before
+        //              and making it directed or undirected
         if (method == "setDirected") {
+
+            //Check to make sure parameter is a boolean
+            if (parameters[0].value != true && parameters[0].value != false) {
+                env.throwError(root.linenum, "Must set directed to true or false");
+                root.error();
+            }
+
+            //If making a graph directed, the current value of the graph does not need to change
+            //but the directed value is set to true
             if (parameters[0].value == true) {
                 isDirected = true;
                 return [returnValue, [valueCopy, isDirected]];
             }
+
+            //If making a graph undirected, each node needs to have it's current in neighbors become it's out neighbors
             if (parameters[0].value != true) {
                 isDirected = false;
+
+                //For each node, find it's current neighbors
                 for (var currVertex = 0; currVertex < valueCopy.length; currVertex++) {
                     var vertexNeighbors = valueCopy[currVertex];
 
+                    //Add the current node to each neighbor's list of neighbors
                     for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
-                        
                         var currNeighbor = vertexNeighbors[neighbor];
                         var neighborNeigh = valueCopy[currNeighbor];
 
-                        
                         if (neighborNeigh.indexOf(currVertex) < 0) {
                             neighborNeigh.push(currVertex);
                         }
@@ -114,60 +133,103 @@ $(document).ready(function () {
                 }
                 return [returnValue, [valueCopy, isDirected]];
             }
-            
         }
         
+        //AddEdge method
+        //Parameters:   addEdge(node1, node2) - adds an edge from node1 to node2
+        //Returns:      nothing
+        //              updates the neighbor lists to include node2 in node1 (and node1 in node2 in undirected graphs)        
         if (method == "addEdge"){ 
-            if (parameters[0].value > valueCopy.length - 1 || parameters[1].value > valueCopy.length - 1) {
-                env.throwError(root.linenum);
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            } else if ((parameters[0].value.toString().indexOf('.') >= 0) || (parameters[1].value.toString().indexOf('.') >= 0)) {
+                env.throwError(root.linenum, "Parameters must be integers");
                 root.error();
             }
+
+            //Throws error if the node is not in the graph
+            if (parameters[0].value > valueCopy.length - 1 || parameters[1].value > valueCopy.length - 1) {
+                env.throwError(root.linenum, "Vertex not in graph");
+                root.error();
+            }
+
             if (isDirected != true) {
-                console.log("ADDING EDGE WHEN FALSE");
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
-                console.log("NODE 1 IS: ", node1);
-                console.log("NODE2 IS: ", node2);
+
+                //Make sure that both nodes exist in the graph
                 if (node1 > valueCopy.length || node2 > valueCopy.length){
-                    env.throwError(root.linenum);
-                    console.log("Error! Node not in graph");
-                    root.error("Edge not in graph");
-                    //Throw an error!
+                    env.throwError(root.linenum, "Vertex not in graph");
+                    root.error();
                 }
 
                 var node1Edges = valueCopy[node1];
                 var node2Edges = valueCopy[node2];
+                //Make sure the edge doesn't already exist in the graph
                 if (node1Edges.indexOf(node2) >= 0){
-                    env.throwError(root.linenum);
-                    console.log("Error! Edge in graph already");
-                    root.error("Edge not in graph");
-                    //Throw an error!
+                    env.throwError(root.linenum, "Edge already in graph");
+                    root.error();
                 }
+
+                //For an undirected graph, add each node to the other's neighbor list
                 node1Edges.push(node2);
                 node2Edges.push(node1);
                 return [returnValue, [valueCopy, isDirected]];
             }
+
             if (isDirected === true) {
-                console.log("ADDING EDGE WHEN TRUE");
                 var fromVertex = parameters[0].value;
                 var toVertex = parameters[1].value;
                 var fromNeighbors = valueCopy[fromVertex];
                 var toNeighbors = valueCopy[toVertex];
+
+                //Make sure edge isn't already in the graph
                 if (fromNeighbors.indexOf(toVertex) >= 0) {
-                    env.throwError(root.linenum);
-                    console.log("Already exists an edge");
-                    root.error("Edge already exists");
-                    //Throw an error
+                    env.throwError(root.linenum, "Edge already exists in graph");
+                    root.error();
                 } 
+
+                //For a directed graph, push the second node onto the first's neighbor list
                 fromNeighbors.push(toVertex);
                 valueCopy[fromVertex] = fromNeighbors;
                 return [returnValue, [valueCopy, isDirected]];
-                
             }
-            
-        } if (method == "populate") {
+        }
+
+        //Populate method
+        //Parameters:   populate(nodes, linkingProbability) - an integer for how many nodes are in the graph, and a float 
+        //                      between 0 and 1 for the linking probability for each pair of nodes
+        //Returns:      nothing
+        //              randomly populates the graph  
+        if (method == "populate") {
+
+            //Throws error if first parameter is not an integer or if second parameter is not a float
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be an integer and a float");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "First parameter must be an integer");
+                root.error();
+            } else if (parameters[1].value[1] != "float") {
+                env.throwError(root.linenum, "Second parameter must be a float");
+                root.error();
+            }
+
+            //Make sure the linking probability is between 0 and 1
+            console.log("Linking probability is: ", parameters[1].value[0]);
+            if (0 > parameters[1].value[0] || parameters[1].value[0] > 1) {
+                env.throwError(root.linenum, "Make sure the second parameter is a float between 0 and 1");
+            }
+
             var numNodes = parameters[0].value;
             var density = parameters[1].value;
+
+            //For an undirected graph, put an empty list for each node in the graph
+            //Create a random number for each of the other nodes, and if it is less than the density,
+            //make those nodes neighbors
             if (isDirected != true) {
                 for (var i = 0; i < numNodes; i++) {
                     valueCopy.push([]);
@@ -183,6 +245,9 @@ $(document).ready(function () {
                 }
                 return [returnValue, [valueCopy, isDirected]];
             }
+
+            //For a directed graph, perform the same calculations, except for each node, calculate the probability
+            //of it being a to neighbor and it being a from neighbor
             if (isDirected == true) {
                 for (var m = 0; m < numNodes; m++) {
                     valueCopy.push([]);
@@ -203,7 +268,22 @@ $(document).ready(function () {
             }
         }
         
+        //RemoveEdge method
+        //Parameters:       removeEdge(node1, node2) - two integers each representing a node
+        //Returns:          nothing
+        //                  removes edge going from node1 to node2 in graph
+        //                  (in undirected graph removes edge going from node2 to node1)
         if (method == "removeEdge") {
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            } else if ((parameters[0].value.toString().indexOf('.') >= 0) || (parameters[1].value.toString().indexOf('.') >= 0)) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
+
             if (isDirected != true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
@@ -211,18 +291,22 @@ $(document).ready(function () {
                 var node2Edges = valueCopy[node2];
                 var node1NEdges = [];
                 var node2NEdges = [];
+
+                //Throws error if edge is not in graph
                 if (node1Edges.indexOf(node2) < 0) {
-                    env.throwError(root.linenum);
-                    console.log("Not an edge");
-                    root.error("Not an edge");
-                    //Throw an error
+                    env.throwError(root.linenum, "Edge is not in graph");
+                    root.error();
                 } else {
+
+                    //For the first node, keep every neighbor except for node2
                     for (var i = 0; i < node1Edges.length; i++) {
                         var currEdge = node1Edges[i];
                         if (currEdge != node2) {
                             node1NEdges.push(currEdge);
                         }
                     }
+
+                    //Because it is an undirected graph, for the second node, keep every neighbor except for node1
                     for (var j = 0; j < node2Edges.length; j++) {
                         var curr2Edge = node2Edges[j];
                         if (curr2Edge != node1) {
@@ -240,12 +324,14 @@ $(document).ready(function () {
                 var node2 = parameters[1].value;
                 var node1Edges = valueCopy[node1];
                 var node1NEdges = [];
+
+                //Throws error if edge is not in graph
                 if (node1Edges.indexOf(node2) < 0) {
-                    env.throwError(root.linenum);
-                    console.log("Not an edge");
-                    root.error("Not an edge");
-                    //Throw an error
+                    env.throwError(root.linenum, "Edge is not in graph");
+                    root.error();
                 }
+
+                //
                 for (var i = 0; i < node1Edges; i++) {
                     var currEdge = node1Edges[i];
                     if (currEdge != node2) {
