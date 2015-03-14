@@ -16,11 +16,30 @@ $(document).ready(function () {
         }
     }
     
+    /**
+    *
+    * Return the supported methods for the Weighted Graph ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VWeightedGraph.prototype.listMethods = function() {
         var methods = ['hasEdge', 'getWeight', 'setWeight', 'addVertex', 'getDegree', 'getInDegree', 'getOutDegree', 'getNeighbors', 'getEdges', 'getVerticies', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected'];
         return methods;
     }
     
+    
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VWeightedGraph.prototype.checkParameters = function(method, parameters) {
         var noParam = ['getVerticies', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
         if (noParam.indexOf(method) >= 0) {
@@ -57,6 +76,21 @@ $(document).ready(function () {
         return true;
     }
     
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of Weighted Graph
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
     VWeightedGraph.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var returnValue = null;
         var origValue = env.getVariables()[env.getIndex(adt)].value;

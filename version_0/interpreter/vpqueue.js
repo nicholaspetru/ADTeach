@@ -13,12 +13,30 @@ $(document).ready(function () {
         this.storeType = t;
     }
     
-    
+    /**
+    *
+    * Return the supported methods for the Priority Queue ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VPQueue.prototype.listMethods = function() {
         var methods = ["remove", "add", "isEmpty", "size", "populate", "peek"];
         return methods;
     }
     
+    
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VPQueue.prototype.checkParameters = function(method, parameters) {
         var zeroParam = ["remove", "isEmpty", "size", "peek"]
         if (zeroParam.indexOf(method) >= 0) {
@@ -47,7 +65,23 @@ $(document).ready(function () {
         return a > b;
     }
     
-    VPQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+    
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of Priority Queue
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
+    VPQueue.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var returnValue = null;
         var origValue = [];
         var origValue2 = env.getVariables()[env.getIndex(adt)].value;
