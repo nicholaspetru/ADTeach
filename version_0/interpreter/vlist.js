@@ -452,6 +452,15 @@ $(document).ready(function () {
         //                  fills list with random values
         if (method == 'populate') {
 
+            //Error out of user enters anything but an integer as parameter
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameter of populate must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Parameter of populate must be an integer");
+                root.error();
+            }
+
             //Create a new list and fill with random integers
             if (type == "List<Integer>") {
                 var value = [];
