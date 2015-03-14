@@ -87,11 +87,22 @@ $(document).ready(function () {
     };
 
     SymbolTable.prototype.throwError = function(lineNum, error) {
-        this.visualizerHandler.highlightLine(lineNum, "red");
-        this.visualizerHandler.displayError(error);
+        $("#modal").hide();
+        $("#helptext").hide();
+        $("#listHelp").hide();
+        $("#stackHelp").hide();
+        $("#queueHelp").hide();
+        $("#graphHelp").hide();
+        $("#treeHelp").hide();
+        $("#dictHelp").hide();
+        $("#exitHelp").hide();
         $("#build").hide();
         $("#sample").hide();
+        $("#help").hide();
         $("#stop").show();
+        this.visualizerHandler.highlightLine(lineNum, "red");
+        this.visualizerHandler.displayError(error);
+
     }
 
 });
