@@ -81,6 +81,9 @@ $(document).ready(function () {
             case "populate":
                 this.populate();
                 break;        
+            case "getNeighbors":
+                this.populate();
+                break;        
             case "new":
                 this.populate();
                 break;
@@ -223,6 +226,7 @@ $(document).ready(function () {
 
     //Adds a new dataunit at the specified index
     List.prototype.AddAtPosition = function(index, value, speed) {
+        console.log("INDEX" + index + " " + value);
         this.checkPosition();
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,value, this.VH,  this.x + (this.DUNIT_WIDTH*.2),
