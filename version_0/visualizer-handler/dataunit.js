@@ -142,11 +142,6 @@ $(document).ready(function () {
 
      // build the visual rep for the dataunit
      DataUnit.prototype.buildVisual = function() {
-        
-        // rework dataunit text/value if bigger than DU
-        // while (this.value.width > this.width) {
-        //   this.font_size = this.font_size -1;
-        // }
  
         //value
         this.vis[0] = this.paper.text(this.x+this.width/2, this.y+this.height/2, this.value);
@@ -164,12 +159,6 @@ $(document).ready(function () {
      		if (this.shape == 1) {
      			this.vis[1] = this.paper.circle(this.x+this.width/2, this.y+this.width/2, this.width/2);
           this.vis[1].attr({"opacity": 0, "stroke-width": 1.5, "stroke": "#4b4b4b"});
-          // TODO in edges
-          /*
-          this.me = this.paper.set();
-          this.me.push(this.vis[0],this.vis[1]);
-          this.me.draggable();
-          */
      		}
 
         //add an index
@@ -194,7 +183,7 @@ $(document).ready(function () {
         this.vis[1].animate(anim.delay(delay));
      };
 
-      //Highlight
+      //reverse highlight
      DataUnit.prototype.lowLight = function() {
         var anim = Raphael.animation({stroke: "#4b4b4b"}, this.VH.getAnimTime(250));
         var delay = this.VH.setDelay(250);

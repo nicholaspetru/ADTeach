@@ -73,11 +73,13 @@ $(document).ready(function () {
         if (originADT != null){
             this.VH.getAnonymousVariable(originADT,this.x + (this.FONT_SIZE/2.5)*(this.type + " " + this.name + " = ").length, this.y - this.FONT_SIZE/2);
         }
-        // shake it off
+        // shake the primitive to indicate value change
         for (var i = 0; i < 11; i++){
             var anim = Raphael.animation({x:4*Math.pow(-1,i)},this.VH.getAnimTime(50));
             this.vis.animate(anim.delay(this.VH.setDelay(100)));
         }
+
+        //setTimeout used to allow text value change
         var _t = this, _val = this.value;
         setTimeout(function(){
             _t.vis.attr({"text": (_t.type + " " + _t.name + " = " + _val)});
