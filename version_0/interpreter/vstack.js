@@ -21,16 +21,28 @@ $(document).ready(function () {
     }
     
     /**
-     * Creates a new Circle from a diameter.
-     *
-     * @param {number} d The desired diameter of the circle.
-     * @return {Circle} The new Circle object.
-     */
+    *
+    * Return the supported methods for the Stack ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VStack.prototype.listMethods = function() {
         var methods = ['isEmpty', 'push', 'pop', 'populate', 'peek', 'search', 'size'];
         return methods;
     }
     
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VStack.prototype.checkParameters = function(method, parameters) {
         var noParam = ['pop', 'isEmpty', 'peek', 'size'];
         var oneParam = ['push', 'populate', 'search'];
@@ -51,13 +63,30 @@ $(document).ready(function () {
         return true;
     }
     
-    VStack.prototype.performMethod = function(type, valueCopy1, method, parameters, env, root, adt) {
+    
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of Stack
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
+    VStack.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var returnValue = null;
         var valueCopy = [];
         var origValue = env.getVariables()[env.getIndex(adt)].value;
         for (var i = 0; i<origValue.length; i++){
             valueCopy[i]=(origValue[i]);   
         }
+        
         
         if (method == "pop") {
             returnValue = valueCopy.pop();

@@ -11,11 +11,31 @@ $(document).ready(function () {
     VTree = function(t) {
     }
     
+    
+    /**
+    *
+    * Return the supported methods for the Tree ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VTree.prototype.listMethods = function() {
         var methods = ['populate', 'setRoot', 'addChild', 'getParent', 'getChildren', 'getChild', 'removeChild', 'removeVertex'];
         return methods;
     }
     
+    
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VTree.prototype.checkParameters = function(method, parameters) {
         var oneParam = ['populate', 'setRoot', 'getParent', 'getChildren', 'removeVertex'];
         var twoParam = ['getChild', 'removeChild'];
@@ -41,7 +61,24 @@ $(document).ready(function () {
         return true;
     }
     
-    VTree.prototype.performMethod = function(type, valueCopy1, method, parameters, env, root,adt) {
+    
+    
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of Tree
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
+    VTree.prototype.performMethod = function(type, method, parameters, env, root,adt) {
         var returnValue = null;
         var valueCopy = [];
         var origValue = env.getVariables()[env.getIndex(adt)].value;
