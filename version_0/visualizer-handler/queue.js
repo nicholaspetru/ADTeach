@@ -214,6 +214,7 @@ $(document).ready(function () {
 
     //Adds a new dataunit 
     Queue.prototype.Add = function(index, speed) {
+        console.log("INDEX" + index + " " + this.value);
         //Create the new data unit
         var newDU = new DataUnit(this.paper,this.type,this.value[index], this.VH,  this.x + (this.DUNIT_WIDTH*.2) ,
                                        this.y - this.DUNIT_HEIGHT, this.DUNIT_WIDTH, this.DUNIT_HEIGHT, 0);

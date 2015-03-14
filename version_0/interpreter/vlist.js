@@ -94,6 +94,12 @@ $(document).ready(function () {
         }
 
         //Decide which method to perform
+
+        //Add method
+        //Parameters: add(value) - adds value to end of list
+        //            add(index, value) - adds value to given index
+        //Returns:    nothing
+        //            updates the list with new value added
         if (method == 'add') {
 
             //Perform add method with one parameter (add to end of list)
@@ -127,7 +133,7 @@ $(document).ready(function () {
                 //If they are compatible types, push the value onto the copy of the current value and return
                 //the new value of the list and null for the returnValue
                 if (type == "List<Float>") {
-                    valueCopy.push([parameters[0].value, "float"]);
+                    valueCopy.push(parameters[0].value);
                 } else {
                     valueCopy.push(parameters[0].value);
                 }
@@ -176,9 +182,23 @@ $(document).ready(function () {
             }
         }
 
-
+        //Get method
+        //Parameters:   get(index) - finds value at index
+        //Returns:      value (integer, string, or float), at index
+        //              does not change contents of list
         if (method == 'get') {
             var valType;
+
+            //Error out if parameter is not an integer
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            }
+
+            //Determine the correct type for value being returned, get the item at index of list
             switch (type) {
                 case "List<Integer>":
                     valType = "int";
@@ -186,52 +206,92 @@ $(document).ready(function () {
                     break;
                 case "List<Float>":
                     valType = "float";
-                    returnValue = parseFloat(valueCopy[parameters[0].value]);
+                    returnValue = valueCopy[parameters[0].value];
                     break;
                 case "List<String>":
                     valType = "String";
                     returnValue = valueCopy[parameters[0].value];
                     break;
             }
+
+            //Error out if index is out of bounds
             if (parameters[0].value > valueCopy.length || parameters[0].value < 0) {
                 env.throwError(root.linenum, "Index out of bounds");
-                root.error("index out of bounds");
+                root.error();
             }
             
-            //returnValue = valueCopy[parameters[0].value];
-            //console.log("Type of: ", returnValue, "is", typeof returnValue);
             return [returnValue, valueCopy, valType];
         }
 
-
+        //Contains method
+        //Parameters:   contains(value) - decides if value is in list
+        //Returns:      boolean - true if in list, false if not
+        //              does not change contents of list
         if (method == 'contains') {
+
+            //Finding an item in a list of floats is different than other types because of the different
+            //format of floats
             if (type == "List<Float>") {
+
+                //Make sure user is looking for a float, or else error
                 if (typeof parameters[0].value != typeof []) {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be looking for a float");
+                    root.error();
                 } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be looking for a float");
+                    root.error();
                 }
+
+                //Iterate through list looking for value of float in the list
                 var index = -1;
                 for(var i = 0; i < valueCopy.length; i++){
-                    if (valueCopy[i][0][0] == parameters[0].value[0]) index = i;
+                    if (valueCopy[i][0] == parameters[0].value[0]) index = i;
                 }
+
+                //Return true if found, false if not
                 if (index >= 0)  return [true, valueCopy, "boolean"];
                 return [false, valueCopy, "boolean"];
             }
+
+            //Make sure user is looking for item of compatible type to type of list, else error 
+            if (type == "List<Integer>") {
+                if (typeof parameters[0].value != typeof 2) {
+                    env.throwError(root.linenum, "Must be looking for an integer");
+                    root.error();
+                } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                    env.throwError(root.linenum, "Must be looking for an integer");
+                    root.error();
+                }
+            } else if (type == "List<String>") {
+                if (typeof parameters[0].value != typeof "") {
+                    env.throwError(root.linenum, "Must be looking for a string");
+                }
+            }
+
+            //Look for value in the list, return
             returnValue = (valueCopy.indexOf(parameters[0].value) >= 0);
             return [returnValue, valueCopy, "boolean"];
         }
+
+        //IndexOf method
+        //Parameters:   indexOf(value) - returns the index of the value in the list
+        //Returns:      integer - index of the value
+        //              does not change content of list
         if (method == 'indexOf') {
+
+            //Lists of floats have special case
             if (type == "List<Float>") {
+
+                //Make sure user is looking for index of a float
                 if (typeof parameters[0].value != typeof []) {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be looking for the index of a float");
+                    root.error();
                 } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be looking for the index of a float");
+                    root.error();
                 }
+
+                //Iterate through list until found given float, set index to return value and return
                 var index = -1;
                 for(var i = 0; i < valueCopy.length; i++){
                     if (valueCopy[i][0][0] == parameters[0].value[0]) index = i;
@@ -239,12 +299,44 @@ $(document).ready(function () {
                 returnValue = index;
                 return [returnValue, valueCopy, "int"];
             }
+
+            //Check to make sure user is looking for item of compatible types to type of list
+            if (type == "List<Integer>") {
+                if (typeof parameters[0].value != typeof 2) {
+                    env.throwError(root.linenum, "Must be looking for index of an integer");
+                    root.error();
+                } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                    env.throwError(root.linenum, "Must be looking for index of an integer");
+                    root.error();
+                }
+            } else if (type == "List<String>") {
+                if (typeof parameters[0].value != typeof "") {
+                    env.throwError(root.linenum, "Must be looking for index of a string");
+                }
+            }
+
+            //Find index of the value given and return
             returnValue = valueCopy.indexOf(parameters[0].value);
             return [returnValue, valueCopy, "int"];
         }
+
+        //Remove method
+        //Parameters:   remove(index)
+        //Returns:      value of item at specific index
+        //              removes item from value of list
         if (method == "remove") {
             var index = parameters[0].value;
 
+            //Error out of user enters anything but an integer as the index
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            }
+
+            //Determine the type of the return value and get value at index in list and store in returnValue
             switch (type) {
                 case "List<Integer>":
                     valType = "int";
@@ -260,67 +352,116 @@ $(document).ready(function () {
                     break;
             }
 
+            //Remove item from the list, or error out if item not in list
             if (index > -1 && index < valueCopy.length) {
                 valueCopy.splice(index, 1);
             } else {
-                env.throwError(root.linenum);
-                //console.log("Not in list");
-                root.error("Not in list");
+                env.throwError(root.linenum, "Item not in list");
+                root.error();
             }
-
-
-            
 
             return [returnValue, valueCopy, valType];
         }
+
+
+        //IsEmpty method
+        //Parameters:       none
+        //Returns:          boolean - true if empty, false if not
+        //                  does not change content of list
         if (method == 'isEmpty') {
             returnValue = (valueCopy.length == 0);
             return [returnValue, valueCopy, 'boolean'];
         }
+
+        //Size method
+        //Parameters:       none
+        //Returns:          integer - size of list
+        //                  does not change content of list
         if (method == 'size') {
             returnValue = (valueCopy.length);
             return [returnValue, valueCopy, 'int'];
         }
+
+        //Clear method
+        //Parameters:       none
+        //Returns:          none
+        //                  removes everything from list
         if (method == 'clear') {
             valueCopy = [];
             return [returnValue, valueCopy];
         }
+
+        //Set method
+        //Parameters:       set(index, value) - sets the item at index to the value
+        //Returns:          none
+        //                  changes item in list to value at index
         if (method == 'set') {
+
+            //Error out of user enters anything but an integer as the index
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            }
+
+            //Error out if index is out of bounds
             if (parameters[0].value > valueCopy.length-1) {
-                env.throwError(root.linenum);
-                //console.log("Index out of bounds");
-                root.error("Index out of bounds");
+                env.throwError(root.linenum, "Index out of bounds");
+                root.error();
             } 
             
+            //Error checking to make sure item being set to index is compatible for type of list
             if (type == "List<Integer>") {
                 if (typeof parameters[1].value != typeof 2) {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "Must be setting item at index to an integer");
                     root.error();
                 } else if (parameters[1].value.toString().indexOf(".") >= 0) {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "Must be setting item at index to an integer");
                     root.error();
                 }
             } else if (type == "List<Float>") {
                 if (typeof parameters[1].value != typeof []) {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be setting item at index to a float");
+                    root.error();
                 } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be setting item at index to a float");
+                    root.error();
                 }
-                valueCopy[parameters[0].value] = [parameters[1].value, "float"];
+
+                //Set the value at index to be value passed in as float
+                valueCopy[parameters[0].value] = parameters[1].value;
                 return [returnValue, valueCopy];
+
             } else if (type == "List<String>") {
                 if (typeof parameters[1].value != typeof "h") {
                     env.throwError(root.linenum);
                     root.error();
                 }
             }
+
+            //Set item at index to the given value and return
             valueCopy[parameters[0].value] = parameters[1].value;
             return [returnValue, valueCopy];
-            
         }
+
+        //Populate method
+        //Parameters:       integer - size of desired list
+        //Returns:          none
+        //                  fills list with random values
         if (method == 'populate') {
+
+            //Error out of user enters anything but an integer as parameter
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameter of populate must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Parameter of populate must be an integer");
+                root.error();
+            }
+
+            //Create a new list and fill with random integers
             if (type == "List<Integer>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
@@ -329,21 +470,25 @@ $(document).ready(function () {
                 }
                 return [returnValue, value, type];  
             }
+
+            //Pick random numbers and fill list with corresponding letters
             if (type == "List<String>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
-                    //console.log("Going to push: ", options[toPush], typeof options[toPush]);
                     value.push('"' + options[toPush] + '"');
                 }
                 return [returnValue, value, type];
             }
+
+            //Pick random floats to 2 decimal positions and fill list
             if (type == "List<Float>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
                     var toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
-                    value.push([toPush,  "float"]);
+                    var rounded = toPush.toFixed(1);
+                    value.push([rounded,  "float"]);
                 }
                 return [returnValue, value, type];
             }

@@ -1,91 +1,122 @@
-/*
-* VGraph.js
-*/
+/**
+*
+* Graph ADT
+* Types supported: All vertices are integers
+* Methods supported: addVertex, getNeighbors, getVertices, addEdge, removeEdge, populate, numEdges, numVerts, clear, isEmpty, setDirected,
+*                   getInDegree, getDegree, hasEdge
+* Authors: Sarah LeBlanc and Colby Seyferth
+* ADTeach Team, 2015
+*
+**/
 
 $(document).ready(function () {
 
-    VGraph = function(t) {
-        if (t == "String") {
-            this.storeType = typeof string;
-        } else if (t == "int") {
-            this.storeType = typeof number;
-        }
+    VGraph = function() {
     }
     
+    /**
+    *
+    * Return the supported methods for the Graph ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VGraph.prototype.listMethods = function() {
         var methods = ['addVertex', 'getNeighbors', 'getVertices', 'addEdge', 'removeEdge', 'populate', 'numEdges', 'numVerts', 'clear', 'isEmpty', 'setDirected', 'getInDegree', 'getDegree', 'hasEdge'];
         return methods;
     }
     
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VGraph.prototype.checkParameters = function(method, parameters) {
+
+        //Separate the supported methods based on how many parameters they take
         var noParam = ['getVertices', 'addVertex', 'numEdges', 'numVerts', 'clear', 'isEmpty'];
+        var oneParam = ['getNeighbors', 'setDirected', 'getInDegree', 'getDegree'];
+        var twoParam = ['addEdge', 'removeEdge', 'populate', 'hasEdge'];
+
+        //Check the number of needed parameters against the number of given parameters
         if (noParam.indexOf(method) >= 0) {
-            console.log("LOOKing at method: ", method);
-            console.log("Parameters are: ", parameters);
             if (parameters.length != 0) {
-                console.log("no parameters");
                 return false;
-                //new IncorrectParameters();
             }
         }
-        var oneParam = ['getNeighbors', 'setDirected', 'getInDegree', 'getDegree'];
         if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
-                console.log("one parameters");
                 return false;
-                //new IncorrectParameters();
             }
         }
-        var twoParam = ['addEdge', 'removeEdge', 'populate', 'hasEdge'];
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
-                console.log("two parameters");
                 return false;
-                //new IncorrectParameters();
             }
         }
         return true;
     }
     
-    VGraph.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of List
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
+    VGraph.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var returnValue = null;
-        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
-        var origValue = [];
-        var isDirected = origValue1[1];
+        var origValue = env.getVariables()[env.getIndex(adt)].value;
+        var valueCopy = [];
+        var isDirected = origValue[1];
         var neighborNeigh = [];
-        for (var i = 0; i<origValue2[0].length; i++){
-            origValue[i]=(origValue2[0][i]);   
+        for (var i = 0; i<origValue[0].length; i++){
+            valueCopy[i]=(origValue[0][i]);   
         }
         
         if (method == "setDirected") {
             if (parameters[0].value == true) {
                 isDirected = true;
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
             if (parameters[0].value != true) {
                 isDirected = false;
-                for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
-                    var vertexNeighbors = origValue[currVertex];
+                for (var currVertex = 0; currVertex < valueCopy.length; currVertex++) {
+                    var vertexNeighbors = valueCopy[currVertex];
 
                     for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
                         
                         var currNeighbor = vertexNeighbors[neighbor];
-                        var neighborNeigh = origValue[currNeighbor];
+                        var neighborNeigh = valueCopy[currNeighbor];
 
                         
                         if (neighborNeigh.indexOf(currVertex) < 0) {
                             neighborNeigh.push(currVertex);
                         }
                     }
-                    origValue[currNeighbor] = neighborNeigh;                    
+                    valueCopy[currNeighbor] = neighborNeigh;                    
                 }
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
             
         }
         
         if (method == "addEdge"){ 
-            if (parameters[0].value > origValue.length - 1 || parameters[1].value > origValue.length - 1) {
+            if (parameters[0].value > valueCopy.length - 1 || parameters[1].value > valueCopy.length - 1) {
                 env.throwError(root.linenum);
                 root.error();
             }
@@ -95,15 +126,15 @@ $(document).ready(function () {
                 var node2 = parameters[1].value;
                 console.log("NODE 1 IS: ", node1);
                 console.log("NODE2 IS: ", node2);
-                if (node1 > origValue.length || node2 > origValue.length){
+                if (node1 > valueCopy.length || node2 > valueCopy.length){
                     env.throwError(root.linenum);
                     console.log("Error! Node not in graph");
                     root.error("Edge not in graph");
                     //Throw an error!
                 }
 
-                var node1Edges = origValue[node1];
-                var node2Edges = origValue[node2];
+                var node1Edges = valueCopy[node1];
+                var node2Edges = valueCopy[node2];
                 if (node1Edges.indexOf(node2) >= 0){
                     env.throwError(root.linenum);
                     console.log("Error! Edge in graph already");
@@ -112,14 +143,14 @@ $(document).ready(function () {
                 }
                 node1Edges.push(node2);
                 node2Edges.push(node1);
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
             if (isDirected === true) {
                 console.log("ADDING EDGE WHEN TRUE");
                 var fromVertex = parameters[0].value;
                 var toVertex = parameters[1].value;
-                var fromNeighbors = origValue[fromVertex];
-                var toNeighbors = origValue[toVertex];
+                var fromNeighbors = valueCopy[fromVertex];
+                var toNeighbors = valueCopy[toVertex];
                 if (fromNeighbors.indexOf(toVertex) >= 0) {
                     env.throwError(root.linenum);
                     console.log("Already exists an edge");
@@ -127,8 +158,8 @@ $(document).ready(function () {
                     //Throw an error
                 } 
                 fromNeighbors.push(toVertex);
-                origValue[fromVertex] = fromNeighbors;
-                return [returnValue, [origValue, isDirected]];
+                valueCopy[fromVertex] = fromNeighbors;
+                return [returnValue, [valueCopy, isDirected]];
                 
             }
             
@@ -137,36 +168,36 @@ $(document).ready(function () {
             var density = parameters[1].value;
             if (isDirected != true) {
                 for (var i = 0; i < numNodes; i++) {
-                    origValue.push([]);
+                    valueCopy.push([]);
                     for (var j = 0; j < i; j++) {
                         var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
                         if (prob < density) {
-                            iEdge = origValue[i];
-                            jEdge = origValue[j];
+                            iEdge = valueCopy[i];
+                            jEdge = valueCopy[j];
                             iEdge.push(j);
                             jEdge.push(i);
                         }
                     }
                 }
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
             if (isDirected == true) {
                 for (var m = 0; m < numNodes; m++) {
-                    origValue.push([]);
+                    valueCopy.push([]);
                     for (var n = 0; n < m; n++) {
                         var probFrom = (Math.random() * (0 - 1) + 1).toFixed(2);
                         if (probFrom < density) {
-                            iEdge = origValue[m];
+                            iEdge = valueCopy[m];
                             iEdge.push(n);
                         }
                         var probTo = (Math.random() * (0 - 1) + 1).toFixed(2);
                         if (probTo < density) {
-                            jEdge = origValue[n];
+                            jEdge = valueCopy[n];
                             jEdge.push(m);
                         }
                     }
                 }
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
         }
         
@@ -174,8 +205,8 @@ $(document).ready(function () {
             if (isDirected != true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
-                var node1Edges = origValue[node1];
-                var node2Edges = origValue[node2];
+                var node1Edges = valueCopy[node1];
+                var node2Edges = valueCopy[node2];
                 var node1NEdges = [];
                 var node2NEdges = [];
                 if (node1Edges.indexOf(node2) < 0) {
@@ -196,16 +227,16 @@ $(document).ready(function () {
                             node2NEdges.push(curr2Edge);
                         }
                     }
-                    origValue[node1] = node1NEdges;
-                    origValue[node2] = node2NEdges;
-                    return [returnValue, [origValue, isDirected]];
+                    valueCopy[node1] = node1NEdges;
+                    valueCopy[node2] = node2NEdges;
+                    return [returnValue, [valueCopy, isDirected]];
                 }
             }
             
             if (isDirected == true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
-                var node1Edges = origValue[node1];
+                var node1Edges = valueCopy[node1];
                 var node1NEdges = [];
                 if (node1Edges.indexOf(node2) < 0) {
                     env.throwError(root.linenum);
@@ -219,25 +250,25 @@ $(document).ready(function () {
                         node1NEdges.push(currEdge);
                     }
                 }
-                origValue[node1] = node1NEdges;
-                return [returnValue, [origValue, isDirected]];
+                valueCopy[node1] = node1NEdges;
+                return [returnValue, [valueCopy, isDirected]];
             }
         }
         
         
         
         if (method == "addVertex") {
-            origValue.push([]);
-            returnValue = origValue.length;
-            return [returnValue, [origValue, isDirected]];
+            valueCopy.push([]);
+            returnValue = valueCopy.length;
+            return [returnValue, [valueCopy, isDirected]];
         }
         
         if (method == "getVertices") {
             returnValue = [];
-            for (var i = 0; i < origValue.length; i++) {
+            for (var i = 0; i < valueCopy.length; i++) {
                 returnValue.push(i);
             }
-            return [returnValue, [origValue, isDirected], "List<Integer>"];
+            return [returnValue, [valueCopy, isDirected], "List<Integer>"];
         }
         
         if (method == "hasEdge") {
@@ -251,49 +282,49 @@ $(document).ready(function () {
             if (isDirected != true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
-                console.log("Nodes are: ", origValue);
+                console.log("Nodes are: ", valueCopy);
                 console.log("Node 1 is: ", node1);
-                var node1Edges = origValue[node1];
+                var node1Edges = valueCopy[node1];
                 console.log("Node 1 edges are: ", node1Edges);
                 if (node1Edges.indexOf(node2) < 0) {
                     returnValue = false;
                 } else {
                     returnValue = true;
                 }
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
             
             if (isDirected == true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
-                var node1Edges = origValue[node1];
+                var node1Edges = valueCopy[node1];
                 if (node1Edges.indexOf(node2) < 0) {
                     returnValue = false;
                 } else {
                     returnValue = true;
                 }
-                return [returnValue, [origValue, isDirected], "boolean"];
+                return [returnValue, [valueCopy, isDirected], "boolean"];
             }
         }
         
         if (method == "getNeighbors") {
             var node = parameters[0].value;
-            console.log("Here: ", origValue);
-            if (origValue.length < node) {
+            console.log("Here: ", valueCopy);
+            if (valueCopy.length < node) {
                 env.throwError(root.linenum);
                 console.log("Node not in graph");
                 root.error("Not in graph");
                 //Throw Error
             }
-            returnValue = origValue[node];
-            return [returnValue, [origValue, isDirected], "List<Integer>"];
+            returnValue = valueCopy[node];
+            return [returnValue, [valueCopy, isDirected], "List<Integer>"];
         }
         
         if (method == "getDegree") {
             
             var vertex = parameters[0].value;
-            returnValue = origValue[vertex].length;
-            return [returnValue, [origValue, isDirected], "int"];
+            returnValue = valueCopy[vertex].length;
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
         
         if (method == "getInDegree") {
@@ -305,51 +336,51 @@ $(document).ready(function () {
             }
             var vertex = parameters[0].value;
             var degree = 0;
-            for (var i = 0; i < origValue.length; i++) {
-                var neighbors = origValue[i];
+            for (var i = 0; i < valueCopy.length; i++) {
+                var neighbors = valueCopy[i];
                 if (neighbors.indexOf(vertex) >= 0) {
                     degree += 1;
                 }
             }
             returnValue = degree;
-            return [returnValue, [origValue, isDirected], "int"];
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
         
         if (method == "numEdges") {
             if (isDirected != true) {
                 var length = 0;
-                for (var i = 0; i < origValue.length; i++) {
-                    console.log("looking at edge: ", i, origValue[i], "length: ");
-                    length += origValue[i].length;
+                for (var i = 0; i < valueCopy.length; i++) {
+                    console.log("looking at edge: ", i, valueCopy[i], "length: ");
+                    length += valueCopy[i].length;
                 }
                 returnValue = length / 2;
-                return [returnValue, [origValue, isDirected], "int"];
+                return [returnValue, [valueCopy, isDirected], "int"];
             }
             
             if (isDirected == true) {
                 var length = 0;
-                for (var i = 0; i < origValue.length; i++) {
-                    console.log("looking at edge: ", i, origValue[i], "length: ");
-                    length += origValue[i].length;
+                for (var i = 0; i < valueCopy.length; i++) {
+                    console.log("looking at edge: ", i, valueCopy[i], "length: ");
+                    length += valueCopy[i].length;
                 }
                 returnValue = length;
-                return [returnValue, [origValue, isDirected], "int"];
+                return [returnValue, [valueCopy, isDirected], "int"];
             }
         }
         
         if (method == "numVerts") {
-            returnValue = origValue.length;
-            return [returnValue, [origValue, isDirected], "int"];
+            returnValue = valueCopy.length;
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
         
         if (method == "isEmpty") {
-            returnValue = (origValue.length == 0);
-            return [returnValue, [origValue, isDirected], "boolean"];
+            returnValue = (valueCopy.length == 0);
+            return [returnValue, [valueCopy, isDirected], "boolean"];
         }
         
         if (method == "clear") {
-            origValue = [];
-            return [returnValue, [origValue, isDirected]];
+            valueCopy = [];
+            return [returnValue, [valueCopy, isDirected]];
         }
         
         
