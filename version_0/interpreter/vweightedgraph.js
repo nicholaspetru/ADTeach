@@ -2,18 +2,13 @@
 * Weighted Graph ADT
 * Types supported: All verticies are integers
 * Methods supported: hasEdge, getWeight, setWeight, addVertex, getDegree, getInDegree, getOutDegree, getNeighbors, getEdges, getVerticies, addEdge, removeEdge, populate, numEdges, numVerts, clear, isEmpty, 'setDirected
-* Authors: Sarah LeBlanc and Colby Seyferth
+* Authors: Colby Seyferth and Sarah LeBlanc
 * ADTeach Team
 */
 
 $(document).ready(function () {
 
-    VWeightedGraph = function(t) {
-        if (t == "String") {
-            this.storeType = typeof string;
-        } else if (t == "int") {
-            this.storeType = typeof number;
-        }
+    VWeightedGraph = function() {
     }
     
     /**

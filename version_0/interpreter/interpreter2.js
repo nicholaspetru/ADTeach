@@ -975,7 +975,8 @@ $(document).ready(function () {
                         break;
                     }
                     if (parameters.length == 1) {
-                        method = method + "." + adtCurValue.length;
+                        //method = method + "." + adtCurValue.length;
+                        method = method + "." + env.getVariables()[env.getIndex(adt)].value.length;
                         break;
                     } else {
                         method = method + "." + cloneParam[0].value;

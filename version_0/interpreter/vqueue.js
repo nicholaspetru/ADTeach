@@ -15,7 +15,7 @@ $(document).ready(function () {
     
     /**
     *
-    * Return the supported methods for the List ADT
+    * Return the supported methods for the Queue ADT
     *
     *@return {Object} List of supported methods
     *
