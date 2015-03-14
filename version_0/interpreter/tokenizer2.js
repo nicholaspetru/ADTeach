@@ -222,12 +222,12 @@ Tokenizer.prototype._process_symbol = function(env) {
 */
 	else if (temp === 'Stack' || temp === 'Queue' || temp === 'List' || temp === 'PriorityQueue' || temp === "Dictionary") {
 		if (this.buf.charAt(endpos) !== '<') {
-            e.throwError(this.linenum);
+            env.throwError(this.linenum, 'Syntax error: expected type specifier for ADT');
 			throw Error('Syntax error: expected type specifier for ADT');
 		}
 		var close_angle = this.buf.indexOf('>', endpos+1); // find the closing bracket >
 		if (close_angle === -1) {
-            e.throwError(this.linenum);
+            env.throwError(this.linenum, "Syntax error: missing closing bracket >");
 			throw Error("Syntax error: missing closing bracket >");
 		} else {
 			var tok = {
@@ -258,7 +258,7 @@ Tokenizer.prototype._process_string = function(env) {
 	var end_index = this.buf.indexOf('"', this.pos+1); // find the ending quote
 
 	if (end_index === -1) {
-        env.throwError(this.linenum);
+        env.throwError(this.linenum, "Unterminated quote");
 		throw Error('Unterminated quote');
 	} else {
 		var tok = {
@@ -278,7 +278,7 @@ Tokenizer.prototype._process_char = function(env) {
 	var end_index = this.buf.indexOf("'", this.pos+1); // find the ending quote
 
 	if (end_index === -1) {
-        env.throwError(this.linenum);
+        env.throwError(this.linenum, 'Unterminated quote');
 		throw Error('Unterminated quote');
 	} else {
 		var tok = {

@@ -20,7 +20,7 @@ $(document).ready(function () {
     Interpreter.prototype.interpret = function(code, vh) {
         var f = new Environment(null, vh);
         this.code = code;
-        this.makeTokenList();
+        this.makeTokenList(f);
         var source = this.TokenList;
         var parse = make_parse(f);
         var tree = parse(source);
@@ -1310,7 +1310,7 @@ $(document).ready(function () {
 
         t.input(this.code);
 
-        var currentToken = t.token();
+        var currentToken = t.token(env);
         //console.log("Returning current token: ", currentToken);
         while (currentToken) {
             switch (currentToken.type) {
