@@ -497,11 +497,25 @@ $(document).ready(function () {
         }
     }
     
-    Interpreter.prototype.evalCondition = function(root, env) {        
+    Interpreter.prototype.evalCondition = function(root, env) {   
+        console.log("Condition is: ", root);     
+        var truth;
         if (root.value == true) {
             return true;
         } else if (root.value == false) {
             return false;
+        } else if (root.arity == "unary") {
+            if (root.first.arity == "FunCall") {
+                truth = this.evalCondition(root.first, env)[0];
+            } else {
+                truth = this.evalCondition(root.first, env);
+            }
+            console.log("Truth is: ", truth);
+            if (truth) {
+                return false;
+            } else {
+                return true;
+            }
         } else if (root.arity == "literal") {
             ////console.log("Can't do literals");
         } else if (root.arity == "name") {
