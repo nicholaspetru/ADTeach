@@ -72,7 +72,12 @@ $(document).ready(function () {
         //console.log("Origin method type is: ", adtType); 
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
+        console.log("Type is: ", type);
+
         this.variables[index].value = newVal;
+        if (type == "float") {
+            newVal = newVal[0];
+        }
         if (adtType == "Stack<Float>" || adtType == "List<Float>" || adtType == "Queue<Float>" || adtType == "PriorityQueue<Float>") {
             var slicedValue = [];
             for (var i = 0; i < newVal.length; i++) {

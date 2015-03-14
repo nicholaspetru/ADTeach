@@ -336,7 +336,7 @@ $(document).ready(function () {
                 root.error();
             }
 
-            //Determine the type of the return value and get value at index in list
+            //Determine the type of the return value and get value at index in list and store in returnValue
             switch (type) {
                 case "List<Integer>":
                     valType = "int";
@@ -360,59 +360,100 @@ $(document).ready(function () {
                 root.error();
             }
 
-
-            
-
             return [returnValue, valueCopy, valType];
         }
+
+
+        //IsEmpty method
+        //Parameters:       none
+        //Returns:          boolean - true if empty, false if not
+        //                  does not change content of list
         if (method == 'isEmpty') {
             returnValue = (valueCopy.length == 0);
             return [returnValue, valueCopy, 'boolean'];
         }
+
+        //Size method
+        //Parameters:       none
+        //Returns:          integer - size of list
+        //                  does not change content of list
         if (method == 'size') {
             returnValue = (valueCopy.length);
             return [returnValue, valueCopy, 'int'];
         }
+
+        //Clear method
+        //Parameters:       none
+        //Returns:          none
+        //                  removes everything from list
         if (method == 'clear') {
             valueCopy = [];
             return [returnValue, valueCopy];
         }
+
+        //Set method
+        //Parameters:       set(index, value) - sets the item at index to the value
+        //Returns:          none
+        //                  changes item in list to value at index
         if (method == 'set') {
+
+            //Error out of user enters anything but an integer as the index
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Index must be an integer");
+                root.error();
+            }
+
+            //Error out if index is out of bounds
             if (parameters[0].value > valueCopy.length-1) {
-                env.throwError(root.linenum);
-                //console.log("Index out of bounds");
-                root.error("Index out of bounds");
+                env.throwError(root.linenum, "Index out of bounds");
+                root.error();
             } 
             
+            //Error checking to make sure item being set to index is compatible for type of list
             if (type == "List<Integer>") {
                 if (typeof parameters[1].value != typeof 2) {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "Must be setting item at index to an integer");
                     root.error();
                 } else if (parameters[1].value.toString().indexOf(".") >= 0) {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "Must be setting item at index to an integer");
                     root.error();
                 }
             } else if (type == "List<Float>") {
                 if (typeof parameters[1].value != typeof []) {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be setting item at index to a float");
+                    root.error();
                 } else if (parameters[1].value.length < 2 || parameters[1].value[1] != "float") {
-                    env.throwError(root.linenum);
-                    root.error("Expected float");
+                    env.throwError(root.linenum, "Must be setting item at index to a float");
+                    root.error();
                 }
-                valueCopy[parameters[0].value] = [parameters[1].value, "float"];
+
+                //Set the value at index to be value passed in as float
+                //valueCopy[parameters[0].value] = [parameters[1].value, "float"];
+                valueCopy[parameters[0].value] = parameters[1].value;
                 return [returnValue, valueCopy];
+
             } else if (type == "List<String>") {
                 if (typeof parameters[1].value != typeof "h") {
                     env.throwError(root.linenum);
                     root.error();
                 }
             }
+
+            //Set item at index to the given value and return
             valueCopy[parameters[0].value] = parameters[1].value;
             return [returnValue, valueCopy];
-            
         }
+
+        //Populate method
+        //Parameters:       integer - size of desired list
+        //Returns:          none
+        //                  fills list with random values
         if (method == 'populate') {
+
+            //Create a new list and fill with random integers
             if (type == "List<Integer>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
@@ -421,16 +462,19 @@ $(document).ready(function () {
                 }
                 return [returnValue, value, type];  
             }
+
+            //Pick random numbers and fill list with corresponding letters
             if (type == "List<String>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
                     var options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     var toPush = Math.floor((Math.random()*26) + 1);
-                    //console.log("Going to push: ", options[toPush], typeof options[toPush]);
                     value.push('"' + options[toPush] + '"');
                 }
                 return [returnValue, value, type];
             }
+
+            //Pick random floats to 2 decimal positions and fill list
             if (type == "List<Float>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
