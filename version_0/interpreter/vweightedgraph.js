@@ -53,13 +53,14 @@ $(document).ready(function () {
         return true;
     }
     
-    VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
+    VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
         var returnValue = null;
         var origValue = [];
         var isDirected = origValue1[1];
         var neighborNeigh = [];
-        for (var i = 0; i<origValue1[0].length; i++){
-            origValue[i]=(origValue1[0][i]);   
+        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
+        for (var i = 0; i<origValue2[0].length; i++){
+            origValue[i]=(origValue2[0][i]);   
         }
         
         if (method == "setDirected") {
