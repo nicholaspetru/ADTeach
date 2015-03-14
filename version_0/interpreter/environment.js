@@ -99,7 +99,7 @@ $(document).ready(function () {
             newVal = slicedDictionary;
         }
         
-		
+		console.log("New val is: ", newVal);
         this.symbolTable.updateVariable(type, name, newVal, originMethod, originADT, lineNum-1);
 	}
     

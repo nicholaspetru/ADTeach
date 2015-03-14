@@ -110,10 +110,10 @@ $(document).ready(function () {
         }
         if (method == 'remove') {
             returnValue = origValue[0];
-            console.log(origValue, "##!#");
+            //console.log(origValue, "##!#");
             origValue.splice(0, 1);
-            console.log(origValue);
-            console.log("REturning, ", returnValue, " + ", origValue);
+            //console.log(origValue);
+            //console.log("REturning, ", returnValue, " + ", origValue);
             return [returnValue, origValue, valType];
         }
         if (method == 'isEmpty') {

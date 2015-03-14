@@ -136,6 +136,7 @@ $(document).ready(function () {
         //variables for list
         var changed = this.setDimensions();
         var _t = this, _0 = this.x, _1 = this.y  + this.HEIGHT/2, _2 = this.y  + this.HEIGHT, _3 = this.x + this.WIDTH;
+        //this.VH.setDelay(40);
         //"M " + this.x + ", " + () + " V " + (this.y + this.HEIGHT) + " H " +  + " V " + (this.y + this.HEIGHT/2))
         //in the timeout, create and assign the actual path
         if (changed){
@@ -152,6 +153,7 @@ $(document).ready(function () {
                 }
             },(this.VH.delay - this.VH.date.getTime()));
         }
+        this.VH.setDelay(100);
     };
 
 
