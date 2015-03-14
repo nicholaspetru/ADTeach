@@ -48,7 +48,7 @@ $(document).ready(function () {
 	}
 
 	Environment.prototype.createVariable = function(type, variable, value, originMethod, originADT, lineNum) {
-        //console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
+        console.log("-------createVariable( " + type + " , " + variable + " , " + value + " , " + originMethod + " , " + originADT + ")");
         //console.log("Origin method is: ", originMethod);
         //console.log("Value is: ", value);
         //console.log("Line number: ", lineNum);
