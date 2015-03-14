@@ -1,5 +1,9 @@
-/*
-* VStack.js
+/**
+* Stack ADT
+* Types supported: Integer, Float, String
+* Methods supported: getValue, isEmpty, push, pop, populate, peek, search, size
+* Authors: Sarah LeBlanc and Colby Seyferth
+* ADTeach Team
 */
 
 $(document).ready(function () {
@@ -16,25 +20,19 @@ $(document).ready(function () {
         }
     }
     
-    VStack.prototype.isEmpty = function() {
-        return (this.top.length == 0);
-    }
-    
-    VStack.prototype.getValue = function() {
-        return this.top;
-    }
-    
-    VStack.prototype.getType = function() {
-        return "Stack";
-    }
-    
+    /**
+     * Creates a new Circle from a diameter.
+     *
+     * @param {number} d The desired diameter of the circle.
+     * @return {Circle} The new Circle object.
+     */
     VStack.prototype.listMethods = function() {
-        var methods = ['getValue', 'isEmpty', 'push', 'pop', 'populate', 'peek', 'search', 'size'];
+        var methods = ['isEmpty', 'push', 'pop', 'populate', 'peek', 'search', 'size'];
         return methods;
     }
     
     VStack.prototype.checkParameters = function(method, parameters) {
-        var noParam = ['pop', 'getValue', 'isEmpty', 'peek', 'size'];
+        var noParam = ['pop', 'isEmpty', 'peek', 'size'];
         var oneParam = ['push', 'populate', 'search'];
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
@@ -53,16 +51,16 @@ $(document).ready(function () {
         return true;
     }
     
-    VStack.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+    VStack.prototype.performMethod = function(type, valueCopy1, method, parameters, env, root, adt) {
         var returnValue = null;
-        var origValue = [];
-        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
-        for (var i = 0; i<origValue2.length; i++){
-            origValue[i]=(origValue2[i]);   
+        var valueCopy = [];
+        var origValue = env.getVariables()[env.getIndex(adt)].value;
+        for (var i = 0; i<origValue.length; i++){
+            valueCopy[i]=(origValue[i]);   
         }
         
         if (method == "pop") {
-            returnValue = origValue.pop();
+            returnValue = valueCopy.pop();
             console.log('POPPING', typeof returnValue);
             if (type == "Stack<String>") {
                 var valType = "String";
@@ -73,12 +71,12 @@ $(document).ready(function () {
                 console.log("POPPING FLOATS", returnValue);
                 returnValue = returnValue;
             }
-            return [returnValue, origValue, valType];
+            return [returnValue, valueCopy, valType];
         } 
         
         if (method == "size") {
-            returnValue = origValue.length;
-            return [returnValue, origValue, "int"];
+            returnValue = valueCopy.length;
+            return [returnValue, valueCopy, "int"];
         }
         
         if (method == "search") {
@@ -88,8 +86,8 @@ $(document).ready(function () {
             if (parameters[0].value.length == 2 && parameters[0].value[1] == "float") {
                 var count = 1;
                 if (type == "Stack<Float>") {
-                    for (var i = origValue.length -1; i > -1; i--) {
-                        if (origValue[i][0] == parameters[0].value[0]) {
+                    for (var i = valueCopy.length -1; i > -1; i--) {
+                        if (valueCopy[i][0] == parameters[0].value[0]) {
                             returnValue = count;
                             break;
                         } else {
@@ -99,13 +97,13 @@ $(document).ready(function () {
                 } else {
                     returnValue = -1;
                 }
-                return [returnValue, origValue, "int"];
+                return [returnValue, valueCopy, "int"];
             } 
             
-            if (origValue.indexOf(parameters[0].value) >= 0) {
+            if (valueCopy.indexOf(parameters[0].value) >= 0) {
                 var count = 1;
-                for (var i = origValue.length - 1; i > -1; i--) {
-                    if (origValue[i] == parameters[0].value) {
+                for (var i = valueCopy.length - 1; i > -1; i--) {
+                    if (valueCopy[i] == parameters[0].value) {
                         returnValue = count;
                         break;
                     } else {
@@ -115,7 +113,7 @@ $(document).ready(function () {
             } else {
                 returnValue = -1;
             }
-            return [returnValue, origValue, "int"];
+            return [returnValue, valueCopy, "int"];
         }
         
         if (method == "push") {
@@ -145,26 +143,18 @@ $(document).ready(function () {
             } 
             
             console.log("PUSHING: ", parameters[0]);
-                origValue.push(parameters[0].value);
+                valueCopy.push(parameters[0].value);
             
-            return [returnValue, origValue];
+            return [returnValue, valueCopy];
         } 
         
         if (method == "isEmpty") {
-            if (origValue.length == 0) {
+            if (valueCopy.length == 0) {
                 returnValue = true;
             } else {
                 returnValue = false;
             }
-            return [returnValue, origValue, "boolean"];
-        } 
-        
-        if (method == "getValue") {
-            return origValue.getValue();
-        } 
-        
-        if (method == "getType") {
-            return origValue.getType();
+            return [returnValue, valueCopy, "boolean"];
         } 
         
         if (method == "populate") {
@@ -196,7 +186,7 @@ $(document).ready(function () {
         }
         
         if (method == "peek") {
-            var length = origValue.length;
+            var length = valueCopy.length;
             if (type == "Stack<String>") {
                 var valType = "String";
             } else if (type == "Stack<Integer>") {
@@ -209,9 +199,9 @@ $(document).ready(function () {
             if (length == 0) {
                 returnValue = "null";
             } else {
-                returnValue = origValue[length-1];
+                returnValue = valueCopy[length-1];
             }
-            return [returnValue, origValue, valType];
+            return [returnValue, valueCopy, valType];
         }
         
     }

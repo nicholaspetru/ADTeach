@@ -1,5 +1,9 @@
-/*
-* VWeightedGraph.js
+/**
+* Weighted Graph ADT
+* Types supported: All verticies are integers
+* Methods supported: hasEdge, getWeight, setWeight, addVertex, getDegree, getInDegree, getOutDegree, getNeighbors, getEdges, getVerticies, addEdge, removeEdge, populate, numEdges, numVerts, clear, isEmpty, 'setDirected
+* Authors: Sarah LeBlanc and Colby Seyferth
+* ADTeach Team
 */
 
 $(document).ready(function () {
@@ -53,30 +57,30 @@ $(document).ready(function () {
         return true;
     }
     
-    VWeightedGraph.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+    VWeightedGraph.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var returnValue = null;
-        var origValue = [];
-        var isDirected = origValue1[1];
+        var origValue = env.getVariables()[env.getIndex(adt)].value;
+        var valueCopy = [];
+        var isDirected = origValue[1];
         var neighborNeigh = [];
-        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
-        for (var i = 0; i<origValue2[0].length; i++){
-            origValue[i]=(origValue2[0][i]);   
+        for (var i = 0; i<origValue[0].length; i++){
+            valueCopy[i]=(origValue[0][i]);   
         }
         
         if (method == "setDirected") {
             if (parameters[0].value == true) {
                 isDirected = true;
-                return [returnValue, [origValue, isDirected]];
+                return [returnValue, [valueCopy, isDirected]];
             }
             if (parameters[0].value == false) {
                 isDirected = false;
-                for (var currVertex = 0; currVertex < origValue.length; currVertex++) {
-                    var vertexNeighbors = origValue[currVertex];
+                for (var currVertex = 0; currVertex < valueCopy.length; currVertex++) {
+                    var vertexNeighbors = valueCopy[currVertex];
 
                     for (var neighbor = 0; neighbor < vertexNeighbors.length; neighbor++) {
                         
                         var currNeighbor = vertexNeighbors[neighbor][0];
-                        var neighborNeigh = origValue[currNeighbor];
+                        var neighborNeigh = valueCopy[currNeighbor];
 
                         var edgeCheck = false;
                         for (var i = 0; i<neighborNeigh.length; i++){
@@ -89,9 +93,9 @@ $(document).ready(function () {
                             neighborNeigh.push([currVertex, weight]);
                         }
                     }
-                    origValue[currNeighbor] = neighborNeigh;                    
+                    valueCopy[currNeighbor] = neighborNeigh;                    
                 }
-                return [returnValue, [origValue, isDirected], "WeightedGraph"];
+                return [returnValue, [valueCopy, isDirected], "WeightedGraph"];
             }
             
         } 
@@ -100,15 +104,15 @@ $(document).ready(function () {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
             var weight = parameters[2].value;
-            if (node1 > origValue.length || node2 > origValue.length){
+            if (node1 > valueCopy.length || node2 > valueCopy.length){
                 env.throwError(root.linenum);
                 console.log("Error! Node not in graph");
                 root.error("Node not in graph");
                 //Throw an error!
             }
             
-            var node1Edges = origValue[node1];
-            var node2Edges = origValue[node2];
+            var node1Edges = valueCopy[node1];
+            var node2Edges = valueCopy[node2];
             
             if (node1Edges.indexOf(node2) >= 0){
                 env.throwError(root.linenum);
@@ -119,19 +123,19 @@ $(document).ready(function () {
             node1Edges.push([node2, weight]);
             if (isDirected != true) node2Edges.push([node1, weight]);
             
-            return [returnValue, [origValue, isDirected], "WeightedGraph"];
+            return [returnValue, [valueCopy, isDirected], "WeightedGraph"];
             
         } if (method == "populate") {
             var numNodes = parameters[0].value;
             var density = parameters[1].value;
             for (var i = 0; i < numNodes; i++) {
-                origValue.push([]);
+                valueCopy.push([]);
                 for (var j = 0; j < i; j++) {
                     var prob = (Math.random()* (0 - 1) + 1).toFixed(2);
                     var weight = Math.floor((Math.random() * 10) + 1);
                     if (prob < density) {
-                        iEdge = origValue[i];
-                        jEdge = origValue[j];
+                        iEdge = valueCopy[i];
+                        jEdge = valueCopy[j];
                         iEdge.push([j, weight]);
                         if (isDirected != true) jEdge.push([i, weight]);
                         else {
@@ -141,14 +145,14 @@ $(document).ready(function () {
                     }
                 }
             }
-            return [returnValue, [origValue, isDirected], "WeightedGraph"];
+            return [returnValue, [valueCopy, isDirected], "WeightedGraph"];
         }
         
         if (method == "removeEdge") {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
-            var node1Edges = origValue[node1];
-            var node2Edges = origValue[node2];
+            var node1Edges = valueCopy[node1];
+            var node2Edges = valueCopy[node2];
             var node1NEdges = [];
             var node2NEdges = [];
             var edgeCheck = false;
@@ -167,7 +171,7 @@ $(document).ready(function () {
                         node1NEdges.push(currEdge);
                     }
                 }
-                origValue[node1] = node1NEdges;
+                valueCopy[node1] = node1NEdges;
                 
                 if (isDirected != true){
                     for (var j = 0; j < node2Edges.length; j++) {
@@ -176,26 +180,26 @@ $(document).ready(function () {
                             node2NEdges.push(curr2Edge);
                         }
                     }
-                    origValue[node2] = node2NEdges;
+                    valueCopy[node2] = node2NEdges;
                 } else{
-                    origValue[node2] = node2Edges;
+                    valueCopy[node2] = node2Edges;
                 }
                 
-                return [returnValue, [origValue, isDirected], "WeightedGraph"];
+                return [returnValue, [valueCopy, isDirected], "WeightedGraph"];
             }
         }
         
         if (method == "addVertex") {
-            origValue.push([]);
-            return [returnValue, [origValue, isDirected], "WeightedGraph"];
+            valueCopy.push([]);
+            return [returnValue, [valueCopy, isDirected], "WeightedGraph"];
         }
 
         if (method == "getVertices") {
             returnValue = [];
-            for (var i = 0; i < origValue.length; i++) {
+            for (var i = 0; i < valueCopy.length; i++) {
                 returnValue.push(i)[0];
             }
-            return [returnValue, [origValue, isDirected], "List<Integer>"];
+            return [returnValue, [valueCopy, isDirected], "List<Integer>"];
         }
 
         if (method == "getDegree") {
@@ -206,8 +210,8 @@ $(document).ready(function () {
                 //Throw error
             }
             var vertex = parameters[0].value;
-            returnValue = origValue[vertex].length;
-            return [returnValue, [origValue, isDirected], "int"];
+            returnValue = valueCopy[vertex].length;
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
 
         
@@ -220,8 +224,8 @@ $(document).ready(function () {
                 //Throw error
             }
             var vertex = parameters[0].value;
-            returnValue = origValue[vertex].length;
-            return [returnValue, [origValue, isDirected], "int"];
+            returnValue = valueCopy[vertex].length;
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
 
         if (method == "getInDegree") {
@@ -233,37 +237,37 @@ $(document).ready(function () {
             }
             var vertex = parameters[0].value;
             var degree = 0;
-            for (var i = 0; i < origValue.length; i++) {
-                var neighbors = origValue[i];
+            for (var i = 0; i < valueCopy.length; i++) {
+                var neighbors = valueCopy[i];
                 for(var j = 0; j<neighbors.length; j++){
                     if (neighbors[j][0] == vertex) degree++;
                 }
             }
             returnValue = degree;
-            return [returnValue, [origValue, isDirected], "int"];
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
 
         if (method == "hasEdge") {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
-            console.log("Nodes are: ", origValue);
+            console.log("Nodes are: ", valueCopy);
             console.log("Node 1 is: ", node1);
-            var node1Edges = origValue[node1];
+            var node1Edges = valueCopy[node1];
             
             returnValue = false;
             for (var i = 0; i < node1Edges.length; i++){
                 if (node1Edges[i][0] == node2) returnValue = true;
             }
             console.log(returnValue);
-            return [returnValue, [origValue, isDirected], "boolean"];
+            return [returnValue, [valueCopy, isDirected], "boolean"];
         }
         
         if (method == "getNeighbors") {
             var node = parameters[0].value;
-            var node1Edges = origValue[node];
+            var node1Edges = valueCopy[node];
             var neighbors = [];
             
-            if (node >= origValue.length) {
+            if (node >= valueCopy.length) {
                 env.throwError(root.linenum);
                 console.log("********Node not in graph");
                 root.error("Node not in graph");
@@ -275,42 +279,42 @@ $(document).ready(function () {
             }
             
             returnValue = neighbors;
-            return [returnValue, [origValue, isDirected], "List<Integer>"];
+            return [returnValue, [valueCopy, isDirected], "List<Integer>"];
         }
         
         if (method == "numEdges") {
             var length = 0;
-            for (var i = 0; i < origValue.length; i++) {
-                console.log("looking at edge: ", i, origValue[i], "length: ");
-                length += origValue[i].length;
+            for (var i = 0; i < valueCopy.length; i++) {
+                console.log("looking at edge: ", i, valueCopy[i], "length: ");
+                length += valueCopy[i].length;
             }
             returnValue = length / 2;
-            return [returnValue, [origValue, isDirected], "int"];
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
         
         if (method == "numVerts") {
-            returnValue = origValue.length;
-            return [returnValue, [origValue, isDirected], "int"];
+            returnValue = valueCopy.length;
+            return [returnValue, [valueCopy, isDirected], "int"];
         }
         
         if (method == "isEmpty") {
-            returnValue = (origValue.length == 0);
-            return [returnValue, [origValue, isDirected], "boolean"];
+            returnValue = (valueCopy.length == 0);
+            return [returnValue, [valueCopy, isDirected], "boolean"];
         }
         
         if (method == "clear") {
-            origValue = [];
-            return [returnValue, [origValue, isDirected], "WeightedGraph"];
+            valueCopy = [];
+            return [returnValue, [valueCopy, isDirected], "WeightedGraph"];
         }
         
         if (method == "getWeight") {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
-            if (origValue.length < node1-1 || origValue.length < node2-1) {
+            if (valueCopy.length < node1-1 || valueCopy.length < node2-1) {
                 env.throwError(root.linenum);
                 root.error("Nodes not in graph");
             }
-            var node1Edges = origValue[node1];
+            var node1Edges = valueCopy[node1];
             console.log(node1, node2, node1Edges);
             returnValue = 89;
             for (var i = 0; i < node1Edges.length; i++){
@@ -319,7 +323,7 @@ $(document).ready(function () {
                 }
             }
 
-            return [returnValue, [origValue, isDirected], "int"];
+            return [returnValue, [valueCopy, isDirected], "int"];
 
         }
 
@@ -327,8 +331,8 @@ $(document).ready(function () {
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
             var weight = parameters[2].value;
-            var node1Edges = origValue[node1];
-            var node2Edges = origValue[node2];
+            var node1Edges = valueCopy[node1];
+            var node2Edges = valueCopy[node2];
             
             edgeCheck = false;
             for (var i = 0; i < node1Edges.length; i++){
@@ -338,7 +342,7 @@ $(document).ready(function () {
                 }
             }
 
-            return [returnValue, [origValue, isDirected], "int"];
+            return [returnValue, [valueCopy, isDirected], "int"];
 
         }
         

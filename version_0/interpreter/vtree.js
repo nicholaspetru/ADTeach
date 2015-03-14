@@ -1,5 +1,9 @@
-/*
-* VTree.js
+/**
+* Tree ADT
+* Types supported: All verticies are integers
+* Methods supported: populate, setRoot, addChild, getParent, getChildren, getChild, removeChild, removeVertex
+* Authors: Sarah LeBlanc and Colby Seyferth
+* ADTeach Team
 */
 
 $(document).ready(function () {
@@ -37,18 +41,18 @@ $(document).ready(function () {
         return true;
     }
     
-    VTree.prototype.performMethod = function(type, origValue1, method, parameters, env, root,adt) {
+    VTree.prototype.performMethod = function(type, valueCopy1, method, parameters, env, root,adt) {
         var returnValue = null;
-        var origValue = [];
-        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
-        for (var i = 0; i < origValue2.length; i++){
-            origValue[i]=(origValue2[i]);   
+        var valueCopy = [];
+        var origValue = env.getVariables()[env.getIndex(adt)].value;
+        for (var i = 0; i < origValue.length; i++){
+            valueCopy[i]=(origValue[i]);   
         }
         
         if (method == "setRoot") {
-            if (origValue.length == 0) {
-                origValue.push([parameters[0].value, null, []]);
-                return [returnValue, origValue];
+            if (valueCopy.length == 0) {
+                valueCopy.push([parameters[0].value, null, []]);
+                return [returnValue, valueCopy];
             } else if (typeof parameters[0].value != typeof 1) {
                 env.throwError(root.linenum);
                 root.error();
@@ -57,15 +61,15 @@ $(document).ready(function () {
                 root.error();
             } else {
                 var newValue = [];
-                newValue.push([parameters[0].value, null, origValue[0][0]]);
-                var oldRoot = origValue[0];
+                newValue.push([parameters[0].value, null, valueCopy[0][0]]);
+                var oldRoot = valueCopy[0];
                 oldRoot[1] = parameters[0].value;
                 newValue.push(oldRoot);
-                for (var i = 1; i < origValue.length; i++) {
-                    newValue.push(origValue[i]);
+                for (var i = 1; i < valueCopy.length; i++) {
+                    newValue.push(valueCopy[i]);
                 }
-                origValue = newValue;
-                return [returnValue, origValue];
+                valueCopy = newValue;
+                return [returnValue, valueCopy];
             }
         }
         
@@ -80,11 +84,11 @@ $(document).ready(function () {
                 }
             }
             
-            var origValueCopy = [];
+            var valueCopyCopy = [];
             var seenVertex = false;
-            for (var k = 0; k < origValue.length; k++) {
-                origValueCopy.push(origValue[k]);
-                if (origValue[k][0] == vertex) {
+            for (var k = 0; k < valueCopy.length; k++) {
+                valueCopyCopy.push(valueCopy[k]);
+                if (valueCopy[k][0] == vertex) {
                     seenVertex = true;
                 }
             }
@@ -102,8 +106,8 @@ $(document).ready(function () {
             }
             
             if (parameters.length == 2) {
-                for (var i = 0; i < origValue.length; i++) {
-                    var currentTreeNode = origValueCopy[i];
+                for (var i = 0; i < valueCopy.length; i++) {
+                    var currentTreeNode = valueCopyCopy[i];
                     var currValue = currentTreeNode[0];
                     if (currValue == vertex) {
                         var currChildrenCopy = [];
@@ -111,17 +115,17 @@ $(document).ready(function () {
                             currChildrenCopy.push(currentTreeNode[2][j]);
                         }
                         currChildrenCopy.push(child);
-                        origValueCopy[i][2] = currChildrenCopy;
-                        origValueCopy.push([child, currValue, []]);
+                        valueCopyCopy[i][2] = currChildrenCopy;
+                        valueCopyCopy.push([child, currValue, []]);
                     }
                 }
-                origValue = origValueCopy;
-                return [returnValue, origValue];
+                valueCopy = valueCopyCopy;
+                return [returnValue, valueCopy];
             }
             
             if (parameters.length == 3) {
-                for (var i = 0; i < origValue.length; i++) {
-                    var currentTreeNode = origValueCopy[i];
+                for (var i = 0; i < valueCopy.length; i++) {
+                    var currentTreeNode = valueCopyCopy[i];
                     var currValue = currentTreeNode[0];
                     if (currValue == vertex) {
                         var currChildrenCopy = [];
@@ -132,12 +136,12 @@ $(document).ready(function () {
                         
                         currChildrenCopy = first.concat(second).concat(third); 
 
-                        origValueCopy[i][2] = currChildrenCopy;
-                        origValueCopy.push([child, currValue, []]);
+                        valueCopyCopy[i][2] = currChildrenCopy;
+                        valueCopyCopy.push([child, currValue, []]);
                     }
                 }
-                origValue = origValueCopy;
-                return [returnValue, origValue];
+                valueCopy = valueCopyCopy;
+                return [returnValue, valueCopy];
             }
             
         }
@@ -145,44 +149,44 @@ $(document).ready(function () {
         if (method == 'getParent') {
             var vertex = parameters[0].value;
             var parent;
-            for (var i = 0; i < origValue.length; i++) {
-                var currTreeNode = origValue[i];
+            for (var i = 0; i < valueCopy.length; i++) {
+                var currTreeNode = valueCopy[i];
                 var currValue = currTreeNode[0];
                 if (currValue == vertex) {
                     parent = currTreeNode[1];
                 }
             }
             returnValue = parent;
-            return [returnValue, origValue, "int"];
+            return [returnValue, valueCopy, "int"];
         }
         
         if (method == "getChildren") {
             var vertex = parameters[0].value;
             var children;
-            for (var i = 0; i < origValue.length; i++) {
-                var currTreeNode = origValue[i];
+            for (var i = 0; i < valueCopy.length; i++) {
+                var currTreeNode = valueCopy[i];
                 var currValue = currTreeNode[0];
                 if (currValue == vertex) {
                     children = currTreeNode[2];
                 }
             }
             returnValue = children;
-            return [returnValue, origValue, "List<Integer>"];
+            return [returnValue, valueCopy, "List<Integer>"];
         }
         
         if (method == "getChild") {
             var vertex = parameters[0].value;
             var child = parameters[1].value;
             
-            for (var i = 0; i < origValue.length; i++) {
-                var currTreeNode = origValue[i];
+            for (var i = 0; i < valueCopy.length; i++) {
+                var currTreeNode = valueCopy[i];
                 var currValue = currTreeNode[0];
                 if (currValue == vertex) {
                     child = currTreeNode[2][child];
                 }
             }
             returnValue = child;
-            return [returnValue, origValue, "int"];
+            return [returnValue, valueCopy, "int"];
         }
         
         if (method == "removeChild") {
@@ -190,11 +194,11 @@ $(document).ready(function () {
             var child = parameters[1].value;
             var childrenToRemove = [];
             
-            var origValueCopy = [];
+            var valueCopyCopy = [];
             var seenVertex = false;
-            for (var k = 0; k < origValue.length; k++) {
-                origValueCopy.push(origValue[k]);
-                if (origValue[k][0] == vertex) {
+            for (var k = 0; k < valueCopy.length; k++) {
+                valueCopyCopy.push(valueCopy[k]);
+                if (valueCopy[k][0] == vertex) {
                     seenVertex = true;
                 }
             }
@@ -211,8 +215,8 @@ $(document).ready(function () {
                 root.error();
             }
             
-            for (var i = 0; i < origValueCopy.length; i++) {
-                var currentTreeNode = origValueCopy[i];
+            for (var i = 0; i < valueCopyCopy.length; i++) {
+                var currentTreeNode = valueCopyCopy[i];
                 var currValue = currentTreeNode[0];
                 if (currValue == vertex) {
                     if (currentTreeNode[2].length <= child) {
@@ -232,18 +236,18 @@ $(document).ready(function () {
                     }
                     
                     console.log("Leftover children: ", currChildrenCopy);
-                    origValueCopy[i][2] = currChildrenCopy;
+                    valueCopyCopy[i][2] = currChildrenCopy;
                     
                     while (childrenToRemove.length != 0) {
-                        for (var k = 0; k < origValueCopy.length; k++) {
-                            var currVertex = origValueCopy[k];
+                        for (var k = 0; k < valueCopyCopy.length; k++) {
+                            var currVertex = valueCopyCopy[k];
                             console.log("Curr vertex is: ", currVertex);
                             var value = currVertex[0];
                             if (value == childrenToRemove[0]) {
                                 for (var m = 0; m < currVertex[2].length; m++) {
                                     childrenToRemove.push(currVertex[2][m]);
                                 }
-                                origValueCopy[k] = null;
+                                valueCopyCopy[k] = null;
                                 childrenToRemove.splice(0, 1);
                             }
                         }
@@ -252,13 +256,13 @@ $(document).ready(function () {
                 }
             }
             var cleanUp = [];
-            for (var b = 0; b < origValueCopy.length; b++) {
-                if (origValueCopy[b] != null) {
-                    cleanUp.push(origValueCopy[b]);
+            for (var b = 0; b < valueCopyCopy.length; b++) {
+                if (valueCopyCopy[b] != null) {
+                    cleanUp.push(valueCopyCopy[b]);
                 }
             }
-            origValue = cleanUp;
-            return [returnValue, origValue];
+            valueCopy = cleanUp;
+            return [returnValue, valueCopy];
             
          
         }
@@ -266,13 +270,13 @@ $(document).ready(function () {
         if (method == "removeVertex") {
             var vertex = parameters[0].value;
             
-            var origValueCopy = [];
+            var valueCopyCopy = [];
             var justVertices = [];
             var seenVertex = false;
-            for (var k = 0; k < origValue.length; k++) {
-                origValueCopy.push(origValue[k]);
-                justVertices.push(origValue[k][0]);
-                if (origValue[k][0] == vertex) {
+            for (var k = 0; k < valueCopy.length; k++) {
+                valueCopyCopy.push(valueCopy[k]);
+                justVertices.push(valueCopy[k][0]);
+                if (valueCopy[k][0] == vertex) {
                     seenVertex = true;
                 }
             }
@@ -290,18 +294,18 @@ $(document).ready(function () {
             
             var newList = [];
             
-            for (var j = 0; j < origValueCopy.length; j++) {
-                var currentTreeNode = origValue[j];
+            for (var j = 0; j < valueCopyCopy.length; j++) {
+                var currentTreeNode = valueCopy[j];
                 var currValue = currentTreeNode[0];
                 if (currValue == vertex) {
-                    var children = origValue[j][2];
-                    var parent = origValue[j][1];
+                    var children = valueCopy[j][2];
+                    var parent = valueCopy[j][1];
                     var parentIndex = justVertices.indexOf(parent);
-                    var otherChildren = origValueCopy[parentIndex][2];
+                    var otherChildren = valueCopyCopy[parentIndex][2];
                     otherChildren.splice(otherChildren.indexOf(currValue), 1);
                     
-                    for (var i = 0; i < origValueCopy.length; i++) {
-                        var currentTreeNode2 = origValueCopy[i];
+                    for (var i = 0; i < valueCopyCopy.length; i++) {
+                        var currentTreeNode2 = valueCopyCopy[i];
                         var currValue2 = currentTreeNode2[0];
                         
                         if (currValue2 == parent) {
@@ -317,8 +321,8 @@ $(document).ready(function () {
                     
                 }
             }
-            origValue = newList;
-            return [returnValue, origValue];
+            valueCopy = newList;
+            return [returnValue, valueCopy];
         
         }
         
@@ -432,8 +436,8 @@ $(document).ready(function () {
             console.log("Ending tree is: ", tree);
             console.log("Leftover parents: ", parents);
             
-            origValue = tree;
-            return [returnValue, origValue];
+            valueCopy = tree;
+            return [returnValue, valueCopy];
                 
         }
         

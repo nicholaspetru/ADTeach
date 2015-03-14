@@ -1,5 +1,9 @@
-/*
-* VPQueue.js
+/**
+* Priority Queue ADT
+* Types supported: Integer, Float, String
+* Methods supported: getValue, isEmpty, push, pop, populate, peek, search, size
+* Authors: Sarah LeBlanc and Colby Seyferth
+* ADTeach Team
 */
 
 $(document).ready(function () {
@@ -9,25 +13,6 @@ $(document).ready(function () {
         this.storeType = t;
     }
     
-    VPQueue.prototype.dequeue = function() {
-        return this.front.pop();
-    }
-    
-    VPQueue.prototype.push = function(value) {
-        return this.front.push(value);
-    }
-    
-    VPQueue.prototype.isEmpty = function() {
-        return (this.front.length == 0);
-    }
-    
-    VPQueue.prototype.getValue = function() {
-        return this.front;
-    }
-    
-    VPQueue.prototype.getType = function() {
-        return "PriorityQueue";
-    }
     
     VPQueue.prototype.listMethods = function() {
         var methods = ["remove", "add", "isEmpty", "size", "populate", "peek"];
