@@ -28,6 +28,7 @@ $(document).ready(function () {
         this.ADT_SECTION_Y = this.PRIMITIVE_SECTION_HEIGHT + this.PRIMITIVE_SECTION_Y + this.FONT_HEIGHT + 12 + 30;
         this.NEXT_PRIM_X = -1;
         this.NEXT_PRIM_Y = 0;
+
         //Positional 2D arrays
         this.primitiveArray = Array.matrix(this.PRIMITIVE_COL_LEN, this.PRIMITIVE_NUM_COLS, 0);
         this.adtArray = [[]];
@@ -52,7 +53,6 @@ $(document).ready(function () {
     }
 
     VisualizerHandler.prototype.highlightLine = function(lineNumber, color) {
-        //console.log("Visualizer Handler: highlightLine(" + lineNumber + ")");
         //paper for highlight line
         if (this.codeboxPaper != null) {
             this.codeboxPaper.remove();
@@ -62,7 +62,7 @@ $(document).ready(function () {
         var w = $("#code_env").width() - ($("#code_env").width() - $("#user_textbox").width());
         var h = $("#code_env").height() - ($("#code_env").height() - $("#user_textbox").height());
 
-        ////console.log("xpos: " + xpos + " width: " + w);
+        //console.log("xpos: " + xpos + " width: " + w);
         this.codeboxPaper = Raphael(xpos, ypos, w, h);
         var fontSize = $("#user_textbox").css('font-size');
         var os = navigator.platform;
@@ -192,6 +192,8 @@ $(document).ready(function () {
                 this.entities.splice(i,1);
             }
         }
+
+        // manage remaining visuals accordingly
         this.ClearAnonymous();
         this.reArrangePrimitives(start);
     };
@@ -240,7 +242,7 @@ $(document).ready(function () {
         }
     }
 
-    //Resets certain values
+    //Resets certain values (i.e. if screen is cleared)
     VisualizerHandler.prototype.ResetValues = function() {
         this.hoADT_count = -1;
         this.vertADT_count = -1;
@@ -303,6 +305,7 @@ $(document).ready(function () {
         }
     };
     // from Crockford Javascript the good parts
+    // this matrix function is called to create a system for storing primitives
     Array.matrix = function(numrows, numcols, initial) {
         var arr = [];
         for (var i = 0; i < numcols; ++i) {
@@ -315,7 +318,7 @@ $(document).ready(function () {
         return arr;
     }
 
-    // Gives the next available position to draw a primitive entity
+    // Gives the next available position to draw a primitive entity (arrangeADTs helper function)
     VisualizerHandler.prototype.nextPrimitivePosition = function() {
         if (this.NEXT_PRIM_Y + 1 == this.PRIMITIVE_COL_LEN) {
             this.NEXT_PRIM_Y = 0;
@@ -370,8 +373,9 @@ $(document).ready(function () {
 
         for (var i = 0; i < this.entities.length; i++){ 
             if (this.isPrimitive(this.entities[i])){
-                if (this.entities[i].dragged == false && this.entities[i].drawn == false) {
+                if (this.entities[i].drawn == false) {
                     this.nextPrimitivePosition();
+
                     // keep generating new positions until we find one that isnt already taken
                     this.NEXT_PRIM_X = 0;
                     this.NEXT_PRIM_Y = 0;
@@ -379,7 +383,7 @@ $(document).ready(function () {
                         this.nextPrimitivePosition();
                     }
 
-                    // claim this position
+                    // claim this position in the matrix
                     this.primitiveArray[this.NEXT_PRIM_Y][this.NEXT_PRIM_X] = this.entities[i];
                     // and draw the primitive there
                     newX = this.NEXT_PRIM_X * this.PRIMITIVE_COLUMNWIDTH + this.HBORDER;
@@ -387,13 +391,11 @@ $(document).ready(function () {
                     this.entities[i].create(newX, newY);
                     this.entities[i].drawn = true;
                 }
-                // else if this.entities[i].dragged == true
-                // move the primitive <-- i don't think we want to move it if it's been dragged
             }
         }
     };
 
-    //Arrange ADT helper function
+    //Arrange ADT helper function. Used to move previously existing ADTs
     VisualizerHandler.prototype.shiftADT = function(entities, type) {
         //console.log("Visualizer Handler: shiftADT()")
 
@@ -403,10 +405,14 @@ $(document).ready(function () {
 
         var curX, curY;
 
+        // note that it loops through a local variable that contains ADTs already drawn
         for (var i = 0; i < entities.length; i++){
             if (!this.isPrimitive(entities[i])){
 
+                // switch on things already drawn but check the type of the ADT that caused the shift
                 switch(entities[i].type.split("<")[0]){
+                    
+                    //the horizontalADT category
                     case "List":
                     case "Queue":
                     case "PriorityQueue":
@@ -418,14 +424,14 @@ $(document).ready(function () {
                         }
 
                         curY = entities[i].y;
-                        //console.log("shift " + this.entities[i].x + " to " + curX + " for " + this.entities[i].name)
                         entities[i].move(curX, curY);
                         break;
 
-                    // Don't do anything. For now, stacks won't get repositioned... that'll change
+                    // Stacks won't ever shift, this is just here so stacks don't feel left out
                     case "Stack":
                         break;
 
+                    // the "blobADT" category
                     case "Graph":
                     case "WeightedGraph":
                     case "Dictionary":
@@ -434,7 +440,7 @@ $(document).ready(function () {
                             curY = entities[i].y;
                         } else {
                             curX = entities[i].x
-                            curY = entities[i].y + 60;
+                            curY = entities[i].y + 100;
                         }
                         entities[i].move(curX, curY);
                         break;
@@ -456,14 +462,13 @@ $(document).ready(function () {
         var paper_height = document.defaultView.getComputedStyle(element,null).getPropertyValue("height");
 
         var curX = this.VBORDER, curY = this.ADT_SECTION_Y;
-        //var temp_hoADT = 0, temp_vertADT = 0, temp_blobADT = 0;
-        //var curX = 0, curY = 0;
 
         for (var i = 0; i < this.entities.length; i++){
             if (!this.isPrimitive(this.entities[i])){
                 if (this.entities[i].x != curX) {
 
                     // check ADT type to determine general positioning
+                    // (There are 3 categories of ADT shape: vertical, horizontal, blob.)
                     switch(this.entities[i].type.split("<")[0]){
                         case "List":
                         case "Queue":
@@ -490,11 +495,10 @@ $(document).ready(function () {
                                 }
                             }
 
-                            //increment the stack category count
+                            //increment the stack/vertical category count
                             if (this.entities[i].x == 0) {
                                 this.vertADT_count += 1;
                                 curX = this.VBORDER + (this.entities[i].WIDTH+30)*this.vertADT_count;
-                                //curY = parseInt(paper_height, 10) - this.entities[i].HEIGHT-this.entities[i].FONT_SIZE-8;
                                 curY = this.ADT_SECTION_Y;
                             }
                             break;
@@ -502,7 +506,7 @@ $(document).ready(function () {
                         case "Graph":
                         case "WeightedGraph":
                         case "Dictionary":
-                            // increment graph/dict count
+                            // increment graph/dict/blob count
                             if (this.entities[i].x == 0)
                                 this.blobADT_count += 1;
 
