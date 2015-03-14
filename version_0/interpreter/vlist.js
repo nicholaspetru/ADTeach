@@ -79,6 +79,9 @@ $(document).ready(function () {
     *@param {Object} root - the FunCall block 
     *@param {string} adt - the variable name for the ADT
     *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
     **/
     VList.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         console.log("TYpe of root:::::", typeof parameters)
