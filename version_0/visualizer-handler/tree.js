@@ -5,11 +5,12 @@
 */
 
 $(document).ready(function () {
-	Tree = function(paper,name,type,value,vishandler) {
+	Tree = function(paper,name,value,vishandler) {
 		this.name = name;
-		this.type = type;
+		this.type = "Tree";
 		this.value = value;
 		this.anon = [];
+		this.drawn = false;
 
 		this.paper = paper;
 		this.VH = vishandler;
@@ -91,6 +92,7 @@ $(document).ready(function () {
 	};
 
 	Tree.prototype.create = function(newX,newY) {
+		console.log("create tree");
 		this.x = newX;
 		this.y = newY;
 
@@ -113,30 +115,31 @@ $(document).ready(function () {
 		this.me.push(this.myLabel);
 	};
 
-	Tree.prototype.createTreeNode = function(value,parent) {
-		var nodeX = 50;
-		var nodeY = 50;
-
+	Tree.prototype.createTreeNode = function(value,parent,z) {
 		var newTNode = new TreeNode(this,value,parent);
+		if (typeof z !== "undefined") {
+			newTNode.position = z;
+		}
+
 		newTNode.create();
 
-		this.me.push(newTNode.node.vis[0]);
-		this.me.push(newTNode.node.vis[1]);
+		this.me.push(newTNode.DU.vis[0]);
+		this.me.push(newTNode.DU.vis[1]);
 
-		this.tnodes[nodeID] = newTNode;
+		this.tnodes[value] = newTNode;
+
+		if (parent !== null) {
+			var parentTNode = this.tnodes[parent];
+			if (typeof z === "undefined") {
+				parentTNode.addChildNode(newTNode);
+			}
+			else {
+				parentTNode.addChildNode(newTNode,z);
+			}
+		}
 	};
-
-
-
-
-
-
-
-
-
 	// sets vertex x to be the root of the tree
 	Tree.prototype.SetRoot = function(x) {
-		var rootNode = this.nodes[x];
 		this.createTreeNode(x,null);
 	};
 
@@ -148,6 +151,9 @@ $(document).ready(function () {
 		if (z) {
 			newTNode.position = z;
 		}
+		var parentNode = this.tnodes[x];
+		parentNode.addChildNode(newTNode);
+		this.tnodes[y] = newTNode;
 
 	};
 
