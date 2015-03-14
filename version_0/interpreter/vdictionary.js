@@ -71,7 +71,7 @@ $(document).ready(function () {
         }
     }
     
-    VDictionary.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
+    VDictionary.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
         var keyType;
         var valueJType;
         var valueType;
@@ -119,10 +119,11 @@ $(document).ready(function () {
                 break;
         }
         var returnValue = null;
+        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
         var origValue = {};
         var length = 0;
-        for (var i in origValue1){
-            origValue[i] = origValue1[i];
+        for (var i in origValue2){
+            origValue[i] = origValue2[i];
             length += 1;
         }
         

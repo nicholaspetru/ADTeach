@@ -51,11 +51,12 @@ $(document).ready(function () {
         return true;
     }
     
-    VList.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
+    VList.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
         var returnValue = null;
+        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
         var origValue = [];
-        for (var i = 0; i<origValue1.length; i++){
-            origValue[i]=(origValue1[i]);   
+        for (var i = 0; i<origValue2.length; i++){
+            origValue[i]=(origValue2[i]);   
         }
         if (method == 'add') {
             
