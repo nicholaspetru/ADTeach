@@ -37,11 +37,12 @@ $(document).ready(function () {
         return true;
     }
     
-    VTree.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
+    VTree.prototype.performMethod = function(type, origValue1, method, parameters, env, root,adt) {
         var returnValue = null;
         var origValue = [];
-        for (var i = 0; i < origValue1.length; i++){
-            origValue[i]=(origValue1[i]);   
+        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
+        for (var i = 0; i < origValue2.length; i++){
+            origValue[i]=(origValue2[i]);   
         }
         
         if (method == "setRoot") {
