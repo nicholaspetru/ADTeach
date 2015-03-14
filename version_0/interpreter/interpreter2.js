@@ -498,7 +498,7 @@ $(document).ready(function () {
     }
     
     Interpreter.prototype.evalCondition = function(root, env) {   
-        console.log("Condition is: ", root);     
+        //console.log("Condition is: ", root);     
         var truth;
         if (root.value == true) {
             return true;
@@ -510,7 +510,7 @@ $(document).ready(function () {
             } else {
                 truth = this.evalCondition(root.first, env);
             }
-            console.log("Truth is: ", truth);
+            //console.log("Truth is: ", truth);
             if (truth) {
                 return false;
             } else {
@@ -782,7 +782,7 @@ $(document).ready(function () {
         var index = env.getIndex(root.first.value);
         if (index >= 0){
             var value = env.getValue(name);
-            console.log("Value is: ", value);
+            //console.log("Value is: ", value);
             if (value == null) {
                 env.throwError(root.linenum, "This variable is not yet initialized");
             }
@@ -875,6 +875,7 @@ $(document).ready(function () {
     }
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
+        console.log("AAAAdt is: ", adt);
         ////console.log("Env is: ", env);
         var adtIndex = env.getIndex(adt);
         ////console.log("HERE: ", env.getVariables()[adtIndex]);
@@ -933,7 +934,7 @@ $(document).ready(function () {
                     cloneParam[i] = cloneVar;
                 }
             }
-            methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam, env, root);
+            methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam, env, root, adt);
             //console.log("returned value is *******: ", methodValue, "From method: ", method);
             returnValue = methodValue[0];
             
@@ -1135,7 +1136,7 @@ $(document).ready(function () {
         }
     }
     
-    Interpreter.prototype.doMethod = function(type, origValue, method, parameters, env, root) {
+    Interpreter.prototype.doMethod = function(type, origValue, method, parameters, env, root, adt) {
         var y;
         var newV, returnV, value;
         switch(type) {
@@ -1171,7 +1172,7 @@ $(document).ready(function () {
                 break;
             case "Queue<Integer>":
                 y = new VQueue("int");
-                value = y.performMethod(type, origValue, method, parameters, env, root);
+                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Queue<String>":

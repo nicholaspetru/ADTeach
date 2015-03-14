@@ -38,23 +38,26 @@ $(document).ready(function () {
         var zeroParam = ["remove", "isEmpty", "size", "peek"]
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
-                console.log("Only takes one parameter");
+                //console.log("Only takes one parameter");
                 return false;
             }
         } else if (method == "add" || method == "populate") {
             if (parameters.length != 1) {
-                console.log("Method takes one parameter");
+                //console.log("Method takes one parameter");
                 return false;
             }
         }
         return true;
     }
     
-    VQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root) {
+    VQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
         var returnValue = null;
+        console.log("Adt is: ", adt);
+        console.log(env.getVariables()[env.getIndex(adt)]);
+        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
         var origValue = [];
-        for (var i = 0; i<origValue1.length; i++){
-            origValue[i]=(origValue1[i]);   
+        for (var i = 0; i<origValue2.length; i++){
+            origValue[i]=(origValue2[i]);   
         }
         var valType;
         switch (type) {
@@ -114,6 +117,7 @@ $(document).ready(function () {
             origValue.splice(0, 1);
             //console.log(origValue);
             //console.log("REturning, ", returnValue, " + ", origValue);
+            //console.log("Value type returning is: ", valType);
             return [returnValue, origValue, valType];
         }
         if (method == 'isEmpty') {
