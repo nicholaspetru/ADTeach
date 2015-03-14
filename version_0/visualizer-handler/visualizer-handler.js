@@ -299,6 +299,8 @@ $(document).ready(function () {
                 return new Graph(this.paper,name,type,value, this);
             case "WeightedGraph":
                 return new WeightedGraph(this.paper,name,type,value,this);
+            case "Tree":
+                return new Tree(this.paper,name,value,this);
             default:
                 //console.log("Unknown type for newEntity: " + type);
                 return;
@@ -435,6 +437,7 @@ $(document).ready(function () {
                     case "Graph":
                     case "WeightedGraph":
                     case "Dictionary":
+                    case "Tree":
                         if (type == "Stack"){
                             curX = entities[i].x + 90;
                             curY = entities[i].y;
@@ -506,6 +509,7 @@ $(document).ready(function () {
                         case "Graph":
                         case "WeightedGraph":
                         case "Dictionary":
+                        case "Tree":
                             // increment graph/dict/blob count
                             if (this.entities[i].x == 0)
                                 this.blobADT_count += 1;

@@ -30,6 +30,7 @@ $(document).ready(function () {
 		};
 		this.branches_in = [];
 		this.branches_out = [];
+		this.inBranch = null;
 
 		return this;
 	}
@@ -112,8 +113,9 @@ $(document).ready(function () {
 		}
 		else {
 			var tempConnection = this.paper.connect(this.DU,child.DU,true,false);
-			console.log()
-			this.highlightConnection(tempConnection,this.VH.setDelay(500),this.VH.getAnimTime(500));
+			child.inBranch = tempConnection;
+			child.highlightInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+			//this.highlightConnection(tempConnection,this.VH.setDelay(500),this.VH.getAnimTime(500));
 			this.VH.setDelay(1000);
 
 			child.create();
@@ -127,6 +129,14 @@ $(document).ready(function () {
 
 		}
 
+	};
+
+	TreeNode.prototype.highlightInBranch = function(delay,time) {
+		var anim = Raphael.animation({stroke:"green"},time);
+		if (this.inBranch.attr("opacity") == 0) {
+			anim = Raphael.animation({opacity:1,stroke:"green"},time);
+		}
+		this.inBranch.animate(anim.delay(delay));
 	};
 
 	TreeNode.prototype.highlightConnection = function(connection,delay,time) {
