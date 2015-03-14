@@ -50,7 +50,7 @@ $(document).ready(function () {
         return true;
     }
     
-    VQueue.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+    VQueue.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var returnValue = null;
         console.log("Adt is: ", adt);
         console.log(env.getVariables()[env.getIndex(adt)]);

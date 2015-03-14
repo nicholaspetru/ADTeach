@@ -4,7 +4,7 @@
 * Types supported: Integer, String, Float
 * Methods supported: add, contains, get, indexOf, isEmpty, remove, set, size, populate, clear
 * Authors: Colby Seyferth and Sarah LeBlanc
-* ADTeach Team
+* ADTeach Team, 2015
 *
 **/
 
@@ -84,40 +84,48 @@ $(document).ready(function () {
     *
     **/
     VList.prototype.performMethod = function(type, method, parameters, env, root, adt) {
-        console.log("TYpe of root:::::", typeof parameters)
+        
+        //Get the current value for the ADT from the environment and make a copy of it
         var returnValue = null;
         var origValue = env.getVariables()[env.getIndex(adt)].value;
         var valueCopy = [];
         for (var i = 0; i<origValue.length; i++){
             valueCopy[i]=(origValue[i]);   
         }
+
+        //Decide which method to perform
         if (method == 'add') {
-            
+
+            //Perform add method with one parameter (add to end of list)
             if (parameters.length == 1){
-                //console.log("Parameters are: ", parameters);
+
+                //Check to make sure that the value being added is compatible with type of list
+                //If they are not compatible, throw an error to the environment and error out of the interpreter
                 if (type == "List<Integer>") {
                     if (typeof parameters[0].value != typeof 2) {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add integer to list");
                         root.error();
                     } else if (parameters[0].value.toString().indexOf('.') >= 0) {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add integer to list");
                         root.error();
                     }
                 } else if (type == "List<Float>") {
-                    //console.log("Parameters are: ", parameters);
                     if (typeof parameters[0].value != typeof []) {
-                        env.throwError(root.linenum);
-                        root.error("Expected float");
+                        env.throwError(root.linenum, "Must add float to list");
+                        root.error();
                     } else if (parameters[0].value.length < 2 || parameters[0].value[1] != "float") {
-                        env.throwError(root.linenum);
-                        root.error("Expected float");
+                        env.throwError(root.linenum, "Must add float to list");
+                        root.error();
                     }
                 } else if (type == "List<String>") {
                     if (typeof parameters[0].value != typeof "h") {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add string to list");
                         root.error();
                     }
                 }
+
+                //If they are compatible types, push the value onto the copy of the current value and return
+                //the new value of the list and null for the returnValue
                 if (type == "List<Float>") {
                     valueCopy.push([parameters[0].value, "float"]);
                 } else {
@@ -125,42 +133,50 @@ $(document).ready(function () {
                 }
                 return [returnValue, valueCopy];
             }
+
+            //Perform add method when there are two parameters (value to add, index to add it)
             else {
+
+                //Make sure index is not out of bounds, or else throw an error
                 if (parameters[0].value > valueCopy.length-1) {
-                    env.throwError(root.linenum);
-                    //console.log("Index out of bounds");
-                    root.error("Index out of bounds");
+                    env.throwError(root.linenum, "Index out of bounds");
+                    root.error();
                 } 
                 
+                //Check that what is being added is of compatible to the type of list
                 if (type == "List<Integer>") {
                     if (typeof parameters[1].value != typeof 2) {
-                        //console.log("THIS IS TRUE");
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add integer to list");
                         root.error();
                     } else if (parameters[1].value.toString().indexOf('.') >= 0) {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add integer to list");
                         root.error();
                     }
                 } else if (type == "List<Float>") {
                     if (parameters[1].value[1] != "float") {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add float to list");
                         root.error();
                     }
                 } else if (type == "List<String>") {
                     if (typeof parameters[1].value != typeof "h") {
-                        env.throwError(root.linenum);
+                        env.throwError(root.linenum, "Must add string to list");
                         root.error();
                     }
                 }
+
+                //Split the list with values before index and values after index
                 var first = valueCopy.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
                 if (type == "List<Float>") second = [[second[0], "float"]];
                 var third = valueCopy.slice(parameters[0].value);
                 
+                //Concantenate parts of list into the value to return
                 valueCopy = first.concat(second).concat(third);                
                 return [returnValue, valueCopy]; 
             }
         }
+
+
         if (method == 'get') {
             var valType;
             switch (type) {
@@ -178,8 +194,7 @@ $(document).ready(function () {
                     break;
             }
             if (parameters[0].value > valueCopy.length || parameters[0].value < 0) {
-                env.throwError(root.linenum);
-                //console.log("Index out of bounds");
+                env.throwError(root.linenum, "Index out of bounds");
                 root.error("index out of bounds");
             }
             

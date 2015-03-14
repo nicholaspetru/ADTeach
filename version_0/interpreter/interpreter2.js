@@ -1141,6 +1141,7 @@ $(document).ready(function () {
     Interpreter.prototype.doMethod = function(type, origValue, method, parameters, env, root, adt) {
         var y;
         var newV, returnV, value;
+        console.log("ADT@ is: ", adt);
         switch(type) {
             case "Stack<Integer>":
                 y = new VStack("int");
