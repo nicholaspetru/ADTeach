@@ -431,7 +431,6 @@ $(document).ready(function () {
                 }
 
                 //Set the value at index to be value passed in as float
-                //valueCopy[parameters[0].value] = [parameters[1].value, "float"];
                 valueCopy[parameters[0].value] = parameters[1].value;
                 return [returnValue, valueCopy];
 
