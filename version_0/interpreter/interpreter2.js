@@ -1144,149 +1144,149 @@ $(document).ready(function () {
         switch(type) {
             case "Stack<Integer>":
                 y = new VStack("int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Stack<String>":
                 y = new VStack("String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Stack<Float>":
                 y = new VStack("float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "List<Integer>":
                 y = new VList("int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "List<String>":
                 y = new VList("String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "List<Float>":
                 y = new VList("float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Queue<Integer>":
                 y = new VQueue("int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Queue<String>":
                 y = new VQueue("String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Queue<Float>":
                 y = new VQueue("float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "PriorityQueue<Integer>":
                 y = new VPQueue("int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "PriorityQueue<String>":
                 y = new VPQueue("String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "PriorityQueue<Float>":
                 y = new VPQueue("float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Integer, Integer>":
                 //console.log("333333333");
                 y = new VDictionary("int", "int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Integer, String>":
                 //console.log("333333333");
                 y = new VDictionary("int", "String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Integer, Boolean>":
                 //console.log("333333333");
                 y = new VDictionary("int", "bool");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Integer, Float>":
                 //console.log("333333333");
                 y = new VDictionary("int", "float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<String, Integer>":
                 //console.log("333333333");
                 y = new VDictionary("String", "int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<String, String>":
                 //console.log("333333333");
                 y = new VDictionary("String", "String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<String, Boolean>":
                 //console.log("333333333");
                 y = new VDictionary("String", "bool");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<String, Float>":
                 //console.log("333333333");
                 y = new VDictionary("String", "float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Float, Integer>":
                 //console.log("333333333");
                 y = new VDictionary("float", "int");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Float, String>":
                 //console.log("333333333");
                 y = new VDictionary("float", "String");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Float, Boolean>":
                 //console.log("333333333");
                 y = new VDictionary("float", "bool");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Float, Float>":
                 //console.log("333333333");
                 y = new VDictionary("float", "float");
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Graph":
                 y = new VGraph();
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "WeightedGraph":
                 y = new VWeightedGraph();
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Tree":
                 y = new VTree();
-                value = y.performMethod(type, origValue, method, parameters, env, root, adt);
+                value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             default:

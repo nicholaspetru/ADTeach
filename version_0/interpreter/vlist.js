@@ -1,62 +1,95 @@
-/*
-* VList.js
-*/
+/**
+*
+* List ADT
+* Types supported: Integer, String, Float
+* Methods supported: add, contains, get, indexOf, isEmpty, remove, set, size, populate, clear
+* Authors: Colby Seyferth and Sarah LeBlanc
+* ADTeach Team
+*
+**/
 
 $(document).ready(function () {
    
-    VList = function(t) {
-        this.vals = [];
-        this.storeType = t;
+    VList = function() {
     }
     
+    /**
+    *
+    * Return the supported methods for the List ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VList.prototype.listMethods = function() {
         var methods = ["add", "contains", "get", "indexOf", "isEmpty", "remove", "set", "size", "populate", "clear"];
         return methods;
     }
     
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VList.prototype.checkParameters = function(method, parameters) {
+
+        //Separate the supported methods based on how many parameters they take
         var noParam = ['isEmpty', 'size', 'clear'];
         var oneParam = ['get', 'contains', 'indexOf', 'remove', 'populate'];
         var twoParam = ['set'];
-        //console.log("Checking parameters of: ", method, "with parameters: ", parameters);
         if (method == 'add'){
             if (parameters.length > 2){
                 return false;
-                //console.log("Need 2 params or one sometimes...");
             }
         }
+
+        //Check the number of needed parameters against number of given parameters
         if (noParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
                 return false;
-                //console.log("no parameters");
-                //new IncorrectParameters();
             }
         }
         if (oneParam.indexOf(method) >= 0) {
-            //console.log("Checking for one parameter");
             if (parameters.length != 1) {
                 return false;
-                //console.log("One parameters!");
-                //new IncorrectParameters();
             }
         }
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
                 return false;
-                //console.log("Two parameters!");
-                //new IncorrectParameters();
             }
-        }
-                        
+        }    
         return true;
     }
     
-    VList.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of List
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
+    VList.prototype.performMethod = function(type, method, parameters, env, root, adt) {
+        console.log("TYpe of root:::::", typeof parameters)
         var returnValue = null;
-        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
-        var origValue = [];
-        for (var i = 0; i<origValue2.length; i++){
-            origValue[i]=(origValue2[i]);   
+        var origValue = env.getVariables()[env.getIndex(adt)].value;
+        var valueCopy = [];
+        for (var i = 0; i<origValue.length; i++){
+            valueCopy[i]=(origValue[i]);   
         }
         if (method == 'add') {
             
@@ -86,14 +119,14 @@ $(document).ready(function () {
                     }
                 }
                 if (type == "List<Float>") {
-                    origValue.push([parameters[0].value, "float"]);
+                    valueCopy.push([parameters[0].value, "float"]);
                 } else {
-                    origValue.push(parameters[0].value);
+                    valueCopy.push(parameters[0].value);
                 }
-                return [returnValue, origValue];
+                return [returnValue, valueCopy];
             }
             else {
-                if (parameters[0].value > origValue.length-1) {
+                if (parameters[0].value > valueCopy.length-1) {
                     env.throwError(root.linenum);
                     //console.log("Index out of bounds");
                     root.error("Index out of bounds");
@@ -119,13 +152,13 @@ $(document).ready(function () {
                         root.error();
                     }
                 }
-                var first = origValue.slice(0, parameters[0].value);
+                var first = valueCopy.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
                 if (type == "List<Float>") second = [[second[0], "float"]];
-                var third = origValue.slice(parameters[0].value);
+                var third = valueCopy.slice(parameters[0].value);
                 
-                origValue = first.concat(second).concat(third);                
-                return [returnValue, origValue]; 
+                valueCopy = first.concat(second).concat(third);                
+                return [returnValue, valueCopy]; 
             }
         }
         if (method == 'get') {
@@ -133,26 +166,26 @@ $(document).ready(function () {
             switch (type) {
                 case "List<Integer>":
                     valType = "int";
-                    returnValue = parseInt(origValue[parameters[0].value]);
+                    returnValue = parseInt(valueCopy[parameters[0].value]);
                     break;
                 case "List<Float>":
                     valType = "float";
-                    returnValue = parseFloat(origValue[parameters[0].value]);
+                    returnValue = parseFloat(valueCopy[parameters[0].value]);
                     break;
                 case "List<String>":
                     valType = "String";
-                    returnValue = origValue[parameters[0].value];
+                    returnValue = valueCopy[parameters[0].value];
                     break;
             }
-            if (parameters[0].value > origValue.length || parameters[0].value < 0) {
+            if (parameters[0].value > valueCopy.length || parameters[0].value < 0) {
                 env.throwError(root.linenum);
                 //console.log("Index out of bounds");
                 root.error("index out of bounds");
             }
             
-            //returnValue = origValue[parameters[0].value];
+            //returnValue = valueCopy[parameters[0].value];
             //console.log("Type of: ", returnValue, "is", typeof returnValue);
-            return [returnValue, origValue, valType];
+            return [returnValue, valueCopy, valType];
         }
 
 
@@ -166,14 +199,14 @@ $(document).ready(function () {
                     root.error("Expected float");
                 }
                 var index = -1;
-                for(var i = 0; i < origValue.length; i++){
-                    if (origValue[i][0][0] == parameters[0].value[0]) index = i;
+                for(var i = 0; i < valueCopy.length; i++){
+                    if (valueCopy[i][0][0] == parameters[0].value[0]) index = i;
                 }
-                if (index >= 0)  return [true, origValue, "boolean"];
-                return [false, origValue, "boolean"];
+                if (index >= 0)  return [true, valueCopy, "boolean"];
+                return [false, valueCopy, "boolean"];
             }
-            returnValue = (origValue.indexOf(parameters[0].value) >= 0);
-            return [returnValue, origValue, "boolean"];
+            returnValue = (valueCopy.indexOf(parameters[0].value) >= 0);
+            return [returnValue, valueCopy, "boolean"];
         }
         if (method == 'indexOf') {
             if (type == "List<Float>") {
@@ -185,14 +218,14 @@ $(document).ready(function () {
                     root.error("Expected float");
                 }
                 var index = -1;
-                for(var i = 0; i < origValue.length; i++){
-                    if (origValue[i][0][0] == parameters[0].value[0]) index = i;
+                for(var i = 0; i < valueCopy.length; i++){
+                    if (valueCopy[i][0][0] == parameters[0].value[0]) index = i;
                 }
                 returnValue = index;
-                return [returnValue, origValue, "int"];
+                return [returnValue, valueCopy, "int"];
             }
-            returnValue = origValue.indexOf(parameters[0].value);
-            return [returnValue, origValue, "int"];
+            returnValue = valueCopy.indexOf(parameters[0].value);
+            return [returnValue, valueCopy, "int"];
         }
         if (method == "remove") {
             var index = parameters[0].value;
@@ -200,20 +233,20 @@ $(document).ready(function () {
             switch (type) {
                 case "List<Integer>":
                     valType = "int";
-                    returnValue = parseInt(origValue[parameters[0].value]);
+                    returnValue = parseInt(valueCopy[parameters[0].value]);
                     break;
                 case "List<Float>":
                     valType = "float";
-                    returnValue = parseFloat(origValue[parameters[0].value]);
+                    returnValue = parseFloat(valueCopy[parameters[0].value]);
                     break;
                 case "List<String>":
                     valType = "String";
-                    returnValue = origValue[parameters[0].value];
+                    returnValue = valueCopy[parameters[0].value];
                     break;
             }
 
-            if (index > -1 && index < origValue.length) {
-                origValue.splice(index, 1);
+            if (index > -1 && index < valueCopy.length) {
+                valueCopy.splice(index, 1);
             } else {
                 env.throwError(root.linenum);
                 //console.log("Not in list");
@@ -223,22 +256,22 @@ $(document).ready(function () {
 
             
 
-            return [returnValue, origValue, valType];
+            return [returnValue, valueCopy, valType];
         }
         if (method == 'isEmpty') {
-            returnValue = (origValue.length == 0);
-            return [returnValue, origValue, 'boolean'];
+            returnValue = (valueCopy.length == 0);
+            return [returnValue, valueCopy, 'boolean'];
         }
         if (method == 'size') {
-            returnValue = (origValue.length);
-            return [returnValue, origValue, 'int'];
+            returnValue = (valueCopy.length);
+            return [returnValue, valueCopy, 'int'];
         }
         if (method == 'clear') {
-            origValue = [];
-            return [returnValue, origValue];
+            valueCopy = [];
+            return [returnValue, valueCopy];
         }
         if (method == 'set') {
-            if (parameters[0].value > origValue.length-1) {
+            if (parameters[0].value > valueCopy.length-1) {
                 env.throwError(root.linenum);
                 //console.log("Index out of bounds");
                 root.error("Index out of bounds");
@@ -260,16 +293,16 @@ $(document).ready(function () {
                     env.throwError(root.linenum);
                     root.error("Expected float");
                 }
-                origValue[parameters[0].value] = [parameters[1].value, "float"];
-                return [returnValue, origValue];
+                valueCopy[parameters[0].value] = [parameters[1].value, "float"];
+                return [returnValue, valueCopy];
             } else if (type == "List<String>") {
                 if (typeof parameters[1].value != typeof "h") {
                     env.throwError(root.linenum);
                     root.error();
                 }
             }
-            origValue[parameters[0].value] = parameters[1].value;
-            return [returnValue, origValue];
+            valueCopy[parameters[0].value] = parameters[1].value;
+            return [returnValue, valueCopy];
             
         }
         if (method == 'populate') {
@@ -301,64 +334,4 @@ $(document).ready(function () {
             }
         }
     }
-    
-    VList.prototype.add = function(e) {
-        this.vals.push(e);
-    }
-    
-    VList.prototype.contains = function(e) {
-        var contain = vals.indexOf(e);
-        return (contain > 0);
-    }
-    
-    VList.prototype.get = function(i) {
-        if (i > (this.vals.length -1)) {
-            env.throwError(root.linenum);
-            //console.log("Index out of bounds");
-            root.error("Index out of bounds");
-            //new IndexOutOfBoundsException();
-        }
-        return this.vals[i];
-    }
-    
-    VList.prototype.indexOf = function(i) {
-        for (j = 0; j < this.vals.length; j++) {
-            if (this.vals[j] == i) {
-                return this.vals.indexOf(j);
-            }
-        }
-    }
-    
-    VList.prototype.isEmpty = function() {
-        return (this.vals.length == 0);
-    }
-    
-    VList.prototype.remove = function(i) {
-        var newList = [];
-        for (j = 0; j < this.vals.length; j++) {
-            if (j != i) {
-                newList.push(this.vals[j]);
-            }
-        this.vals = newList;
-        }
-    }
-    
-    VList.prototype.set = function(i, e) {
-        if (i > this.vals.length) {
-            env.throwError(root.linenum);
-            //console.log("Index out of bounds");
-            root.error("Index out of bounds");
-            //new IndexOutOfBoundException();
-        }
-        for (j = 0; j < this.vals.length; j++) {
-            if (j == i) {
-                this.vals[j] = e;
-            }
-        }
-    }
-    
-    VList.prototype.size = function() {
-        return this.vals.length;
-    }
-    
 });
