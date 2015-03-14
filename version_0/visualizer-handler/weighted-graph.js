@@ -15,7 +15,7 @@ $(document).ready(function () {
         this.VH = vishandler;
         this.name = name;
         this.type = type;
-        this.value = value;
+        this.value = value; // [[...[toID,weight]]]
         //assign the position
         this.x = 0;
         this.y = 0;
@@ -27,7 +27,7 @@ $(document).ready(function () {
 
         this.nodes = [];
         this.edges = [];
-        this.wedges = [];
+        this.wedges = []; // [fromNodeID, toNodeID, connection]
 
         this.backgroundColor = "#B6C5BE";
         this.edgeCheck = {};
@@ -699,12 +699,16 @@ $(document).ready(function () {
         WeightedGraph.prototype.getNextPos = function() {
             if (this.count == 0) {
                 this.nextNodeX = this.x;
-                this.nextNodeY = this.y;
+                this.nextNodeY = this.y+20;
             }
             if (this.count % 2 == 0) {
+                this.nextNodeY = this.y +20;
                 this.nextNodeX += this.DUNIT_WIDTH*2;
+
             } else {
-                this.nextNodeY += this.DUNIT_WIDTH*2;
+                this.nextNodeY = this.y + 20 + this.DUNIT_WIDTH*2;
+                this.nextNodeX += this.DUNIT_WIDTH*2;
+
             }
             this.count += 1;
         };

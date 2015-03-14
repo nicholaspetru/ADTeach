@@ -14,7 +14,8 @@ $(document).ready(function () {
         this.VH = vishandler;
         this.name = name;
         this.type = type;
-        this.value = value;
+        this.value = value; // [[ [[3,4,],[0,1],[5,6] ], true  ]
+        // [toNodeID,weight]
         //assign the position
         this.x = 0;
         this.y = 0;
@@ -612,12 +613,16 @@ $(document).ready(function () {
         Graph.prototype.getNextPos = function() {
             if (this.count == 0) {
                 this.nextNodeX = this.x;
-                this.nextNodeY = this.y;
+                this.nextNodeY = this.y+20;
             }
             if (this.count % 2 == 0) {
+                this.nextNodeY = this.y +20;
                 this.nextNodeX += this.DUNIT_WIDTH*2;
+
             } else {
-                this.nextNodeY += this.DUNIT_WIDTH*2;
+                this.nextNodeY = this.y + 20 + this.DUNIT_WIDTH*2;
+                this.nextNodeX += this.DUNIT_WIDTH*2;
+
             }
             this.count += 1;
         };
