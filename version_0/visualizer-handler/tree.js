@@ -18,14 +18,17 @@ $(document).ready(function () {
 
 		this.FONT_SIZE = 15;
 		this.DUNIT_WIDTH = 25.5;
+		this.DUNIT_OFFSETY = 20;
 		this.DUNIT_BACKGROUND_COLOR = "#B6C5BE";
 		this.WIDTH = 45;
 		this.HEIGHT = 45;
 
-		this.nodes = {};
+		this.tnodes = {};
 		this.branches = [];
 		this.myLabel = null;
 		this.me = null;
+
+		this.numNodes = 0;
 	}
 
 	Tree.prototype.update = function(action,originADT) {
@@ -110,31 +113,20 @@ $(document).ready(function () {
 		this.me.push(this.myLabel);
 	};
 
-	Tree.prototype.createNode = function(nodeID,parentID) {
+	Tree.prototype.createTreeNode = function(value,parent) {
 		var nodeX = 50;
 		var nodeY = 50;
 
-		var newNode = new DataUnit(this.paper,'Tree',nodeID,this.VH,this.DUNIT_WIDTH,this.DUNIT_WIDTH,1);
-		newNode.create();
-		newNode.vis[1].attr({
-			'stroke-width':2, 
-			'fill': this.DUNIT_BACKGROUND_COLOR,
-			'fill-opacity': 1
-		});
-		newNode.vis[0].toFront();
-		newNode.vis[1].data("nodeID", nodeID);
-		newNode.id = nodeID;
+		var newTNode = new TreeNode(this,value,parent);
+		newTNode.create();
 
-		this.me.push(newNode.vis[0]);
-		this.me.push(newNode.vis[1]);
+		this.me.push(newTNode.node.vis[0]);
+		this.me.push(newTNode.node.vis[1]);
 
-		this.nodes[nodeID] = newNode;
-		this.dragNode(newNode);
+		this.tnodes[nodeID] = newTNode;
 	};
 
-	Tree.prototype.dragNode = function(node) {
-		// implement
-	};
+
 
 
 
@@ -144,13 +136,18 @@ $(document).ready(function () {
 
 	// sets vertex x to be the root of the tree
 	Tree.prototype.SetRoot = function(x) {
-
+		var rootNode = this.nodes[x];
+		this.createTreeNode(x,null);
 	};
 
 	// sets vertex y to be child of vertex x
 	// if 3 params, sets vertex y to be the zth child of vertex x,
 	// where z is either 0 or 1
 	Tree.prototype.AddChild = function(x,y,z) {
+		var newTNode = new TreeNode(this,y,x);
+		if (z) {
+			newTNode.position = z;
+		}
 
 	};
 
