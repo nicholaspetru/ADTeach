@@ -970,7 +970,7 @@ $(document).ready(function () {
                 case("add"):
                 case("addVertex"):
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>"
-                       || adtType == "Graph" || adtType == "WeightedGraph") {
+                       || adtType == "PriorityQueue<Float>" || adtType == "Graph" || adtType == "WeightedGraph") {
                         method = method + "." + returnValue;
                         break;
                     }
