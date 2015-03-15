@@ -998,7 +998,6 @@ $(document).ready(function () {
                 case("removeEdge"):
                 case("hasEdge"):
                 case("getChild"):
-                case("put"):
                 case("removeChild"):
                 case('getWeight'):
                 case('setWeight'):
@@ -1013,6 +1012,13 @@ $(document).ready(function () {
                     } else if (parameters.length == 3) {
                         method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + cloneParam[2].value;
                     
+                    }
+                case("put"):
+                    if (adtType == "Dictionary<Float, Float>") {
+                        console.log("First param is: ", cloneParam[0].value);
+                        method = method + "." + cloneParam[0].value[0] + "." + cloneParam[1].value[0];
+                    } else {
+                        method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
                     }
             }
             
