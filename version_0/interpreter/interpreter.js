@@ -1039,9 +1039,9 @@ $(document).ready(function () {
 
                     //Add parameter to method name
                     if (cloneParam[0].value.length == 2 && cloneParam[0].value[1] == "float") {
-                        method = method + "." + cloneParam[0].value[0];
+                        method = method + "," + cloneParam[0].value[0];
                     } else {
-                        method = method + "." + cloneParam[0].value;
+                        method = method + "," + cloneParam[0].value;
                     }
                     break;
 
@@ -1051,14 +1051,14 @@ $(document).ready(function () {
                     //Add position in ADT item was added to name of method
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>"
                        || adtType == "PriorityQueue<Float>" || adtType == "Graph" || adtType == "WeightedGraph") {
-                        method = method + "." + returnValue;
+                        method = method + "," + returnValue;
                         break;
                     }
                     if (parameters.length == 1) {
-                        method = method + "." + env.getVariables()[env.getIndex(adt)].value.length;
+                        method = method + "," + env.getVariables()[env.getIndex(adt)].value.length;
                         break;
                     } else {
-                        method = method + "." + cloneParam[0].value;
+                        method = method + "," + cloneParam[0].value;
                         break;
                     }
                     break;
@@ -1068,13 +1068,13 @@ $(document).ready(function () {
                     //Add posiiton in ADT item as removed from to name of method
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || adtType == "PriorityQueue<Float>" 
                         || adtType == "Queue<String>" || adtType == "Queue<Integer>" || adtType == "Queue<Float>") {
-                        method = method + "." + env.getVariables()[env.getIndex(adt)].value.length;
+                        method = method + "," + env.getVariables()[env.getIndex(adt)].value.length;
                         break;
                     } else if (adtType == "Dictionary<Float, String>" || adtType == "Dictionary<Float, Integer>" || adtType == "Dictionary<Float, Float>") {
-                        method = method + "." + cloneParam[0].value[0];
+                        method = method + "," + cloneParam[0].value[0];
                         break;
                     } else {
-                        method = method + "." + cloneParam[0].value;
+                        method = method + "," + cloneParam[0].value;
                         break;
                     }
 
@@ -1087,9 +1087,9 @@ $(document).ready(function () {
                 case('setWeight'):
 
                     //Add what was added and at which index to name of method
-                    method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
+                    method = method + "," + cloneParam[0].value + "," + cloneParam[1].value;
                     if (cloneParam.length == 3) {
-                        method = method + "." + cloneParam[2].value;
+                        method = method + "," + cloneParam[2].value;
                     }
                     break;
 
@@ -1097,18 +1097,18 @@ $(document).ready(function () {
 
                     //Add parent node and child node to name of method (and possibly position of child)
                     if (parameters.length == 2) {
-                        method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + env.getVariables()[env.getIndex(adt)].value.length;
+                        method = method + ',' + cloneParam[0].value + "," + cloneParam[1].value + "," + env.getVariables()[env.getIndex(adt)].value.length;
                     } else if (parameters.length == 3) {
-                        method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + cloneParam[2].value;
+                        method = method + ',' + cloneParam[0].value + "," + cloneParam[1].value + "," + cloneParam[2].value;
                     
                     }
 
                 case("put"):
                     //Add key and value to name of method
                     if (adtType == "Dictionary<Float, Float>") {
-                        method = method + "." + cloneParam[0].value[0] + "." + cloneParam[1].value[0];
+                        method = method + "," + cloneParam[0].value[0] + "," + cloneParam[1].value[0];
                     } else {
-                        method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
+                        method = method + "," + cloneParam[0].value + "," + cloneParam[1].value;
                     }
             }
             env.updateVariable(adt, newValue, method, originADT, root.linenum, adtType);
