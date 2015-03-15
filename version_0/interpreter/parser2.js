@@ -1,10 +1,13 @@
-// parse.js
-// Parser for Simplified JavaScript written in Simplified JavaScript
-// From Top Down Operator Precedence
-// http://javascript.crockford.com/tdop/index.html
-// Douglas Crockford
-// 2010-06-26
-// Modified by the Data Tutor Team to parse Vava, January 2015
+/**
+* Parser for Simplified JavaScript written in Simplified JavaScript
+* From Top Down Operator Precedence
+* http://javascript.crockford.com/tdop/index.html
+* Douglas Crockford
+* 2010-06-26
+*
+* Modified by: Colby Seyferth, Sarah LeBlanc, Liz Shank
+* ADTeach Team, 2015
+**/
 var make_parse = function (env) {
     var scope;
     var symbol_table = {};
@@ -92,7 +95,7 @@ var make_parse = function (env) {
         if (id && token.id !== id) {
             //console.log("Syntax error: ", token.linenum-1);
             envir.throwError(token.linenum, "Expected '" + id + "'.");
-            token.error("Expected '" + id + "'.");
+            token.error();
         }
         if (token_nr >= tokens.length) {
             token = symbol_table["(end)"];
@@ -108,18 +111,15 @@ var make_parse = function (env) {
         } else if (a === "operator") {
             o = symbol_table[v];
             if (!o) {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Unknown operator.");
-                t.error("Unknown operator.");
+                t.error();
             }
         } else if (a === "string" || a ===  "number") {
             o = symbol_table["(literal)"];
             a = "literal";
         } else {
-            //console.log("Error with: ", token);
-            //console.log("Syntax error: ", token.linenum);
             envir.throwError(token.linenum, "Unexpected token.");
-            t.error("Unexpected token.");
+            t.error();
         }
         token = Object.create(o);
         token.from  = t.from;
@@ -128,7 +128,7 @@ var make_parse = function (env) {
         token.arity = a;
         token.linenum = t.linenum;
         token.pos = t.pos;
-        token.jtype = t.jtype; // tracks the vava-specific tokens like INT_TYPE, FLOAT_TYPE, etc. (a little heavy-handed)
+        token.jtype = t.jtype; // tracks the Viva-specific tokens like INT_TYPE, FLOAT_TYPE, etc. (a little heavy-handed)
         return token;
     };
 
@@ -521,27 +521,27 @@ var make_parse = function (env) {
     primitiveInit("boolean");
     primitiveInit("String");
 
+    /**
+    *
+    * Sets up the values for all the different types of ADTs
+    *
+    **/
     stmt("Stack<Integer>", function () {
-        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
             if (token.id === "=") {
-                //console.log("token is: ", token);
                 t = token;
                 t.value = "init";
                 advance("=");
                 t.first = "Stack<Integer>";
-                t.third = expression(0, "Stack<Integer>");
-                //console.log("Third is: ", t);
-                
+                t.third = expression(0, "Stack<Integer>");                
                 t.second = n;
                 t.arity = "Initialization";
                 a.push(t);
@@ -568,9 +568,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -606,9 +605,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -644,9 +642,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -682,9 +679,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -720,9 +716,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -754,14 +749,12 @@ var make_parse = function (env) {
     });
 
     stmt("Queue<Integer>", function () {
-        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -797,9 +790,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -835,9 +827,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -869,14 +860,12 @@ var make_parse = function (env) {
     });
     
     stmt("PriorityQueue<Integer>", function () {
-        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -908,14 +897,12 @@ var make_parse = function (env) {
     });
     
     stmt("PriorityQueue<String>", function () {
-        //console.log("IN HERE IN HEREI N HERE");
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -951,9 +938,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -989,9 +975,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1027,9 +1012,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1065,9 +1049,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1084,44 +1067,6 @@ var make_parse = function (env) {
             else {
                 t = token;
                 t.value = "Dictionary<Integer, Float>";
-                t.first = n;
-                t.second = null;
-                t.arity = "Initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
-        }
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
-    
-    stmt("Dictionary<Integer, Boolean>", function () {
-        var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
-                envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "init";
-                advance("=");
-                t.first = "Dictionary<Integer, Boolean>";
-                t.third = expression(0, "Dictionary<Integer, Boolean>");
-                t.second = n;
-                t.arity = "Initialization";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "Dictionary<Integer, Boolean>";
                 t.first = n;
                 t.second = null;
                 t.arity = "Initialization";
@@ -1179,9 +1124,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1217,9 +1161,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1250,52 +1193,13 @@ var make_parse = function (env) {
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
     
-    stmt("Dictionary<String, Boolean>", function () {
-        var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
-                envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "init";
-                advance("=");
-                t.first = "Dictionary<String, Boolean>";
-                t.third = expression(0, "Dictionary<String, Boolean>");
-                t.second = n;
-                t.arity = "Initialization";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "Dictionary<String, Boolean>";
-                t.first = n;
-                t.second = null;
-                t.arity = "Initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
-        }
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
-    
     stmt("Dictionary<Float, Integer>", function () {
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1331,9 +1235,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1369,9 +1272,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1402,52 +1304,13 @@ var make_parse = function (env) {
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
     
-    stmt("Dictionary<Float, Boolean>", function () {
-        var a = [], n, t;
-        while (true) {
-            n = token;
-            if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
-                envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
-            }
-            scope.define(n);
-            advance();
-            if (token.id === "=") {
-                t = token;
-                t.value = "init";
-                advance("=");
-                t.first = "Dictionary<Float, Boolean>";
-                t.third = expression(0, "Dictionary<Float, Boolean>");
-                t.second = n;
-                t.arity = "Initialization";
-                a.push(t);
-            }
-            else {
-                t = token;
-                t.value = "Dictionary<Float, Boolean>";
-                t.first = n;
-                t.second = null;
-                t.arity = "Initialization";
-                a.push(t);
-            }
-            if (token.id !== ",") {
-                break;
-            }
-            advance(",");
-        }
-        advance(";");
-        return a.length === 0 ? null : a.length === 1 ? a[0] : a;
-    });
-    
     stmt("Graph", function () {
         var a = [], n, t;
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1483,9 +1346,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1521,9 +1383,8 @@ var make_parse = function (env) {
         while (true) {
             n = token;
             if (n.arity !== "name") {
-                //console.log("Syntax error: ", token.linenum);
                 envir.throwError(token.linenum, "Expected a new Variable name.");
-                n.error("Expected a new variable name.");
+                n.error();
             }
             scope.define(n);
             advance();
@@ -1553,10 +1414,6 @@ var make_parse = function (env) {
         advance(";");
         return a.length === 0 ? null : a.length === 1 ? a[0] : a;
     });
-    // TODO
-    // ------------------
-    // REST OF TYPES
-
 
     /*
     * -------------------------------------------------------------------------

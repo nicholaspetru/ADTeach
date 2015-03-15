@@ -1,40 +1,77 @@
-/*
-* interpeter.js
+/**
 *
+* Interpreter
+* 
+* Iterates through the parse tree and evaluates each block
+* Keeps track of current variables and their values in the Environment
 *
-*/
+* Authors: Sarah LeBlanc and Colby Seyferth
+* ADTeach Team, 2015
+*
+**/
 
 $(document).ready(function () {
     
+    /**
+    * Constructor:
+    *
+    * Instance variables:
+    * code = string of code to be interpreted
+    * TokenList = list of tokens 
+    * env = Environment interpreter will be updating
+    * inLoop = keeps track if interpreter currently in the body of a loop (to avoid creating new variables inside loops)
+    * settingVar = true if setting variable in for loop instantiation (to allow for nested loops and avoid conflict with inLoop)
+    *
+    **/
     Interpreter = function(){
-        this.symbolTable = null;
         this.code = "";
         this.TokenList = undefined;
-        this.NodeList = null;
         this.ParseTree = undefined;
-        this.Error = null;
         this.env = undefined;
         this.inLoop = false;
         this.settingVar = false;
         return this;
     }
+
+    /**
+    * Interpret: sets up token list and parser, passes parse tree to evaluator 
+    *
+    *@param {string} code - string of code to be interpreted
+    *@param {Object} vh - Visualizer handler used to create new Environment
+    *
+    **/
     Interpreter.prototype.interpret = function(code, vh) {
+
+        //Create new Environment to track variables and values
         var f = new Environment(null, vh);
+
+        //Create token list and make parse tree
         this.code = code;
         this.makeTokenList(f);
         var source = this.TokenList;
         var parse = make_parse(f);
         var tree = parse(source);
+
+        //Interpret parse tree
         this.eval(tree, f);
     }
     
-    // Evaluates an array of statements or a single statement
+    /**
+    * Eval: iterates through parse tree list of blocks and calls appropriate evluate methods
+    *
+    *@param {Object} arrayOfBlocks - list of blocks to interpret
+    *@param {Object} env - working Environment interpreter updates
+    *
+    **/
     Interpreter.prototype.eval = function(arrayOfBlocks, env) {
-        //console.log("Evaling: ", arrayOfBlocks);
+
+        //If there are no blocks, return null
         if (arrayOfBlocks == null) {
             return null;
         }
         var count = 0;
+
+        //If only one block, decide next eval method based on block type
         if (typeof arrayOfBlocks[count] === "undefined") {
             var block = arrayOfBlocks;
             var blockType = block.arity;
@@ -53,11 +90,12 @@ $(document).ready(function () {
                     break;
             }
         }
+
+        //Until reaches the end of block list, eval the block depending on block type
         else {
             while (typeof arrayOfBlocks[count] != "undefined") {
                 var block = arrayOfBlocks[count];
                 var blockType = block.arity;
-            
                 switch (blockType) {
                     case "FOR_BLOCK":
                         this.evalForBlock(block, env);
@@ -77,6 +115,15 @@ $(document).ready(function () {
         }
     }
     
+    /**
+    *Eval semi colon: determines the type of tree in body of semi-colon block and calls appropriate evaluation method
+    *
+    *@param {Object} block - current semi colon block ready for evaluation
+    *                   Information in semi colon block:
+    *                       Body
+    *@param {Object} env - working Environment that interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalSemiColonBlock = function(block, env) {
         var root = block.value;
         var rootType = block.arity;
@@ -95,34 +142,30 @@ $(document).ready(function () {
         } else if (rootType == "FunCall") {
             this.evalMethod(block, env);
         }
-        //console.log("Didn't find anything");
     }
 
+    /**
+    *Eval value - evaluates a tree
+    *
+    *@param {Object} root - the root of the tree to be evaluated
+    *@param {Object} env - working Environment interpreter is updating
+    **/
     Interpreter.prototype.evalValue = function(root, env) {
+
+        //Chooses how to obtain value of root based on root's arity
+
+        //Root is a method call
         if (root.arity == "FunCall") {
-            //console.log("ROOOOOOOT is: ", root);
-            //console.log("ENV1 IS: ", env);
             return this.evalMethod(root, env)[0];
         }
+
+        //Root is a literal or a math tree
         if (root.arity != "name") {
-            //console.log("NOT GOING TO MATH: ", root);
             switch(root.jtype) {
                 case 'INT_TYPE':
-                    //console.log("This is right");
                     return parseInt(root.value);
                     break;
                 case 'FLOAT_TYPE':
-                    /*
-                    //console.log("<><><>", root.value);
-                    if (parseFloat(root.value).toString().indexOf('.') < 0) {
-                        var precNumber = parseFloat(root.value).toString().length + 1;
-                        //console.log("Parsed float will be: ", typeof parseFloat(root.value).toPrecision(precNumber));
-                        var front = Number(root.value);
-                        //var returning = front.0;
-                        return [front, "float"];
-                    }
-                    */
-                    //console.log("Parsed float will be: ", typeof parseFloat(root.value));
                     return [parseFloat(root.value), "float"];
                     break;
                 case 'STR_TYPE':
@@ -138,31 +181,30 @@ $(document).ready(function () {
                     return this.evalMaths(root, env);
                     break;
             }
+
+        //Root is a variable, so looks up value from environment
         } else {
-            //console.log("LOOKING FOR I");
+
+            //Get information from environment about variable
             var val = env.getValue(root.value);
             var valType = env.getType(root.value);
-            //console.log("Found the value: ", val);
-            if (val === "no value") {
-                //console.log("not in env");
-                env.throwError(root.linenum, "Error no value");
-                root.error("Error no value");
-                //new UnidentifiedVariable();
-            } 
 
+            if (val === "no value") {
+                env.throwError(root.linenum, "No value for variable");
+                root.error();
+            } 
             else if (valType === "no type") {
-                env.throwError(root.linenum, "No type");
-                //console.log("variable " + root.value + " is in env, but does not have a type associated with it");
-                root.error("No type");
+                env.throwError(root.linenum, "No type for variable");
+                root.error();
             }
 
+            //Determine value of the variable and return, changing if necessary based on value's type
             else {
                 switch(valType) {
                     case "int":
                         return parseInt(val);
                         break;
                     case "float":
-                        
                         return [parseFloat(val), "float"];
                         break;
                     case "double":
@@ -203,70 +245,94 @@ $(document).ready(function () {
                         return [val, valType];
                         break;
                     default:
-                        //console.log(valType);
-                        //console.log("variable " + root.value + " was initialized with an invalid type...or alternatively, it references an ADT and we haven't implemented that here yet.");
-                        env.throwError(token.linenum, "No type");
-                        root.error("No type");
-                        
+                        env.throwError(token.linenum, "Invalid type");
+                        root.error();
                         break;
                 }
             }
         }
     }
 
+    /**
+    *Eval while block - goes through process of a while loop and evaluates body while condition is true
+    *
+    *@param {Object} block - while block to be evaluated
+    *               Information in while block:
+    *                       Condition
+    *                       Body
+    *@param {Object} env - working Environment interpreter is updating
+    **/
     Interpreter.prototype.evalWhileBlock = function(block, env) {
+
+        //Get condition block and test for boolean value of condition by calling evalCondition
         var condition = block.Test;
-        //console.log("Test is: ", condition);
         var isTrue = this.evalCondition(condition, env);
+
+        //Set the end time and count to help determine if while loop is infinite
         var endTime = (new Date().getTime()/1000)+21;
         var count = 0;
+
+        //Perform the body of the while loop while the condition is true
         while (isTrue == true) {
+
+            //Set inLoop to true to make sure new variables are not created while in a loop
             this.inLoop = true;
             var body = block.Body;
-            var condition2 = block.Test;
-
             this.eval(body, env);
-            isTrue = this.evalCondition(condition2, env);
+
+            //After performing the body, recheck the condition
+            isTrue = this.evalCondition(condition, env);
             count++;
+
+            //To check for possible infinite while loop, make sure body is not performed more than
+            //1,243 times, or that it is not iterating for more than 21 seconds
             if (count > 1243) {
-                isTrue = false;
                 env.throwError(block.linenum, "Interpreter Timed out, check while loop for infinite loop");
-                console.log("Interpreter Timed out, check while loop for infinite loop");
                 block.error();
                 
             }
             if (new Date().getTime()/1000 > endTime){
-                //console.log(endTime);
-                ////console.log(new Date().getTime());
-                isTrue = false;
                 env.throwError(block.linenum, "Interpreter Timed out, check while loop for infinite loop");
-                console.log("Interpreter Timed out, check while loop for infinite loop");
                 block.error();
-
             }
         }
+
+        //Once the condition is false, set inLoop to false, so variables can be intialized again
         this.inLoop = false;
     }
     
+    /**
+    *Eval assignment - evaluates an assignment tree, either initializing or updating a variable
+    *
+    *@param {Object} root - root of the assignment tree
+    *@param {Object} env - working Environment the interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalAssignment = function(root, env) {
         var valueRoot, value, returnedValue;
         var originMethod = "new";
         var originADT = "";
         
+        //Arity of the root determines if variable is being initialized or updated
         if (root.arity === "Initialization") {
+
+            //Do not allow for variable initialization inside a loop unless it is setting a variable for a for loop counter
             if (this.inLoop && !this.settingVar) {
                 env.throwError(root.linenum, "Please do not intialize variables inside a loop");
             }
-            ////console.log("ROOT IS: ", root);
+
+            //Variable is initialized to resulting value from a method call, set the root of the method tree to root.second
             if (root.second.arity == "FunCall") {
-                ////console.log("Right side of equal side is function call", root.second);
                 valueRoot = root.second;
-                //valueRoot = root.second
-                //value = root.first
+
+            //Right side of equal side is either another type of tree or null, and variable is just being initialized
             } else {
+
+                //Variable being initialized
                 if (root.third != null) {
-                    ////console.log("Saying right side is: ", root);
                     valueRoot = root.third;
+
+                //Variable is just being instantiated, create variable with null value
                 } else {
                     valueRoot = null;
                     env.createVariable(root.first, root.second.value, null, null, null, root.linenum);
@@ -274,60 +340,61 @@ $(document).ready(function () {
                 }
             }
         }
+
+        //Variable already exists in environment, so value is just being updated
         else {
             variable = root.first.value;
             valueRoot = root.second;
-            ////console.log("VALUE ROOT IS: ", valueRoot);
         }
                 
-        // Get the value of the righthand side of the equals sign
+        //Find the value from the valueRoot (source determined from code above), store it in variable value
+
+        //Right side of equal sign is a method, evaluate the method by calling evalMethod
         if (valueRoot.arity == "FunCall") {
-            ////console.log("CALLING A FUNCTION");
+
+            //Get resulting value from method call
             var methodValue = this.evalMethod(valueRoot, env);
-            returnedValue = methodValue[1];
+
+            //Method value format: [current value of ADT, value returned from method, method called, type of returned value]
             value = methodValue[0];
-            valueType = methodValue[3];
-            var ADTType = methodValue[3];
-            ////console.log("BEING RETURNED: ", methodValue);
+            returnedValue = methodValue[1];
             originMethod = methodValue[2];
-            //originMethod = valueRoot.MethodName.value;
+            valueType = methodValue[3];
             originADT = valueRoot.Caller.value;
-            //ADD ORIGIN
         }
         
-        //Literals: ints, floats, strings, etc.
+        //Right side of equal sign is a literal or variable
         if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
-            ////console.log("%%%%% Literal", valueRoot);
-            ////console.log("Current root is: ", root);
+
+            //Get current value of variable or literal by calling evalValue
             originADT = root.second.value;
-
             value = this.evalValue(valueRoot, env);
-
-            if (typeof value == typeof [] && value.length >= 1 && value[1].indexOf("<") >=0) {
-                ////console.log("Tryna set a variable equal to an ADT with a <");
-                //Throw the flag!!
-            }
-            //originADT = this.evalValue(valueRoot, env)[1];
-            ////console.log("Valueeee is: ", value);
-            ////console.log("Origin ADT is: ", originADT);
         }
+
+        //Right side of equal sign is a step call
         else if (valueRoot.value == "++" || valueRoot.value == "--") {
             value = this.evalStep(valueRoot, env);
-        
         }
         
+        //Right side of equal sign is a math tree
         else if (['%', '+', '-', '*', '/', '**'].indexOf(valueRoot.value) >= 0) {
-                ////console.log("Passing in: ", valueRoot);
-                value = this.evalMaths(valueRoot, env);
-                ////console.log("VVVValue is: ", value);
-                
+            value = this.evalMaths(valueRoot, env);                
         } 
 
-        
+        //Creating a new variable of value being value as assigned above
         if (root.arity === "Initialization") {
+            console.log("root is: ", root);
+            //The value is not from a method call
             if (root.third.arity != "FunCall") {
+                console.log("In heeeeeere");
                 var typeString = root.first;
-                switch(root.first) {
+
+                //Determine value of new variable based on ADT type
+                //Since the right side of the equal sign is not a method, it must be a new ADT
+                //The only possible values for initialized ADT is new or result of method
+                switch(typeString) {
+
+                    //Stack, Lists, Queues, PriorityQueues, Trees all stored as lists
                     case "Stack<Integer>":
                     case "Stack<String>":
                     case "Stack<Float>":
@@ -341,18 +408,10 @@ $(document).ready(function () {
                     case "PriorityQueue<String>":
                     case "PriorityQueue<Float>":
                     case "Tree":
-                        ////console.log("Going to create a new ADT: ", root);
-                        if (root.third.arity === "Initialization") {
-                            env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
-                        } else {
-                            ////console.log("Creating from right spot", root);
-                            if (value[1] != typeString) {
-                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
-                                root.error();
-                            }
-                            env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
-                        }
+                        env.createVariable(typeString, root.second.value, [], "new", originADT, root.linenum);
                         break;
+
+                    //Dictionaries are stored as an associative array
                     case "Dictionary<Integer, Integer>":
                     case "Dictionary<Integer, String>":
                     case "Dictionary<Integer, Float>":
@@ -365,55 +424,23 @@ $(document).ready(function () {
                     case "Dictionary<Float, Integer>":
                     case "Dictionary<Float, Float>":
                     case "Dictionary<Float, Boolean>":
-                        if (root.third.arity === "Initialization") {
-                            env.createVariable(typeString, root.second.value, {}, "new", originADT, root.linenum);
-                        } else {
-                            if (value[1] != typeString) {
-                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
-                                root.error();
-                            }
-                            env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
-                        }
+                        env.createVariable(typeString, root.second.value, {}, "new", originADT, root.linenum);
                         break;
+
+                    //Graphs and Weighted Graphs are stored as an Array, with the first item being the values for each node and the second item
+                    //being a boolean for the graph being directed or not, set to false by default
                     case "Graph":
-                        if (root.third.arity === "Initialization") {
-                            env.createVariable("Graph", root.second.value, [[], "false"], "new", originADT, root.linenum);
-                        } else {
-                            if (value[1] != typeString) {
-                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
-                                root.error();
-                            }
-                            env.createVariable(typeString, root.second.value, value[0], "new", root.third.value, root.linenum);
-                        }
-                        break;
                     case "WeightedGraph":
-                        if (root.third.arity === "Initialization") {
-                            env.createVariable("WeightedGraph", root.second.value, [[], "false"], "new", originADT, root.linenum);
-                        } else {
-                            if (value[1] != typeString) {
-                                env.throwError(root.linenum, "incompatible types! expected " + value[1] + ", received " + typeString);
-                                root.error();
-                            }
-                            env.createVariable(typeStirng, root.second.value, value[0], "new", root.third.value, root.linenum);
-                        }
+                        env.createVariable(typeString, root.second.value, [[], "false"], "new", originADT, root.linenum);
                         break;
-                    
+                
+                    //Initializing a variable that is not an ADT
                     default:
                         var type = this.checkType(value);
-                        ////console.log("Value is: ", value);
-                        ////console.log("Checking: ", type, "against: ", root.first);
                         if (root.first != type){
-                            ////console.log("root is: ", root);
-                            ////console.log("root.first is: ", root.first, "and type is:", type);
-                            env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + type);
-                            ////console.log("INCOMPATIBLE TYPES!!");
-                            root.error("Incompatible types");
-                        }/*
-                        if (value.length = 2) {
-                            if (value[1] == "float") {
-                                value = value[0];
-                            }
-                        }*/
+                            env.throwError(root.linenum, "Incompatible types! expected " + root.first + ", received " + type);
+                            root.error();
+                        }
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                         break;
                 }

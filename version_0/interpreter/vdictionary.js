@@ -353,7 +353,6 @@ $(document).ready(function () {
                 root.error();
             }
 
-
             var numKeys = parameters[0].value;
             var dict = {};
             var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
