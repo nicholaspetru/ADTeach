@@ -135,7 +135,8 @@ $(document).ready(function () {
             } else if (type == "PriorityQueue<Float>") {
                 origValue.sort(this.compareFloats);
             }
-            //returnValue = origValue.indexOf(parameters[0].value);
+            returnValue = origValue.indexOf(parameters[0].value);
+            console.log("Just added: ", parameters[0].value, "to list at index: ", returnValue);
             return [returnValue, origValue];
         }
         if (method == "peek") {

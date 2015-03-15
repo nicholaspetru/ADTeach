@@ -1,51 +1,76 @@
-/*
-* VDictionary.js
-*/
+/**
+*
+* Dictionary ADT
+* Types supported: (key - Integer, String, Float) (value - Integer, String, Float)
+* Methods supported: elements, get, isEmpty, keys, put, remove, size, populate
+* Authors: Colby Seyferth and Sarah LeBlanc
+* ADTeach Team, 2015
+*
+**/
 
 $(document).ready(function () {
    
-    VDictionary = function(k, v) {
-        console.log("CREATING A DICTIONARY");
-        this.data = {};
-        this.keyType = k;
-        this.valueType = v;
+    VDictionary = function() {
     }
     
+    /**
+    *
+    * Return the supported methods for the Dictionary ADT
+    *
+    *@return {Object} List of supported methods
+    *
+    **/
     VDictionary.prototype.listMethods = function() {
-        console.log("IN here checking dictionary methods!!");
         var methods = ['elements', 'get', 'isEmpty', 'keys', 'put', 'remove', 'size', 'populate'];
         return methods;
     }
     
+    /**
+    *
+    *Error checking for number of parameters needed against number of parameters given
+    *
+    *@param {string} method - The method being called
+    *@param {Object} parameters - The list of parameters being passed in
+    *
+    *@return {Boolean} Returns true if the number of given parameters matches number of 
+    *                   required parameters for method.
+    *
+    **/
     VDictionary.prototype.checkParameters = function(method, parameters) {
+
+        //Separate the supported methods based on how many parameters they take
         var zeroParam = ['elements', 'isEmpty', 'keys', 'size'];
         var oneParam = ['get', 'remove', 'populate'];
         var twoParam = ['put']
         
+        //Check the number of needed parameters against number of given parameters
         if (zeroParam.indexOf(method) >= 0) {
             if (parameters.length != 0) {
-                console.log("Does not take any parameters");
                 return false;
             }
         }
-        
         if (oneParam.indexOf(method) >= 0) {
             if (parameters.length != 1) {
-                console.log("Only takes one parameter");
                 return false;
             }   
-        }  
-            
+        }   
         if (twoParam.indexOf(method) >= 0) {
             if (parameters.length != 2) {
-                console.log("Takes two parameters");
                 return false;
             }
         }
-        
         return true;
     }
     
+    /**
+    *
+    *Method to return type of value as a string
+    *
+    *@param {Object} val - value looking for type of
+    *
+    *@return {string} - type of value (float, int, String)
+    *
+    **/
     VDictionary.prototype.getType = function(val) {
         if (val.length == 2 && val[1] == "float") {
             return "float";
@@ -53,49 +78,68 @@ $(document).ready(function () {
             return "int";
         } else if (typeof val == typeof "h") {
             return "String";
-        } else if  (typeof val == typeof true) {
-            return "bool";
-        }
+        } 
     }
     
+    /**
+    *
+    *Given a dictionary, finds out if dictionary already contains key
+    *
+    *@param {Object} key - the key looking for in the dictionary
+    *@param {Object} dict - the current dictionary
+    *
+    *@return {Boolean} - true if dictionary already has the key, false otherwise
+    *
+    **/
     VDictionary.prototype.containsKey = function(key, dict) {
-        //console.log("checking for the key: ", key);
-        var keys = [];
         for (var i in dict) {
-            keys.push(i);
+            if (i == key) {
+                return true;
+            }
         }
-        if (keys.indexOf('"' + key + '"') >= 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
     
-    VDictionary.prototype.performMethod = function(type, origValue1, method, parameters, env, root, adt) {
+    /**
+    *
+    * Performs the method 
+    *
+    *@param {string} type - the type of List
+    *@param {string} method - the method being called
+    *@param {Object} parameters - a list of the parameters passed in
+    *@param {Object} env - the working environment
+    *@param {Object} root - the FunCall block 
+    *@param {string} adt - the variable name for the ADT
+    *
+    *@return {Object} [returnValue, valueCopy, valType] - a list containing the value returned from method,
+    *                       the updated value of the ADT, and the correct type of the returned value.
+    *
+    **/
+    VDictionary.prototype.performMethod = function(type, method, parameters, env, root, adt) {
         var keyType;
         var valueJType;
         var valueType;
-        console.log("TYPE IS: ", type);
+
+        //Determine the type of key dictionary can hold
         switch(type) {
             case "Dictionary<Integer, Integer>":
             case "Dictionary<Integer, String>":
-            case "Dictionary<Integer, Boolean>":
             case "Dictionary<Integer, Float>":
                 keyType = "int";
                 break;
             case "Dictionary<String, Integer>":
             case "Dictionary<String, String>":
-            case "Dictionary<String, Boolean>":
             case "Dictionary<String, Float>":
                 keyType = "String";
                 break;
             case "Dictionary<Float, Integer>":
             case "Dictionary<Float, String>":
-            case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
                 keyType = "float";
                 break;
         }
+
+        //Determine the type of value dictionary can hold
         switch (type) {
             case "Dictionary<Integer, Integer>":
             case "Dictionary<String, Integer>":
@@ -118,32 +162,45 @@ $(document).ready(function () {
                 valueType = "float";
                 break;
         }
+
+        //Get current value of dictionary and make a copy of it
         var returnValue = null;
-        var origValue2 = env.getVariables()[env.getIndex(adt)].value;
-        var origValue = {};
+        var origValue = env.getVariables()[env.getIndex(adt)].value;
+        var valueCopy = {};
         var length = 0;
-        for (var i in origValue2){
-            origValue[i] = origValue2[i];
+        for (var i in origValue){
+            valueCopy[i] = origValue[i];
             length += 1;
         }
         
+        //Determine method to perform
+
+        //Get method
+        //Parameters:   get(key) - key to look up value for 
+        //Returns:      int || string || float - value in dictionary of key
+        //              does not change content of dictionary
         if (method == 'get') {
             var key = parameters[0].value;
             var getType = this.getType(key);
-            console.log("Getting: ", key);
-            console.log("Against: ", getType);
+
+            //Ensure parameter matches key type of dictionary
             if (getType != keyType) {
-                env.throwError(root.linenum);
-                console.log("Incompatible Types!");
-                root.error("Incompatible types");
-                //Throw Error
+                env.throwError(root.linenum, "Parameter must be same type as dictionary keys");
+                root.error();
             }
-            returnValue = origValue[parameters[0].value];
-            return [returnValue, origValue, valueType];
+
+            returnValue = valueCopy[parameters[0].value];
+            return [returnValue, valueCopy, valueType];
         }
         
+        //Elements method
+        //Parameters:   nothing
+        //Returns:      list of values of dictionary
+        //              does not change content of dictionary
         if (method == 'elements') {
             var valType;
+
+            //Determine what kind of list will be returned based on value type of dictionary
             switch (valueType) {
                 case "int":
                     valType = "List<Integer>";
@@ -155,18 +212,26 @@ $(document).ready(function () {
                     valType = "List<Float>";
                     break;
             }
+
+            //Create list of all values in dictionary
             returnValue = [];
-            for (var i in origValue) {
-                returnValue.push(origValue[i]);
+            for (var i in valueCopy) {
+                returnValue.push(valueCopy[i]);
             }
-            return [returnValue, origValue, valType];
+            return [returnValue, valueCopy, valType];
         }
         
+        //IsEmpty method
+        //Parameters:  
+        //Returns: 
         if (method == 'isEmpty') {
-            returnValue = (origValue.length == 0);
-            return [returnValue, origValue, "boolean"];
+            returnValue = (valueCopy.length == 0);
+            return [returnValue, valueCopy, "boolean"];
         }
         
+        //Keys method
+        //Parameters:  
+        //Returns: 
         if (method == 'keys') {
             var valType;
             switch (keyType) {
@@ -182,29 +247,35 @@ $(document).ready(function () {
             }
             console.log("IN HEREEEEEEEE");
             var keys = [];
-            console.log("Orig value is: ", origValue);
-            for (i in origValue) {
+            console.log("Orig value is: ", valueCopy);
+            for (i in valueCopy) {
                 console.log("i is: ", i);
                 console.log(typeof i);
                 keys.push(i);
             }
             returnValue = keys;
-            return [returnValue, origValue, valType];
+            return [returnValue, valueCopy, valType];
         }
         
+        //Size method
+        //Parameters:  
+        //Returns: 
         if (method == 'size') {
             var count = 0;
-            for (var i in origValue) {
+            for (var i in valueCopy) {
                 count += 1;
             }
             returnValue = count;
-            return [returnValue, origValue, "int"];
+            return [returnValue, valueCopy, "int"];
             
         }
         
+        //Put method
+        //Parameters:  
+        //Returns: 
         if (method == "put") {
             var key = parameters[0].value;
-            if (this.containsKey(key, origValue) == true) {
+            if (this.containsKey(key, valueCopy) == true) {
                 env.throwError(root.linenum);
                 root.error();
             }
@@ -218,10 +289,13 @@ $(document).ready(function () {
                 root.error("Incompatible types");
                 //Throw an error
             }
-            origValue[key] = value;
-            return [returnValue, origValue];
+            valueCopy[key] = value;
+            return [returnValue, valueCopy];
         }
         
+        //Remove method
+        //Parameters:  
+        //Returns: 
         if (method == "remove") {
             var keyToRemove = parameters[0].value;
             console.log("Key to remove: ", keyToRemove, typeof keyToRemove);
@@ -233,9 +307,9 @@ $(document).ready(function () {
             }
             var newDictionary = {};
             var isSeen = false;
-            for (var i in origValue) {
+            for (var i in valueCopy) {
                 if (i != keyToRemove) {
-                    newDictionary[i] = origValue[i];
+                    newDictionary[i] = valueCopy[i];
                 } if (i == keyToRemove) {
                     isSeen = true;
                 }
@@ -246,10 +320,13 @@ $(document).ready(function () {
                 root.error("Not in dictionary");
             }
             
-            origValue = newDictionary;
-            return [returnValue, origValue];
+            valueCopy = newDictionary;
+            return [returnValue, valueCopy];
         }
         
+        //Populate method
+        //Parameters:  
+        //Returns: 
         if (method == "populate") {
             var numKeys = parameters[0].value;
             var dict = {};
@@ -299,6 +376,7 @@ $(document).ready(function () {
             }
             console.log("Count is: ", count);
             console.log("Dictionary to start is: ", dict);
+            console.log("VALUE TYPE IS: ", valueType);
             for (var j in dict) {
                 console.log("j is: ", typeof j);
                 if (valueType == "int") {
@@ -310,8 +388,10 @@ $(document).ready(function () {
                     dict[j] = '"' + alph[toPush] + '"';
                 }
                 if (valueType == "float") {
+                    console.log("In here:::::");
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     dict[j] = [toPush, "float"];
+                    console.log("Dictionary at j: ", j, "Is now: ", dict[j]);
                 }
                 if (valueType == "bool") {
                     toPush = Math.floor((Math.random() * 2) + 1);
@@ -322,8 +402,8 @@ $(document).ready(function () {
                     }
                 }
             }
-            origValue = dict;
-            return [returnValue, origValue];
+            valueCopy = dict;
+            return [returnValue, valueCopy];
         }
             
     }

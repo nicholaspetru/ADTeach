@@ -23,6 +23,8 @@ $(document).ready(function () {
           //assign the position
           this.x = x;
           this.y = y;
+          this.startX = x;
+          this.startY = y;
       }
 
      	//Create visual primitve in the specific position
@@ -64,6 +66,12 @@ $(document).ready(function () {
               _t.vis[i].animate(anim.delay(0));
             }
           },(delay));
+          //snap to the proper position at the end of the step
+          setTimeout(function(){
+            for (var i =0; i < _t.vis.length; i++){
+              _t.vis[i].transform("t " + (_t.startX - _t.x) + " " + (_t.startY - _t.y));
+            }
+          },(delay + 1));
       };
 
       //Moves the dataunit to the given position at the specified time
@@ -78,6 +86,12 @@ $(document).ready(function () {
               _t.vis[i].animate(anim.delay(0));
             }
           },(delay));
+          //snap to the proper position at the end of the step
+          setTimeout(function(){
+            for (var i =0; i < _t.vis.length; i++){
+              _t.vis[i].transform("t " + (_t.startX - _t.x) + " " + (_t.startY - _t.y));
+            }
+          },(delay + 1));
       };
 
 
@@ -117,7 +131,6 @@ $(document).ready(function () {
     //Orientation determines whether the dataunit is shaking up and down (0) or left to right (1)
       DataUnit.prototype.update = function(newValue, orientation) {
           for (var i = 0; i < 10; i++){
-              //console.log("y val: " + 8*Math.pow(-1,i));
               this.move(4*Math.pow(-1,i)*orientation,4*Math.pow(-1,i)*(!orientation), this.VH.setDelay(100),50);
               this.VH.setDelay(40);
           }
