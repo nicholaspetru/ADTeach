@@ -136,7 +136,7 @@ $(document).ready(function () {
         }
         
         //AddEdge method
-        //Parameters:   addEdge(node1, node2) - adds an edge from node1 to node2
+        //Parameters:   addEdge(node1Int, node2Int) - adds an edge from node1 to node2
         //Returns:      nothing
         //              updates the neighbor lists to include node2 in node1 (and node1 in node2 in undirected graphs)        
         if (method == "addEdge"){ 
@@ -200,7 +200,7 @@ $(document).ready(function () {
         }
 
         //Populate method
-        //Parameters:   populate(nodes, linkingProbability) - an integer for how many nodes are in the graph, and a float 
+        //Parameters:   populate(numOfNodes, linkingProbability) - an integer for how many nodes are in the graph, and a float 
         //                      between 0 and 1 for the linking probability for each pair of nodes
         //Returns:      nothing
         //              randomly populates the graph  
@@ -269,7 +269,7 @@ $(document).ready(function () {
         }
         
         //RemoveEdge method
-        //Parameters:       removeEdge(node1, node2) - two integers each representing a node
+        //Parameters:       removeEdge(node1Int, node2Int) - two integers each representing a node
         //Returns:          nothing
         //                  removes edge going from node1 to node2 in graph
         //                  (in undirected graph removes edge going from node2 to node1)
@@ -331,7 +331,7 @@ $(document).ready(function () {
                     root.error();
                 }
 
-                //
+                //For a directed graph, only change the first node's neighbors, keeping all but node2
                 for (var i = 0; i < node1Edges; i++) {
                     var currEdge = node1Edges[i];
                     if (currEdge != node2) {
@@ -343,14 +343,20 @@ $(document).ready(function () {
             }
         }
         
-        
-        
+        //AddVertex method
+        //Parameters:       none
+        //Returns:          nothing
+        //                  Adds a vertex with no neighbors to graph
         if (method == "addVertex") {
             valueCopy.push([]);
             returnValue = valueCopy.length;
             return [returnValue, [valueCopy, isDirected]];
         }
         
+        //GetVertices method
+        //Parameters:   none
+        //Returns:      a List<Integer> of the vertices 
+        //              does not change content of graph
         if (method == "getVertices") {
             returnValue = [];
             for (var i = 0; i < valueCopy.length; i++) {
@@ -359,71 +365,108 @@ $(document).ready(function () {
             return [returnValue, [valueCopy, isDirected], "List<Integer>"];
         }
         
+        //HasEdge method
+        //Parameters:   hasEdge(node1Int, node2Int) - the two nodes connected by edge or not
+        //Returns:      boolean - true if edge exists, false otherwise
+        //              does not change content of graph
         if (method == "hasEdge") {
+
+            //Errors if either parameter is not an integer
             if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
-                env.throwError(root.linenum);
-                root.error("Need ints");
+                env.throwError(root.linenum, "Both parameters need to be integers");
+                root.error();
             } else if (parameters[0].value.toString().indexOf('.') >= 0 || parameters[1].value.toString().indexOf('.') >= 0) {
-                env.throwError(root.linenum);
+                env.throwError(root.linenum, "Both parameters need to be integers");
                 root.error();
             }
-            if (isDirected != true) {
-                var node1 = parameters[0].value;
-                var node2 = parameters[1].value;
-                console.log("Nodes are: ", valueCopy);
-                console.log("Node 1 is: ", node1);
-                var node1Edges = valueCopy[node1];
-                console.log("Node 1 edges are: ", node1Edges);
-                if (node1Edges.indexOf(node2) < 0) {
-                    returnValue = false;
-                } else {
-                    returnValue = true;
-                }
-                return [returnValue, [valueCopy, isDirected]];
-            }
+
             
-            if (isDirected == true) {
-                var node1 = parameters[0].value;
-                var node2 = parameters[1].value;
-                var node1Edges = valueCopy[node1];
-                if (node1Edges.indexOf(node2) < 0) {
-                    returnValue = false;
-                } else {
-                    returnValue = true;
-                }
-                return [returnValue, [valueCopy, isDirected], "boolean"];
+            var node1 = parameters[0].value;
+            var node2 = parameters[1].value;
+            var node1Edges = valueCopy[node1];
+
+            //Returns true if node2 is a neighbor of node1
+            if (node1Edges.indexOf(node2) < 0) {
+                returnValue = false;
+            } else {
+                returnValue = true;
             }
+            return [returnValue, [valueCopy, isDirected], "boolean"];
+            
         }
         
+        //GetNeighbors method
+        //Parameters:   getNeighbors(node1Int) - the integer of a node
+        //Returns:      List<Integer> - list of neighbors of node
+        //              does not change content of graph
         if (method == "getNeighbors") {
             var node = parameters[0].value;
-            console.log("Here: ", valueCopy);
-            if (valueCopy.length < node) {
-                env.throwError(root.linenum);
-                console.log("Node not in graph");
-                root.error("Not in graph");
-                //Throw Error
+
+            //Errors if parameter is not an integer
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameter needs to be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Parameter needs to be an integer");
+                root.error();
             }
+
+            //Throw error if vertex not in graph
+            if (valueCopy.length < node) {
+                env.throwError(root.linenum, "Vertex not in graph");
+                root.error();
+            }
+
+            //Return list of neighbors
             returnValue = valueCopy[node];
             return [returnValue, [valueCopy, isDirected], "List<Integer>"];
         }
         
+        //GetDegree method
+        //Parameters:   getDegree(node1Int) - the integer of a node
+        //Returns:      integer - out degree of node
+        //              does not change content of graph
         if (method == "getDegree") {
-            
+
+            //Errors if parameter is not an integer
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameter needs to be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Parameter needs to be an integer");
+                root.error();
+            }
+
             var vertex = parameters[0].value;
             returnValue = valueCopy[vertex].length;
             return [returnValue, [valueCopy, isDirected], "int"];
         }
         
+        //GetInDegree method
+        //Parameters:   getInDegree(node1Int) - the integer of a node
+        //Returns:      integer - in degree of node
+        //              does not change content of graph
         if (method == "getInDegree") {
-            if (isDirected != true) {
-                env.throwError(root.linenum);
-                console.log("No out degree for undirected graph");
-                root.error("No degree for undirected graph");
-                //Throw error
+
+            //Errors if parameter is not an integer
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameter needs to be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Parameter needs to be an integer");
+                root.error();
             }
+
+            //Error if finding in degree of undirected graph
+            if (isDirected != true) {
+                env.throwError(root.linenum, "No in degree for undirected graph");
+                root.error();
+            }
+
             var vertex = parameters[0].value;
             var degree = 0;
+
+            //Find all vertices who have node as neighbor
             for (var i = 0; i < valueCopy.length; i++) {
                 var neighbors = valueCopy[i];
                 if (neighbors.indexOf(vertex) >= 0) {
@@ -434,21 +477,26 @@ $(document).ready(function () {
             return [returnValue, [valueCopy, isDirected], "int"];
         }
         
+        //NumEdges method
+        //Parameters:   nothing
+        //Returns:      integer - number of edges in graph
+        //              does not change content of graph
         if (method == "numEdges") {
+
+            //Calculates the total number of neighbors and divides by two because graph is undirected
             if (isDirected != true) {
                 var length = 0;
                 for (var i = 0; i < valueCopy.length; i++) {
-                    console.log("looking at edge: ", i, valueCopy[i], "length: ");
                     length += valueCopy[i].length;
                 }
                 returnValue = length / 2;
                 return [returnValue, [valueCopy, isDirected], "int"];
             }
             
+            //Counts the total number of neighbors for every node
             if (isDirected == true) {
                 var length = 0;
                 for (var i = 0; i < valueCopy.length; i++) {
-                    console.log("looking at edge: ", i, valueCopy[i], "length: ");
                     length += valueCopy[i].length;
                 }
                 returnValue = length;
@@ -456,24 +504,31 @@ $(document).ready(function () {
             }
         }
         
+        //NumVerts method
+        //Parameters:   nothing
+        //Returns:      integer - number of vertices in graph
+        //              does not change content of graph
         if (method == "numVerts") {
             returnValue = valueCopy.length;
             return [returnValue, [valueCopy, isDirected], "int"];
         }
         
+        //IsEmpty method
+        //Parameters:   nothing
+        //Returns:      boolean - true if graph has no vertices, otherwise false
+        //              does not change content of graph
         if (method == "isEmpty") {
             returnValue = (valueCopy.length == 0);
             return [returnValue, [valueCopy, isDirected], "boolean"];
         }
         
+        //Clear method
+        //Parameters:   nothing
+        //Returns:      nothing
+        //              empties contents of graph
         if (method == "clear") {
             valueCopy = [];
             return [returnValue, [valueCopy, isDirected]];
-        }
-        
-        
-    }
-    
-    
-    
+        }   
+    }   
 });
