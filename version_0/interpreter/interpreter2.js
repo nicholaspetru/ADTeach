@@ -429,7 +429,7 @@ $(document).ready(function () {
                     ////console.log("Want type: ", valueType);
                     if (root.first != valueType) {
                         ////console.log(root.first, valueType);
-                        env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + type);
+                        env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + valueType);
                         root.error();
                     }
                 }
