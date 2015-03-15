@@ -51,11 +51,11 @@ $(document).ready(function () {
 			// left child
 			if (this.position == 0) {
 				//this.x = this.ParentTNode.x  -  this.tree.WIDTH / 2*this.level;
-				this.x = this.ParentTNode.x - 20;
+				this.x = this.ParentTNode.x - this.tree.WIDTH / Math.pow(2,this.level);
 			}
 			// right child
 			else {
-				this.x = this.ParentTNode.x  + 20;
+				this.x = this.ParentTNode.x  + this.tree.WIDTH / Math.pow(2,this.level);;
 			}
 
 			/*
@@ -157,6 +157,20 @@ $(document).ready(function () {
 		var anim = Raphael.animation({stroke:"#4b4b4b"},time);
 		this.inBranch.animate(anim.delay(delay));
 	};
+
+	TreeNode.prototype.hide = function(delay,time) {
+		console.log("delete treenode");
+		var anim = Raphael.animation({opacity:0},time);
+		this.DU.vis[0].animate(anim.delay(delay));
+		this.DU.vis[1].animate(anim.delay(delay));
+
+	}
+
+	TreeNode.prototype.hideInBranch = function(delay,time) {
+		console.log("hidebranch");
+		var anim = Raphael.animation({opacity:0},time);
+		this.inBranch.animate(anim.delay(delay));
+	}
 
 /*
 	TreeNode.prototype.addChildNode = function(child,z) {
