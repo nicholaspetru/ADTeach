@@ -71,7 +71,7 @@ $(document).ready(function () {
             for (var i =0; i < _t.vis.length; i++){
               _t.vis[i].transform("t " + (_t.startX - _t.x) + " " + (_t.startY - _t.y));
             }
-          },(delay + 10));
+          },(delay + 1));
       };
 
       //Moves the dataunit to the given position at the specified time
@@ -91,7 +91,7 @@ $(document).ready(function () {
             for (var i =0; i < _t.vis.length; i++){
               _t.vis[i].transform("t " + (_t.startX - _t.x) + " " + (_t.startY - _t.y));
             }
-          },(delay + 10));
+          },(delay + 1));
       };
 
 
