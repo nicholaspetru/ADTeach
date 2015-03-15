@@ -474,16 +474,18 @@ $(document).ready(function () {
             var type = this.checkType(value);
             var val = this.evalValue(root.first, env);
             var valType = this.checkType(val);
-
-            if (valueType == "List<Integer>") {
+            var listPossibleADTVal = ["List<Integer>", "List<String>", "List<Float>"];
+            if (listPossibleADTVal.indexOf(valueType) >= 0) {
                 if (val[1] != valueType) {
                     env.throwError(root.linenum, "Incompatible types!");
-                }
+                    root.error();
+                }  
             }
             
             if (typeof val == typeof [] && val.length >= 2 && val[1] != "float") {
                 if (root.second.arity != "FunCall") {
                     env.throwError(root.linenum, "expected a function call");
+                    root.error();
                 }
             }
 
@@ -492,6 +494,7 @@ $(document).ready(function () {
                 if (val.size() > 1) {
                     if (root.second.arity != "FunCall") {
                         env.throwError(root.linenum, "expected a function call");
+                        root.error();
                     }
                 }
             }

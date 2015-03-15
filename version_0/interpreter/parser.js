@@ -5,7 +5,7 @@
 * Douglas Crockford
 * 2010-06-26
 *
-* Modified by: Colby Seyferth, Sarah LeBlanc, Liz Shank
+* Modified by: Liz Shank, Colby Seyferth, Sarah LeBlanc
 * ADTeach Team, 2015
 **/
 var make_parse = function (env) {
