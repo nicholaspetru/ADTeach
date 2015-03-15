@@ -476,6 +476,7 @@ $(document).ready(function () {
                         case "List":
                         case "Queue":
                         case "PriorityQueue":
+                            // shift an existing blobADTs
                             if (this.blobADT_count > -1) {
                                 if (!this.entities[i].shiftPrev) {
                                     this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
@@ -491,6 +492,7 @@ $(document).ready(function () {
                             break;
 
                         case "Stack":
+                            // shift any existing ho/blobADTs
                             if (this.hoADT_count > -1 || this.blobADT_count > -1) {
                                 if (!this.entities[i].shiftPrev) {
                                     this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
@@ -510,6 +512,7 @@ $(document).ready(function () {
                         case "WeightedGraph":
                         case "Dictionary":
                         case "Tree":
+                            // shift any existing blobADTs
                             if (this.blobADT_count > -1) {
                                 if (!this.entities[i].shiftPrev) {
                                     this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
