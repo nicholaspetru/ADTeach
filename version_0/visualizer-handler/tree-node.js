@@ -73,10 +73,6 @@ $(document).ready(function () {
 		if (this.parent === null) {
 			this.buildVisual();
 		}
-
-		this.highLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
-		this.VH.setDelay(1000);
-		this.lowLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
 	};
 
 	TreeNode.prototype.getChildTNodes = function() {
@@ -87,63 +83,59 @@ $(document).ready(function () {
 		return this.ParentTNode;
 	};
 
+	TreeNode.prototype.createTNode = function(delay,time) {
+		console.log("createTNode " + this.value + " delay: " + delay + " time: " + time);
+		var anim = Raphael.animation({stroke: "green",opacity:1},time);
+		this.DU.vis[0].animate(anim.delay(delay));
+		this.DU.vis[1].animate(anim.delay(delay));
+	}
 	TreeNode.prototype.highLight = function(delay,time) {
+		console.log("highLight " + this.value + " delay: " + delay + " time: " + time);
 		var anim = Raphael.animation({stroke: "green"},time);
-		if (this.DU.vis[0].attr("opacity") == 0) {
-			anim = Raphael.animation({stroke: "green",opacity:1},time);
-		}
+
 		this.DU.vis[0].animate(anim.delay(delay));
 		this.DU.vis[1].animate(anim.delay(delay));
 	};
 
 	TreeNode.prototype.lowLight = function(delay,time) {
+		console.log("lowLight " + this.value + " delay: " + delay + " time: " + time);
 		var anim = Raphael.animation({stroke: "#4b4b4b"},time);
 		this.DU.vis[0].animate(anim.delay(delay));
 		this.DU.vis[1].animate(anim.delay(delay));
 	};
 
+
+	TreeNode.prototype.createInBranch = function(delay,time) {
+		console.log("createInBranch " + this.value + " delay: " + delay + " time: " + time);
+		var anim = Raphael.animation({opacity:1,stroke:"green"},time);
+		this.inBranch.animate(anim.delay(delay));
+	}
+	TreeNode.prototype.highlightInBranch = function(delay,time) {
+		console.log("highlightInBranch " + this.value + " delay: " + delay + " time: " + time);
+		var anim = Raphael.animation({stroke:"green"},time);
+		this.inBranch.animate(anim.delay(delay));
+	};
+	TreeNode.prototype.lowlightInBranch = function(delay,time) {
+		console.log("lowlightInBranch " + this.value + " delay: " + delay + " time: " + time);
+		var anim = Raphael.animation({stroke:"#4b4b4b"},time);
+		this.inBranch.animate(anim.delay(delay));
+	};
+
+/*
 	TreeNode.prototype.addChildNode = function(child,z) {
+		console.log("addChildNode " + child.value + " to parent " + this.value);
 		this.children.push(child.value);
+		this.ChildTNodes.push(child);
 		console.log(this.children);
-		child.parent = this.value;
-		child.ParentTNode = this;
-		child.buildVisual();
+		console.log("child.parent val " + child.parent.value);
 		if (typeof z !== "undefined") {
 			child.position = z;
 		}
 		else {
-			var tempConnection = this.paper.connect(this.DU,child.DU,true,false);
-			child.inBranch = tempConnection;
-			child.highlightInBranch(this.VH.setDelay(250),this.VH.getAnimTime(250));
-			//this.highlightConnection(tempConnection,this.VH.setDelay(500),this.VH.getAnimTime(500));
-			this.VH.setDelay(1000);
-
-			child.buildVisual();
-			child.highLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
-			this.VH.setDelay(500);
-			child.lowLight(this.VH.setDelay(250),this.VH.getAnimTime(250));
-			child.lowlightInBranch(this.VH.setDelay(250),this.VH.getAnimTime(250));
-
-
-			this.children.push(child.value);
-			this.ChildTNodes.push(child);
-			this.branches_out.push(tempConnection);
-			child.branches_in.push(tempConnection);
-
+			child.position = this.children.length - 1;
+			child.inBranch = this.paper.connect(this.DU,child.DU,true,false);
 		}
-
 	};
-
-	TreeNode.prototype.highlightInBranch = function(delay,time) {
-		var anim = Raphael.animation({stroke:"green"},time);
-		if (this.inBranch.attr("opacity") == 0) {
-			anim = Raphael.animation({opacity:1,stroke:"green"},time);
-		}
-		this.inBranch.animate(anim.delay(delay));
-	};
-	TreeNode.prototype.lowlightInBranch = function(delay,time) {
-		var anim = Raphael.animation({stroke:"#4b4b4b"},time);
-		this.inBranch.animate(anim.delay(delay));
-	};
+*/
 
 });
