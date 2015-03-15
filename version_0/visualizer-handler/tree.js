@@ -132,6 +132,8 @@ $(document).ready(function () {
 	// if 3 params, sets vertex y to be the zth child of vertex x,
 	// where z is either 0 or 1
 	Tree.prototype.AddChild = function(x,y,z) {
+		console.log("$$$$$$$$$$$$$$");
+		console.log("AddChild ( " + x + " , " + y + " , " + z + " )");
 		var childNode = new TreeNode(this,y,x);
 		this.allNodes.push(childNode);
 		var parentNode = this.tnodes[x];
@@ -299,6 +301,17 @@ $(document).ready(function () {
 
 	// empties the tree, then creates a random binary tree
 	Tree.prototype.Populate = function() {
+		console.log("VH populate");
+
+		var rootNode = this.value[0];
+		this.SetRoot(rootNode[0]);
+
+		for (var i=1; i<this.value.length;i++) {
+			var curNode = this.value[i];
+			var child = curNode[0];
+			var parent = curNode[1];
+			this.AddChild(parent,child);
+		}
 
 	};
 });
