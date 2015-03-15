@@ -22,7 +22,7 @@ $(document).ready(function () {
 		this.DUNIT_OFFSETY = 20;
 		this.DUNIT_OFFSETX = 20;
 		this.DUNIT_BACKGROUND_COLOR = "#B6C5BE";
-		this.WIDTH = 200;
+		this.WIDTH = 150;
 		this.HEIGHT = 45;
 
 		this.tnodes = {};
@@ -31,6 +31,7 @@ $(document).ready(function () {
 		this.me = null;
 
 		this.numNodes = 0;
+		this.allNodes = [];
 	}
 
 	Tree.prototype.update = function(action,originADT) {
@@ -89,7 +90,7 @@ $(document).ready(function () {
 				cur = cur[2];
 				cur.animate({transform:'...t' + difX + ' ' + difY}, _t.VH.getAnimTime(500));
 			}
-		},(this.VH.delay - thisVH.date.getTime()));
+		},(this.VH.delay - this.VH.date.getTime()));
 	};
 
 	Tree.prototype.create = function(newX,newY) {
@@ -105,8 +106,8 @@ $(document).ready(function () {
 	};
 
 	Tree.prototype.buildVisual = function() {
-		this.me = this.paper.set();
 
+		this.me = this.paper.set();
 		this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
 		this.myLabel.attr({
 			"opacity":0, 
@@ -120,17 +121,26 @@ $(document).ready(function () {
 	Tree.prototype.SetRoot = function(x) {
 		var newTNode = new TreeNode(this,x,null);
 		this.tnodes[x] = newTNode;
+		this.allNodes.push(newTNode);
 
 		newTNode.buildVisual();
 		newTNode.createTNode(this.VH.setDelay(500),this.VH.getAnimTime(500));
 		newTNode.lowLight(this.VH.setDelay(500,this.VH.getAnimTime(500)));
+
+		this.dragNode((newTNode.DU));
+		this.me.push(newTNode.DU.vis[0]);
+		this.me.push(newTNode.DU.vis[1]);
 	};
 
 	// sets vertex y to be child of vertex x
 	// if 3 params, sets vertex y to be the zth child of vertex x,
 	// where z is either 0 or 1
 	Tree.prototype.AddChild = function(x,y,z) {
+		console.log("$$$$$$$$$$$$$$");
+		console.log("AddChild ( " + x + " , " + y + " , " + z + " )");
 		var childNode = new TreeNode(this,y,x);
+		this.allNodes.push(childNode);
+
 		var parentNode = this.tnodes[x];
 		console.log(parentNode);
 
@@ -160,6 +170,9 @@ $(document).ready(function () {
 		childNode.lowLight(delay,time);
 
 		this.tnodes[y] = childNode;
+		this.dragNode((childNode.DU));
+		this.me.push(childNode.DU.vis[0]);
+		this.me.push(childNode.DU.vis[1]);
 
 	};
 
@@ -248,16 +261,158 @@ $(document).ready(function () {
 
 	// removes a vertex x(and subsequent subtree) from the tree
 	Tree.prototype.RemoveVertex = function(x) {
+		var rootNode = this.tnodes[x];
 
+		rootNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(500);
+
+		var valNodes = [];
+		var removeNodes = [];
+
+		for (var x = 0; x<this.value.length; x++) {
+			var curNode = this.value[x];
+			valNodes.push(curNode[0]);
+		}
+
+
+		for (var i = 0; i<this.allNodes.length; i++) {
+			var currentNode = this.allNodes[i];
+			if ((valNodes.indexOf(currentNode.value) === -1) 
+				&& (currentNode.value != rootNode.value)){
+					removeNodes.push(currentNode);
+			}
+		}
+
+		var delay1 = this.VH.setDelay(500);
+		var time1 = this.VH.getAnimTime(500);
+		this.VH.setDelay(500);
+		var delay2 = this.VH.setDelay(500);
+		var time2 = this.VH.getAnimTime(500);
+
+		for (var j=0; j<removeNodes.length;j++) {
+			var cur = removeNodes[j];
+			cur.highlightInBranch(delay1,time1);
+			cur.highLight(delay1,time1);
+			cur.hideInBranch(delay2,time2);
+			cur.hide(delay2,time2);
+		}
+
+		rootNode.hide(delay2,time2);
 	};
 
 	// removes the yth child of vertex x in the tree
 	Tree.prototype.RemoveChild = function(x,y) {
-
+		var parentNode = this.tnodes[x];
+		var childNode = parentNode.ChildTNodes[y];
+		this.RemoveVertex(childNode.value);
 	};
 
 	// empties the tree, then creates a random binary tree
 	Tree.prototype.Populate = function() {
+		console.log("VH populate");
+
+		var rootNode = this.value[0];
+		this.SetRoot(rootNode[0]);
+
+		for (var i=1; i<this.value.length;i++) {
+			var curNode = this.value[i];
+			var child = curNode[0];
+			var parent = curNode[1];
+			this.AddChild(parent,child);
+		}
 
 	};
+    Tree.prototype.dragNode = function(n) {
+            var dragger = function () {
+                // Original coords for main element
+                this.ox = this.type == "circle" ? this.attr("cx") : this.attr("x");
+                this.oy = this.type == "circle" ? this.attr("cy") : this.attr("y");
+
+                // Original coords for pair element
+                this.pair.ox = this.pair.type == "circle" ? this.pair.attr("cx") : this.pair.attr("x");
+                this.pair.oy = this.pair.type == "circle" ? this.pair.attr("cy") : this.pair.attr("y");
+            },
+            move = function (dx, dy) {
+
+                // Move main element
+                var att = this.type == "circle" ? {cx: this.ox + dx, cy: this.oy + dy} : 
+                                               {x: this.ox + dx, y: this.oy + dy};
+                this.attr(att);
+            
+                // Move paired element
+                att = this.pair.type == "circle" ? {cx: this.pair.ox + dx, cy: this.pair.oy + dy} : 
+                                               {x: this.pair.ox + dx, y: this.pair.oy + dy};
+                this.pair.attr(att);            
+            
+                // Move connections
+                var temp, x1, y1, x2, y2;
+                if (this.type == "circle") {
+                    temp = this;
+                }
+                else {
+                    temp = this.pair;
+                }
+                if (temp.connections) {
+                    for (var i=0; i<temp.connections.length; i++) {
+                        var tempPath = temp.connections[i];
+
+                        var pathString;
+                        if (tempPath.from.data("nodeID") == temp.data("nodeID") ) {
+                            pathString = "M " + (this.ox + dx).toString() + ","
+                                            + (this.oy + dy).toString() + "L " 
+                                            + tempPath.to.attr("cx") + ","
+                                            + tempPath.to.attr("cy");
+                            tempPath.attr({ path : pathString });
+                            if (tempPath.isDirected) {
+                                var totalLen = tempPath.getTotalLength();
+                                var intLen = totalLen - temp.attr("r");
+                                var intersect = tempPath.getPointAtLength(intLen);
+                                var pathString2 = tempPath.getSubpath(0,intLen);
+                                tempPath.attr({
+                                    path : pathString2,
+                                    'arrow-end': 'classic-wide-long'
+                                });
+                            }
+                        } else {
+                            pathString = "M " + tempPath.from.attr("cx") + ","
+                                        + tempPath.from.attr("cy") + " L"
+                                        + (this.ox + dx).toString() + ","
+                                        + (this.oy + dy).toString();
+                            tempPath.attr({ path : pathString });
+                            var totalLen = tempPath.getTotalLength();
+                            var intLen = totalLen - temp.attr("r");
+                            var intersect = tempPath.getPointAtLength(intLen);
+                            var pathString2 = tempPath.getSubpath(0,intLen);
+                            tempPath.attr({
+                                    path : pathString2,
+                                    'arrow-end': 'classic-wide-long'
+                                });
+                        }
+
+                        tempPath.toBack();
+                    }
+                }
+            },
+            up = function () {
+            };
+
+            var tempS = n.vis[1]; // the circle
+            var tempT = n.vis[0]; // the node id
+
+            // remove old dragger if it exists
+            tempS.undrag();
+            tempT.undrag();
+
+            // cursor on hover
+            tempS.attr({cursor: "move"});
+            tempT.attr({cursor: "move"});
+            
+            // add drag handler
+            tempS.drag(move,dragger,up);
+            tempT.drag(move,dragger,up);
+
+            // associate the circle/id so that dragging one moves the other with it
+            tempS.pair = tempT;
+            tempT.pair = tempS;
+        };
 });

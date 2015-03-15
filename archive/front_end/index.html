@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+  <link rel="stylesheet" href="codemirror-4.6/lib/codemirror.css">
+  <link rel="stylesheet" href="css/index.css">
+  <script src="lib/codemirror-4.6/lib/codemirror.js" type="text/javascript"></script>
+  <script src="lib/codemirror-4.6/mode/python/python.js" type="text/javascript"></script>
+  <title> Data Tutor v0</title>
+</head>
+<body>
+  <h2 id="mainheader"><b> Data Tutor </b>
+    <a id="pause"> | |</a>
+    <a id="next"> ></a>
+    <a id="end"> >|</a>
+  </h2>
+
+  <form>
+  <div id="code_env"> <b>Programming Environment</b>
+    <textarea id="code" name="code" cols="120" rows="30">
+      def test
+    </textarea>
+  </div>
+  </form>
+
+  <div id="visual_environment"> <b> Visual Environment </b> 
+  </div>
+
+  <script type="text/javascript">
+  var textarea= document.getElementById('code');
+  var editor = CodeMirror.fromTextArea(textarea);
+  </script>
+
+
+</body>
+</html>

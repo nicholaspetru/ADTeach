@@ -36,7 +36,7 @@ $(document).ready(function () {
 
         //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
-        this.HEIGHT = 45;
+        this.HEIGHT = 45*2;
         this.anon = [];
 
         //visual component
@@ -412,6 +412,8 @@ $(document).ready(function () {
             wedge.push(toNode.id);
             wedge.push(newEdge);
             this.wedges.push(wedge);
+            this.me.push(newEdge.weight);
+
         };
         // check if an edge from (fromNodeID,toNodeID) is already represented
         // on the screen
@@ -579,6 +581,9 @@ $(document).ready(function () {
                 case "getWeight":
                     this.GetWeight(parseInt(split[1]),parseInt(split[2]));
                     break;
+                case "clear":
+                    this.Clear();
+                    break;
                 default:
                     console.log("Unknown action for Graphs: " + action);
             }
@@ -643,7 +648,17 @@ $(document).ready(function () {
                         var totalLen = tempPath.getTotalLength();
                         var mid = tempPath.getPointAtLength((totalLen / 2));
 
-                        tempPath.weight.attr({"x": mid.x, "y": mid.y});
+                        var wx = mid.x,
+                            wy = mid.y;
+
+                        if (mid.alpha == 180) {
+                            wy += -10;
+                        }
+                        else {
+                            wx += -13;
+                        }
+
+                        tempPath.weight.attr({"x": wx, "y": wy});
 
                         tempPath.toBack();
                     }
@@ -673,28 +688,62 @@ $(document).ready(function () {
         };
 
         WeightedGraph.prototype.erase = function() {
-            for (var i = 0; i < this.nodes.length; i++){
-                var curNode = this.nodes[i];
-                for (var j = 0; j < curNode.length; j++) {
-                    curNode[j].remove();
-                }
-            }
-            
-            var x = 0;
-            while (typeof this.wedges !== 'undefined' && this.wedges.length > 0) {
-                var current = this.wedges[0];
-                var f = current[0],
-                t = current[1];
-                this.destroyWedge(f,t);
+            if (this.me !== null) {
+                this.me.remove();
+                this.me = this.paper.set();
             }
 
-            this.count = 0;
-            this.nextNodeX = 0;
-            this.nextNodeY = 0;
-            this.edgeCheck = {};
+            for (var j=0; j<this.wedges.length; j++) {
+                var currentWedge = _t.wedges[j];
+                currentWedge = currentWedge[2];
+                currentWedge.remove();
+            }
+
             this.wedges = [];
+            this.nodes = [];
+            this.edgeCheck = {};
+            this.nextNodeY = 0;
+            this.nextNodeX = 0;
+            this.count = 0;
 
         };
+
+        WeightedGraph.prototype.Clear = function() {
+            var anim1 = Raphael.animation({opacity:0},this.VH.getAnimTime(250));
+            var delay1 = this.VH.setDelay(500);
+
+            this.me.animate(anim1.delay(delay1));
+
+            for (var j=0; j<this.wedges.length; j++) {
+                var currentWedge = this.wedges[j];
+                currentWedge = currentWedge[2];
+                console.log(currentWedge);
+                currentWedge.animate(anim1.delay(delay1));
+            }
+
+            this.eraseValues(this.VH.setDelay(250));
+        };
+
+        WeightedGraph.prototype.eraseValues = function(delay) {
+            var _t = this;
+            setTimeout(function(){
+                _t.me.remove();
+
+                for (var j=0; j<_t.wedges.length; j++) {
+                    var currentWedge = _t.wedges[j];
+                    currentWedge = currentWedge[2];
+                    currentWedge.remove();
+                }
+
+                _t.wedges = [];
+                _t.nodes = [];
+                _t.edgeCheck = {};
+                _t.nextNodeY = 0;
+                _t.nextNodeX = 0;
+                _t.count = 0;
+            }, delay);
+        };
+
         // not-unintelligent placement of nodes
         WeightedGraph.prototype.getNextPos = function() {
             if (this.count == 0) {
@@ -769,9 +818,8 @@ $(document).ready(function () {
             // create the set
             this.me = this.paper.set();
             // build the label
-            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 20, this.type + " " + this.name);
             this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
-            this.me.push(this.myLabel);
         };
 
 });

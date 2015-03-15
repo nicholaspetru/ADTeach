@@ -91,7 +91,10 @@ $(document).ready(function () {
                 break;        
             case "getVertices":
                 this.populate();
-                break;        
+                break;     
+            case "getChildren":
+                this.populate();
+                break;   
             case "new":
                 this.populate();
                 break;
