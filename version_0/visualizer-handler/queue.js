@@ -16,8 +16,13 @@ $(document).ready(function () {
         this.cur_length = 10;
         this.MAX_LENGTH = 10;
         this.FONT_SIZE = 15;
-        this.DUNIT_HEIGHT = 45*.85;
-        this.DUNIT_WIDTH = (45*.85)*.5;
+        this.DUNIT_HEIGHT = 45*.85;        
+        //Queues with floats have fatter data units
+        if (this.type.split("<")[1] == "Float>"){
+            this.DUNIT_WIDTH = (45*.85)*.8;
+        }else{
+            this.DUNIT_WIDTH = (45*.85)*.5;
+        }
         this.DUNIT_BUFFER = .2;
         this.WIDTH = 0;
         this.setDimensions();

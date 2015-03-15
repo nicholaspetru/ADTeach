@@ -17,7 +17,12 @@ $(document).ready(function () {
         this.MAX_LENGTH = 10;
         this.FONT_SIZE = 15;
         this.DUNIT_HEIGHT = 45*.85;
-        this.DUNIT_WIDTH = (45*.85)*.5;
+        //Lists of floats have fatter data units
+        if (this.type.split("<")[1] == "Float>"){
+            this.DUNIT_WIDTH = (45*.85)*.8;
+        }else{
+            this.DUNIT_WIDTH = (45*.85)*.5;
+        }
         this.DUNIT_BUFFER = .2;
 
         //width and height refer to max width and height-- how much room this object takes up on the screen

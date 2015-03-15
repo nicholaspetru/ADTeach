@@ -9,10 +9,14 @@ $(document).ready(function () {
           this.type = type;
           this.value = value;
           this.shape = shape;
-          // dimension of box/circle
           this.width = width;
-          this.height = height;
-          this.font_size = 14;
+          this.height = height;        
+          //Queues with floats have fatter data units
+          if (this.type.split("<")[1] == "Float>"){
+              this.font_size = 12;
+          }else{
+              this.font_size = 14;
+          }
           this.index = " ";
 
           // array of value, box/circle container, associated arrows, etc.
@@ -21,7 +25,7 @@ $(document).ready(function () {
           this.me= null // for when we want to drag just this dataunit (graphs)
 
           //assign the position
-          this.x = x;
+          this.x = x
           this.y = y;
           this.startX = x;
           this.startY = y;
