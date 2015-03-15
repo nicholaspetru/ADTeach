@@ -75,7 +75,7 @@ $(document).ready(function () {
     //Update the List
     Queue.prototype.update = function(action, originADT) {
         //strip the string and get the params from the "Action" str
-        var split = action.split(".");
+        var split = action.split(",");
         //animate the change
         switch(split[0]){
             case "add":
