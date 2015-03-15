@@ -22,7 +22,7 @@ $(document).ready(function () {
 		this.DUNIT_OFFSETY = 20;
 		this.DUNIT_OFFSETX = 20;
 		this.DUNIT_BACKGROUND_COLOR = "#B6C5BE";
-		this.WIDTH = 200;
+		this.WIDTH = 150;
 		this.HEIGHT = 45;
 
 		this.tnodes = {};
@@ -31,6 +31,7 @@ $(document).ready(function () {
 		this.me = null;
 
 		this.numNodes = 0;
+		this.allNodes = [];
 	}
 
 	Tree.prototype.update = function(action,originADT) {
@@ -105,8 +106,8 @@ $(document).ready(function () {
 	};
 
 	Tree.prototype.buildVisual = function() {
-		this.me = this.paper.set();
 
+		this.me = this.paper.set();
 		this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
 		this.myLabel.attr({
 			"opacity":0, 
@@ -120,6 +121,7 @@ $(document).ready(function () {
 	Tree.prototype.SetRoot = function(x) {
 		var newTNode = new TreeNode(this,x,null);
 		this.tnodes[x] = newTNode;
+		this.allNodes.push(newTNode);
 
 		newTNode.buildVisual();
 		newTNode.createTNode(this.VH.setDelay(500),this.VH.getAnimTime(500));
@@ -131,6 +133,7 @@ $(document).ready(function () {
 	// where z is either 0 or 1
 	Tree.prototype.AddChild = function(x,y,z) {
 		var childNode = new TreeNode(this,y,x);
+		this.allNodes.push(childNode);
 		var parentNode = this.tnodes[x];
 		console.log(parentNode);
 
@@ -248,12 +251,50 @@ $(document).ready(function () {
 
 	// removes a vertex x(and subsequent subtree) from the tree
 	Tree.prototype.RemoveVertex = function(x) {
+		var rootNode = this.tnodes[x];
 
+		rootNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(500);
+
+		var valNodes = [];
+		var removeNodes = [];
+
+		for (var x = 0; x<this.value.length; x++) {
+			var curNode = this.value[x];
+			valNodes.push(curNode[0]);
+		}
+
+
+		for (var i = 0; i<this.allNodes.length; i++) {
+			var currentNode = this.allNodes[i];
+			if ((valNodes.indexOf(currentNode.value) === -1) 
+				&& (currentNode.value != rootNode.value)){
+					removeNodes.push(currentNode);
+			}
+		}
+
+		var delay1 = this.VH.setDelay(500);
+		var time1 = this.VH.getAnimTime(500);
+		this.VH.setDelay(500);
+		var delay2 = this.VH.setDelay(500);
+		var time2 = this.VH.getAnimTime(500);
+
+		for (var j=0; j<removeNodes.length;j++) {
+			var cur = removeNodes[j];
+			cur.highlightInBranch(delay1,time1);
+			cur.highLight(delay1,time1);
+			cur.hideInBranch(delay2,time2);
+			cur.hide(delay2,time2);
+		}
+
+		rootNode.hide(delay2,time2);
 	};
 
 	// removes the yth child of vertex x in the tree
 	Tree.prototype.RemoveChild = function(x,y) {
-
+		var parentNode = this.tnodes[x];
+		var childNode = parentNode.ChildTNodes[y];
+		this.RemoveVertex(childNode.value);
 	};
 
 	// empties the tree, then creates a random binary tree

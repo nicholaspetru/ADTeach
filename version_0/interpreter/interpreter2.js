@@ -326,8 +326,10 @@ $(document).ready(function () {
                 valueRoot = root.second;
 
             //Right side of equal side is either another type of tree or null, and variable is just being initialized
-            } else {
+            if (root.second.arity == "FunCall") {
+                valueRoot = root.second;
 
+            } else {
                 //Variable being initialized
                 if (root.third != null) {
                     valueRoot = root.third;
@@ -351,7 +353,6 @@ $(document).ready(function () {
 
         //Right side of equal sign is a method, evaluate the method by calling evalMethod
         if (valueRoot.arity == "FunCall") {
-
             //Get resulting value from method call
             var methodValue = this.evalMethod(valueRoot, env);
 
@@ -365,10 +366,15 @@ $(document).ready(function () {
         
         //Right side of equal sign is a literal or variable
         if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
+            originADT = root.second.value;
 
             //Get current value of variable or literal by calling evalValue
             originADT = root.second.value;
             value = this.evalValue(valueRoot, env);
+
+            if (typeof value == typeof [] && value.length >= 1 && value[1].indexOf("<") >=0) {
+                env.throwError(root.linenum, "Expected a function call");
+            }
         }
 
         //Right side of equal sign is a step call
@@ -456,7 +462,7 @@ $(document).ready(function () {
                     ////console.log("Want type: ", valueType);
                     if (root.first != valueType) {
                         ////console.log(root.first, valueType);
-                        env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + type);
+                        env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + valueType);
                         root.error();
                     }
                 }
