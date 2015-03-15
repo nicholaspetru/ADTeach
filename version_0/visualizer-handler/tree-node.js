@@ -46,12 +46,49 @@ $(document).ready(function () {
 			this.y = this.tree.y + 
 				(this.level * (this.tree.DUNIT_WIDTH + this.tree.DUNIT_OFFSETY));
 
-			this.x = this.tree.x + 
-				(this.position * this.tree.WIDTH / Math.pow(this.level,2));
+			console.log("x: " + this.x);
+			console.log("LEVEL: "+ this.level);
+			// left child
+			if (this.position == 0) {
+				//this.x = this.ParentTNode.x  -  this.tree.WIDTH / 2*this.level;
+				this.x = this.ParentTNode.x - 20;
+			}
+			// right child
+			else {
+				this.x = this.ParentTNode.x  + 20;
+			}
+
+			/*
+			// right parent
+			if (this.ParentTNode.position == 1) {
+				//left child
+				if (this.position == 0) {
+					this.x = this.ParentTNode.x  - tree.WIDTH / 2*this.level;
+				}
+				//right child
+				else {
+					this.x = this.ParentTNode.x  + tree.WIDTH / 2*this.level;
+				}
+			}
+			// left parent
+			else {
+				// left child
+				if (this.position == 0) {
+					this.x = this.ParentTNode.x - 40;
+				}
+				// right child
+				else {
+					this.x = this.ParentTNode.x + 20;
+				}
+			}
+
+			console.log("x: " + this.x);
+			*/
+
 		}
 
 		else {
-			this.x = (this.tree.WIDTH / 2);
+			this.x = this.tree.x + (this.tree.WIDTH / 2);
 			this.y = this.tree.y;
 		}
 		console.log(this.value + " at (" + this.x + "," + this.y + ")");
