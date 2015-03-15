@@ -36,7 +36,7 @@ $(document).ready(function () {
 
         //width and height refer to max width and height-- how much room this object takes up on the screen
         this.WIDTH = (this.DUNIT_WIDTH*this.DUNIT_BUFFER*2) + (this.DUNIT_WIDTH*(1 + this.DUNIT_BUFFER)*(this.MAX_LENGTH + 1));
-        this.HEIGHT = 45;
+        this.HEIGHT = 45*2;
         this.anon = [];
 
         //visual component
@@ -643,7 +643,17 @@ $(document).ready(function () {
                         var totalLen = tempPath.getTotalLength();
                         var mid = tempPath.getPointAtLength((totalLen / 2));
 
-                        tempPath.weight.attr({"x": mid.x, "y": mid.y});
+                        var wx = mid.x,
+                            wy = mid.y;
+
+                        if (mid.alpha == 180) {
+                            wy += -10;
+                        }
+                        else {
+                            wx += -13;
+                        }
+
+                        tempPath.weight.attr({"x": wx, "y": wy});
 
                         tempPath.toBack();
                     }
@@ -769,7 +779,7 @@ $(document).ready(function () {
             // create the set
             this.me = this.paper.set();
             // build the label
-            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 13, this.type + " " + this.name);
+            this.myLabel = this.paper.text(this.x, this.y + this.HEIGHT + 20, this.type + " " + this.name);
             this.myLabel.attr({"opacity": 0,"font-family": "times", "font-size": this.FONT_SIZE, 'text-anchor': 'start'});
             this.me.push(this.myLabel);
         };
