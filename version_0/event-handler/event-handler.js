@@ -103,7 +103,6 @@ $(document).ready(function() {
         $("#stop").hide();
         $("#build").show();
         $("#help").show();
-
     };
     
     EventHandler.prototype.onSampleList = function() {

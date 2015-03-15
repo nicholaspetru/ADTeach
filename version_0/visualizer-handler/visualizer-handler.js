@@ -443,7 +443,7 @@ $(document).ready(function () {
                             curY = entities[i].y;
                         } else {
                             curX = entities[i].x
-                            curY = entities[i].y + 100;
+                            curY = entities[i].y + 120;
                         }
                         entities[i].move(curX, curY);
                         break;
@@ -476,6 +476,7 @@ $(document).ready(function () {
                         case "List":
                         case "Queue":
                         case "PriorityQueue":
+                            // shift an existing blobADTs
                             if (this.blobADT_count > -1) {
                                 if (!this.entities[i].shiftPrev) {
                                     this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
@@ -491,6 +492,7 @@ $(document).ready(function () {
                             break;
 
                         case "Stack":
+                            // shift any existing ho/blobADTs
                             if (this.hoADT_count > -1 || this.blobADT_count > -1) {
                                 if (!this.entities[i].shiftPrev) {
                                     this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
@@ -510,12 +512,20 @@ $(document).ready(function () {
                         case "WeightedGraph":
                         case "Dictionary":
                         case "Tree":
+                            // shift any existing blobADTs
+                            if (this.blobADT_count > -1) {
+                                if (!this.entities[i].shiftPrev) {
+                                    this.shiftADT(this.entities.slice(0,i), this.entities[i].type.split("<")[0]);
+                                    this.entities[i].shiftPrev = true;
+                                }
+                            }
+
                             // increment graph/dict/blob count
                             if (this.entities[i].x == 0)
                                 this.blobADT_count += 1;
 
                             curX = this.VBORDER + (90)*(1+this.vertADT_count);
-                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 60 + this.entities[i].FONT_SIZE)*(1+this.hoADT_count+this.blobADT_count);
+                            curY = this.ADT_SECTION_Y + (this.entities[i].HEIGHT + 10 + this.entities[i].FONT_SIZE)*(1+this.hoADT_count+this.blobADT_count);
                             break;
                         
                         default:

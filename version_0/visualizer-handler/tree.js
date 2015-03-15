@@ -90,7 +90,7 @@ $(document).ready(function () {
 				cur = cur[2];
 				cur.animate({transform:'...t' + difX + ' ' + difY}, _t.VH.getAnimTime(500));
 			}
-		},(this.VH.delay - thisVH.date.getTime()));
+		},(this.VH.delay - this.VH.date.getTime()));
 	};
 
 	Tree.prototype.create = function(newX,newY) {
@@ -128,6 +128,8 @@ $(document).ready(function () {
 		newTNode.lowLight(this.VH.setDelay(500,this.VH.getAnimTime(500)));
 
 		this.dragNode((newTNode.DU));
+		this.me.push(newTNode.DU.vis[0]);
+		this.me.push(newTNode.DU.vis[1]);
 	};
 
 	// sets vertex y to be child of vertex x
@@ -138,6 +140,7 @@ $(document).ready(function () {
 		console.log("AddChild ( " + x + " , " + y + " , " + z + " )");
 		var childNode = new TreeNode(this,y,x);
 		this.allNodes.push(childNode);
+
 		var parentNode = this.tnodes[x];
 		console.log(parentNode);
 
@@ -168,6 +171,8 @@ $(document).ready(function () {
 
 		this.tnodes[y] = childNode;
 		this.dragNode((childNode.DU));
+		this.me.push(childNode.DU.vis[0]);
+		this.me.push(childNode.DU.vis[1]);
 
 	};
 
