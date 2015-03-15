@@ -115,29 +115,6 @@ $(document).ready(function () {
 		this.me.push(this.myLabel);
 	};
 
-	Tree.prototype.createTreeNode = function(value,parent,z) {
-		var newTNode = new TreeNode(this,value,parent);
-		if (typeof z !== "undefined") {
-			newTNode.position = z;
-		}
-
-		newTNode.create();
-
-		this.me.push(newTNode.DU.vis[0]);
-		this.me.push(newTNode.DU.vis[1]);
-
-		this.tnodes[value] = newTNode;
-
-		if (parent !== null) {
-			var parentTNode = this.tnodes[parent];
-			if (typeof z === "undefined") {
-				parentTNode.addChildNode(newTNode);
-			}
-			else {
-				parentTNode.addChildNode(newTNode,z);
-			}
-		}
-	};
 	// sets vertex x to be the root of the tree
 	Tree.prototype.SetRoot = function(x) {
 		var newTNode = new TreeNode(this,x,null);
@@ -242,6 +219,29 @@ $(document).ready(function () {
 		for (var i=0; i<childNodes.length; i++) {
 			childNodes[i].lowLight(delay3,time3);
 			childNodes[i].lowlightInBranch(delay3,time3);
+		}
+	};
+
+	// returns the parent x of the vertex x in the tree
+	Tree.prototype.GetParent = function(x) {
+		var childNode = this.tnodes[x];
+
+		childNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+
+		if (childNode.parent !== null) {
+			var parentNode = childNode.ParentTNode;
+
+			childNode.highlightInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+			this.VH.setDelay(250);
+			parentNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+			this.VH.setDelay(500);
+
+			var delay = this.VH.setDelay(500);
+			var time = this.VH.getAnimTime(500);
+			parentNode.lowLight(delay,time);
+			childNode.lowlightInBranch(delay,time);
+			childNode.lowLight(delay,time);
 		}
 	};
 
