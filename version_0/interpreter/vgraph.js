@@ -161,7 +161,7 @@ $(document).ready(function () {
                 var node2 = parameters[1].value;
 
                 //Make sure that both nodes exist in the graph
-                if (node1 > valueCopy.length || node2 > valueCopy.length){
+                if (node1 >= valueCopy.length || node2 >= valueCopy.length){
                     env.throwError(root.linenum, "Vertex not in graph");
                     root.error();
                 }
@@ -287,6 +287,13 @@ $(document).ready(function () {
             if (isDirected != true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
+
+                //Make sure that both nodes exist in the graph
+                if (node1 >= valueCopy.length || node2 >= valueCopy.length){
+                    env.throwError(root.linenum, "Vertex not in graph");
+                    root.error();
+                }
+
                 var node1Edges = valueCopy[node1];
                 var node2Edges = valueCopy[node2];
                 var node1NEdges = [];
@@ -322,6 +329,13 @@ $(document).ready(function () {
             if (isDirected == true) {
                 var node1 = parameters[0].value;
                 var node2 = parameters[1].value;
+
+                //Make sure that both nodes exist in the graph
+                if (node1 >= valueCopy.length || node2 >= valueCopy.length){
+                    env.throwError(root.linenum, "Vertex not in graph");
+                    root.error();
+                }
+
                 var node1Edges = valueCopy[node1];
                 var node1NEdges = [];
 
@@ -379,10 +393,16 @@ $(document).ready(function () {
                 env.throwError(root.linenum, "Both parameters need to be integers");
                 root.error();
             }
-
             
             var node1 = parameters[0].value;
             var node2 = parameters[1].value;
+
+            //Make sure that both nodes exist in the graph
+            if (node1 >= valueCopy.length || node2 >= valueCopy.length){
+                env.throwError(root.linenum, "Vertex not in graph");
+                root.error();
+            }
+
             var node1Edges = valueCopy[node1];
 
             //Returns true if node2 is a neighbor of node1
@@ -412,7 +432,7 @@ $(document).ready(function () {
             }
 
             //Throw error if vertex not in graph
-            if (valueCopy.length < node) {
+            if (valueCopy.length <= node) {
                 env.throwError(root.linenum, "Vertex not in graph");
                 root.error();
             }
@@ -438,6 +458,13 @@ $(document).ready(function () {
             }
 
             var vertex = parameters[0].value;
+
+            //Throw error if vertex not in graph
+            if (valueCopy.length <= vertex) {
+                env.throwError(root.linenum, "Vertex not in graph");
+                root.error();
+            }
+
             returnValue = valueCopy[vertex].length;
             return [returnValue, [valueCopy, isDirected], "int"];
         }
@@ -464,6 +491,13 @@ $(document).ready(function () {
             }
 
             var vertex = parameters[0].value;
+
+            //Throw error if vertex not in graph
+            if (valueCopy.length <= vertex) {
+                env.throwError(root.linenum, "Vertex not in graph");
+                root.error();
+            }
+
             var degree = 0;
 
             //Find all vertices who have node as neighbor

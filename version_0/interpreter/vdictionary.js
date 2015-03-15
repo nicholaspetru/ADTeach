@@ -396,7 +396,7 @@ $(document).ready(function () {
                 }
                 if (valueType == "String") {
                     toPush = Math.floor((Math.random() * 26) + 1);
-                    dict[j] = '"' + alph[toPush] + '"';
+                    dict[j] = '"' + chars[toPush] + '"';
                 }
                 if (valueType == "float") {
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
