@@ -84,6 +84,9 @@ $(document).ready(function () {
             case "getNeighbors":
                 this.populate();
                 break;        
+            case "getVertices":
+                this.populate();
+                break;        
             case "new":
                 this.populate();
                 break;

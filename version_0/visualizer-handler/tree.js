@@ -115,56 +115,134 @@ $(document).ready(function () {
 		this.me.push(this.myLabel);
 	};
 
-	Tree.prototype.createTreeNode = function(value,parent,z) {
-		var newTNode = new TreeNode(this,value,parent);
-		if (typeof z !== "undefined") {
-			newTNode.position = z;
-		}
-
-		newTNode.create();
-
-		this.me.push(newTNode.DU.vis[0]);
-		this.me.push(newTNode.DU.vis[1]);
-
-		this.tnodes[value] = newTNode;
-
-		if (parent !== null) {
-			var parentTNode = this.tnodes[parent];
-			if (typeof z === "undefined") {
-				parentTNode.addChildNode(newTNode);
-			}
-			else {
-				parentTNode.addChildNode(newTNode,z);
-			}
-		}
-	};
 	// sets vertex x to be the root of the tree
 	Tree.prototype.SetRoot = function(x) {
-		this.createTreeNode(x,null);
+		var newTNode = new TreeNode(this,x,null);
+		this.tnodes[x] = newTNode;
+
+		newTNode.buildVisual();
+		newTNode.createTNode(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		newTNode.lowLight(this.VH.setDelay(500,this.VH.getAnimTime(500)));
 	};
 
 	// sets vertex y to be child of vertex x
 	// if 3 params, sets vertex y to be the zth child of vertex x,
 	// where z is either 0 or 1
 	Tree.prototype.AddChild = function(x,y,z) {
-		var newTNode = new TreeNode(this,y,x);
-		if (z) {
-			newTNode.position = z;
-		}
+		var childNode = new TreeNode(this,y,x);
 		var parentNode = this.tnodes[x];
-		parentNode.addChildNode(newTNode);
-		this.tnodes[y] = newTNode;
+		console.log(parentNode);
+
+		childNode.parent = x;
+		childNode.ParentTNode = parentNode;
+		parentNode.ChildTNodes.push(childNode);
+		parentNode.children.push(childNode.value);
+		childNode.buildVisual();
+
+		if (z) {
+			childNode.position = z;
+		}
+
+		childNode.inBranch = this.paper.connect(parentNode.DU,childNode.DU,true,false);
+
+		parentNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+		childNode.createInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+		childNode.createTNode(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(500);
+
+		var delay = this.VH.setDelay(500);
+		var time = this.VH.getAnimTime(500);
+		parentNode.lowLight(delay,time);
+		childNode.lowlightInBranch(delay,time);
+		childNode.lowLight(delay,time);
+
+		this.tnodes[y] = childNode;
 
 	};
 
 	// returns the yth child of vertex x in the tree
 	Tree.prototype.GetChild = function(x,y) {
+		var parentNode = this.tnodes[x];
+		var childNode = parentNode.ChildTNodes[y];
 
+		console.log("parent val: " + parentNode.value);
+		console.log("child val: " + childNode.value);
+		console.log("child position: " + childNode.position);
+
+		parentNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+		childNode.highlightInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+		childNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(500);
+
+		var delay = this.VH.setDelay(500);
+		var time = this.VH.getAnimTime(500);
+		parentNode.lowLight(delay,time);
+		childNode.lowlightInBranch(delay,time);
+		childNode.lowLight(delay,time);
 	};
 
 	// returns a List<Integer> of all children of vertex x in the tree
 	Tree.prototype.GetChildren = function(x) {
+		var parentNode = this.tnodes[x];
+		var childNodes = parentNode.ChildTNodes;
 
+		// highlight parent
+		parentNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+
+		var delay1 = this.VH.setDelay(500);
+		var time1 = this.VH.getAnimTime(500);
+
+		// highlight edges
+		for (var i=0; i<childNodes.length; i++) {
+			childNodes[i].highlightInBranch(delay1,time1);
+		}
+
+		// highlight children
+		var delay2 = this.VH.setDelay(500);
+		var time2 = this.VH.getAnimTime(500);
+
+		for (var i=0; i<childNodes.length; i++) {
+			childNodes[i].highLight(delay2,time2);
+		}
+
+		this.VH.setDelay(500);
+		// lowlight all
+		var delay3 = this.VH.setDelay(500);
+		var time3 = this.VH.getAnimTime(500);
+
+		parentNode.lowLight(delay3,time3);
+		for (var i=0; i<childNodes.length; i++) {
+			childNodes[i].lowLight(delay3,time3);
+			childNodes[i].lowlightInBranch(delay3,time3);
+		}
+	};
+
+	// returns the parent x of the vertex x in the tree
+	Tree.prototype.GetParent = function(x) {
+		var childNode = this.tnodes[x];
+
+		childNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+		this.VH.setDelay(250);
+
+		if (childNode.parent !== null) {
+			var parentNode = childNode.ParentTNode;
+
+			childNode.highlightInBranch(this.VH.setDelay(500),this.VH.getAnimTime(500));
+			this.VH.setDelay(250);
+			parentNode.highLight(this.VH.setDelay(500),this.VH.getAnimTime(500));
+			this.VH.setDelay(500);
+
+			var delay = this.VH.setDelay(500);
+			var time = this.VH.getAnimTime(500);
+			parentNode.lowLight(delay,time);
+			childNode.lowlightInBranch(delay,time);
+			childNode.lowLight(delay,time);
+		}
 	};
 
 	// removes a vertex x(and subsequent subtree) from the tree
