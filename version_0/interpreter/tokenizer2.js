@@ -3,6 +3,9 @@
 * -------------
 * Modeled after a code sample in the following blog post by Eli Bendersky (her code samples are in the public domain): 
 * http://eli.thegreenplace.net/2013/07/16/hand-written-lexer-in-javascript-compared-to-the-regex-based-ones
+*
+* Modified by: Liz Shank
+* ADTeach Team, 2015
 */
 
 $(document).ready(function () {
