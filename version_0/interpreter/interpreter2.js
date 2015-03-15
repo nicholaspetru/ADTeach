@@ -257,15 +257,11 @@ $(document).ready(function () {
             if (this.inLoop && !this.settingVar) {
                 env.throwError(root.linenum, "Please do not intialize variables inside a loop");
             }
-            ////console.log("ROOT IS: ", root);
             if (root.second.arity == "FunCall") {
-                ////console.log("Right side of equal side is function call", root.second);
                 valueRoot = root.second;
-                //valueRoot = root.second
-                //value = root.first
+
             } else {
                 if (root.third != null) {
-                    ////console.log("Saying right side is: ", root);
                     valueRoot = root.third;
                 } else {
                     valueRoot = null;
@@ -277,39 +273,30 @@ $(document).ready(function () {
         else {
             variable = root.first.value;
             valueRoot = root.second;
-            ////console.log("VALUE ROOT IS: ", valueRoot);
         }
                 
         // Get the value of the righthand side of the equals sign
         if (valueRoot.arity == "FunCall") {
-            ////console.log("CALLING A FUNCTION");
             var methodValue = this.evalMethod(valueRoot, env);
             returnedValue = methodValue[1];
             value = methodValue[0];
             valueType = methodValue[3];
             var ADTType = methodValue[3];
-            ////console.log("BEING RETURNED: ", methodValue);
             originMethod = methodValue[2];
-            //originMethod = valueRoot.MethodName.value;
             originADT = valueRoot.Caller.value;
-            //ADD ORIGIN
         }
         
         //Literals: ints, floats, strings, etc.
         if (valueRoot.arity == "literal" || valueRoot.arity == "name") {
-            ////console.log("%%%%% Literal", valueRoot);
-            ////console.log("Current root is: ", root);
             originADT = root.second.value;
 
             value = this.evalValue(valueRoot, env);
 
             if (typeof value == typeof [] && value.length >= 1 && value[1].indexOf("<") >=0) {
                 ////console.log("Tryna set a variable equal to an ADT with a <");
-                //Throw the flag!!
+                env.throwError(root.linenum, "expected a function call");
             }
-            //originADT = this.evalValue(valueRoot, env)[1];
-            ////console.log("Valueeee is: ", value);
-            ////console.log("Origin ADT is: ", originADT);
+            
         }
         else if (valueRoot.value == "++" || valueRoot.value == "--") {
             value = this.evalStep(valueRoot, env);
