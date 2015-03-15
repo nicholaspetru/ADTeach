@@ -62,7 +62,7 @@ $(document).ready(function () {
 
         this.me = this.paper.set();
         this.me.push(this.myLabel,this.myFrame);
-        this.me.draggable();
+        //this.me.draggable();
     }
 
     //Update the List
@@ -280,7 +280,7 @@ $(document).ready(function () {
         // weird stuff happens
         this.me = this.paper.set();
         this.me.push(this.myFrame, this.myLabel, newDU.vis[0],newDU.vis[1]);
-        this.me.draggable();
+        //this.me.draggable();
     }
 
     List.prototype.checkPosition = function() {
