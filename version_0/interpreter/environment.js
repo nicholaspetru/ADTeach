@@ -53,13 +53,13 @@ $(document).ready(function () {
         //console.log("Value is: ", value);
         //console.log("Line number: ", lineNum);
 
-        if (type == "List<Float>") {
-            var slicedValue = [];
-            for (var i = 0; i < value.length; i++) {
-                slicedValue.push(value[i][0]);
-            }
-            value = slicedValue;
-        }
+        //if (type == "List<Float>") {
+         //   var slicedValue = [];
+          //  for (var i = 0; i < value.length; i++) {
+          //      slicedValue.push(value[i][0]);
+           // }
+           // value = slicedValue;
+        //}
 
 		var n = {type: type,
 			name: variable, 
@@ -67,6 +67,14 @@ $(document).ready(function () {
 		//console.log("AFTER CREATION: ", n.value);
 		this.variables.push(n);
 		this.names.push(variable);
+
+        if (type == "List<Float>") {
+            var slicedValue = [];
+            for (var i = 0; i < value.length; i++) {
+                slicedValue.push(value[i][0]);
+            }
+            value = slicedValue;
+        }
         if (type == "float") {
             value = value[0];
         }
@@ -81,7 +89,7 @@ $(document).ready(function () {
         //console.log("Origin method type is: ", adtType); 
         var index = this.names.indexOf(name);
         var type = this.variables[index].type;
-        console.log("Type is: ", type);
+        //console.log("Type is: ", type);
 
         this.variables[index].value = newVal;
         if (type == "float") {
@@ -90,7 +98,7 @@ $(document).ready(function () {
         if (adtType == "Stack<Float>" || adtType == "List<Float>" || adtType == "Queue<Float>" || adtType == "PriorityQueue<Float>") {
             var slicedValue = [];
             for (var i = 0; i < newVal.length; i++) {
-                console.log("Pushing: ", newVal[i]);
+                //console.log("Pushing: ", newVal[i]);
                 slicedValue.push(newVal[i][0]);
             }
             newVal = slicedValue;
@@ -110,16 +118,16 @@ $(document).ready(function () {
             newVal = slicedDictionary;
         } else if (adtType == "Dictionary<Float, Float>") {
             var slicedDictionary = {};
-            console.log("Currently dictionary is: ", newVal);
             for (var i in newVal) {
-                console.log("value at i is: ", newVal[i][0]);
+                console.log("i is: ", typeof i);
                 var val2 = newVal[i][0];
-                console.log("Type of i is: ", typeof i);
+                console.log("val2 is: ", val2);
                 i = i.split(',');
                 console.log("Now i is: ", i);
                 slicedDictionary[i[0]] = val2;
             }
             newVal = slicedDictionary;
+            console.log("Now new val is: ", newVal);
         }
         
 		//console.log("New val is: ", newVal);

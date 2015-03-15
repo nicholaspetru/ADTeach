@@ -218,22 +218,30 @@ $(document).ready(function () {
             for (var i in valueCopy) {
                 returnValue.push(valueCopy[i]);
             }
+            console.log("List of elements is: ", returnValue);
             return [returnValue, valueCopy, valType];
         }
         
         //IsEmpty method
-        //Parameters:  
-        //Returns: 
+        //Parameters:   nothing
+        //Returns:      boolean - true if empty, false otherwise
         if (method == 'isEmpty') {
-            returnValue = (valueCopy.length == 0);
+            var size = [];
+            for (var i in valueCopy) {
+                size.push(i);
+            }
+            returnValue = (size.length == 0);
             return [returnValue, valueCopy, "boolean"];
         }
         
         //Keys method
-        //Parameters:  
-        //Returns: 
+        //Parameters:   nothing
+        //Returns:      list of keys in dictionary
+        //              does not change content of dictionary
         if (method == 'keys') {
             var valType;
+
+            //Determine what kind of keys held in dictionary
             switch (keyType) {
                 case "int":
                     valType = "List<Integer>";
@@ -245,12 +253,11 @@ $(document).ready(function () {
                     valType = "List<Float>";
                     break;
             }
-            console.log("IN HEREEEEEEEE");
+
+            //Create list of keys of dictionary
             var keys = [];
-            console.log("Orig value is: ", valueCopy);
             for (i in valueCopy) {
-                console.log("i is: ", i);
-                console.log(typeof i);
+                i = i.split(',');
                 keys.push(i);
             }
             returnValue = keys;
@@ -258,8 +265,8 @@ $(document).ready(function () {
         }
         
         //Size method
-        //Parameters:  
-        //Returns: 
+        //Parameters:   nothing
+        //Returns:      integer - size of dictionary
         if (method == 'size') {
             var count = 0;
             for (var i in valueCopy) {
@@ -271,42 +278,48 @@ $(document).ready(function () {
         }
         
         //Put method
-        //Parameters:  
-        //Returns: 
+        //Parameters:   put(key, value) - place key:value pair in dictionary
+        //Returns:      nothing
+        //              adds key:value pair in dictionary
         if (method == "put") {
             var key = parameters[0].value;
+
+            //Error if the dictionary already contains the key
             if (this.containsKey(key, valueCopy) == true) {
-                env.throwError(root.linenum);
+                env.throwError(root.linenum, "Key already in dictionary");
                 root.error();
             }
+
             var value = parameters[1].value;
             var keyT = this.getType(key);
             var valueT = this.getType(value);
-            console.log("key type is: ", keyT, " wanting: ", keyType);
+
+            //Error if incompatible type of key or value against type of dictionary
             if (keyT != keyType || valueT != valueType) {
-                env.throwError(root.linenum);
-                console.log("Incompatible Types!");
-                root.error("Incompatible types");
-                //Throw an error
+                env.throwError(root.linenum, "Parameters must match key and value type of dictionary");
+                root.error();
             }
             valueCopy[key] = value;
             return [returnValue, valueCopy];
         }
         
         //Remove method
-        //Parameters:  
-        //Returns: 
+        //Parameters:   remove(key) - key of compatible type for dictionary key type
+        //Returns:      nothing
+        //              removes key:value pair from dictionary
         if (method == "remove") {
             var keyToRemove = parameters[0].value;
-            console.log("Key to remove: ", keyToRemove, typeof keyToRemove);
-            console.log("Looking at: ", keyType, "against ", this.getType(keyToRemove));
+
+            //Make sure key being removed is compatible type for keys in dictionary
             if (this.getType(keyToRemove) != keyType) {
-                env.throwError(root.linenum);
-                console.log("Incompatible key types");
-                root.error("Incompatible types");
+                env.throwError(root.linenum, "Key must be of type declared for keys in dictionary");
+                root.error();
             }
+
             var newDictionary = {};
             var isSeen = false;
+
+            //Create copy dictionary with all values except key:value pair of given key
             for (var i in valueCopy) {
                 if (i != keyToRemove) {
                     newDictionary[i] = valueCopy[i];
@@ -314,10 +327,11 @@ $(document).ready(function () {
                     isSeen = true;
                 }
             }
+
+            //Error if key is not in dictionary
             if (isSeen != true) {
-                env.throwError(root.linenum);
-                console.log("key not in dictionary");
-                root.error("Not in dictionary");
+                env.throwError(root.linenum, "Key not in dictionary");
+                root.error();
             }
             
             valueCopy = newDictionary;
@@ -325,29 +339,31 @@ $(document).ready(function () {
         }
         
         //Populate method
-        //Parameters:  
-        //Returns: 
+        //Parameters:  integer - number of values to populate dictionary with
+        //Returns:      nothing
+        //              populates dictionary with random values
         if (method == "populate") {
+
+            //Error out of user enters anything but an integer as parameter
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameter of populate must be an integer");
+                root.error();
+            } else if (parameters[0].value.toString().indexOf('.') >= 0) {
+                env.throwError(root.linenum, "Parameter of populate must be an integer");
+                root.error();
+            }
+
+
             var numKeys = parameters[0].value;
             var dict = {};
-            
-            var alph;
-            //Generate alph
             var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            
-            
-            
-            
-            var alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
             var toPush;
             var count = 0;
-            console.log("Size is: ", dict.size);
+
+            //Fill dictionary with random keys of compatible types to keyType
             while(count < numKeys) {
-                
                 if (keyType == "int") {
                     toPush = Math.floor((Math.random()*100) + 1);
-                    console.log("Going to push: ", typeof toPush);
                     if (this.containsKey(toPush, dict) != true) {
                         dict[toPush] = 0;
                         count += 1;
@@ -357,13 +373,12 @@ $(document).ready(function () {
                     var word = '';
                     for (var n = 0; n < 3; n++) {
                         toPush = Math.floor((Math.random()*alph.length-1) + 1);
-                        word += alph[toPush];
+                        word += chars[toPush];
                     }
                     if (this.containsKey('"' + word + '"', dict) != true) {
                         dict['"' + word + '"'] = 0;
                         count += 1;
                     }
-                    
                 }
                 else if (keyType == "float") {
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
@@ -372,13 +387,10 @@ $(document).ready(function () {
                         count += 1;
                     }
                 }
-                //console.log("After count: ", count);
             }
-            console.log("Count is: ", count);
-            console.log("Dictionary to start is: ", dict);
-            console.log("VALUE TYPE IS: ", valueType);
+
+            //Fill dictionary with random values of compatible types to valueType
             for (var j in dict) {
-                console.log("j is: ", typeof j);
                 if (valueType == "int") {
                     toPush = Math.floor((Math.random()*100) + 1);
                     dict[j] = toPush;
@@ -388,23 +400,12 @@ $(document).ready(function () {
                     dict[j] = '"' + alph[toPush] + '"';
                 }
                 if (valueType == "float") {
-                    console.log("In here:::::");
                     toPush = parseFloat((Math.random()*(7.00 - 0.01) + 1).toFixed(2));
                     dict[j] = [toPush, "float"];
-                    console.log("Dictionary at j: ", j, "Is now: ", dict[j]);
-                }
-                if (valueType == "bool") {
-                    toPush = Math.floor((Math.random() * 2) + 1);
-                    if (toPush == 1) {
-                        dict[j] = true;
-                    } else {
-                        dict[j] = false;
-                    }
                 }
             }
             valueCopy = dict;
             return [returnValue, valueCopy];
-        }
-            
+        }       
     }
 });
