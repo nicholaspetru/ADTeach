@@ -444,58 +444,51 @@ $(document).ready(function () {
                     //Initializing a variable that is not an ADT
                     default:
                         var type = this.checkType(value);
+
+                        //Error if value being initialized doesn't match type of variable
                         if (root.first != type){
-                            env.throwError(root.linenum, "IIIncompatible types! expected " + root.first + ", received " + type);
+                            env.throwError(root.linenum, "Incompatible types! expected " + root.first + ", received " + type);
                             root.error();
                         }
+
+                        //Create variable in environment to the value assigned above
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
                         break;
                 }
-            ////console.log("HERE AND ROOT IS: ", root);
+
+            //Value on right side of equal sign is from a method call
             } else {
-                ////console.log("Creating variable: ", root);
-                ////console.log("Value is: ", typeof value);
-                //////console.log("Type is: ", valueType);
-                //////console.log("Of type: ", this.checkType(value));
-                if (root.third.arity == "FunCall") {
-                    ////console.log("IS A FUNCALL");
-                    ////console.log("Root first: ", root.first);
-                    ////console.log("Want type: ", valueType);
-                    if (root.first != valueType) {
-                        ////console.log(root.first, valueType);
-                        env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + valueType);
-                        root.error();
-                    }
-                }
-                 else if (root.first != this.checkType(value)) {
-                    env.throwError(root.linenum, "incompatible types! expected " + root.first + ", received " + this.checkType(value));
+
+                //Make sure type of returned value from method is correct for variable initialization
+                if (root.first != valueType) {
+                    env.throwError(root.linenum, "Incompatible types! expected " + root.first + ", received " + valueType);
                     root.error();
                 }
-                //returnValue = value[0];
-                //method = value[2];
-                //originMethod = method;
-                ////console.log("VALUE ISSSSS: ", value);
+                
+                //Create new variable with value returned from method call
                 env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
             }
-        }
-        else {
-            var lsitOfADT = ["List<Integer>", "List<String>", "Stack<Integer>", "Stack<String>", "List<Float>", "Stack<Float>",
-                                "Queue<String>", "Queue<Integer>", "Queue<Float>", "PriorityQueue<String>", "PriorityQueue<Integer>"];
-            ////console.log("Updating variable!!!!!!!!!!!!", root);
+
+        //Updating a variable instead of initializing one
+        } else {
+            //Find the value by calling evalValue, and find what type the value is
             var type = this.checkType(value);
             var val = this.evalValue(root.first, env);
             var valType = this.checkType(val);
+
+            if (valueType == "List<Integer>") {
+                if (val[1] != valueType) {
+                    env.throwError(root.linenum, "Incompatible types!");
+                }
+            }
             
-            ////console.log(root.first);
-            ////console.log("232323232323", root.first, val);
             if (typeof val == typeof [] && val.length >= 2 && val[1] != "float") {
                 if (root.second.arity != "FunCall") {
                     env.throwError(root.linenum, "expected a function call");
                 }
             }
+
             if (val == null && root.first.arity == "name") {
-                ////console.log("In correct if statement");
-                ////console.log(env.getType(root.first.value));
                 val = env.getType(root.first.value);
                 if (val.size() > 1) {
                     if (root.second.arity != "FunCall") {
@@ -503,78 +496,98 @@ $(document).ready(function () {
                     }
                 }
             }
-            ////console.log("*((*(**(*(*(*Valtype is: ", val);
-            
-            ////console.log("VAL IS: ", value);
-            ////console.log("Root.first type is: ", typeof val, " and type is: ", type);
-            ////console.log("val type is: ", valType, "and type is: ", type);
+
+            //Error if value is not compatible with type of existing variable
             if (valType != type){
-                ////console.log(val, typeof val, type);
-                env.throwError(root.linenum, "incompatible types! expected " + valType + ", received " + type);
-                ////console.log("INCOMPATIBLE TYPES!!");   
-                root.error("INcompatible types");
+                env.throwError(root.linenum, "Incompatible types! expected " + valType + ", received " + type);
+                root.error();
             }
-            if(type == null) {
+            if (type == null) {
                 if (typeof val == typeof [] && val.length == 4 && methodValue[3] != val[1]){
-                    ////console.log("INCOMPATIBLE TYPES!!! Expected", methodValue[3], "found", val[1]);
-                    env.throwError(root.linenum, "incompatible types! expected " + methodValue[3] + ", received " + val[1]);
-                    root.error("INcompatible types");
+                    env.throwError(root.linenum, "Incompatible types! expected " + methodValue[3] + ", received " + val[1]);
+                    root.error();
                 }
             }
-            ////console.log("root is: ", root);
-            ////console.log("Value is: ", value);
             if (value.length == 2) {
                 if (typeof value[0] == typeof []) {
                     value = value[0];
                 }
             }
+
+            //Update the variable of existing variable to value calculated above
             env.updateVariable(root.first.value, value, originMethod, originADT, root.linenum);
         }
     }
     
+    /**
+    *Eval condition -  evaluates the condition tree and returns boolean value
+    *
+    *@param {Object} root - the root of the condition tree
+    *               Possible roots: <, >, ==, !=, <=, >=, &&, ||
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    *@return {Boolean} - true or false depending on result of condition check
+    *
+    **/
     Interpreter.prototype.evalCondition = function(root, env) {   
-        //console.log("Condition is: ", root);     
         var truth;
+
+        //If root is boolean value, return value
         if (root.value == true) {
             return true;
         } else if (root.value == false) {
             return false;
+
+        //If root is unary, this means it is !, so evaluate condition, and return opposite
         } else if (root.arity == "unary") {
             if (root.first.arity == "FunCall") {
                 truth = this.evalCondition(root.first, env)[0];
             } else {
                 truth = this.evalCondition(root.first, env);
             }
-            //console.log("Truth is: ", truth);
             if (truth) {
                 return false;
             } else {
                 return true;
             }
+
+        //If root is a literal, make sure it is not an empty literal (0, 0.0, empty string), and return true
         } else if (root.arity == "literal") {
-            ////console.log("Can't do literals");
+            console.log("Root is: ", root);
+            if (root.value != 0 && root.value != 0.0 && root.value != '""') {
+                return true;
+            } else {
+                return false;
+            }
+
+        //Root is a variable
         } else if (root.arity == "name") {
             var variable = this.evalValue(root, env);
+
+            //Error if variable is not boolean type
             if (typeof variable != typeof true) {
-                env.throwError(root.linenum, "expected boolean, found " + typeof variable + " (" + variable+ ")");
-                ////console.log("No literals");
-                root.error("No literals");
+                env.throwError(root.linenum, "Expected boolean, found " + typeof variable + " (" + variable+ ")");
+                root.error();
+
+            //Return value of variable
             } else {
                 return variable;
             }
+
+        //Root is a method call
         } else if (root.arity == "FunCall") {
             return this.evalMethod(root, env);
-        }
         
-        if (root.arity === "binary") {
+        //Root is binary, meaning it is a comparison
+        } else if (root.arity === "binary") {
 
+            //Determine what left and right side values of comparison are
             if (root.value == "&&" || root.value == "||"){
                 var leftValue = this.evalCondition(root.first, env);
                 if(root.value == "&&" && !this.evalCondition(root.first, env)) return false;
                 var rightValue = this.evalCondition(root.second, env);
 
             } else {
-
                 var leftValue = this.evalValue(root.first, env);
                 var rightValue = this.evalValue(root.second, env);
                 if (leftValue.length == 2 && leftValue[1] == "float") {
@@ -584,9 +597,10 @@ $(document).ready(function () {
                     rightValue = rightValue[0];
                 }
             }
+
+            //Perform comparison
             switch (root.value) {
                 case "&&":
-                    ////console.log("DOing aaaand");
                     return (leftValue && rightValue);
                     break;
                 case "||":
@@ -611,45 +625,71 @@ $(document).ready(function () {
                     return (leftValue != rightValue);
                     break;
                 default:
-                    ////console.log("unrecognized operator: " + root.value);
                     return undefined;
                     break;
             }
         }
         return undefined;
-
     }
 
-
+    /**
+    *Eval for block - goes through process of a for loop and evaluates body for entirety of counter
+    *
+    *@param {Object} block - for block to be evaluated
+    *               Information in for block:
+    *                       Initialization of counter variable
+    *                       Step
+    *                       Condition
+    *                       Body
+    *@param {Object} env - working Environment interpreter is updating
+    **/
     Interpreter.prototype.evalForBlock = function(block, env) {
         var initialization = block.Initialization;
         var condition = block.Test;
         var step = block.Increment;
         var body = block.Body;
         var stepType;
+
+        //Set the setting variable to true so counter variable can be set in nested loop
         this.settingVar = true;
         this.evalAssignment(initialization, env);
         this.settingVar = false;
+
+        //While test is true, perform body of for loop
         var isTrue = this.evalCondition(condition, env);
         while (isTrue == true) {
             this.inLoop = true;
             this.eval(body, env);
+
+            //After performing body of for loop, perform step and reevaluate condition
             this.evalSemiColonBlock(step, env);
             isTrue = this.evalCondition(condition, env);
         }
         this.inLoop = false;
-        ////console.log(initialization);
+
+        //Remove the intialized variable which only lives for duration of for loop
         env.removeVariable(initialization.second.value, initialization.linenum);
-        
     }
     
+    /**
+    *Eval if block - goes through process of an if statement and evaluates body if condition is true
+    *
+    *@param {Object} block - if block to be evaluated
+    *               Information in if block:
+    *                       Condition
+    *                       Body for when if is true
+    *                       Else body for when if is false
+    *@param {Object} env - working Environment interpreter is updating
+    **/
     Interpreter.prototype.evalIfBlock = function(block, env) {
         var condition = block.Test;
         var body = block.IfBody;
         var elseBody = block.ElseBody;
         
+        //Evaluate condition
         var isTrue = this.evalCondition(condition, env);
         
+        //If condition is true, evaluate body of if statement, or else, evaluate body of else statement
         if (isTrue == true) {
             this.eval(body, env);
         } else {
@@ -658,9 +698,16 @@ $(document).ready(function () {
             }
         }
     }
+
+    /**
+    *Check type: return the type of a value as a string
+    *
+    *@param {Object} value - value to find the type of
+    *
+    **/
     Interpreter.prototype.checkType = function(value) {
-        ////console.log("**************** Type of value is:", typeof value);
-        ////console.log("Looking at: ", value);
+
+        //Value is a float if a list with second item "float"
         if (typeof value == typeof []) {
             if (value.length == 2) {
                 if (value[1] == "float") {
@@ -668,92 +715,38 @@ $(document).ready(function () {
                 }
             }
         }
+
+        //Determine type by using typeof value
         switch (typeof value) {
             case typeof 1:
-                ////console.log("Returning whaaaat we want");
                 return "int";
             case typeof "1":
                 return "String";
             case typeof true:
                 return "boolean";
-                
-            case typeof VStack("int"):
-                return "Stack<int>";
-                break;
-            case typeof VStack("float"):
-                return "Stack<Float>";
-                break;
-            case typeof VStack("String"):
-                return "Stack<String>";
-                break;
-                
-            case typeof VList("int"):
-                return "List<Integer>";
-            case typeof VList("String"):
-                return "List<String>";
-            case typeof VList("float"):
-                return "List<Float>";
-                
-            case typeof VQueue("int"):
-                return "Queue<int>";
-            case typeof VQueue("float"):
-                return "Queue<Float>";
-            case typeof VQueue("String"):
-                return "Queue<String>";
-                
-            case typeof VPQueue("int"):
-                return "PriorityQueue<Integer>";
-            case typeof VPQueue("String"):
-                return "PriorityQueue<String>";
-            case typeof VPQueue("float"):
-                return "PriorityQueue<Float>";
-                
-            case typeof VDictionary("int", "int"):
-                return "Dictionary<Integer, Integer>";
-            case typeof VDictionary("int", "String"):
-                return "Dictionary<Integer, String>";
-            case typeof VDictionary("int", "bool"):
-                return "Dictionary<Integer, Boolean>";
-            case typeof VDictionary("int", "float"):
-                return "Dictionary<Integer, Float>";
-                
-            case typeof VDictionary("String", "int"):
-                return "Dictionary<String, Integer>";
-            case typeof VDictionary("String", "String"):
-                return "Dictionary<String, String>";
-            case typeof VDictionary("String", "bool"):
-                return "Dictionary<String, Boolean>";
-            case typeof VDictionary("String", "float"):
-                return "Dictionary<String, Float>";
-                
-            case typeof VDictionary("float", "int"):
-                return "Dictionary<Float, Integer>";
-            case typeof VDictionary("float", "String"):
-                return "Dictionary<Float, String>";
-            case typeof VDictionary("float", "bool"):
-                return "Dictionary<Float, Boolean>";
-            case typeof VDictionary("float", "float"):
-                return "Dictionary<Float, Float>";
-                
-            case typeof VGraph():
-                return "Graph";
-            case typeof VWeightedGraph():
-                return "WeightedGraph";
-            case typeof VTree():
-                return "Tree";
             default:
                 return null
         }
     }
     
-    
-    
-    Interpreter.prototype.evalMaths = function(root, env) {      
-        ////console.log("root is:::::", root);
+    /**
+    *Eval maths: evaluates the math tree
+    *
+    *@param {Object} root - the root of the math tree
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    **/
+    Interpreter.prototype.evalMaths = function(root, env) {  
+
+        //If root is not an operator, find value using evalValue    
         if (['%', '+', '-', '*', '/', '**'].indexOf(root.value) < 0) {
             value = this.evalValue(root, env);
             return value;
+
+        //Go through possible operators
         } else {
+
+            //Deal with special cases of adding floats (parsing float value to get actual float number), and adding strings
             if (root.value == "+") {
                 if (root.first.jtype == "FLOAT_TYPE") {
                     if (root.second.jtype == "FLOAT_TYPE") {
@@ -766,6 +759,8 @@ $(document).ready(function () {
                     }
                 }
                 return this.evalMaths(root.first, env) + this.evalMaths(root.second, env);
+
+            //Take care of special cases for floats
             } else {
                 var leftValue, rightValue;
                 if (root.first.jtype == "FLOAT_TYPE") {
@@ -784,44 +779,55 @@ $(document).ready(function () {
                                 return [leftValue / rightValue, "float"];
                         }
                     }
+
+                //Find value of left and right by calling evaluating math on them
                 } else {    
                     leftValue = this.evalMaths(root.first, env);
                     rightValue = this.evalMaths(root.second, env);
                 }
+
+                //Error if trying any math operator but addition on strings
                 if (typeof leftValue === typeof "String" || typeof rightValue === typeof "String") {
                     env.throwError(root.linenum, "Incompatible types! expected Number, found String");
-                    ////console.log("Incompatible types");
-                    root.error("Incompatible types");
+                    root.error();
+
+                //Else, perform the operator on the left and right value
                 } else {
                     switch (root.value) {
                         case "%":
                             return leftValue % rightValue;
                         case "-":
-                            ////console.log(leftValue + "-" + rightValue);
                             return leftValue - rightValue;
                         case "*":
                             return leftValue * rightValue;
                         case "/":
                             return leftValue / rightValue;
-                        /*
-                        case "**":
-                            return leftValue ** rightValue;
-                        */
                     }
                 }
             }
         }
     }
     
+    /**
+    *Eval plus plus: adds one to the current value of variable
+    *
+    *@param {Object} root - root of the plus plus tree
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalPlusPlus = function(root, env) {
         var name = root.first.value;
         var index = env.getIndex(root.first.value);
+
+        //Find variable in the environment
         if (index >= 0){
             var value = env.getValue(name);
-            //console.log("Value is: ", value);
             if (value == null) {
                 env.throwError(root.linenum, "This variable is not yet initialized");
+                root.error();
             }
+
+            //Add one to the current value of the variable and update the environment
             if (value.length == 2 && value[1] == "float") {
                 env.updateVariable(name, [value[0]+1, "float"], "Step", "new", root.linenum);
             } else {
@@ -831,14 +837,26 @@ $(document).ready(function () {
     
     }
     
+    /**
+    *Eval minus minus: subtracts one to the current value of variable
+    *
+    *@param {Object} root - root of the minus minus tree
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalMinusMinus = function(root, env) {
         var name = root.first.value;
         var index = env.getIndex(root.first.value);
-        if (index >= 0){
+
+        //Find variable in the environment
+        if (index >= 0) {
             var value = env.getValue(name);
             if (value == null) {
                 env.throwError(root.linenum, "This variable is not yet initialized");
+                root.error();
             }
+
+            //Subtract one from the current value of the variable and update the environment
             if (value.length == 2 && value[1] == "float") {
                 env.updateVariable(name, [value[0]-1, "float"], "Step", "new", root.linenum);
             } else {
@@ -848,11 +866,19 @@ $(document).ready(function () {
     
     }
     
+    /**
+    *Eval plus equal: adds a value to the current value of variable
+    *
+    *@param {Object} root - root of the plus equal tree
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalPlusEqual = function(root, env) {
         var name = root.first.value;
         var index = env.getIndex(name);
         var adding = root.second.value;
-        ////console.log("Want to add: ", root);
+
+        //If value being added is not a literal, evaluate it using evalValue
         if (adding.jtype != "INT_TYPE" || adding.jtype != "STRING_TYPE" || adding.jtype != "FLOAT_TYPE") {
             adding = this.evalValue(root.second, env);
         }
@@ -860,15 +886,16 @@ $(document).ready(function () {
         if (adding.length == 2 && adding[1] == "float") {
             adding = adding[0];
         }
+
+        //Throw error if variable not in environment
         if (index < 0) {
             env.throwError(root.linenum, "Variable, " + name + " has not been declared");
-            ////console.log("Variable not declared");
-            root.error("Variable not declared");
-            //Throw error
+            root.error();
         }
+
+        //Add value to the current value in environment and update the environment
         var value = env.getValue(name);
         if (value.length == 2 && value[1] == "float") {
-            ////console.log("ADDING: ", value[0], "and", adding);
             newVal = [value[0] + adding, "float"];
         } else {
             var newVal = value + adding;
@@ -876,23 +903,33 @@ $(document).ready(function () {
         env.updateVariable(name, newVal, "+=", "new", root.linenum);
     }
     
+    /**
+    *Eval minus equal: subtracts a value from the current value of variable
+    *
+    *@param {Object} root - root of the minus equal tree
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalMinusEqual = function(root, env) {
         var name = root.first.value;
         var index = env.getIndex(name);
         var subtracting = root.second.value;
-        ////console.log("Want to add: ", root);
+
+        //If value being subtracted is not a literal, evaluate it using evalValue
         if (subtracting.jtype != "INT_TYPE" || subtracting.jtype != "STRING_TYPE" || subtracting.jtype != "FLOAT_TYPE") {
             subtracting = this.evalValue(root.second, env);
         }
+
         if (subtracting.length == 2 && subtracting[1] == "float") {
             subtracting = subtracting[0];
         }
+        //Throw error if variable not in environment
         if (index < 0) {
             env.throwError(root.linenum, "Variable, " + name + " has not been declared");
-            ////console.log("Variable not declared");
-            root.error("Variable not declared");
-            //Throw error
+            root.error();
         }
+
+        //Subtract value from current value in environment and update the environment
         var value = env.getValue(name);
         if (value.length == 2 && value[1] == "float") {
             newVal = [value[0] - subtracting, "float"];
@@ -901,6 +938,14 @@ $(document).ready(function () {
         }
         env.updateVariable(name, newVal, "-=", "new", root.linenum);
     }
+
+    /**
+    *isActuallyADT - checks to make sure type is not a literal
+    *
+    *@param {string} type - type of value we want to check
+    *
+    *@return {Boolean} - true if type is not a literal, false otherwise
+    **/
     Interpreter.prototype.isActuallyADT = function(type) {
         var adt = ["int", "float", "String", "boolean"];
         if (adt.indexOf(type) >= 0) {
@@ -909,51 +954,52 @@ $(document).ready(function () {
             return true;
         }
     }
+
+    /**
+    *Eval Method: evaluates a method root
+    *
+    *@param {Object} root - root of the method call tree
+    *@param {Object} env - working Environment interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalMethod = function(root, env) {
         var adt = root.Caller.value;
-        console.log("AAAAdt is: ", adt);
-        ////console.log("Env is: ", env);
         var adtIndex = env.getIndex(adt);
-        ////console.log("HERE: ", env.getVariables()[adtIndex]);
         var adtType = env.getVariables()[adtIndex].type;
         
-        ////console.log("Adt type is: ", adtType);
-        var adtCurValue = env.getVariables()[adtIndex].value;
-        ////console.log(env.getVariables()[adtIndex]);
-        ////console.log("ADT CURRENT VALUE IS: ", adtCurValue);
         var method = root.MethodName.value;
         var parameters = root.Arguments;
         var originADT = null;
         
         var isADT = this.isActuallyADT(adtType);
+
+        //Error if trying to call method on a literal
         if (!isADT) {
-            env.throwError(root.linenum, "Type " + adtType + " has no method \"" + method + "\"");
+            env.throwError(root.linenum, "Can't call method on literal");
             root.error();
-        
         }
+
         var adtMethods = this.findMethods(adtType);
         var paramCheck = this.checkParameters(adtType, method, parameters);
         var newValue, returnValue;
         var cloneParam = [];
-        ////console.log("Evaluating the method: ", root);
-        ////console.log("adtMethod: ", method);
-        ////console.log("Adt methods are: ", adtMethods);
-        ////console.log("Adt type: ", adtType);
+
+        //Error if calling unsupported method on ADT
         if (adtMethods.indexOf(method) < 0) {
             env.throwError(root.linenum, "Type " + adtType + " has no method \"" + method + "\"");
-            ////console.log("Invalid Method");
-            root.error("Invalid method");
-            //new InvalidMethod();
+            root.error();
         }
+
+        //Error if passing incorrect number of parameters
         if (paramCheck != true) {
-            ////console.log("Incorrect parameters");
             env.throwError(root.linenum, "Incorrect Parameters for method " + method);
-            ////console.log("incorrect parameters");
-            root.error("Incorrect parameters");
-            //new IncorrectParameters();
+            root.error();
+
+
         } else {
+
+            //Evaluate all the parameters being passed in
             if (parameters.length != 0) {
-                ////console.log("PARAMETERS ARE: ", parameters);
                 if (parameters[0].arity == "FunCall") {
                     originADT = parameters[0].Caller.value;
                 }
@@ -961,24 +1007,19 @@ $(document).ready(function () {
                     originADT = parameters[parameters.length-1].value;
                 }
                 for (var i = 0; i < parameters.length; i++){
-                    ////console.log("Parameter is: ", parameters[i]);
-                    ////console.log("ENV2 IS: ", env);
                     var varValue = this.evalValue(parameters[i], env);
-                    ////console.log("Value of parameter is: ", varValue);
-                    ////console.log("VAR VALUE IS: ", varValue);
                     var cloneVar = {value:varValue};
                     cloneParam[i] = cloneVar;
                 }
             }
-            methodValue = this.doMethod(adtType, adtCurValue, method, cloneParam, env, root, adt);
-            //console.log("returned value is *******: ", methodValue, "From method: ", method);
+
+            //Do the actual method, return value in format [returned value, new ADT value, type of returned value]
+            methodValue = this.doMethod(adtType, method, cloneParam, env, root, adt);
             returnValue = methodValue[0];
-            
             newValue = methodValue[1];
             var valueType = methodValue[2];
-            //console.log("Return value is: ", newValue);
-            //console.log("THe parameters are: ", cloneParam);
-            ////console.log("Adding to method: ", cloneParam[0].value);
+
+            //Create more descriptive method name to pass to visualizers
             switch(method) {
                 case("set"):
                 case("get"):
@@ -993,16 +1034,19 @@ $(document).ready(function () {
                 case('removeVertex'):
                 case('setDirected'):
                 case('setRoot'):
-                    //console.log("Going to add: ", cloneParam);
+
+                    //Add parameter to method name
                     if (cloneParam[0].value.length == 2 && cloneParam[0].value[1] == "float") {
                         method = method + "." + cloneParam[0].value[0];
                     } else {
                         method = method + "." + cloneParam[0].value;
                     }
-                    //console.log("method is: ", method);
                     break;
+
                 case("add"):
                 case("addVertex"):
+
+                    //Add position in ADT item was added to name of method
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>"
                        || adtType == "PriorityQueue<Float>" || adtType == "Graph" || adtType == "WeightedGraph") {
                         method = method + "." + returnValue;
@@ -1016,10 +1060,13 @@ $(document).ready(function () {
                         break;
                     }
                     break;
+
                 case("remove"):
+
+                    //Add posiiton in ADT item as removed from to name of method
                     if (adtType == "PriorityQueue<Integer>" || adtType == "PriorityQueue<String>" || adtType == "PriorityQueue<Float>" 
                         || adtType == "Queue<String>" || adtType == "Queue<Integer>" || adtType == "Queue<Float>") {
-                        method = method + "." + adtCurValue.length;
+                        method = method + "." + env.getVariables()[env.getIndex(adt)].value.length;
                         break;
                     } else if (adtType == "Dictionary<Float, String>" || adtType == "Dictionary<Float, Integer>" || adtType == "Dictionary<Float, Float>") {
                         method = method + "." + cloneParam[0].value[0];
@@ -1028,6 +1075,7 @@ $(document).ready(function () {
                         method = method + "." + cloneParam[0].value;
                         break;
                     }
+
                 case("addEdge"):
                 case("removeEdge"):
                 case("hasEdge"):
@@ -1035,19 +1083,26 @@ $(document).ready(function () {
                 case("removeChild"):
                 case('getWeight'):
                 case('setWeight'):
+
+                    //Add what was added and at which index to name of method
                     method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
                     if (cloneParam.length == 3) {
                         method = method + "." + cloneParam[2].value;
                     }
                     break;
+
                 case("addChild"):
+
+                    //Add parent node and child node to name of method (and possibly position of child)
                     if (parameters.length == 2) {
-                        method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + adtCurValue.length;
+                        method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + env.getVariables()[env.getIndex(adt)].value.length;
                     } else if (parameters.length == 3) {
                         method = method + '.' + cloneParam[0].value + "." + cloneParam[1].value + "." + cloneParam[2].value;
                     
                     }
+
                 case("put"):
+                    //Add key and value to name of method
                     if (adtType == "Dictionary<Float, Float>") {
                         console.log("First param is: ", cloneParam[0].value);
                         method = method + "." + cloneParam[0].value[0] + "." + cloneParam[1].value[0];
@@ -1055,54 +1110,55 @@ $(document).ready(function () {
                         method = method + "." + cloneParam[0].value + "." + cloneParam[1].value;
                     }
             }
-            
             env.updateVariable(adt, newValue, method, originADT, root.linenum, adtType);
         }
-        //console.log("IN PERFORM METHOD: ", valueType);
         return [returnValue, newValue, method, valueType];
     }
     
+    /**
+    *Find methods: find the supported method for given ADT type
+    *
+    *@param {string} type - ADT type
+    *
+    *@return {Object} - list of supported methods for ADT type
+    **/
     Interpreter.prototype.findMethods = function(type) {
         var y;
         switch(type) {
             case "Stack<Integer>":
             case "Stack<String>":
             case "Stack<Float>":
-                y = new VStack("String");
+                y = new VStack();
                 return y.listMethods();
                 break;
             case "List<Integer>":
             case "List<String>":
             case "List<Float>":
-                y = new VList("int");
+                y = new VList();
                 return y.listMethods();
                 break;
             case "Queue<Integer>":
             case "Queue<String>":
             case "Queue<Float>":
-                y = new VQueue("int");
+                y = new VQueue();
                 return y.listMethods();
                 break;
             case "PriorityQueue<Integer>":
             case "PriorityQueue<String>":
             case "PriorityQueue<Float>":
-                y = new VPQueue("int");
+                y = new VPQueue();
                 return y.listMethods();
                 break;
             case "Dictionary<Integer, Integer>":
             case "Dictionary<Integer, String>":
-            case "Dictionary<Integer, Boolean>":
             case "Dictionary<Integer, Float>":
             case "Dictionary<String, Integer>":
             case "Dictionary<String, String>":
-            case "Dictionary<String, Boolean>":
             case "Dictionary<String, Float>":
             case "Dictionary<Float, Integer>":
             case "Dictionary<Float, String>":
-            case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
-                //console.log("111111111111");
-                y = new VDictionary("int");
+                y = new VDictionary();
                 return y.listMethods();
                 break;
             case "Graph":
@@ -1120,47 +1176,52 @@ $(document).ready(function () {
         }
     }
     
+    /**
+    *Check parameters: check for appropriate number of provided parameters against number of required parameters for method
+    *
+    *@param {string} type - ADT type
+    *@param {string} method - method being called
+    *@param {Object} parameters - list of parameters being passed in
+    *
+    *@return {Boolean} - true if number of passed parameters matches number of required parameters, flase otherwise
+    **/
     Interpreter.prototype.checkParameters = function(type, method, parameters) {
         var y;
         switch(type) {
             case "Stack<Integer>":
             case "Stack<String>":
             case "Stack<Float>":
-                y = new VStack("String");
+                y = new VStack();
                 return y.checkParameters(method, parameters);
                 break;
             case "List<Integer>":
             case "List<String>":
             case "List<Float>":
-                y = new VList("String");
+                y = new VList();
                 return y.checkParameters(method, parameters);
                 break;
             case "Queue<Integer>":
             case "Queue<String>":
             case "Queue<Float>":
-                y = new VQueue("String");
+                y = new VQueue();
                 return y.checkParameters(method, parameters);
                 break;
             case "PriorityQueue<Integer>":
             case "PriorityQueue<String>":
             case "PriorityQueue<Float>":
-                y = new VPQueue("String");
+                y = new VPQueue();
                 return y.checkParameters(method, parameters);
                 break;
             case "Dictionary<Integer, Integer>":
             case "Dictionary<Integer, String>":
-            case "Dictionary<Integer, Boolean>":
             case "Dictionary<Integer, Float>":
             case "Dictionary<String, Integer>":
             case "Dictionary<String, String>":
-            case "Dictionary<String, Boolean>":
             case "Dictionary<String, Float>":
             case "Dictionary<Float, Integer>":
             case "Dictionary<Float, String>":
-            case "Dictionary<Float, Boolean>":
             case "Dictionary<Float, Float>":
-                //console.log("2222222222222");
-                y = new VDictionary("String");
+                y = new VDictionary();
                 return y.checkParameters(method, parameters);
                 break;
             case "Graph":
@@ -1178,140 +1239,59 @@ $(document).ready(function () {
         }
     }
     
-    Interpreter.prototype.doMethod = function(type, origValue, method, parameters, env, root, adt) {
+    /**
+    *Do method: calls the performs method method from ADT class on the given ADT with given parameters
+    *
+    *@param {string} type - ADT type
+    *@param {string} method - method being called
+    *@param {Object} env - working Environment interpreter is updating
+    *@param {Object} root - root of the method tree
+    *@param {string} adt - name of ADT method is being called on
+    *
+    *@return {Object} - list of return information (return value, new ADT value, type of return value)
+    **/
+    Interpreter.prototype.doMethod = function(type, method, parameters, env, root, adt) {
         var y;
         var newV, returnV, value;
-        console.log("ADT@ is: ", adt);
         switch(type) {
             case "Stack<Integer>":
-                y = new VStack("int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Stack<String>":
-                y = new VStack("String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Stack<Float>":
-                y = new VStack("float");
+                y = new VStack();
                 value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "List<Integer>":
-                y = new VList("int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "List<String>":
-                y = new VList("String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "List<Float>":
-                y = new VList("float");
+                y = new VList();
                 value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Queue<Integer>":
-                y = new VQueue("int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Queue<String>":
-                y = new VQueue("String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Queue<Float>":
-                y = new VQueue("float");
+                y = new VQueue();
                 value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "PriorityQueue<Integer>":
-                y = new VPQueue("int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "PriorityQueue<String>":
-                y = new VPQueue("String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "PriorityQueue<Float>":
-                y = new VPQueue("float");
+                y = new VPQueue();
                 value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
             case "Dictionary<Integer, Integer>":
-                //console.log("333333333");
-                y = new VDictionary("int", "int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<Integer, String>":
-                //console.log("333333333");
-                y = new VDictionary("int", "String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
-            case "Dictionary<Integer, Boolean>":
-                //console.log("333333333");
-                y = new VDictionary("int", "bool");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<Integer, Float>":
-                //console.log("333333333");
-                y = new VDictionary("int", "float");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<String, Integer>":
-                //console.log("333333333");
-                y = new VDictionary("String", "int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<String, String>":
-                //console.log("333333333");
-                y = new VDictionary("String", "String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
-            case "Dictionary<String, Boolean>":
-                //console.log("333333333");
-                y = new VDictionary("String", "bool");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<String, Float>":
-                //console.log("333333333");
-                y = new VDictionary("String", "float");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<Float, Integer>":
-                //console.log("333333333");
-                y = new VDictionary("float", "int");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<Float, String>":
-                //console.log("333333333");
-                y = new VDictionary("float", "String");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
-            case "Dictionary<Float, Boolean>":
-                //console.log("333333333");
-                y = new VDictionary("float", "bool");
-                value = y.performMethod(type, method, parameters, env, root, adt);
-                return value;
-                break;
             case "Dictionary<Float, Float>":
-                //console.log("333333333");
-                y = new VDictionary("float", "float");
+                y = new VDictionary();
                 value = y.performMethod(type, method, parameters, env, root, adt);
                 return value;
                 break;
@@ -1336,6 +1316,13 @@ $(document).ready(function () {
         }
     }
     
+    /**
+    * Eval step: evaluates a step tree
+    *
+    *@param {Object} root - the root of the step tree
+    *@param {Object} env - the working Environment the interpreter is updating
+    *
+    **/
     Interpreter.prototype.evalStep = function(root, env) {
         if (root.value == "++") {
             this.evalPlusPlus(root, env);
@@ -1344,8 +1331,12 @@ $(document).ready(function () {
         }
     }
     
-    
-    // Generate list of tokens and store it in this.TokenList
+    /**
+    *Make token list
+    *
+    *@param {Object} env - working Environment of interpreter
+    *
+    **/
     Interpreter.prototype.makeTokenList = function(env) {
         var t = new Tokenizer();
         var tokens = [];
@@ -1355,7 +1346,6 @@ $(document).ready(function () {
         t.input(this.code);
 
         var currentToken = t.token(env);
-        //console.log("Returning current token: ", currentToken);
         while (currentToken) {
             switch (currentToken.type) {
                 case 'OPEN_PAREN':
@@ -1383,25 +1373,29 @@ $(document).ready(function () {
 
         if (parenLevel > 0) {
             env.throwError(1, "Syntax error: Missing close parenthesis");
-            this.Error = "Syntax error: Missing close parenthesis";
+            env.error();
         }
         else if (parenLevel < 0) {
             env.throwError(1, "Syntax error: Missing open parenthesis");
-            this.Error = "Syntax error: Missing open parenthesis";
+            env.error();
         }
         else if (braceLevel > 0) {
             env.throwError(1, "Syntax error: Missing close brace");
-            this.Error = "Syntax error: Missing close brace";
+            env.error();
         }
         else if (braceLevel < 0) {
             env.throwError(1, "Syntax error: Missing open brace");
-            this.Error = "Syntax error: Missing open brace";
+            env.error();
         }
 
         this.TokenList = tokens;
     }
 
-    // Return this.TokenList as a string
+    /**
+    *Display tokens
+    *
+    *@returns {string} - returns token list as a string
+    **/
     Interpreter.prototype.displayTokens = function() {
         var result = "";
         var t = this.TokenList;
@@ -1416,12 +1410,14 @@ $(document).ready(function () {
         return result;
     }
     
+    /**
+    *Make Parse tree
+    **/
     Interpreter.prototype.makeParseTree = function() {
         this.makeTokenList();
         var source = this.TokenList;
         var parse = make_parse();
         var tree = parse(source);
-        this.ParseTree = tree;
-        
+        this.ParseTree = tree;    
     }
 });
