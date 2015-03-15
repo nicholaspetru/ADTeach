@@ -1,0 +1,1 @@
+All current files in use by ADTeach are contained in the Version_0 folder. In order to run our code, open up mainIndex.html in any local web browser and you should be good to go!
