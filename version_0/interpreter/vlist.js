@@ -173,7 +173,7 @@ $(document).ready(function () {
                 //Split the list with values before index and values after index
                 var first = valueCopy.slice(0, parameters[0].value);
                 var second = [parameters[1].value];
-                if (type == "List<Float>") second = [[second[0], "float"]];
+                if (type == "List<Float>") second = [second[0]];
                 var third = valueCopy.slice(parameters[0].value);
                 
                 //Concantenate parts of list into the value to return
