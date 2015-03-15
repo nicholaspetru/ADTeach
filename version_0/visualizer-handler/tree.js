@@ -20,8 +20,9 @@ $(document).ready(function () {
 		this.FONT_SIZE = 15;
 		this.DUNIT_WIDTH = 25.5;
 		this.DUNIT_OFFSETY = 20;
+		this.DUNIT_OFFSETX = 20;
 		this.DUNIT_BACKGROUND_COLOR = "#B6C5BE";
-		this.WIDTH = 45;
+		this.WIDTH = 200;
 		this.HEIGHT = 45;
 
 		this.tnodes = {};
