@@ -312,7 +312,7 @@ $(document).ready(function () {
         var valueRoot, value, returnedValue;
         var originMethod = "new";
         var originADT = "";
-        
+        var valueType;
         //Arity of the root determines if variable is being initialized or updated
         if (root.arity === "Initialization") {
 
@@ -476,7 +476,8 @@ $(document).ready(function () {
             var valType = this.checkType(val);
             var listPossibleADTVal = ["List<Integer>", "List<String>", "List<Float>"];
             console.log("Val type is: ", valType);
-            if (listPossibleADTVal.indexOf(valType) >= 0) {
+            console.log("Value type is: ", valueType);
+            if (valueType) {
                 if (val[1] != valueType) {
                     env.throwError(root.linenum, "Incompatible types!");
                     root.error();
