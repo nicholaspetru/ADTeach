@@ -126,6 +126,8 @@ $(document).ready(function () {
 		newTNode.buildVisual();
 		newTNode.createTNode(this.VH.setDelay(500),this.VH.getAnimTime(500));
 		newTNode.lowLight(this.VH.setDelay(500,this.VH.getAnimTime(500)));
+
+		this.dragNode((newTNode.DU));
 	};
 
 	// sets vertex y to be child of vertex x
@@ -165,6 +167,7 @@ $(document).ready(function () {
 		childNode.lowLight(delay,time);
 
 		this.tnodes[y] = childNode;
+		this.dragNode((childNode.DU));
 
 	};
 
@@ -314,4 +317,97 @@ $(document).ready(function () {
 		}
 
 	};
+    Tree.prototype.dragNode = function(n) {
+            var dragger = function () {
+                // Original coords for main element
+                this.ox = this.type == "circle" ? this.attr("cx") : this.attr("x");
+                this.oy = this.type == "circle" ? this.attr("cy") : this.attr("y");
+
+                // Original coords for pair element
+                this.pair.ox = this.pair.type == "circle" ? this.pair.attr("cx") : this.pair.attr("x");
+                this.pair.oy = this.pair.type == "circle" ? this.pair.attr("cy") : this.pair.attr("y");
+            },
+            move = function (dx, dy) {
+
+                // Move main element
+                var att = this.type == "circle" ? {cx: this.ox + dx, cy: this.oy + dy} : 
+                                               {x: this.ox + dx, y: this.oy + dy};
+                this.attr(att);
+            
+                // Move paired element
+                att = this.pair.type == "circle" ? {cx: this.pair.ox + dx, cy: this.pair.oy + dy} : 
+                                               {x: this.pair.ox + dx, y: this.pair.oy + dy};
+                this.pair.attr(att);            
+            
+                // Move connections
+                var temp, x1, y1, x2, y2;
+                if (this.type == "circle") {
+                    temp = this;
+                }
+                else {
+                    temp = this.pair;
+                }
+                if (temp.connections) {
+                    for (var i=0; i<temp.connections.length; i++) {
+                        var tempPath = temp.connections[i];
+
+                        var pathString;
+                        if (tempPath.from.data("nodeID") == temp.data("nodeID") ) {
+                            pathString = "M " + (this.ox + dx).toString() + ","
+                                            + (this.oy + dy).toString() + "L " 
+                                            + tempPath.to.attr("cx") + ","
+                                            + tempPath.to.attr("cy");
+                            tempPath.attr({ path : pathString });
+                            if (tempPath.isDirected) {
+                                var totalLen = tempPath.getTotalLength();
+                                var intLen = totalLen - temp.attr("r");
+                                var intersect = tempPath.getPointAtLength(intLen);
+                                var pathString2 = tempPath.getSubpath(0,intLen);
+                                tempPath.attr({
+                                    path : pathString2,
+                                    'arrow-end': 'classic-wide-long'
+                                });
+                            }
+                        } else {
+                            pathString = "M " + tempPath.from.attr("cx") + ","
+                                        + tempPath.from.attr("cy") + " L"
+                                        + (this.ox + dx).toString() + ","
+                                        + (this.oy + dy).toString();
+                            tempPath.attr({ path : pathString });
+                            var totalLen = tempPath.getTotalLength();
+                            var intLen = totalLen - temp.attr("r");
+                            var intersect = tempPath.getPointAtLength(intLen);
+                            var pathString2 = tempPath.getSubpath(0,intLen);
+                            tempPath.attr({
+                                    path : pathString2,
+                                    'arrow-end': 'classic-wide-long'
+                                });
+                        }
+
+                        tempPath.toBack();
+                    }
+                }
+            },
+            up = function () {
+            };
+
+            var tempS = n.vis[1]; // the circle
+            var tempT = n.vis[0]; // the node id
+
+            // remove old dragger if it exists
+            tempS.undrag();
+            tempT.undrag();
+
+            // cursor on hover
+            tempS.attr({cursor: "move"});
+            tempT.attr({cursor: "move"});
+            
+            // add drag handler
+            tempS.drag(move,dragger,up);
+            tempT.drag(move,dragger,up);
+
+            // associate the circle/id so that dragging one moves the other with it
+            tempS.pair = tempT;
+            tempT.pair = tempS;
+        };
 });
