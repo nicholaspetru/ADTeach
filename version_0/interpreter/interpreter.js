@@ -474,9 +474,7 @@ $(document).ready(function () {
             var type = this.checkType(value);
             var val = this.evalValue(root.first, env);
             var valType = this.checkType(val);
-            var listPossibleADTVal = ["List<Integer>", "List<String>", "List<Float>"];
-            console.log("Val type is: ", valType);
-            console.log("Value type is: ", valueType);
+            
             if (valueType) {
                 if (val[1] != valueType) {
                     env.throwError(root.linenum, "Incompatible types!");
