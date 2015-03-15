@@ -324,6 +324,7 @@ $(document).ready(function () {
             //Variable is initialized to resulting value from a method call, set the root of the method tree to root.second
             if (root.second.arity == "FunCall") {
                 valueRoot = root.second;
+            }
 
             //Right side of equal side is either another type of tree or null, and variable is just being initialized
             if (root.second.arity == "FunCall") {
@@ -444,7 +445,7 @@ $(document).ready(function () {
                     default:
                         var type = this.checkType(value);
                         if (root.first != type){
-                            env.throwError(root.linenum, "Incompatible types! expected " + root.first + ", received " + type);
+                            env.throwError(root.linenum, "IIIncompatible types! expected " + root.first + ", received " + type);
                             root.error();
                         }
                         env.createVariable(root.first, root.second.value, value, originMethod, originADT, root.linenum);
