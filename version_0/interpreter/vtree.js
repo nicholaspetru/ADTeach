@@ -86,6 +86,11 @@ $(document).ready(function () {
             valueCopy[i]=(origValue[i]);   
         }
         
+        //Decide which method to perform
+        
+        //SetRoot method
+        //Parameters:   setRoot(x) - Sets vertex x to be the root of the tree
+        //Returns:      nothing
         if (method == "setRoot") {
             if (valueCopy.length == 0) {
                 valueCopy.push([parameters[0].value, null, []]);
@@ -110,15 +115,32 @@ $(document).ready(function () {
             }
         }
         
+        //AddChild method
+        //Parameters:   addChild(x,y) - Sets vertex y to be child of vertex x
+        //Returns:      nothing
+        //
+        //Parameters:   addChild(x, y, z) - Sets vertex y to be the zth child of vertex x, where z is either 0 or 1
+        //Returns:      nothing
         if (method == "addChild") {
             var vertex = parameters[0].value;
             var child = parameters[1].value;
             if (parameters.length == 3) {
                 var pos = parameters[2].value;
                 if (pos != 0 && pos != 1) {
-                    env.throwError(root.linenum);
+                    env.throwError(root.linenum, "Position of child must be 0 or 1");
                     root.error();
                 }
+                if (typeof parameters[2].value != typeof 2) {
+                    env.throwError(root.linenum, "Parameters must be integers");
+                    root.error();
+                }
+
+            }
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
             }
             
             var valueCopyCopy = [];
@@ -131,17 +153,11 @@ $(document).ready(function () {
             }
             
             if (seenVertex != true) {
-                env.throwError(root.linenum);
-                console.log("Vertex not in graph");
-                root.error("Node not in graph");
-                //Throw error
-            }
-            
-            if (typeof child != typeof 1 || child.toString().indexOf('.') >= 0) {
-                env.throwError(root.linenum);
+                env.throwError(root.linenum, "Vertex not in graph");
                 root.error();
             }
             
+
             if (parameters.length == 2) {
                 for (var i = 0; i < valueCopy.length; i++) {
                     var currentTreeNode = valueCopyCopy[i];
@@ -183,9 +199,19 @@ $(document).ready(function () {
             
         }
         
+        //GetParent method
+        //Parameters:   getParent(x) - x is the vertex you want to find the parent of in the tree
+        //Returns:      integer vertex that is the parent of x
         if (method == 'getParent') {
             var vertex = parameters[0].value;
             var parent;
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
+
             for (var i = 0; i < valueCopy.length; i++) {
                 var currTreeNode = valueCopy[i];
                 var currValue = currTreeNode[0];
@@ -197,9 +223,19 @@ $(document).ready(function () {
             return [returnValue, valueCopy, "int"];
         }
         
+        //GetChildren method
+        //Parameters:   getChildren(x) - x is the vertex you want to find the children of in the tree
+        //Returns:      Returns a List<Integer> of all children of vertex x in the tree
         if (method == "getChildren") {
             var vertex = parameters[0].value;
             var children;
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
+
             for (var i = 0; i < valueCopy.length; i++) {
                 var currTreeNode = valueCopy[i];
                 var currValue = currTreeNode[0];
@@ -211,9 +247,19 @@ $(document).ready(function () {
             return [returnValue, valueCopy, "List<Integer>"];
         }
         
+        //GetChild method
+        //Parameters:   getChild(x, y) - x is the vertex you want to find the child of in the tree
+        //                                - y is the index of the child you want
+        //Returns:      Returns the yth child of vertex x in the tree
         if (method == "getChild") {
             var vertex = parameters[0].value;
             var child = parameters[1].value;
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
             
             for (var i = 0; i < valueCopy.length; i++) {
                 var currTreeNode = valueCopy[i];
@@ -226,13 +272,25 @@ $(document).ready(function () {
             return [returnValue, valueCopy, "int"];
         }
         
+        //RemoveChild method
+        //Parameters:   removeChild(x, y) - x is the vertex you want to find the child of in the tree
+        //                                - y is the index of the child you want to remove
+        //Returns:      nothing
         if (method == "removeChild") {
             var vertex = parameters[0].value;
             var child = parameters[1].value;
-            var childrenToRemove = [];
-            
+            var childrenToRemove = [];            
             var valueCopyCopy = [];
             var seenVertex = false;
+
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2 || typeof parameters[1].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
+
+
             for (var k = 0; k < valueCopy.length; k++) {
                 valueCopyCopy.push(valueCopy[k]);
                 if (valueCopy[k][0] == vertex) {
@@ -304,8 +362,18 @@ $(document).ready(function () {
          
         }
         
+        //RemoveVertex method
+        //Parameters:   removeVertex(x) - x is the vertex you want to remove from the tree
+        //                              
+        //Returns:      nothing
         if (method == "removeVertex") {
             var vertex = parameters[0].value;
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
             
             var valueCopyCopy = [];
             var justVertices = [];
@@ -363,6 +431,11 @@ $(document).ready(function () {
         
         }
         
+        //Populate method
+        //Parameters:   populate(numOfNodes) - an integer for how many nodes are in the tree
+        //                      
+        //Returns:      nothing
+        //              creates a random binary tree of x vertices  
         if (method == "populate") {
             var tree = [];
             var vertices = [];
@@ -372,6 +445,13 @@ $(document).ready(function () {
             var children = [];
             var numVertices = parameters[0].value;
             var count = 0;
+
+
+            //Throws error if parameters are not an integers
+            if (typeof parameters[0].value != typeof 2) {
+                env.throwError(root.linenum, "Parameters must be integers");
+                root.error();
+            }
             
             //Create vertices
             while (count < numVertices) {
@@ -399,7 +479,6 @@ $(document).ready(function () {
             
             //Connect root
             var numChildren = Math.floor((Math.random()*2) + 1)
-            console.log("Vertices are: ", values);
             var parValue = parents[0][0];
             numChildren = 2;
             //Root:
@@ -414,7 +493,6 @@ $(document).ready(function () {
 
                 //root has two child
                 else if (numChildren == 2) {
-                    console.log("Trying to set: ", children);
                     var child1 = children[0][0];
                     parents[0][2].push(children[0][0]);
                     parents[parentVertices.indexOf(child1)][1] = parValue;
@@ -429,9 +507,7 @@ $(document).ready(function () {
             } else {
                 parents[0][2] = [];
             }
-            console.log("Children are now: ", children);
             tree.push(parents[0]);
-            console.log("Tree is: ", tree);
             
             parents.splice(0, 1);
             parentVertices.splice(0, 1);
@@ -451,7 +527,6 @@ $(document).ready(function () {
                     continue;
                     
                 } else if (numChildren == 2) {
-                    console.log("Parents are: ", parents);
                     var child1 = children[0][0];
                     parents[0][2].push(children[0][0]);
                     parents[parentVertices.indexOf(child1)][1] = parents[0][0];
@@ -470,8 +545,6 @@ $(document).ready(function () {
             for (var j = 0; j < parents.length; j++) {
                 tree.push(parents[j]);
             }
-            console.log("Ending tree is: ", tree);
-            console.log("Leftover parents: ", parents);
             
             valueCopy = tree;
             return [returnValue, valueCopy];
