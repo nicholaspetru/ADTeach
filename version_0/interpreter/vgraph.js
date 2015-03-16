@@ -213,8 +213,8 @@ $(document).ready(function () {
             } else if (parameters[0].value.toString().indexOf('.') >= 0) {
                 env.throwError(root.linenum, "First parameter must be an integer");
                 root.error();
-            } else if (parameters[1].value[1] != "float") {
-                env.throwError(root.linenum, "Second parameter must be a float");
+            } else if (parameters[1].value != 1 && parameters[1].value != 0 && parameters[1].value[1] != "float") {
+                env.throwError(root.linenum, "Make sure the second parameter is a float between 0 and 1");
                 root.error();
             }
 
