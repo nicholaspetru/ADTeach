@@ -1,21 +1,6 @@
 $(document).ready(function () {
- /*
-    var VH = new VisualizerHandler();
-    var CD = new CodeDatabase();
-    var EVH = new EventHandler();
-    var CB = new CodeBox();
-    var ST = new SymbolTable();
-    VH.symbolTable = ST;
-    EVH.interpreter = INT;
-    EVH.codeDatabase = CD;
-    EVH.codeBox = CB;
-    EVH.visualizerHandler = VH;
-    ST.visualizerHandler = VH;
-    INT.symbolTable = ST;
-    */
     //Listen to buttonz
     $("#modal").hide();
-
 
     var EVH = new EventHandler();
     $("#build").click(function() {
@@ -186,6 +171,7 @@ $(document).ready(function () {
 
     $("#graphHelp").click(function() {
         $("#content").empty().append('<h3><center>Graph ADT</center></h3>');
+        $("#content").append('<p><h3>ADTip: all nodes are draggable!</h3></p>');
         $("#content").append('<p><h4>Instantiation:</h4>');
         $("#content").append('Graph graphName = new Graph();<br></p>');
         $("#content").append('<p>WeightedGraph graphName = new WeightedGraph();<br></p>');
