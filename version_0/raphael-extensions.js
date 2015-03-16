@@ -1,11 +1,13 @@
-// based on http://stackoverflow.com/questions/9956186/raphael-js-maintain-path-between-two-objects
+// based on: http://stackoverflow.com/questions/9956186/raphael-js-maintain-path-between-two-objects
 Raphael.fn.connect = function(fromNode, toNode, isDirected, isWeighted, w, wAttr) {
     // get the circle of the data unit
     var obj1 = fromNode.vis[1];
     var obj2 = toNode.vis[1];
+
     // maintain list of paths each object has
     if (!obj1.connections) obj1.connections = []
     if (!obj2.connections) obj2.connections = []
+
     // get the (x,y) center of each node
     var c1x, c1y, c2x, c2y;
     if (obj1.type === "circle") {
@@ -18,29 +20,24 @@ Raphael.fn.connect = function(fromNode, toNode, isDirected, isWeighted, w, wAttr
     }
 
     // create a path from circle1 to circle2
-    var p = this.path("M" + c1x + "," + c1y
-                        + " L" + c2x + "," + c2y);
-
-    // if the graph is directed, put an arrowhead at the radius of node2
-    if (isDirected) {
-        p.isDirected = true;
-        var totalLen = p.getTotalLength(); // get the total length of the path
-        var intLen = totalLen - obj2.attr("r"); // subtract the length of circle2's radius
-        var intersect = p.getPointAtLength(intLen); // get the point at this length
-        var pathString = p.getSubpath(0,intLen); // create a subpath
-        p.attr({
-            path : pathString,
-            'arrow-end': 'classic-wide-long'
-        });
-    }
-    else {
-        p.isDirected = false;
-    }
-
-    p.attr({"stroke-width": 1.5, "opacity":0});
+    var p = this.path("M" + c1x + "," + c1y + " L" + c2x + "," + c2y);
+    p.isDirected = isDirected;
+    // directed edge 
+    // put an arrowhead at the intersection of
+    // the path and the center of node2
+    var totalLen = p.getTotalLength(); // total length of the path
+    var intLen = totalLen - obj2.attr("r"); // subtract the length of circle2's radius
+    var a = p.getPointAtLength(intLen);
+    var size = 7;
+    p.head = this.arrowhead(c1x, c1y, (a.x), (a.y), size);
+    p.attr({
+        "stroke-width": 1.5,
+        "opacity": 0,
+        "stroke": "#4b4b4b"
+    });
     p.toBack();
 
-
+    // weighted edge
     if (isWeighted) {
         var totalLen = p.getTotalLength();
         var mid = p.getPointAtLength((totalLen / 2));
@@ -48,14 +45,14 @@ Raphael.fn.connect = function(fromNode, toNode, isDirected, isWeighted, w, wAttr
             wy = mid.y;
         if (mid.alpha == 180) {
             wy += -10;
-        }
-        else {
+        } else {
             wx += -13;
         }
-        p.weight = this.text(wx,wy,(w.toString()));
+        p.weight = this.text(wx, wy, (w.toString()));
         p.weight.attr(wAttr);
     }
-    // set the from and to node for this edge
+
+    // set the from and to nodes for this edge
     p.from = obj1;
     p.to = obj2;
     p.fromNodeID = fromNode.id;
@@ -66,4 +63,45 @@ Raphael.fn.connect = function(fromNode, toNode, isDirected, isWeighted, w, wAttr
     obj2.connections.push(p)
 
     return p;
+};
+
+// point calculation based on: https://gist.github.com/viking/1043360
+Raphael.fn.arrowhead = function(x1, y1, x2, y2, size) {
+    var angle = Raphael.angle(x1, y1, x2, y2);
+    var a45 = Raphael.rad(angle - 25);
+    var a45m = Raphael.rad(angle + 25);
+
+    var x2a = x2 + Math.cos(a45) * size;
+    var y2a = y2 + Math.sin(a45) * size;
+
+    var x2b = x2 + Math.cos(a45m) * size;
+    var y2b = y2 + Math.sin(a45m) * size;
+
+    return this.path(
+        "M" + x2 + " " + y2 + "L" + x2a + " " + y2a +
+                    "L" + x2b + " " + y2b +
+                    "L" + x2 + " " + y2).attr({
+                        "opacity":0,
+                        "stroke-width":2,
+                        "stroke":"#4b4b4b",
+                        "fill": "#4b4b4b"
+                    });
+};
+
+Raphael.fn.arrowheadString = function(x1, y1, x2, y2, size) {
+    var angle = Raphael.angle(x1, y1, x2, y2);
+    var a45 = Raphael.rad(angle - 25);
+    var a45m = Raphael.rad(angle + 25);
+
+    var x2a = x2 + Math.cos(a45) * size;
+    var y2a = y2 + Math.sin(a45) * size;
+
+    var x2b = x2 + Math.cos(a45m) * size;
+    var y2b = y2 + Math.sin(a45m) * size;
+
+    var pathString = "M" + x2 + " " + y2 + "L" + x2a + " " + y2a +
+                    "L" + x2b + " " + y2b +
+                    "L" + x2 + " " + y2;
+
+    return pathString;
 };
