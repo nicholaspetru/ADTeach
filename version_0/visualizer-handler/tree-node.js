@@ -1,6 +1,9 @@
+/**
+ * tree-node.js
+ * Represents a tree node
+ * ------------------
+ */
 $(document).ready(function () {
-
-
 	TreeNode = function(tree,value,parent) {
 		// value
 		this.value = value;
@@ -98,9 +101,11 @@ $(document).ready(function () {
 		this.DU.vis[0].animate(anim.delay(delay));
 		this.DU.vis[1].animate(anim.delay(delay));
 	}
-	TreeNode.prototype.highLight = function(delay,time) {
+	TreeNode.prototype.highLight = function(delay,time,color) {
 		//console.log("highLight " + this.value + " delay: " + delay + " time: " + time);
-		var anim = Raphael.animation({stroke: "green"},time);
+		var anim = Raphael.animation({
+			stroke: color || "green"
+		},time);
 
 		this.DU.vis[0].animate(anim.delay(delay));
 		this.DU.vis[1].animate(anim.delay(delay));
@@ -113,21 +118,25 @@ $(document).ready(function () {
 		this.DU.vis[1].animate(anim.delay(delay));
 	};
 
-
 	TreeNode.prototype.createInBranch = function(delay,time) {
 		//console.log("createInBranch " + this.value + " delay: " + delay + " time: " + time);
 		var anim = Raphael.animation({opacity:1,stroke:"green"},time);
 		this.inBranch.animate(anim.delay(delay));
+		this.inBranch.head.animate(anim.delay(delay));
 	}
-	TreeNode.prototype.highlightInBranch = function(delay,time) {
+	TreeNode.prototype.highlightInBranch = function(delay,time,color) {
 		//console.log("highlightInBranch " + this.value + " delay: " + delay + " time: " + time);
-		var anim = Raphael.animation({stroke:"green"},time);
+		var anim = Raphael.animation({
+			stroke: color || "green"
+		},time);
 		this.inBranch.animate(anim.delay(delay));
+		this.inBranch.head.animate(anim.delay(delay));
 	};
 	TreeNode.prototype.lowlightInBranch = function(delay,time) {
 		//console.log("lowlightInBranch " + this.value + " delay: " + delay + " time: " + time);
 		var anim = Raphael.animation({stroke:"#4b4b4b"},time);
 		this.inBranch.animate(anim.delay(delay));
+		this.inBranch.head.animate(anim.delay(delay));
 	};
 
 	TreeNode.prototype.hide = function(delay,time) {
@@ -135,14 +144,16 @@ $(document).ready(function () {
 		var anim = Raphael.animation({opacity:0},time);
 		this.DU.vis[0].animate(anim.delay(delay));
 		this.DU.vis[1].animate(anim.delay(delay));
-
 	}
 
 	TreeNode.prototype.hideInBranch = function(delay,time) {
 		//console.log("hidebranch");
 		var anim = Raphael.animation({opacity:0},time);
 		this.inBranch.animate(anim.delay(delay));
+		this.inBranch.head.animate(anim.delay(delay));
 	}
+
+
 
 /*
 	TreeNode.prototype.addChildNode = function(child,z) {
