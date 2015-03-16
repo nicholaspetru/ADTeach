@@ -178,7 +178,7 @@ $(document).ready(function () {
         }
 
         //Remove method
-        //Parameters: add(value) - adds value to end of queue then sorts
+        //Parameters: nothing
         //Returns:    The item in the front of the queue
         //            updates the queue with front value removed
         if (method == 'remove') {
@@ -212,6 +212,11 @@ $(document).ready(function () {
         //Returns:    nothing
         //            updates the queue with new value(s) added
         if (method == "populate") {
+            if (typeof parameters[0].value != typeof 2){
+                env.throwError(root.linenum, "populate requires integer input");
+                this.error();
+            }
+
             var value = [];
             if (type == "PriorityQueue<Integer>") {
                 for (var i = 0; i < parameters[0].value; i++) {
