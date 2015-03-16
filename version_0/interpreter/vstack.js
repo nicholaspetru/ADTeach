@@ -87,7 +87,10 @@ $(document).ready(function () {
             valueCopy[i]=(origValue[i]);   
         }
         
-        
+        //Pop method
+        //Parameters: nothing
+        //Returns:    Value  on the top of the stack
+        //            updates the queue with new value added
         if (method == "pop") {
             returnValue = valueCopy.pop();
             console.log('POPPING', typeof returnValue);
@@ -103,11 +106,19 @@ $(document).ready(function () {
             return [returnValue, valueCopy, valType];
         } 
         
+        //Size method
+        //Parameters: nothing
+        //Returns:    the length of the stack
+        //            updates nothing
         if (method == "size") {
             returnValue = valueCopy.length;
             return [returnValue, valueCopy, "int"];
         }
         
+        //Search method
+        //Parameters: search(x) x is value you are searching for
+        //Returns:    Returns the index of value x in the stack, where an index 1 represents the top of the stack, -1 if not in stack
+        //            updates nothing
         if (method == "search") {
             console.log("*&#(*$&#(*$&#(*&$#(*&$");
             console.log("Searching for: ", parameters);
@@ -144,7 +155,11 @@ $(document).ready(function () {
             }
             return [returnValue, valueCopy, "int"];
         }
-        
+
+        //Push method
+        //Parameters: push(x) x is value you are adding to the top of the stack
+        //Returns:    nothing
+        //            updates stack with new added value
         if (method == "push") {
             if (type == "Stack<Integer>") {
                 if (typeof parameters[0].value != typeof 2) {
@@ -170,13 +185,15 @@ $(document).ready(function () {
                     root.error("Incompatible types");
                 }
             } 
-            
-            console.log("PUSHING: ", parameters[0]);
-                valueCopy.push(parameters[0].value);
-            
+
+            valueCopy.push(parameters[0].value);
             return [returnValue, valueCopy];
         } 
         
+        //isEmpty method
+        //Parameters: None
+        //Returns:    Returns true if the stack is empty, false otherwise
+        //            updates nothing
         if (method == "isEmpty") {
             if (valueCopy.length == 0) {
                 returnValue = true;
@@ -186,7 +203,16 @@ $(document).ready(function () {
             return [returnValue, valueCopy, "boolean"];
         } 
         
+        //Search method
+        //Parameters: populate(num) num is the number of items to be added to the list
+        //Returns:    Returns the index of value x in the stack, where an index 1 represents the top of the stack, -1 if not in stack
+        //            updates nothing
         if (method == "populate") {
+            if (typeof parameters[0].value != typeof 2){
+                env.throwError(root.linenum, "populate requires integer input");
+                this.error();
+            }
+            
             if (type == "Stack<Integer>") {
                 var value = [];
                 for (i = 0; i < parameters[0].value; i++) {
