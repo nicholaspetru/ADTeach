@@ -1,18 +1,13 @@
-$(document).ready(function() {   
-    
+$(document).ready(function() {
     //Constructor
     EventHandler = function() {
         this.code = "";
-        this.playing = false;
-        this.interpreted = false;
         this.interpreter = new Interpreter();
         this.codeBox = new CodeBox();
         this.codeDatabase = new CodeDatabase();
         this.visualizerHandler = new VisualizerHandler();
         this.paused = false;
 
-        
-        //for now, put this code here
         $("#play").hide();
         $("#pause").hide();
         $("#step").hide();
@@ -32,15 +27,12 @@ $(document).ready(function() {
         return this;
     }
 
-
-
-    //build
+    // build
     EventHandler.prototype.onBuild = function() {
-        //console.log('Event Handler: onBuild()');
         this.codeBox.freezeCode();
         this.code = this.codeBox.getCode();
         this.interpreter.interpret(this.code, this.visualizerHandler);
-        //evaluated = this.interpreter.eval($("#user_textbox").val());
+
         $("#play").show();
         $("#pause").show();
         $("#step").show();
@@ -58,6 +50,7 @@ $(document).ready(function() {
         $("#modal").hide();
     };
     
+    // play
     EventHandler.prototype.onPlay = function() {
       //console.log('Event Handler: onPlay()');
       //console.log('Paused: ' + this.paused);
@@ -76,27 +69,25 @@ $(document).ready(function() {
       }
     };
     
-
-    // hidden until INTERPRETED = true
+    // pause
     EventHandler.prototype.onPause = function() {
         //console.log('Event Handler: onPause()');
         this.paused = true;
     };
 
-    // hidden until INTERPRETED = true
+    // step
     EventHandler.prototype.onStep = function() {
       //console.log("Event Handler: onStep()");
       this.visualizerHandler.delay = this.visualizerHandler.date.getTime();
       this.visualizerHandler.goForthOnce();
     };
     
-    // hidden until INTERPRETED = true
     EventHandler.prototype.onStop = function() {
        //console.log("Event Handler: onStop()");
        this.codeBox.unfreezeCode();
        this.visualizerHandler.DeleteAll();
        this.visualizerHandler.ResetValues();
-        //show the needed buttonz
+
         $("#play").hide();
         $("#pause").hide();
         $("#step").hide();
